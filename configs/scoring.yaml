@@ -1,0 +1,29 @@
+# 热度打分权重（M2 实现，M0 仅落配置骨架）
+# 改动此文件无需改代码；M2 验收时用真实 Top10 结果校准。
+weights:
+  engagement: 0.45
+  freshness: 0.20
+  velocity: 0.20
+  source_weight: 0.15
+
+# 新鲜度：exp(-max(0, age_hours - 6) / 36)
+freshness:
+  grace_hours: 6
+  tau_hours: 36
+
+# 跨源印证加成：0.05 * (len(seen_in) - 1)
+cross_source_bonus: 0.05
+
+# 各源 engagement 原始分计算方式（M2 实现）
+engagement:
+  github_trending: {stars_in_window: 1.0, stars_total: 0.2}
+  hackernews: {points: 1.0, num_comments: 0.5}
+  reddit: {score: 1.0, num_comments: 0.5}
+  hf_papers: {upvotes: 1.2}
+  arxiv: {upvotes: 1.0}
+  rss: {}
+  inbox: {}
+
+# 冷启动（无 signals 历史）时 velocity 取源内中位数，并打 warning
+cold_start:
+  velocity_fill: median

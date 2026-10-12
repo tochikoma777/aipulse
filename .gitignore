@@ -1,0 +1,32 @@
+# ── 密钥（绝不能入库）────────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# ── 数据库与缓存 ─────────────────────────────────────────────────────
+data/*.db
+data/*.sqlite
+data/cache/
+data/logs/
+*.db-journal
+
+# ── Python ───────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# ── 编辑器 / 系统 ────────────────────────────────────────────────────
+.vscode/
+.idea/
+.DS_Store
+*.swp

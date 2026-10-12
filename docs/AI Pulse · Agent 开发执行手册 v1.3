@@ -1,0 +1,458 @@
+# AI Pulse · Agent 开发执行手册 v1.3
+
+> 配套文档：`AI_Pulse_设计方案_v1.md`（设计 SSOT，v1.3）
+> **已确认决策清单（Agent 直接执行，无需再问）**
+>
+> v1.1：① 微信/X 彻底移除（改用 inbox 手动投喂）；② LLM 默认 DeepSeek；③ 命名 `aipulse`（AI 脉搏）+ 许可证 **MIT**；④ **里程碑重排：M4 = 发布与自动化，M5 = 周期长文与辩论**（任务卡顺序已对调）
+>
+> v1.2：⑤ RSS = **英文主干 + 中文补充**（中文源标 `optional`，失效只告警）；⑥ Reddit = **先走免认证 RSS**（不实现 OAuth）；⑦ **M0 即建公开仓库**（README 标 WIP）；⑧ 日报触达 = **文件 + Web 看板**，但**必须预留 Notifier 抽象**（只实现 FileNotifier，其余渠道现在不要做）
+
+> v1.3（★ 重要）：⑨ **三档运行模式 `off`/`hybrid`/`full`，API 从必需降级为可选**——off 档零 API 花费仍可用；⑩ **手写预言 `predict add` 是全档位核心能力**，交互采用「参数 + 缺参自动降级为向导」；⑪ **预言可选「量化判据」**，带阈值者到期查表自动判定，零成本
+> **核心原则：让 aipulse 在零 API 花费下依然是有价值的工具；API 只用来把它变得更好，而不是让它能用。**
+> 本手册的作用：把设计方案拆成**可直接复制粘贴给 CodeBuddy / Claude Code 的任务卡**，并固化编码规范与验收 checklist。
+> 使用方式：每个阶段只把对应的任务卡发给 Agent，DoD 全部打勾后再进入下一张卡。
+
+---
+
+## 0. 全局约定（每一张任务卡都要带上这段）
+
+### 0.0 项目身份（v1.1 已确认，不要更改）
+
+| 项 | 值 |
+|---|---|
+| 项目名 / 包名 / CLI 名 | `aipulse`（AI 脉搏） |
+| 命名含义 | 脉搏三层隐喻：把脉（每日采样信号）→ 诊断（分析判断）→ 预后（推演预言），正好对应采集→分析→推演三段主线 |
+| 许可证 | **MIT**（不是 Apache-2.0） |
+| LLM 默认厂商 | **DeepSeek**：`deepseek-chat`（fast）/ `deepseek-reasoner`（strong） |
+| 自动数据源 | 6 个：github_trending / arxiv / hf_papers / hackernews / reddit / rss，外加 inbox 手动投喂 |
+| RSS 分层 | 英文主干（Simon Willison / Import AI / Latent Space / 官方博客 / Verge / TechCrunch / Ars）+ 中文补充（机器之心、量子位，标 `optional`） |
+| 仓库可见性 | **M0 即 public**，README 顶部标 WIP + Roadmap 勾选清单 |
+| 通知 | 只实现 `FileNotifier`；`notify.channels: [file]`，预留 SMTP/TG/飞书接口但**现在不实现** |
+| 不做 | **微信公众号 / X（Twitter）的任何抓取或 RSS 桥** |
+
+### 0.1 项目根目录与运行方式
+
+```bash
+# 必须在 WSL2 的原生 ext4 文件系统内操作，不要放 /mnt/c/
+mkdir -p ~/projects/aipulse && cd ~/projects/aipulse
+curl -LsSf https://astral.sh/uv/install.sh | sh
+uv python install 3.11
+uv venv && source .venv/bin/activate
+uv add typer rich httpx pydantic pydantic-settings sqlmodel alembic feedparser tenacity \
+       jinja2 structlog jieba scikit-learn python-dotenv respx pytest pytest-asyncio pytest-cov
+uv add --dev ruff mypy pre-commit
+```
+
+### 0.2 编码规范（Agent 必须遵守，CI 会检查）
+
+| 项 | 规范 |
+|---|---|
+| 类型注解 | **所有公开函数必须有完整类型注解**；`mypy --strict` 至少对 `core/ schema/ analysis/` 通过 |
+| 异步约定 | 采集器统一 `async def fetch()`；`pipeline` 用 `asyncio.gather` 编排；CLI 用 `asyncio.run` |
+| 网络调用 | 禁止在采集器内裸调 `httpx`；一律用注入的 `utils/http.py::HttpClient` |
+| LLM 调用 | 禁止直接调 SDK；一律用 `llm/base.py::LLMClient`；prompt 一律来自 `prompts/**.j2` |
+| 时间 | 代码内一律 UTC；仅在渲染层转 `Asia/Shanghai`；禁止 `datetime.now()`（用 `core/timeutil.utcnow()`） |
+| 日志 | `structlog.get_logger(__name__)`；禁止 `print`（CLI 输出用 `rich.console`） |
+| 错误处理 | 自定义异常继承 `core/errors.py::AipulseError`；采集器内捕获后转 `CollectorError` 并记录 |
+| 配置 | 禁止硬编码常量；权重/阈值/源配置全部走 `configs/*.yaml` |
+| 注释 | 复杂算法（打分、聚类、去重、Brier）必须写中文注释解释**为什么**这么算 |
+| 提交 | Conventional Commits；每个阶段结束打 tag（`m0`/`m1`/...） |
+
+### 0.3 十一条红线（违反即返工）
+
+1. ❌ 一次性生成整个项目——必须分阶段。
+2. ❌ 凭想象写字段解析——必须基于 `tests/fixtures/` 的真实响应。
+3. ❌ 把 prompt 写进 `.py`——必须在 `prompts/**.j2`。
+4. ❌ LLM 输出不做校验直接使用——必须 `response_model` + 校验 + 修复重试。
+5. ❌ 单源异常导致整条流水线崩溃——必须隔离。
+6. ❌ 实现任何微信 / X（Twitter）相关的采集器、配置段、环境变量或 RSS 桥——v1.1 已彻底移除，只允许走 `inbox` 手动投喂（见设计方案 §5.8）。
+7. ❌ 把里程碑顺序搞反——**M4 是 Web 看板 + Actions 自动化 + README 发布（提前），M5 才是周期长文 + 多角色辩论（后移）**。
+8. ❌ **在 `mode: off` 下发起任何发往模型服务商的网络请求**——v1.3 红线。off 档必须注入 `NullLLM`，测试需断言从未请求过 `base_url`。未配置 `api_key` 时自动降级为 off 并提示一次，**不得报错退出**。
+9. ❌ 现在就去实现 OAuth / 邮件推送 / Telegram / 飞书——v1.2 已决定**只做 RSS 与 FileNotifier**，其余只需留好接口（`Notifier` Protocol 与 `mode: oauth` 配置项），**不要写实现**。
+10. ❌ 把未经 `probe_sources.py` 实测的 RSS URL 留在 `configs/sources.yaml` 里——每个 URL 必须逐个验证后写入。
+11. ❌ 把手写预言做成纯参数或纯向导——必须是「参数缺失时自动降级为交互式向导」，同一套参数定义，只多约 40 行追问逻辑。
+
+### 0.4 每个阶段结束 Agent 必须输出的验收报告格式
+
+```
+## M{x} 验收报告
+### 已完成
+- ...
+### DoD 核对
+- [x] ...
+- [ ] ...（若未达成，说明原因与补救方案）
+### 关键文件清单（新增/修改）
+- path: 行数, 说明
+### 测试与覆盖率
+- pytest 结果: xxx passed
+- 覆盖率: collectors 85% / analysis 88% ...
+### 遇到的坑与解决
+- ...
+### 需要你决策的问题
+- ...
+### 下一步
+- 是否进入 M{x+1}？
+```
+
+---
+
+## 1. M0 任务卡（骨架与数据探测）
+
+> 复制以下内容发给 Agent。
+
+```
+你是资深 Python 工程师。项目根目录 ~/projects/aipulse（WSL2）。
+请先完整阅读 AI_Pulse_设计方案_v1.md 与本执行手册，然后执行 M0 阶段。
+
+【目标】搭好可运行的项目骨架，并用真实请求探测全部数据源，产出 fixtures 与《数据源手册》。
+
+【任务】
+1. 用 uv 初始化项目（Python 3.11），按设计方案 §4 创建完整目录骨架（空文件也要占位，含 __init__.py）。
+2. pyproject.toml 配置：[project.scripts] aipulse = "aipulse.cli.main:app"；
+   ruff（line-length=100，select=E,F,I,UP,B,SIM）、mypy、pytest（asyncio_mode=auto）。
+3. 实现 core/：config.py（pydantic-settings，支持 ${ENV} 插值读 yaml）、logging.py（structlog，
+   控制台 rich + 文件 JSON Lines）、timeutil.py（utcnow / to_local / window helpers）、
+   errors.py（AipulseError → CollectorError/LLMError/ConfigError/StoreError）、
+   hashing.py（canonical_url / content_hash / simhash64 + hamming_distance）。
+4. 实现 utils/http.py::HttpClient：httpx.AsyncClient 封装，支持
+   - 每源独立令牌桶限速（rate_limit 形如 "3/s"、"10/1s"、"1/6h"）
+   - 超时（connect/read 可配）、tenacity 重试（仅 429/5xx/超时，最多3次，指数退避+抖动）
+   - SQLite 响应缓存（data/cache/http.sqlite，TTL 可配，--no-cache 关闭）
+   - 统一 User-Agent、HTTP(S)_PROXY 支持
+   - 所有请求经过此方法，便于 respx mock
+5. 实现 schema/items.py（SourceEnum / RawItem / SourceMetrics，pydantic v2）。
+6. 实现 store/models.py（items/signals/topics/entities/predictions/source_runs/pipeline_runs/
+   llm_usage/llm_cache 全表，SQLModel）+ store/db.py + alembic 初始化与首个迁移。
+7. 写 scripts/probe_sources.py：对 5 个 API 类源各发一次真实请求，打印响应结构样例（前 2 条关键字段），
+   并把原始响应保存到 tests/fixtures/（github_trending.html、arxiv_atom.xml、hf_daily_papers.json、
+   hn_search.json、reddit_top.json）。对失败的源明确记录 HTTP 状态与错误信息，不要静默。
+8. 【RSS 专项探测，v1.2 重点】对 configs/sources.yaml 中列出的**每一个** RSS feed 单独探测，
+   记录并输出表格：feed 名称 / URL / HTTP 状态 / 条目数 / 是否含正文 / 最后更新时间 / 结论(可用|替换|删除)。
+   - 英文主干源若失效：必须找到可用替代 URL 后写入配置。
+   - 中文源若失效：标 optional 保留或删除，并在手册中写明"中文源失效，新闻板块依赖英文主干"。
+   - 把 2 个可用 feed 的原始响应存为 tests/fixtures/rss_feed.xml（英文主干 1 个 + 中文 1 个）。
+9. 写 docs/数据源手册.md：每个源的端点、真实字段清单（从 probe 结果摘录）、限速、认证需求、
+   失效降级路径、RSS 探测结果表、以及失败源的排查结论。
+10. CLI 骨架：typer app 注册全部子命令（未实现的用 raise NotImplementedError 占位，但 --help 可见）；
+    实现 init（建库+生成配置骨架+建目录）与 doctor（检查 Python 版本、LLM key、代理、磁盘、
+    数据库、以及每个源的 healthcheck 探针）。
+11. 【仓库公开准备，v1.2】初始化 git 仓库并设为 public：
+    - README 顶部写 WIP 声明 + Roadmap 勾选清单（M0 打勾）
+    - LICENSE = MIT
+    - .gitignore 必须含 .env、data/*.db、data/cache/、__pycache__
+    - .gitattributes 统一 LF；git config core.autocrlf input
+    - .github/workflows/ci.yml（ruff + mypy + pytest，无密钥环境必须全绿）
+    - **首次 push 前人工检查一遍：确认没有任何密钥或 .db 文件被跟踪**
+
+【约束】
+- 本阶段不实现任何采集器的解析逻辑，只做探测与落盘。
+- 不实现 Reddit OAuth，只走 RSS。
+- 不实现任何通知渠道，只预留 notify/base.py 的 Notifier Protocol 与 FileNotifier。
+- 所有新增代码同步写单测（core/ 与 utils/ 的纯函数必须覆盖）。
+- 不要写任何 LLM 调用代码。
+
+【DoD】
+- [ ] uv run aipulse --help 正常，全部子命令可见
+- [ ] uv run aipulse doctor 能给出环境体检表（含代理与 LLM key 检测）
+- [ ] tests/fixtures/ 下有 5 个 API 源 + 2 个 RSS feed 的真实快照；失败的源在手册中写明原因
+- [ ] **RSS 探测结果表完整：每个 feed 都有明确结论（可用/替换/删除）**
+- [ ] 所有表可由 alembic 建出，pytest 全绿（无需网络）
+- [ ] docs/数据源手册.md 完成
+- [ ] **仓库已 public，README 有 WIP 声明 + Roadmap，ci.yml 首次运行为绿，无密钥入库**
+完成后输出 M0 验收报告（格式见手册 §0.4），不要开始 M1。
+```
+
+---
+
+## 2. M1 任务卡（采集器 + 去重）
+
+```
+执行 M1 阶段。前置：M0 已通过验收，tests/fixtures/ 有真实响应快照。
+
+【任务】
+1. 实现 collectors/base.py::BaseCollector（async fetch / healthcheck / 注入 cfg+http）
+   与 registry.py（按名注册、enable/disable、list）。
+2. 依次实现 6 个采集器，每个都必须"先读 fixtures，再写解析器"：
+   - github_trending.py：解析 HTML（用 article 下 h2 a 取 repo 名等稳定结构，不要依赖易变 class），
+     字段 full_name/description/language/stars_total/stars_in_window/forks；
+     结果为空或 <5 条时自动降级到 GitHub Search API（created:>{date}&sort=stars），并记录告警。
+   - arxiv.py：feedparser 解析 Atom，过滤 categories 与关键词，取 Top N；限速 3/s。
+   - hf_papers.py：调 /api/daily_papers?date=，可选 enrich /api/papers/{id} 与 /api/arxiv/{id}/repos。
+   - hackernews.py：Algolia search_by_date，多关键词串行查询后去重；可选对 Top3 取评论树。
+   - reddit.py：v1.2 只实现 RSS 模式。**不要实现 OAuth**——只留 `mode: rss|oauth` 配置字段与
+     oauth 分支的 NotImplementedError 占位。RSS 无 score 时的三重补偿必须实现：
+     ① score=0 但保留 comments；② 该源 source_weight 降为 0.55；
+     ③ 用 (N-rank)/N 排名位次作为热度代理信号写入 metrics.rank_score。
+   - rss.py：feedparser 通用解析。**必须支持 feeds 的 tier 字段（core/optional）**：
+     optional 源探测失败/返回空/解析异常时只写 warning 并标记 source_runs.status='degraded'，
+     不得影响 pipeline 退出码；core 源失败才计入失败统计。
+   - inbox.py：从本地目录/命令行读取手动投喂条目。
+3. normalize/clean.py：HTML 标签剥离、空白与换行规整、长度截断、简易语言检测。
+4. normalize/dedup.py：三级去重（L1 content_hash / L2 cross_key：arxiv:{id}、repo:{full_name} /
+   L3 simhash 汉明距离 ≤3）；合并规则见设计方案 §6.2；跨源合并写入 seen_in 并加热度加成。
+5. store/repo_items.py：upsert（按 content_hash 唯一），批量写入 signals。
+6. cli/commands/collect.py：--sources / --since(默认24h) / --dry-run / --no-cache / --json；
+   并发编排（asyncio.gather，全局并发 6），单源异常隔离并写 source_runs。
+7. 故障注入测试：mock 出 500 / 超时 / 429 / 空返回 / HTML 结构变更，验证 pipeline 不崩且日志正确。
+
+【约束】
+- 每个采集器至少 3 个单测：正常解析、边界（空/单条）、异常（脏数据字段缺失）。
+- 解析器不得硬编码 fixtures 之外的字段名；若 probe 阶段发现字段变动，更新手册。
+
+【DoD】
+- [ ] aipulse collect --since 24h 真实环境下 ≥4 个源成功、总数 ≥50 条
+- [ ] 断网或单源 500 时其余源照常完成，退出码 0（或明确的降级退出码），日志清晰
+- [ ] **中文 optional RSS 源失效时 pipeline 仍退出码 0**，仅 warning（专项测试）
+- [ ] **Reddit RSS 条目的 rank_score 正确写入**，该源权重为 0.55（读 configs 验证）
+- [ ] arXiv 与 HF 的同一篇论文合并为 1 条，seen_in 含两个源
+- [ ] GitHub stars 快照正确写入 signals 表
+- [ ] 所有采集器单测无需网络，覆盖率 ≥80%
+完成后输出 M1 验收报告，不要开始 M2。
+```
+
+---
+
+## 3. M2 任务卡（分析层 + 每日简报）
+
+```
+执行 M2 阶段。前置：M1 已通过验收。
+
+【任务】
+1. analysis/score.py：实现设计方案 §9.1 的热度公式；所有权重从 configs/scoring.yaml 读取；
+   源内分位归一化；冷启动（无 signals 历史）时 velocity 取源内中位数并打 warning 日志。
+2. analysis/cluster.py：TF-IDF（中文 jieba 预处理）+ 余弦相似度 0.35 阈值 + 连通分量聚簇；
+   每簇选 hot_score 最高为代表，写 topics 表与 items.topic_id。
+3. analysis/entities.py：configs/entities.yaml 词典 + 正则抽取（模型/框架/公司/硬件/概念），
+   写 entities 表并统计日频次；analysis/signals.py：增速与 Δ 值计算。
+4. llm/ 全套：
+   - base.py：LLMClient Protocol + LLMResult + FakeLLM（无 key 时的模板化输出）
+   - openai_compat.py：官方 openai SDK，支持 fast/strong 双模型
+   - structured.py：response_model → JSON Schema 下发 → model_validate_json →
+     失败自动"修复重试"一次 → 再失败降级跳过（绝不 raise 到 pipeline）
+   - cache.py：prompt_hash → response（SQLite）+ budget.py：每日预算与自动降级
+   - prompt.py：Jinja2 加载器，解析 front-matter（version/model_tier/temperature/purpose），
+     prompt_version = 文件 sha256 前 8 位
+5. prompts/brief/daily_brief.j2 与 item_comment.j2（含 front-matter）。
+   简报必须包含：headline / executive_summary / 按板块的 sections / editor_note /
+   contradictions / underrated / stats。要求模型"敢于下判断、指出矛盾、挖掘冷门"。
+6. reasoning/brief.py：组装上下文（Top N + topic 分组 + 实体统计）→ 调 LLM → Brief 模型。
+7. render/markdown.py（主）、json_out.py；产出 data/reports/YYYY/MM/DD/{brief.md,daily.json,meta.json}。
+8. cli：analyze / brief / daily；--skip-llm 与 --no-llm 必须能端到端跑通（零花费）。
+
+【约束】
+- prompt 只允许写在 prompts/ 下，代码里不得出现大段提示词字符串。
+- Token 控制：送入 LLM 的上下文必须截断（每条目摘要 ≤300 字，总量 ≤12k tokens，utils/text.py 估算）。
+
+【DoD】
+- [ ] aipulse daily --skip-llm 端到端跑通并产出 daily.json，零 API 花费
+- [ ] ★ v1.3 三档模式生效：mode=off/hybrid/full 三档各自跑通，差异只体现在"某 LLM 环节是否执行"
+- [ ] ★ off 档单测断言：httpx 从未请求过 llm.base_url（用 respx 拦截并断言 0 次调用）
+- [ ] ★ 未配置 api_key 时自动降级 off 且不报错退出，只提示一次
+- [ ] 报告元信息（meta.json 与 brief.md 末尾）写明本次运行模式
+- [ ] brief.md 结构完整，含主编点评、矛盾点、被低估板块
+- [ ] 改 scoring.yaml 权重无需改代码即生效（有单测）
+- [ ] LLM 返回非法 JSON → 自动修复 → 再失败降级跳过，全程不中断（有单测）
+- [ ] 预算超限自动降级，meta.json 记录降级情况与花费
+完成后输出 M2 验收报告，不要开始 M3。
+```
+
+---
+
+## 4. M3 任务卡（★ 预言系统）
+
+```
+执行 M3 阶段。这是项目的核心差异化能力，请格外严格。前置：M2 已通过验收。
+
+【任务】
+1. schema/prediction.py：Prediction 与 Verdict 模型（字段见设计方案 §7.5）。
+2. prompts/predict/generate.j2：要求产出 3-5 条预言，每条含
+   statement / category / confidence(0.05-0.95, 步长0.05) / horizon_days(7|30|90|180) /
+   falsifiable_criteria / rationale / evidence_item_ids(≥2条)。
+   明确禁止模糊表述（可能/也许/未来可期/值得关注），要求"宁可错得明确，不要对得含糊"。
+3. 程序侧硬校验：正则黑名单拦截模糊措辞；confidence 步长校验；horizon 合法值校验；
+   证据条数校验；不合法 → 触发一次重写 → 仍不合法则丢弃该条并记录。
+4. reasoning/predictor.py：从当日 Top 条目 + topic 演化 + 实体增速组装上下文生成预言，入库。
+5. reasoning/verifier.py：
+   - 取 status=pending AND due_date<=today 的预言
+   - 证据检索：用预言实体/关键词在库中检索 due_date±3 天窗口的 Items（关键词 + TF-IDF 相似度），取 Top20
+   - 调 prompts/predict/verify.j2 判定 hit(1.0)/partial(0.5)/miss(0.0) + note + 引用证据 id
+   - 证据不足 → 标 unverifiable，保留 pending 最多延后 7 天
+6. CLI：predict / predict list / predict verify --due-date / predict review <id> --verdict --note
+   （人工闭环通道，verified_by=human，同样计入统计）
+7. aipulse stats --predictions：总数、已验证数、命中率、加权分、
+   Brier Score = mean((confidence - outcome)^2)、
+   按置信度分桶的校准表（0.5-0.6/0.6-0.7/0.7-0.8/0.8+）、按 category/horizon/model/prompt_version 分组统计。
+8. 自动生成「预言记分板」Markdown（含校准表），可直接贴进 README。
+
+【约束】
+- 预言必须可证伪，这是红线：任何没有 falsifiable_criteria 的条目不得入库。
+- 验证必须"给证据说话"：verdict_note 必须引用具体 Item id 或说明"证据不足"。
+
+【DoD】
+- [ ] ★ v1.3 手写预言 predict add 全档位可用：
+      · 带全参数时非交互执行，脚本可用
+      · 不带参数时进入交互式向导（内容→置信度→到期天数→判据模板→参数→预览确认）
+      · 生成记录 origin=human，进入记分板统计
+- [ ] ★ 量化判据模板库可用（github_new_repo / github_stars_reach / hn_story_points /
+      entity_mentions / arxiv_paper_count / custom），到期查表自动判定，零 LLM 调用
+- [ ] ★ off 档下量化判据预言可完成"生成→到期→自动验证→记分板"全闭环
+- [ ] 每条入库预言都有 confidence/due_date/falsifiable_criteria/≥2 条证据（LLM 生成的）
+- [ ] 模糊措辞能被拦截并触发重写（单测覆盖至少 5 种典型模糊句）
+- [ ] predict review 人工通道能闭环并计入统计
+- [ ] stats --predictions 输出命中率 + Brier + 分桶校准表
+- [ ] 预言记分板 Markdown 可生成，格式适合直接贴 README
+完成后输出 M3 验收报告，不要开始 M4。
+```
+
+---
+
+## 5. M4 任务卡（Web 看板 + Actions 自动化 + 开源发布）  ★ v1.1 提前，原 M5
+
+> **本阶段最重要的产物不是代码，而是"系统开始每天自动跑了"。** 从这一天起，预言数据开始逐日积累、
+> 逐日到期、逐日被验证——这份成绩单只能靠时间沉淀，越早开始跑越值钱。Actions 部分请优先做完。
+
+```
+执行 M4 阶段（Web 看板 + 自动化 + 发布包装）。前置：M3 已通过验收。
+
+【任务】
+0. 【最高优先级，先做这个】.github/workflows/daily.yml：
+   - cron "0 23 * * *"（UTC，= 北京 07:00）+ workflow_dispatch 手动触发
+   - 步骤：checkout → astral-sh/setup-uv → uv sync → aipulse daily → commit data/reports
+   - 密钥走 secrets：AIPULSE_LLM__API_KEY、GITHUB_TOKEN
+   - 解决 Actions 无持久化：① 报告文件 commit 回仓库（文本即数据库）；
+     ② actions/cache 保存 data/aipulse.db（key 用日期，restore-keys 兜底）；
+     ③ 关键 signals 另落 data/reports/YYYY/MM/DD/signals.json
+   - 同时配 WSL 本地 cron 作为备份（设计方案 §14.2）
+1. .github/workflows/ci.yml：ruff + mypy + pytest；必须能在无密钥环境全绿
+   （涉真实 API 的用例用 @pytest.mark.skipif(not os.getenv("AIPULSE_LLM__API_KEY")) 隔离）。
+2. web/app.py（FastAPI + Jinja2 + HTMX，只读）：
+   /（今日简报）、/archive（按日期浏览）、/predictions（★ 预言记分板 + 校准曲线）、
+   /topics（主题演化）、/search（关键词检索）。数据来自 SQLite 与 daily.json。
+   「趋势」「辩论」入口本阶段先置灰占位，M5 完成后点亮。
+   禁止任何写操作；CLI: aipulse serve --port 8000。
+3. README 重写：一句话定位（"不只整理，还给出可回测的推演与预言"）、能力清单、
+   快速开始（5 分钟跑通 init→doctor→daily）、截图/示例、
+   ★ 预言记分板（由 aipulse stats 自动生成后贴入，即使此刻样本为 0 也要展示结构）、
+   架构图（mermaid）、数据源与合规声明（明确列出数据来源、标注不抓取微信/X）、
+   Roadmap（标注 M5 待做）、贡献指南。
+4. LICENSE（MIT）、CONTRIBUTING.md、.github/ISSUE_TEMPLATE、.gitattributes（统一 LF）。
+5. 通知：实现 notify/base.py 的 Notifier Protocol + FileNotifier（唯一默认实现），
+   configs 中 notify.channels: [file]。**只做文件渠道**——SMTP / Telegram / 飞书 / 桌面通知
+   一律不实现，仅在 configs 与代码注释中登记为预留渠道。
+
+【约束】
+- Web 页面严禁写操作；所有数据只读自 SQLite 与 daily.json。
+- 记分板的样本数为 0 时必须优雅呈现（显示"系统已运行 N 天，首批预言将于 X 日到期"），不要报错或空白。
+
+【DoD】
+- [ ] Actions 定时跑通并 commit 报告（至少用 workflow_dispatch 手动触发验证一次真实运行）
+- [ ] 连续两天运行后，signals 能算出 star 增速（证明 Actions 内 SQLite 恢复机制生效）
+- [ ] aipulse serve 本地可浏览，页面包含预言记分板与校准曲线
+- [ ] ci.yml 在无密钥环境 lint + mypy + test 全绿
+- [ ] README 让陌生人 5 分钟跑通；记分板已贴入
+- [ ] notify 抽象就位（channels: [file] 生效），且未实现任何额外推送渠道
+完成后输出 M4 验收报告 + 一份"开源首发文案"（项目亮点 3 条、目标受众、建议发布渠道）。
+```
+
+---
+
+## 6. M5 任务卡（周期长文 + 多角色辩论）  ★ v1.1 后移，原 M4
+
+> 此时系统已自动运行一段时间，库里有真实历史数据与已验证预言可供引用，长文与辩论的产出质量会明显更好。
+
+```
+执行 M5 阶段（深度推演能力）。前置：M4 已通过验收，且系统已自动运行一段时间。
+
+【任务】
+1. reasoning/trend.py + prompts/trend/{weekly,monthly}.j2：
+   输入 = 本期 topics 演化 + 实体频次 Top-N 及环比 + signals 增速 Top-N + 本期简报与预言 +
+   往期预言验证结果；输出 TrendReport（executive_summary / rising / declining / emergent /
+   structural_changes / second_order_effects / predictions_review / next_period_watchlist），
+   正文 2000-4000 字，含数据表格，二阶推演必须显式标注为推测。
+2. reasoning/debate.py + prompts/debate/{persona_bull,persona_bear,persona_engineer,
+   persona_investor,moderator}.j2：
+   - Round1 四个 persona 并行（asyncio.gather）基于同一份压缩证据包陈述
+   - Round2（--rounds 2）互相反驳后修订
+   - moderator 收敛：consensus / key_disagreements / actionable_conclusions /
+     overall_confidence / what_would_change_my_mind
+3. pipeline/weekly.py：周度流水线 = 趋势长文 + LLM 自动选"本周最大争议话题" + 辩论 + 往期预言复盘。
+4. Web 看板点亮「趋势」与「辩论」页面。
+5. 可选（默认关闭，配置开关）：轻量 embedding（sqlite-vec 或本地 bge-small CPU）用于
+   证据检索增强与语义去重；开启时不得破坏关闭状态下的行为。
+6. CLI：trend --range 7d|30d；debate --topic X --rounds 1|2；weekly。
+
+【约束】
+- 辩论的四个 persona 必须并行，串行实现视为不合格。
+- 证据包必须压缩（每条目 ≤200 字，总计 ≤15 条），控制成本。
+- 长文必须引用真实的往期预言验证结果，不允许凭空生成"复盘"内容。
+
+【DoD】
+- [ ] trend --range 7d 产出 2000+ 字带数据表格的长文，且引用了真实的往期预言验证结果
+- [ ] debate 输出 4 视角 + 主持人收敛，含"什么证据会让我改变判断"
+- [ ] 4 persona 并行执行，日志显示总耗时显著低于串行（有数据佐证）
+- [ ] 周报能引用本期辩论；Web 端「趋势」「辩论」页面可访问
+完成后输出 M5 验收报告。
+```
+
+---
+
+## 7. 常见坑清单（Agent 开工前先读一遍）
+
+| # | 坑 | 症状 | 正确做法 |
+|---|---|---|---|
+| 1 | 代码放 `/mnt/c/` | I/O 极慢、SQLite 锁异常、git 行为诡异 | 一律放 `~/projects/aipulse`（WSL ext4） |
+| 2 | 用了 Windows 侧 Python | 依赖装错环境、CLI 找不到 | WSL 内 `uv venv`，VSCode 用 Remote-WSL |
+| 3 | arXiv 不限速 | 503、临时封 IP | 强制 ≥3s 间隔 + 退避 + 缓存 |
+| 4 | 凭记忆写解析 | 字段名对不上，静默丢数据 | 先 probe → fixtures → 再写解析 |
+| 5 | GitHub Trending 空列表 | 采集数为 0 却不报错 | 空/少结果自动降级 Search API + 告警 |
+| 6 | 中英文聚类效果差 | 中文条目全被聚成一簇 | 中文用 jieba 分词后再 TF-IDF |
+| 7 | prompt 写进代码 | 改一句要动代码、无法版本化 | 一律 `prompts/**.j2` + front-matter |
+| 8 | LLM 输出直接 `json.loads` | 偶发解析失败导致整轮崩 | 结构化 + 校验 + 修复重试 + 降级跳过 |
+| 9 | 忘记 `--no-llm` | 调试一次烧一次钱 | 开发期全面用 FakeLLM / skip-llm |
+| 10 | 单源异常炸全流程 | 一个源挂了当天全没 | 每源独立 try/except + source_runs |
+| 11 | 时间用本地时区 | 跨日边界错乱、报告日期偏移 | 全程 UTC，只在渲染层转本地 |
+| 12 | 预言"看起来对但无法证伪" | 项目灵魂丢失 | 缺 falsifiable_criteria 一律拒收 |
+| 13 | Actions 里 SQLite 丢失 | signals 历史断档 | 报告 commit + cache + signals 落 JSON |
+| 14 | Reddit 不设 UA | 被严厉限流 | UA 格式 `<platform>:<appid>:<ver> (by /u/<user>)` |
+| 15 | 忘记 `--json` 输出 | 无法被脚本消费 | 所有命令支持 `--json` |
+| 16 | 又去加微信/X 采集 | 违反 v1.1 决策，且必然踩合规与失效坑 | 一律走 `inbox` 手动投喂；`collectors/` 只允许 6 个自动源 + inbox |
+| 17 | 把 M4/M5 顺序搞反 | 先做了长文辩论，自动化迟迟没跑起来，记分板永远空的 | **M4 = Actions + Web + README（先做）；M5 = 长文 + 辩论（后做）** |
+| 18 | 记分板 0 样本时页面报错 | 开源首日门面难看 | 优雅空态："系统已运行 N 天，首批预言将于 X 日到期" |
+| 19 | 中文 RSS 源失效导致 pipeline 退出码非 0 | Actions 天天红 | 中文源标 `optional: true`，失效只告警 |
+| 20 | Reddit RSS 无 score 直接置 0 | 该源条目热度永远垫底，好内容被埋 | 用 `(N-rank)/N` 排名位次作代理 + 该源降权 |
+| 21 | 提前写 OAuth / 邮件推送 | 白写代码还多一套密钥要管 | v1.2 明确不做，只留接口 |
+| 22 | 密钥被 commit 到公开仓库 | 安全事故 | M0 首次 push 前检查 `.gitignore` 含 `.env`、`data/*.db`、`data/cache/` |
+| 23 | off 档仍偷偷调 API | 用户以为零成本却在烧钱 | 注入 NullLLM；单测用 respx 断言 0 次请求 |
+| 24 | 缺 api_key 直接报错退出 | 无 key 用户根本跑不起来 | 自动降级 off + 提示一次，不报错 |
+| 25 | 手写预言做成纯参数 | 用户要手写 JSON 判据，太麻烦导致功能被弃用 | 缺参自动降向导 + 判据模板选择 |
+| 26 | 报告不写运行模式 | 读者不知道这份报告有没有 AI 参与 | meta.json 与 brief.md 末尾固定标注 |
+
+---
+
+## 8. 给 Agent 的六条"工作方式"要求
+
+1. **小步提交**：每完成一个模块（含单测）就 commit，不要攒一大坨。
+2. **先测试后实现**（对解析器是硬性要求）：先把 fixture 变成断言，再写解析代码。
+3. **不确定的先问**：遇到文档未覆盖的决策点（如某个源要新增字段、发现更好的库），**先停下来问我**，不要自行发挥。
+4. **维护开发日志**：每阶段结束在 `docs/开发日志.md` 追加：做了什么、踩了什么坑、为什么这么决策。
+5. **成本意识**：任何会调用 LLM 的操作都要先想"能不能用算法/规则替代"，能则不用 LLM。
+6. **可解释性优先**：打分、聚类、验证的结果都要能追到"为什么"，日志与 meta.json 要能回答这个问题。
+
+---
+
+## 9. 阶段总览速查表
+
+| 顺序 | 阶段 | 核心产出 | 关键验收物 | 预计 |
+|---|---|---|---|---|
+| 1 | M0 | 骨架 + 数据探测 | fixtures×6 + 数据源手册 + doctor | 0.5-1 天 |
+| 2 | M1 | 6 采集器 + inbox + 去重 | collect 采到 ≥50 条、跨源合并生效 | 1-2 天 |
+| 3 | M2 | 打分/聚类 + 每日简报 | brief.md + daily.json + 零花费模式 | 1-2 天 |
+| 4 | M3 | ★ 预言系统（生成+验证+统计） | 记分板 + Brier + 校准表 | 1-2 天 |
+| 5 | **M4** | **Actions 自动化 + Web 看板 + README 发布** | **系统每天自动跑** + 记分板页面 + CI 全绿 | 1-2 天 |
+| 6 | **M5** | **周期长文 + 多角色辩论** | 2000+ 字长文 + 4 视角辩论 | 1-2 天 |
+
+**v1.1 重排说明**：原 M4（长文/辩论）与原 M5（发布/自动化）对调。理由——预言记分板的价值只能靠时间沉淀，
+系统越早开始每天自动跑，30 天后那份"命中率 + 校准曲线"的成绩单越有说服力；而长文与辩论任何时候做都能立刻见效，晚做没有损失。
+
+> 若时间有限，**最小可用闭环 = M0 + M1 + M2 + M3**（此时已具备"采集→简报→预言→回测"完整差异化能力）。
+> 但**强烈建议至少再做 M4 的 Actions 自动化部分**——让系统真的每天跑起来，这是整个项目资产增值的起点。

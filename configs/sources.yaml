@@ -1,0 +1,67 @@
+sources:
+  github_trending:
+    enabled: true
+    weight: 1.0
+    rate_limit: "1/6h"
+    windows: [daily, weekly]
+    languages: [python, typescript, ""]
+    fallback_search_api: true
+    track_signals: true            # 写 signals 表算增速
+
+  arxiv:
+    enabled: true
+    weight: 0.8
+    rate_limit: "3/s"              # 硬限制，超限 503
+    categories: [cs.AI, cs.LG, cs.CL, cs.CV, cs.MA, stat.ML]
+    max_results: 200
+    keyword_filter: [llm, agent, multimodal, diffusion, inference, rl, reasoning]
+    top_n_after_filter: 60
+
+  hf_papers:
+    enabled: true
+    weight: 0.9
+    rate_limit: "1/1s"
+    enrich_repos: true             # 调 /api/arxiv/{id}/repos
+
+  hackernews:
+    enabled: true
+    weight: 0.85
+    rate_limit: "10/1s"
+    queries: [AI, LLM, GPT, Claude, "open source model", agent, inference]
+    min_points: 30
+    window_hours: 48
+    with_comments_top: 3
+
+  reddit:
+    enabled: true
+    weight: 0.55                   # v1.2：RSS 模式无 score，降权
+    mode: rss                      # rss（默认，免认证）| oauth（M1 仅留配置项，不实现）
+    subreddits: [LocalLLaMA, MachineLearning]
+    rate_limit: "1/2s"
+
+  rss:
+    enabled: true
+    weight: 0.6
+    rate_limit: "1/1s"
+    feeds:
+      # ── 英文主干（稳定、信噪比高，新闻板块基本盘）────────────────
+      #   下列 URL 均由 scripts/probe_sources.py 于 M0 逐个实测，结论见 docs/数据源手册.md
+      #   已实测可用（HTTP 200 且能解析出条目 + 正文）
+      - {name: Simon Willison,  url: "https://simonwillison.net/atom/everything/", tier: core}
+      #   Import AI：原 substack 域名在本环境不可达，改用官方站 importai.net（实测 200，含全文）
+      - {name: Import AI,       url: "https://importai.net/feed",                  tier: core}
+      - {name: Latent Space,    url: "https://www.latent.space/feed",               tier: core}
+      - {name: OpenAI Blog,     url: "https://openai.com/blog/rss.xml",             tier: core}
+      - {name: The Verge AI,    url: "https://www.theverge.com/rss/ai-artificial-intelligence/index.xml", tier: core}
+      - {name: TechCrunch AI,   url: "https://techcrunch.com/category/artificial-intelligence/feed/",     tier: core}
+      - {name: Ars Technica AI, url: "https://arstechnica.com/ai/feed/",            tier: core}
+      #   ❌ 已移除：Anthropic Blog（官方无 RSS，/rss.xml 返回 404）、HF Blog（本环境不可达，
+      #      HF 动向已由 hf_papers 源覆盖）。详见 docs/数据源手册.md
+      # ── 中文补充（optional：失效只告警不报错，不阻塞流水线）────────
+      - {name: 量子位, url: "https://www.qbitai.com/feed", tier: optional}
+      #   ❌ 已移除：机器之心（/rss 已下线，302 跳转到 data-service 落地页，0 条）
+
+  inbox:
+    enabled: true
+    weight: 0.5
+    rate_limit: "10/1s"

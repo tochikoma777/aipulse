@@ -1,0 +1,327 @@
+{
+  "probed_at": "2026-10-12T16:26:27.379071+00:00",
+  "python": "3.11.17",
+  "proxy": null,
+  "results": [
+    {
+      "name": "Simon Willison",
+      "url": "https://simonwillison.net/atom/everything/",
+      "kind": "rss",
+      "status": 200,
+      "error": null,
+      "entries": 30,
+      "has_content": true,
+      "updated": "2026-10-11T00:52:37+00:00",
+      "size_bytes": 93719,
+      "fields": [
+        "title",
+        "link",
+        "published/updated",
+        "author",
+        "summary",
+        "content(可选)"
+      ],
+      "sample": [
+        {
+          "title": "Dwarf Fortress uses version control now",
+          "link": "https://simonwillison.net/2026/Oct/11/dwarf-fortress/",
+          "published": "2026-10-11T00:52:37+00:00",
+          "author": null,
+          "summary_len": 2093,
+          "content_len": 0
+        },
+        {
+          "title": "Python 3.15.0 added to actions/python-versions",
+          "link": "https://simonwillison.net/2026/Oct/10/python-actions/",
+          "published": "2026-10-10T23:58:04+00:00",
+          "author": null,
+          "summary_len": 1039,
+          "content_len": 0
+        }
+      ],
+      "fixture": "rss_feed.xml",
+      "note": "",
+      "conclusion": "可用"
+    },
+    {
+      "name": "Import AI",
+      "url": "https://importai.net/feed",
+      "kind": "rss",
+      "status": 200,
+      "error": null,
+      "entries": 10,
+      "has_content": true,
+      "updated": "Mon, 12 Oct 2026 12:30:39 +0000",
+      "size_bytes": 270594,
+      "fields": [
+        "title",
+        "link",
+        "published/updated",
+        "author",
+        "summary",
+        "content(可选)"
+      ],
+      "sample": [
+        {
+          "title": "Import AI 476: Creativity and RSI; worse-than-China open weight models",
+          "link": "https://jack-clark.net/2026/10/12/import-ai-476-creativity-a",
+          "published": "Mon, 12 Oct 2026 12:30:39 +0000",
+          "author": "Jack Clark",
+          "summary_len": 376,
+          "content_len": 21353
+        },
+        {
+          "title": "Import AI 475: Swarm scaling; Google DeepMind watermarks biology; and ",
+          "link": "https://jack-clark.net/2026/10/05/import-ai-475-swarm-scalin",
+          "published": "Mon, 05 Oct 2026 12:32:30 +0000",
+          "author": "Jack Clark",
+          "summary_len": 647,
+          "content_len": 12378
+        }
+      ],
+      "fixture": "rss_feed.xml",
+      "note": "",
+      "conclusion": "可用"
+    },
+    {
+      "name": "Latent Space",
+      "url": "https://www.latent.space/feed",
+      "kind": "rss",
+      "status": 200,
+      "error": null,
+      "entries": 20,
+      "has_content": true,
+      "updated": "Mon, 12 Oct 2026 15:42:36 GMT",
+      "size_bytes": 1030265,
+      "fields": [
+        "title",
+        "link",
+        "published/updated",
+        "author",
+        "summary",
+        "content(可选)"
+      ],
+      "sample": [
+        {
+          "title": "[Subscriber Exclusive] NYC Subscriber Meetups!",
+          "link": "https://www.latent.space/p/nyc2026",
+          "published": "Sat, 10 Oct 2026 22:07:17 GMT",
+          "author": null,
+          "summary_len": 54,
+          "content_len": 341
+        },
+        {
+          "title": "Building AI for Reliable Execution: Lessons From Industrial Robotics",
+          "link": "https://www.latent.space/p/standard-bots",
+          "published": "Sat, 10 Oct 2026 14:04:11 GMT",
+          "author": "Richard MacManus",
+          "summary_len": 150,
+          "content_len": 20113
+        }
+      ],
+      "fixture": "rss_feed.xml",
+      "note": "",
+      "conclusion": "可用"
+    },
+    {
+      "name": "OpenAI Blog",
+      "url": "https://openai.com/blog/rss.xml",
+      "kind": "rss",
+      "status": 200,
+      "error": null,
+      "entries": 1287,
+      "has_content": true,
+      "updated": "Mon, 12 Oct 2026 16:04:37 GMT",
+      "size_bytes": 784414,
+      "fields": [
+        "title",
+        "link",
+        "published/updated",
+        "author",
+        "summary",
+        "content(可选)"
+      ],
+      "sample": [
+        {
+          "title": "Sophos cuts threat investigation time by 96% with OpenAI Daybreak",
+          "link": "https://openai.com/index/sophos",
+          "published": "Fri, 09 Oct 2026 07:00:00 GMT",
+          "author": null,
+          "summary_len": 152,
+          "content_len": 0
+        },
+        {
+          "title": "Asana cuts model costs 76x in browser tests with GPT-6.1 Sol",
+          "link": "https://openai.com/index/asana-browser-agent",
+          "published": "Fri, 09 Oct 2026 07:00:00 GMT",
+          "author": null,
+          "summary_len": 131,
+          "content_len": 0
+        }
+      ],
+      "fixture": "rss_feed.xml",
+      "note": "",
+      "conclusion": "可用"
+    },
+    {
+      "name": "The Verge AI",
+      "url": "https://www.theverge.com/rss/ai-artificial-intelligence/index.xml",
+      "kind": "rss",
+      "status": 200,
+      "error": null,
+      "entries": 10,
+      "has_content": true,
+      "updated": "2026-10-12T13:33:06+00:00",
+      "size_bytes": 30249,
+      "fields": [
+        "title",
+        "link",
+        "published/updated",
+        "author",
+        "summary",
+        "content(可选)"
+      ],
+      "sample": [
+        {
+          "title": "Microsoft’s new AI chip makes it less reliant on Nvidia’s GPUs",
+          "link": "https://www.theverge.com/news/1009465/microsoft-maia-300-chi",
+          "published": "2026-10-12T09:00:00-04:00",
+          "author": "Tom Warren",
+          "summary_len": 356,
+          "content_len": 1243
+        },
+        {
+          "title": "Silicon Valley is falling in line with Trump’s attempt to rename AI",
+          "link": "https://www.theverge.com/ai-artificial-intelligence/1009406/",
+          "published": "2026-10-11T14:33:56-04:00",
+          "author": "Terrence O’Brien",
+          "summary_len": 345,
+          "content_len": 2194
+        }
+      ],
+      "fixture": "rss_feed.xml",
+      "note": "",
+      "conclusion": "可用"
+    },
+    {
+      "name": "TechCrunch AI",
+      "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
+      "kind": "rss",
+      "status": 200,
+      "error": null,
+      "entries": 20,
+      "has_content": true,
+      "updated": "Mon, 12 Oct 2026 16:18:10 +0000",
+      "size_bytes": 18870,
+      "fields": [
+        "title",
+        "link",
+        "published/updated",
+        "author",
+        "summary",
+        "content(可选)"
+      ],
+      "sample": [
+        {
+          "title": "Microsoft president says UK is best placed to drive AI regulation",
+          "link": "https://techcrunch.com/2026/10/12/microsoft-president-says-u",
+          "published": "Mon, 12 Oct 2026 15:31:19 +0000",
+          "author": "Rebecca Bellan",
+          "summary_len": 134,
+          "content_len": 0
+        },
+        {
+          "title": "This AI startup says it can generate permit-ready blueprints in minute",
+          "link": "https://techcrunch.com/2026/10/12/this-ai-startup-says-it-ca",
+          "published": "Mon, 12 Oct 2026 15:27:59 +0000",
+          "author": "Kirsten Korosec",
+          "summary_len": 162,
+          "content_len": 0
+        }
+      ],
+      "fixture": "rss_feed.xml",
+      "note": "",
+      "conclusion": "可用"
+    },
+    {
+      "name": "Ars Technica AI",
+      "url": "https://arstechnica.com/ai/feed/",
+      "kind": "rss",
+      "status": 200,
+      "error": null,
+      "entries": 20,
+      "has_content": true,
+      "updated": "Mon, 12 Oct 2026 16:08:19 +0000",
+      "size_bytes": 77948,
+      "fields": [
+        "title",
+        "link",
+        "published/updated",
+        "author",
+        "summary",
+        "content(可选)"
+      ],
+      "sample": [
+        {
+          "title": "Amazon has over 1 million robot workers. What’s next for human employe",
+          "link": "https://arstechnica.com/ai/2026/10/inside-amazons-robotic-ar",
+          "published": "Mon, 12 Oct 2026 12:43:10 +0000",
+          "author": "Jeremy Hsu",
+          "summary_len": 76,
+          "content_len": 1972
+        },
+        {
+          "title": "Ukraine’s drones knock out AI data center belonging to \"Russia’s Googl",
+          "link": "https://arstechnica.com/gadgets/2026/10/ukraines-drones-knoc",
+          "published": "Fri, 09 Oct 2026 22:04:07 +0000",
+          "author": "Jeremy Hsu",
+          "summary_len": 79,
+          "content_len": 1505
+        }
+      ],
+      "fixture": "rss_feed.xml",
+      "note": "",
+      "conclusion": "可用"
+    },
+    {
+      "name": "量子位",
+      "url": "https://www.qbitai.com/feed",
+      "kind": "rss",
+      "status": 200,
+      "error": null,
+      "entries": 10,
+      "has_content": false,
+      "updated": "Mon, 12 Oct 2026 05:49:04 +0000",
+      "size_bytes": 6237,
+      "fields": [
+        "title",
+        "link",
+        "published/updated",
+        "author",
+        "summary",
+        "content(可选)"
+      ],
+      "sample": [
+        {
+          "title": "华为AI靠RSI通关25款游戏！操作次数比人类少56%",
+          "link": "https://www.qbitai.com/2026/10/502654.html",
+          "published": "Mon, 12 Oct 2026 05:48:36 +0000",
+          "author": "一水",
+          "summary_len": 22,
+          "content_len": 0
+        },
+        {
+          "title": "智谱新模型，490 tokens/s！",
+          "link": "https://www.qbitai.com/2026/10/502649.html",
+          "published": "Mon, 12 Oct 2026 02:37:04 +0000",
+          "author": "听雨",
+          "summary_len": 12,
+          "content_len": 0
+        }
+      ],
+      "fixture": "rss_feed_zh.xml",
+      "note": "",
+      "conclusion": "可用"
+    }
+  ]
+}

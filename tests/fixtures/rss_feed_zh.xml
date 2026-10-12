@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>量子位</title>
+	<atom:link href="https://www.qbitai.com/feed" rel="self" type="application/rss+xml" />
+	<link>https://www.qbitai.com</link>
+	<description>追踪人工智能新趋势，报道科技行业新突破</description>
+	<lastBuildDate>Mon, 12 Oct 2026 05:49:04 +0000</lastBuildDate>
+	<language>zh-Hans</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.9</generator>
+	<item>
+		<title>华为AI靠RSI通关25款游戏！操作次数比人类少56%</title>
+		<link>https://www.qbitai.com/2026/10/502654.html</link>
+		
+		<dc:creator><![CDATA[一水]]></dc:creator>
+		<pubDate>Mon, 12 Oct 2026 05:48:36 +0000</pubDate>
+				<category><![CDATA[资讯]]></category>
+		<guid isPermaLink="false">https://www.qbitai.com/?p=502654</guid>
+
+					<description><![CDATA[游戏打到21:0，AI甚至不用再调用大模型了]]></description>
+		
+		
+		
+			</item>
+		<item>
+		<title>智谱新模型，490 tokens/s！</title>
+		<link>https://www.qbitai.com/2026/10/502649.html</link>
+		
+		<dc:creator><![CDATA[听雨]]></dc:creator>
+		<pubDate>Mon, 12 Oct 2026 02:37:04 +0000</pubDate>
+				<category><![CDATA[资讯]]></category>
+		<category><![CDATA[AI]]></category>
+		<category><![CDATA[智谱]]></category>
+		<guid isPermaLink="false">https://www.qbitai.com/?p=502649</guid>
+
+					<description><![CDATA[GLM「速度仙人」来了？]]></description>
+		
+		
+		
+			</item>
+		<item>
+		<title>用不着Ctrl+F了！全新AI论文工具，帮你在原文献里海里捞针</title>
+		<link>https://www.qbitai.com/2026/10/502644.html</link>
+		
+		<dc:creator><![CDATA[henry]]></dc:creator>
+		<pubDate>Sun, 11 Oct 2026 09:04:31 +0000</pubDate>
+				<category><![CDATA[资讯]]></category>
+		<category><![CDATA[AI]]></category>
+		<category><![CDATA[AI论文]]></category>
+		<guid isPermaLink="false">https://www.qbitai.com/?p=502644</guid>
+
+					<description><![CDATA[一套生成论文初稿的多智能体工作流]]></description>
+		
+		
+		
+			</item>
+		<item>
+		<title>何恺明团队发布多模态Harness框架</title>
+		<link>https://www.qbitai.com/2026/10/502628.html</link>
+		
+		<dc:creator><![CDATA[henry]]></dc:creator>
+		<pubDate>Sun, 11 Oct 2026 08:59:06 +0000</pubDate>
+				<category><![CDATA[资讯]]></category>
+		<category><![CDATA[Harness]]></category>
+		<category><![CDATA[何恺明]]></category>
+		<guid isPermaLink="false">https://www.qbitai.com/?p=502628</guid>
+
+					<description><![CDATA[多模态模型的视觉原生Harness，来了！]]></description>
+		
+		
+		
+			</item>
+		<item>
+		<title>陶哲轩：数学2.0时代已至！</title>
+		<link>https://www.qbitai.com/2026/10/502594.html</link>
+		
+		<dc:creator><![CDATA[文婷]]></dc:creator>
+		<pubDate>Sun, 11 Oct 2026 07:52:16 +0000</pubDate>
+				<category><![CDATA[行业研究]]></category>
+		<category><![CDATA[AI时代]]></category>
+		<category><![CDATA[OpenAI]]></category>
+		<category><![CDATA[数学]]></category>
+		<category><![CDATA[陶哲轩]]></category>
+		<guid isPermaLink="false">https://www.qbitai.com/?p=502594</guid>
+
+					<description><![CDATA[]]></description>
+		
+		
+		
+			</item>
+		<item>
+		<title>王的猜想，刚刚扩展到四维</title>
+		<link>https://www.qbitai.com/2026/10/502584.html</link>
+		
+		<dc:creator><![CDATA[听雨]]></dc:creator>
+		<pubDate>Sun, 11 Oct 2026 05:23:47 +0000</pubDate>
+				<category><![CDATA[资讯]]></category>
+		<category><![CDATA[AI]]></category>
+		<category><![CDATA[数学]]></category>
+		<guid isPermaLink="false">https://www.qbitai.com/?p=502584</guid>
+
+					<description><![CDATA[]]></description>
+		
+		
+		
+			</item>
+		<item>
+		<title>硅谷AI现状：谁有算力谁是爹</title>
+		<link>https://www.qbitai.com/2026/10/502585.html</link>
+		
+		<dc:creator><![CDATA[鹭羽]]></dc:creator>
+		<pubDate>Sun, 11 Oct 2026 05:22:38 +0000</pubDate>
+				<category><![CDATA[资讯]]></category>
+		<category><![CDATA[GPU]]></category>
+		<category><![CDATA[算力]]></category>
+		<guid isPermaLink="false">https://www.qbitai.com/?p=502585</guid>
+
+					<description><![CDATA[马斯克连横A社，硅谷VC开始囤GPU]]></description>
+		
+		
+		
+			</item>
+		<item>
+		<title>下架8个月，GPT-4o的拯救行动居然还在继续</title>
+		<link>https://www.qbitai.com/2026/10/502550.html</link>
+		
+		<dc:creator><![CDATA[听雨]]></dc:creator>
+		<pubDate>Sun, 11 Oct 2026 05:18:04 +0000</pubDate>
+				<category><![CDATA[资讯]]></category>
+		<category><![CDATA[首页轮播]]></category>
+		<category><![CDATA[GPT-4o]]></category>
+		<guid isPermaLink="false">https://www.qbitai.com/?p=502550</guid>
+
+					<description><![CDATA[初代4o的API快照进入停用倒计时]]></description>
+		
+		
+		
+			</item>
+		<item>
+		<title>DeepSeek Bot来了！民间版，DSH装个插件就能用</title>
+		<link>https://www.qbitai.com/2026/10/502544.html</link>
+		
+		<dc:creator><![CDATA[鱼羊]]></dc:creator>
+		<pubDate>Sun, 11 Oct 2026 03:27:08 +0000</pubDate>
+				<category><![CDATA[资讯]]></category>
+		<category><![CDATA[Deepseek]]></category>
+		<guid isPermaLink="false">https://www.qbitai.com/?p=502544</guid>
+
+					<description><![CDATA[Grok Bot我养不起，ds bot不得高低尝尝咸淡？]]></description>
+		
+		
+		
+			</item>
+		<item>
+		<title>西门子将亮相2026工博会：以软硬协同的工业全栈能力，推动物理AI加速落地</title>
+		<link>https://www.qbitai.com/2026/10/502541.html</link>
+		
+		<dc:creator><![CDATA[量子位的朋友们]]></dc:creator>
+		<pubDate>Sat, 10 Oct 2026 10:30:36 +0000</pubDate>
+				<category><![CDATA[资讯]]></category>
+		<category><![CDATA[西门子]]></category>
+		<guid isPermaLink="false">https://www.qbitai.com/?p=502541</guid>
+
+					<description><![CDATA[西门子将以更集中、更场景化的方式，展示其工业全栈能力]]></description>
+		
+		
+		
+			</item>
+	</channel>
+</rss>

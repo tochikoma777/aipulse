@@ -1,0 +1,51 @@
+app:
+  name: aipulse
+  timezone: Asia/Shanghai          # 存储统一 UTC，展示用此
+  data_dir: data
+  log_level: INFO
+
+# v1.3：运行模式。off=零 API 花费；hybrid=仅预言+点评；full=全部
+# 未配置 api_key 时自动降级为 off，不报错退出
+mode: full
+
+llm:
+  enabled: true                    # mode 为 off 时强制 false
+  provider: openai_compat
+  base_url: ${AIPULSE_LLM__BASE_URL}
+  api_key: ${AIPULSE_LLM__API_KEY}
+  fast_model: deepseek-chat
+  strong_model: deepseek-reasoner
+  temperature: 0.4
+  timeout_s: 120
+  max_retries: 3
+  cache_enabled: true
+
+budget:
+  daily_limit_cny: 2.0
+  degrade_order: [debate, trend, brief_topn, all]
+
+pipeline:
+  daily_top_n: 30
+  brief_sections: [开源项目, 论文与研究, 社区舆论, 产业与新闻]
+  predictions_per_day: 5
+  prediction_horizons: [7, 30, 90]
+  auto_verify: true
+  weekly_debate_enabled: true
+
+output:
+  formats: [md, json]
+  html_enabled: true
+  dir: data/reports
+
+notify:
+  channels: [file]        # v1.2 只有 file；预留 email/telegram/feishu/desktop（暂不实现）
+
+http:
+  timeout_connect_s: 5
+  timeout_read_s: 20
+  max_concurrency: 6
+  cache_enabled: true
+  cache_ttl_s: 1800
+  cache_dir: data/cache
+  user_agent: "aipulse/0.1 (+https://github.com/tochikoma777/aipulse)"
+  max_retries: 3
