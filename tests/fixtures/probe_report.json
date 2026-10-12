@@ -1,8 +1,185 @@
 {
-  "probed_at": "2026-10-12T16:26:27.379071+00:00",
+  "probed_at": "2026-10-12T16:34:14.918104+00:00",
   "python": "3.11.17",
   "proxy": null,
   "results": [
+    {
+      "name": "github_trending",
+      "url": "https://github.com/trending?since=daily",
+      "kind": "api",
+      "status": 200,
+      "error": null,
+      "entries": 9,
+      "has_content": null,
+      "updated": null,
+      "size_bytes": 569311,
+      "fields": [
+        "repo(h2>a[href])",
+        "article_count"
+      ],
+      "sample": [
+        {
+          "repo": "morluto/rea"
+        },
+        {
+          "repo": "bilawalsidhu/gods-eye-view"
+        }
+      ],
+      "fixture": "github_trending.html",
+      "note": "",
+      "conclusion": "可用"
+    },
+    {
+      "name": "arxiv",
+      "url": "https://export.arxiv.org/api/query?search_query=cat:cs.AI+OR+cat:cs.LG+OR+cat:cs.CL&sortBy=submittedDate&sortOrder=descending&max_results=20",
+      "kind": "api",
+      "status": 200,
+      "error": null,
+      "entries": 20,
+      "has_content": null,
+      "updated": null,
+      "size_bytes": 47975,
+      "fields": [
+        "id",
+        "title",
+        "summary",
+        "published",
+        "updated",
+        "authors[].name",
+        "tags[].term",
+        "link"
+      ],
+      "sample": [
+        {
+          "id": "http://arxiv.org/abs/2610.13948v1",
+          "title": "Can Language Models Play the Wikipedia Game?",
+          "published": "2026-10-09T17:59:56Z",
+          "authors": [
+            "Alexander Hickey",
+            "Joanna Knight"
+          ],
+          "categories": [
+            "cs.AI",
+            "cs.IR"
+          ]
+        },
+        {
+          "id": "http://arxiv.org/abs/2610.13935v1",
+          "title": "Hide and Seek: HIDE Concepts to SEEK explanations for black box models",
+          "published": "2026-10-09T17:56:59Z",
+          "authors": [
+            "Bhanu Tokas",
+            "Rahul Nair"
+          ],
+          "categories": [
+            "cs.CV",
+            "cs.AI",
+            "cs.LG"
+          ]
+        }
+      ],
+      "fixture": "arxiv_atom.xml",
+      "note": "",
+      "conclusion": "可用"
+    },
+    {
+      "name": "hf_papers",
+      "url": "https://hf-mirror.com/api/daily_papers",
+      "kind": "api",
+      "status": 200,
+      "error": null,
+      "entries": 50,
+      "has_content": null,
+      "updated": null,
+      "size_bytes": 273242,
+      "fields": [
+        "id",
+        "title",
+        "paper{id,title,summary,upvotes}",
+        "publishedAt",
+        "upvotes"
+      ],
+      "sample": [
+        {
+          "id": "2609.37359",
+          "title": "Encore: Few-Shot Agentic Discovery of Manipulation Strategies",
+          "upvotes": 1,
+          "publishedAt": "2026-09-29T08:21:27.000Z",
+          "paper.id": "2609.37359"
+        },
+        {
+          "id": "2610.13527",
+          "title": "S-Space: Exploring Spatial Workspace in Multimodal Language Models",
+          "upvotes": 14,
+          "publishedAt": "2026-10-09T08:48:41.000Z",
+          "paper.id": "2610.13527"
+        }
+      ],
+      "fixture": "hf_daily_papers.json",
+      "note": "备用端点（主端点在本环境不可达，schema 与官方一致）",
+      "conclusion": "可用"
+    },
+    {
+      "name": "hackernews",
+      "url": "https://hn.algolia.com/api/v1/search_by_date?query=AI&tags=story&numericFilters=created_at_i>1735689600&hitsPerPage=20",
+      "kind": "api",
+      "status": 200,
+      "error": null,
+      "entries": 20,
+      "has_content": null,
+      "updated": null,
+      "size_bytes": 21416,
+      "fields": [
+        "objectID",
+        "title",
+        "url",
+        "author",
+        "points",
+        "num_comments",
+        "created_at",
+        "created_at_i",
+        "story_text"
+      ],
+      "sample": [
+        {
+          "objectID": "50058833",
+          "title": "Introducing SubQ Snap: A Long-Context Decision Model",
+          "url": "https://subq.ai/introducing-subq-snap",
+          "author": "jv22222",
+          "points": 1,
+          "num_comments": 0,
+          "created_at": "2026-10-12T16:31:06Z"
+        },
+        {
+          "objectID": "50058822",
+          "title": "Show HN: Weekend hack – shoot away Cloudflare CAPTCHAs",
+          "url": "https://github.com/blowhacker/clickyphus",
+          "author": "vain",
+          "points": 1,
+          "num_comments": 0,
+          "created_at": "2026-10-12T16:30:20Z"
+        }
+      ],
+      "fixture": "hn_search.json",
+      "note": "",
+      "conclusion": "可用"
+    },
+    {
+      "name": "reddit",
+      "url": "https://www.reddit.com/r/LocalLLaMA/top/.rss?t=day",
+      "kind": "api",
+      "status": null,
+      "error": "HTTPError: ConnectTimeout: ",
+      "entries": null,
+      "has_content": null,
+      "updated": null,
+      "size_bytes": 0,
+      "fields": [],
+      "sample": [],
+      "fixture": "reddit_top.json",
+      "note": "",
+      "conclusion": "不可用（网络层失败）"
+    },
     {
       "name": "Simon Willison",
       "url": "https://simonwillison.net/atom/everything/",
@@ -211,8 +388,8 @@
       "error": null,
       "entries": 20,
       "has_content": true,
-      "updated": "Mon, 12 Oct 2026 16:18:10 +0000",
-      "size_bytes": 18870,
+      "updated": "Mon, 12 Oct 2026 16:34:07 +0000",
+      "size_bytes": 19080,
       "fields": [
         "title",
         "link",

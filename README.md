@@ -1,5 +1,9 @@
 # aipulse · AI 脉搏
 
+[![ci](https://github.com/tochikoma777/aipulse/actions/workflows/ci.yml/badge.svg)](https://github.com/tochikoma777/aipulse/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+![Python](https://img.shields.io/badge/python-3.11%2B-blue)
+
 > 每日自动采集 AI 领域热点，**不只整理，还给出可回测的推演与预言**。
 
 > 🚧 **WIP / 开发中**：当前已完成 **M0（项目骨架与数据源探测）**，正在推进 M1（采集器与去重）。
