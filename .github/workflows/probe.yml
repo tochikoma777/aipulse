@@ -1,0 +1,41 @@
+name: probe-sources
+
+# 数据源探测专用：Actions 环境的网络可达性与本地 WSL 不同
+# （本地 reddit / hf_papers / importai 被 DNS 污染，Actions 可达）。
+# 手工触发一次，下载 fixtures artifact，把本地补不到的真实响应快照补进 tests/fixtures/。
+on:
+  workflow_dispatch:
+    inputs:
+      only:
+        description: "探测范围：all / api / rss"
+        required: false
+        default: "all"
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    env:
+      AIPULSE_ENV: actions
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Set up Python 3.11
+        run: uv python install 3.11
+
+      - name: Install dependencies
+        run: uv sync --frozen || uv sync
+
+      - name: Probe all sources
+        run: uv run python scripts/probe_sources.py --only ${{ inputs.only }} --no-cache
+
+      - name: Upload fixtures
+        uses: actions/upload-artifact@v4
+        with:
+          name: fixtures-${{ github.run_id }}
+          path: tests/fixtures/
+          if-no-files-found: warn
