@@ -1,6 +1,6 @@
-# AI Pulse · Agent 开发执行手册 v1.3
+# AI Pulse · Agent 开发执行手册 v1.5
 
-> 配套文档：`AI_Pulse_设计方案_v1.md`（设计 SSOT，v1.3）
+> 配套文档：`AI_Pulse_设计方案_v1.md`（设计 SSOT，v1.5）
 > **已确认决策清单（Agent 直接执行，无需再问）**
 >
 > v1.1：① 微信/X 彻底移除（改用 inbox 手动投喂）；② LLM 默认 DeepSeek；③ 命名 `aipulse`（AI 脉搏）+ 许可证 **MIT**；④ **里程碑重排：M4 = 发布与自动化，M5 = 周期长文与辩论**（任务卡顺序已对调）
@@ -9,6 +9,19 @@
 
 > v1.3（★ 重要）：⑨ **三档运行模式 `off`/`hybrid`/`full`，API 从必需降级为可选**——off 档零 API 花费仍可用；⑩ **手写预言 `predict add` 是全档位核心能力**，交互采用「参数 + 缺参自动降级为向导」；⑪ **预言可选「量化判据」**，带阈值者到期查表自动判定，零成本
 > **核心原则：让 aipulse 在零 API 花费下依然是有价值的工具；API 只用来把它变得更好，而不是让它能用。**
+
+> **v1.4（M0 验收后补丁，M1 开工前必须应用）**：
+> ⑫ **数据源环境分级** `availability: always|actions_only`——本地 WSL 与 Actions 网络可达性不同，
+>    reddit/hf_papers/importai 标 `actions_only`：本地跳过且**不计失败**，Actions 全开；
+> ⑬ **HF 只预留 `fallback_endpoints: []` 空字段**，默认走官方，不在生产配置写第三方镜像；
+> ⑭ **中文源（量子位）标 `title_only: true`，且不参与 TF-IDF 聚类**（22 字摘要会污染聚类）；
+> ⑮ **M0 探测实证坑位已归档**（§7 坑 27-32），编写采集器时直接复用，不要重新踩。
+
+> **v1.5**：⑯ 新增 §5.11「数据源全景与可达性兜底」——**明确"任何单一源失效都不会导致功能废掉"的架构保证**，
+> 并给出分级应对手册；⑰ 新增 §5.12「数据源可扩展性」——RSS 类源改 yaml 即可（1 分钟零代码），
+> 新类型源写 collector（30-60 分钟）。
+> **M1 收尾时必须产出 `docs/新增数据源指南.md`**（时机理由：刚写完 6 个真实采集器有例子可引，
+> 且写指南会倒逼 BaseCollector 接口规范化——这是开源后最容易吸引 PR 的入口）。
 > 本手册的作用：把设计方案拆成**可直接复制粘贴给 CodeBuddy / Claude Code 的任务卡**，并固化编码规范与验收 checklist。
 > 使用方式：每个阶段只把对应的任务卡发给 Agent，DoD 全部打勾后再进入下一张卡。
 
@@ -58,7 +71,7 @@ uv add --dev ruff mypy pre-commit
 | 注释 | 复杂算法（打分、聚类、去重、Brier）必须写中文注释解释**为什么**这么算 |
 | 提交 | Conventional Commits；每个阶段结束打 tag（`m0`/`m1`/...） |
 
-### 0.3 十一条红线（违反即返工）
+### 0.3 十四条红线（违反即返工）
 
 1. ❌ 一次性生成整个项目——必须分阶段。
 2. ❌ 凭想象写字段解析——必须基于 `tests/fixtures/` 的真实响应。
@@ -71,6 +84,9 @@ uv add --dev ruff mypy pre-commit
 9. ❌ 现在就去实现 OAuth / 邮件推送 / Telegram / 飞书——v1.2 已决定**只做 RSS 与 FileNotifier**，其余只需留好接口（`Notifier` Protocol 与 `mode: oauth` 配置项），**不要写实现**。
 10. ❌ 把未经 `probe_sources.py` 实测的 RSS URL 留在 `configs/sources.yaml` 里——每个 URL 必须逐个验证后写入。
 11. ❌ 把手写预言做成纯参数或纯向导——必须是「参数缺失时自动降级为交互式向导」，同一套参数定义，只多约 40 行追问逻辑。
+12. ❌ 把 `actions_only` 的源在本地跑时的"跳过"当作失败处理——它必须写 `status='skipped_offline'`，**不计入失败统计、不影响退出码**，否则本地运行天天报红。
+13. ❌ 把 `hf-mirror.com` 写进 `configs/sources.yaml` 生产默认值——只留 `fallback_endpoints: []` 空字段，由用户自行填写。
+14. ❌ 让 `title_only: true` 的中文源参与 TF-IDF 聚类——22 字摘要会污染相似度矩阵。
 
 ### 0.4 每个阶段结束 Agent 必须输出的验收报告格式
 
@@ -167,11 +183,28 @@ uv add --dev ruff mypy pre-commit
 ## 2. M1 任务卡（采集器 + 去重）
 
 ```
-执行 M1 阶段。前置：M0 已通过验收，tests/fixtures/ 有真实响应快照。
+执行 M1 阶段。前置：M0 已通过验收（tag m0），tests/fixtures/ 有真实响应快照。
+
+【开工前必读：v1.4 补丁】
+设计方案已更新到 v1.4（M0 验收后补丁），以下四点**改变采集器的编写假设**，请先读 §5.10、§5.4、§5.7、§18.2：
+1. **数据源环境分级**：`availability: always|actions_only`。
+   reddit / hf_papers / importai 三个源标 `actions_only`——本地运行时**跳过且不計失败**
+   （写 source_runs.status='skipped_offline'，不影响退出码），Actions 环境（AIPULSE_ENV=actions）全开。
+   **不要因为本地测不到就把它们写死禁用**，也不要把本地跳过当 bug 排查。
+2. **HF 镜像**：配置只留 `fallback_endpoints: []` 空字段，默认走官方 huggingface.co。
+   不要把 hf-mirror.com 写进生产默认值（探测脚本里可以自动尝试，那是诊断工具）。
+3. **中文源 title_only**：量子位摘要仅 22 字，标 `title_only: true`，**不参与 TF-IDF 聚类**，
+   source_weight 降至 0.35。
+4. **M0 实证坑位已归档**（手册 §7 坑 27-32）：坏 gzip 会进缓存需 --no-cache 排查、
+   httpx 0.28 用 extensions、Timeout 要显式 default、SQLModel 的 date 字段要 as date_type、
+   alembic 补 sqlmodel import、types-feedparser 不存在。**直接复用，不要重新踩。**
 
 【任务】
+0. 【首步】在 Actions 环境补测 reddit：用 workflow_dispatch 触发一次 probe_sources.py，
+   下载 artifact 得到 reddit_top.json 存入 tests/fixtures/。
+   在此之前 reddit 采集器单测用 pytest.skip 显式标记（不得静默假装通过）。
 1. 实现 collectors/base.py::BaseCollector（async fetch / healthcheck / 注入 cfg+http）
-   与 registry.py（按名注册、enable/disable、list）。
+   与 registry.py（按名注册、enable/disable、list）；**registry 需感知 availability 字段**。
 2. 依次实现 6 个采集器，每个都必须"先读 fixtures，再写解析器"：
    - github_trending.py：解析 HTML（用 article 下 h2 a 取 repo 名等稳定结构，不要依赖易变 class），
      字段 full_name/description/language/stars_total/stars_in_window/forks；
@@ -204,6 +237,13 @@ uv add --dev ruff mypy pre-commit
 - [ ] 断网或单源 500 时其余源照常完成，退出码 0（或明确的降级退出码），日志清晰
 - [ ] **中文 optional RSS 源失效时 pipeline 仍退出码 0**，仅 warning（专项测试）
 - [ ] **Reddit RSS 条目的 rank_score 正确写入**，该源权重为 0.55（读 configs 验证）
+- [ ] ★ v1.4 环境分级生效：本地运行时 actions_only 的 3 个源被跳过且 status='skipped_offline'，
+      退出码 0 且不计失败；AIPULSE_ENV=actions 时正常采集
+- [ ] ★ v1.4 title_only 源（量子位）不出现在任何 topic 的聚类成员里（专项断言）
+- [ ] ★ configs/sources.yaml 中 hf_papers 的 fallback_endpoints 为空数组（默认值走官方）
+- [ ] ★ v1.5 产出 `docs/新增数据源指南.md`：含 BaseCollector 接口说明、一个完整的
+      "如何新增一个源"分步示例（以某个真实采集器为范本）、RSS 源只需改 yaml 的说明、
+      以及单测要求（必须有 fixtures 驱动的解析测试）
 - [ ] arXiv 与 HF 的同一篇论文合并为 1 条，seen_in 含两个源
 - [ ] GitHub stars 快照正确写入 signals 表
 - [ ] 所有采集器单测无需网络，覆盖率 ≥80%
@@ -426,6 +466,12 @@ uv add --dev ruff mypy pre-commit
 | 24 | 缺 api_key 直接报错退出 | 无 key 用户根本跑不起来 | 自动降级 off + 提示一次，不报错 |
 | 25 | 手写预言做成纯参数 | 用户要手写 JSON 判据，太麻烦导致功能被弃用 | 缺参自动降向导 + 判据模板选择 |
 | 26 | 报告不写运行模式 | 读者不知道这份报告有没有 AI 参与 | meta.json 与 brief.md 末尾固定标注 |
+| 27 | 把 actions_only 源本地跳过当失败 | 本地运行天天报红 | 写 `skipped_offline`，不计失败、不影响退出码 |
+| 28 | 坏 gzip 响应进缓存后一直复现 | 排查时以为是代码 bug | 排查必须 `--no-cache` 重跑；解码失败加入可重试异常 |
+| 29 | httpx 0.28 用 `Response.ext` | AttributeError | 改用 `extensions`；`Timeout` 显式给 `default=` |
+| 30 | SQLModel 字段 `date` 与类型冲突 | 注解报错 | `from datetime import date as date_type` |
+| 31 | alembic 迁移漏 import sqlmodel | 迁移执行失败 | 补进 `script.py.mako`；migrations 排除 mypy |
+| 32 | 装 `types-feedparser` | 注册表无此包，装不上 | 已从 pyproject 移除，不要再加回来 |
 
 ---
 

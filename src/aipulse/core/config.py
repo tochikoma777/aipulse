@@ -14,6 +14,7 @@ import re
 from enum import StrEnum
 from functools import lru_cache
 from pathlib import Path
+from collections.abc import Mapping
 from typing import Any, Literal
 
 import yaml
@@ -146,6 +147,19 @@ class Settings(BaseSettings):
         return path if path.is_absolute() else project_root() / path
 
 
+Availability = Literal["always", "actions_only"]
+
+
+def is_actions_env(env: Mapping[str, str] | None = None) -> bool:
+    """是否运行在 GitHub Actions（`AIPULSE_ENV=actions`）。
+
+    本地 WSL 与 Actions 的网络可达性不同（见设计方案 §5.10）：
+    本地不可达的源标 `actions_only`，在本地跳过且不计失败，Actions 环境全开。
+    """
+    source = os.environ if env is None else env
+    return str(source.get("AIPULSE_ENV", "")).strip().lower() == "actions"
+
+
 class FeedConfig(BaseModel):
     """RSS 源条目。`tier=optional` 的源（中文补充）失效时只告警不报错。"""
 
@@ -153,15 +167,43 @@ class FeedConfig(BaseModel):
     url: str
     tier: Literal["core", "optional"] = "core"
     enabled: bool = True
+    availability: Availability = "always"
+    # v1.4：仅标题源（如量子位，摘要仅 22 字）→ 不参与 TF-IDF 聚类，热度靠排名位次
+    title_only: bool = False
+    weight: float | None = None  # 覆盖源级 weight（title_only 源降至 0.35）
+
+    def effective_weight(self, source_weight: float) -> float:
+        return source_weight if self.weight is None else self.weight
 
 
 class SourceConfig(BaseModel):
     model_config = ConfigDict(extra="allow")  # 各源特有字段（queries / categories / ...）
 
     enabled: bool = True
+    availability: Availability = "always"
     weight: float = 1.0
     rate_limit: str = "1/1s"
     feeds: list[FeedConfig] = Field(default_factory=list)
+
+    def is_available(self, env: Mapping[str, str] | None = None) -> bool:
+        """当前环境下该源是否应采集。"""
+        if self.availability == "always":
+            return True
+        return is_actions_env(env)
+
+    def fallback_endpoints_list(self) -> list[str]:
+        """备用端点列表（v1.4：默认空数组，由用户按需填写，不替用户决定镜像站）。
+
+        注意：不能叫 `fallback_endpoints`——那会与同名的 yaml 键（extra 字段）冲突，
+        `getattr` 会先命中方法本身。
+        """
+        value = (self.model_extra or {}).get("fallback_endpoints") or []
+        return list(value)
+
+    def source_extra(self, key: str, default: Any = None) -> Any:
+        """读取各源特有配置项（extra=allow 存下来的字段）。"""
+        value = getattr(self, key, None)
+        return default if value is None else value
 
 
 class SourcesConfig(BaseModel):

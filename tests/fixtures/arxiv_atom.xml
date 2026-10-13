@@ -2,7 +2,7 @@
 <feed xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:arxiv="http://arxiv.org/schemas/atom" xmlns="http://www.w3.org/2005/Atom">
   <id>https://arxiv.org/api/0BwwmsQshdJrOSdx/KcUXFv4fCE</id>
   <title>arXiv Query: search_query=cat:cs.AI OR cat:cs.LG OR cat:cs.CL&amp;id_list=&amp;start=0&amp;max_results=20</title>
-  <updated>2026-10-12T15:45:24Z</updated>
+  <updated>2026-10-13T14:12:22Z</updated>
   <link href="https://arxiv.org/api/query?search_query=cat:cs.AI+OR+(cat:cs.LG+OR+cat:cs.CL)&amp;start=0&amp;max_results=20&amp;id_list=" type="application/atom+xml"/>
   <opensearch:itemsPerPage>20</opensearch:itemsPerPage>
   <opensearch:totalResults>475606</opensearch:totalResults>

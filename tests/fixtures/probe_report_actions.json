@@ -1,0 +1,529 @@
+{
+  "probed_at": "2026-10-13T14:12:32.921478+00:00",
+  "python": "3.11.17",
+  "proxy": null,
+  "results": [
+    {
+      "name": "github_trending",
+      "url": "https://github.com/trending?since=daily",
+      "kind": "api",
+      "status": 200,
+      "error": null,
+      "entries": 9,
+      "has_content": null,
+      "updated": null,
+      "size_bytes": 564604,
+      "fields": [
+        "repo(h2>a[href])",
+        "article_count"
+      ],
+      "sample": [
+        {
+          "repo": "morluto/rea"
+        },
+        {
+          "repo": "bilawalsidhu/gods-eye-view"
+        }
+      ],
+      "fixture": "github_trending.html",
+      "note": "",
+      "conclusion": "可用"
+    },
+    {
+      "name": "arxiv",
+      "url": "https://export.arxiv.org/api/query?search_query=cat:cs.AI+OR+cat:cs.LG+OR+cat:cs.CL&sortBy=submittedDate&sortOrder=descending&max_results=20",
+      "kind": "api",
+      "status": 200,
+      "error": null,
+      "entries": 20,
+      "has_content": null,
+      "updated": null,
+      "size_bytes": 47975,
+      "fields": [
+        "id",
+        "title",
+        "summary",
+        "published",
+        "updated",
+        "authors[].name",
+        "tags[].term",
+        "link"
+      ],
+      "sample": [
+        {
+          "id": "http://arxiv.org/abs/2610.13948v1",
+          "title": "Can Language Models Play the Wikipedia Game?",
+          "published": "2026-10-09T17:59:56Z",
+          "authors": [
+            "Alexander Hickey",
+            "Joanna Knight"
+          ],
+          "categories": [
+            "cs.AI",
+            "cs.IR"
+          ]
+        },
+        {
+          "id": "http://arxiv.org/abs/2610.13935v1",
+          "title": "Hide and Seek: HIDE Concepts to SEEK explanations for black box models",
+          "published": "2026-10-09T17:56:59Z",
+          "authors": [
+            "Bhanu Tokas",
+            "Rahul Nair"
+          ],
+          "categories": [
+            "cs.CV",
+            "cs.AI",
+            "cs.LG"
+          ]
+        }
+      ],
+      "fixture": "arxiv_atom.xml",
+      "note": "",
+      "conclusion": "可用"
+    },
+    {
+      "name": "hf_papers",
+      "url": "https://huggingface.co/api/daily_papers",
+      "kind": "api",
+      "status": 200,
+      "error": null,
+      "entries": 50,
+      "has_content": null,
+      "updated": null,
+      "size_bytes": 290578,
+      "fields": [
+        "id",
+        "title",
+        "paper{id,title,summary,upvotes}",
+        "publishedAt",
+        "upvotes"
+      ],
+      "sample": [
+        {
+          "id": "2610.00707",
+          "title": "Initialization Improves LLM-Driven Discovery",
+          "upvotes": 1,
+          "publishedAt": "2026-09-29T20:00:00.000Z",
+          "paper.id": "2610.00707"
+        },
+        {
+          "id": "2610.13481",
+          "title": "Branching On-Policy Distillation",
+          "upvotes": 1,
+          "publishedAt": "2026-10-08T20:00:00.000Z",
+          "paper.id": "2610.13481"
+        }
+      ],
+      "fixture": "hf_daily_papers.json",
+      "note": "",
+      "conclusion": "可用"
+    },
+    {
+      "name": "hackernews",
+      "url": "https://hn.algolia.com/api/v1/search_by_date?query=AI&tags=story&numericFilters=created_at_i>1735689600&hitsPerPage=20",
+      "kind": "api",
+      "status": 200,
+      "error": null,
+      "entries": 20,
+      "has_content": null,
+      "updated": null,
+      "size_bytes": 27420,
+      "fields": [
+        "objectID",
+        "title",
+        "url",
+        "author",
+        "points",
+        "num_comments",
+        "created_at",
+        "created_at_i",
+        "story_text"
+      ],
+      "sample": [
+        {
+          "objectID": "50072067",
+          "title": "AI for PLC Programming, Troubleshooting and Maintenance",
+          "url": "https://plccode.ai/",
+          "author": "corvad",
+          "points": 1,
+          "num_comments": 0,
+          "created_at": "2026-10-13T14:11:13Z"
+        },
+        {
+          "objectID": "50072016",
+          "title": "AI Bots Turn Tables on Scammers in New Anti-Crime Push",
+          "url": "https://www.techbuzz.ai/articles/ai-bots-turn-tables-on-scam",
+          "author": "Vaslo",
+          "points": 1,
+          "num_comments": 0,
+          "created_at": "2026-10-13T14:07:47Z"
+        }
+      ],
+      "fixture": "hn_search.json",
+      "note": "",
+      "conclusion": "可用"
+    },
+    {
+      "name": "reddit",
+      "url": "https://www.reddit.com/r/LocalLLaMA/top/.rss?t=day",
+      "kind": "api",
+      "status": 200,
+      "error": null,
+      "entries": 25,
+      "has_content": true,
+      "updated": null,
+      "size_bytes": 84915,
+      "fields": [
+        "id",
+        "title",
+        "link",
+        "published",
+        "author",
+        "content(HTML)",
+        "（RSS 无 score 字段）"
+      ],
+      "sample": [
+        {
+          "id": "t3_1x4u6vi",
+          "title": "It's been too quiet on the other side of the Pacific",
+          "link": "https://www.reddit.com/r/LocalLLaMA/comments/1x4u6vi/its_bee",
+          "published": "2026-10-13T11:32:31+00:00",
+          "author": "/u/Nunki08",
+          "content_len": 730
+        },
+        {
+          "id": "t3_1x4akj7",
+          "title": "It's been 2 months",
+          "link": "https://www.reddit.com/r/LocalLLaMA/comments/1x4akj7/its_bee",
+          "published": "2026-10-12T18:57:47+00:00",
+          "author": "/u/Comfortable-Rock-498",
+          "content_len": 634
+        }
+      ],
+      "fixture": "reddit_top.json",
+      "note": "",
+      "conclusion": "可用"
+    },
+    {
+      "name": "Simon Willison",
+      "url": "https://simonwillison.net/atom/everything/",
+      "kind": "rss",
+      "status": 200,
+      "error": null,
+      "entries": 30,
+      "has_content": true,
+      "updated": "2026-10-13T13:32:00+00:00",
+      "size_bytes": 108113,
+      "fields": [
+        "title",
+        "link",
+        "published/updated",
+        "author",
+        "summary",
+        "content(可选)"
+      ],
+      "sample": [
+        {
+          "title": "Quoting Geoffrey Huntley",
+          "link": "https://simonwillison.net/2026/Oct/13/geoffrey-huntley/",
+          "published": "2026-10-13T13:32:00+00:00",
+          "author": null,
+          "summary_len": 1107,
+          "content_len": 0
+        },
+        {
+          "title": "Hello Python 3.15, goodbye 3.10, and now I can use 3.11",
+          "link": "https://simonwillison.net/2026/Oct/12/python-3-15/",
+          "published": "2026-10-12T18:15:38+00:00",
+          "author": null,
+          "summary_len": 12383,
+          "content_len": 0
+        }
+      ],
+      "fixture": "rss_feed.xml",
+      "note": "",
+      "conclusion": "可用"
+    },
+    {
+      "name": "Import AI",
+      "url": "https://importai.net/feed",
+      "kind": "rss",
+      "status": 200,
+      "error": null,
+      "entries": 10,
+      "has_content": true,
+      "updated": "Mon, 12 Oct 2026 12:30:39 +0000",
+      "size_bytes": 270594,
+      "fields": [
+        "title",
+        "link",
+        "published/updated",
+        "author",
+        "summary",
+        "content(可选)"
+      ],
+      "sample": [
+        {
+          "title": "Import AI 476: Creativity and RSI; worse-than-China open weight models",
+          "link": "https://jack-clark.net/2026/10/12/import-ai-476-creativity-a",
+          "published": "Mon, 12 Oct 2026 12:30:39 +0000",
+          "author": "Jack Clark",
+          "summary_len": 376,
+          "content_len": 21353
+        },
+        {
+          "title": "Import AI 475: Swarm scaling; Google DeepMind watermarks biology; and ",
+          "link": "https://jack-clark.net/2026/10/05/import-ai-475-swarm-scalin",
+          "published": "Mon, 05 Oct 2026 12:32:30 +0000",
+          "author": "Jack Clark",
+          "summary_len": 647,
+          "content_len": 12378
+        }
+      ],
+      "fixture": "rss_feed.xml",
+      "note": "",
+      "conclusion": "可用"
+    },
+    {
+      "name": "Latent Space",
+      "url": "https://www.latent.space/feed",
+      "kind": "rss",
+      "status": 200,
+      "error": null,
+      "entries": 20,
+      "has_content": true,
+      "updated": "Tue, 13 Oct 2026 13:39:18 GMT",
+      "size_bytes": 958111,
+      "fields": [
+        "title",
+        "link",
+        "published/updated",
+        "author",
+        "summary",
+        "content(可选)"
+      ],
+      "sample": [
+        {
+          "title": "[AINews] Meta Muse Wonder & Wonder Full: MSL’s Claude 5.5-tier Frontie",
+          "link": "https://www.latent.space/p/ainews-meta-muse-wonder-and-wonde",
+          "published": "Tue, 13 Oct 2026 09:37:04 GMT",
+          "author": null,
+          "summary_len": 60,
+          "content_len": 73835
+        },
+        {
+          "title": "How Anthropic’s Dynamic Workflows Coordinate Claude Agents",
+          "link": "https://www.latent.space/p/claude-dynamic-workflows",
+          "published": "Mon, 12 Oct 2026 18:18:17 GMT",
+          "author": "Richard MacManus",
+          "summary_len": 152,
+          "content_len": 25941
+        }
+      ],
+      "fixture": "rss_feed.xml",
+      "note": "",
+      "conclusion": "可用"
+    },
+    {
+      "name": "OpenAI Blog",
+      "url": "https://openai.com/blog/rss.xml",
+      "kind": "rss",
+      "status": 200,
+      "error": null,
+      "entries": 1287,
+      "has_content": true,
+      "updated": "Tue, 13 Oct 2026 13:53:41 GMT",
+      "size_bytes": 784414,
+      "fields": [
+        "title",
+        "link",
+        "published/updated",
+        "author",
+        "summary",
+        "content(可选)"
+      ],
+      "sample": [
+        {
+          "title": "Sophos cuts threat investigation time by 96% with OpenAI Daybreak",
+          "link": "https://openai.com/index/sophos",
+          "published": "Fri, 09 Oct 2026 07:00:00 GMT",
+          "author": null,
+          "summary_len": 152,
+          "content_len": 0
+        },
+        {
+          "title": "Asana cuts model costs 76x in browser tests with GPT-6.1 Sol",
+          "link": "https://openai.com/index/asana-browser-agent",
+          "published": "Fri, 09 Oct 2026 07:00:00 GMT",
+          "author": null,
+          "summary_len": 131,
+          "content_len": 0
+        }
+      ],
+      "fixture": "rss_feed.xml",
+      "note": "",
+      "conclusion": "可用"
+    },
+    {
+      "name": "The Verge AI",
+      "url": "https://www.theverge.com/rss/ai-artificial-intelligence/index.xml",
+      "kind": "rss",
+      "status": 200,
+      "error": null,
+      "entries": 10,
+      "has_content": true,
+      "updated": "2026-10-13T13:56:27+00:00",
+      "size_bytes": 30321,
+      "fields": [
+        "title",
+        "link",
+        "published/updated",
+        "author",
+        "summary",
+        "content(可选)"
+      ],
+      "sample": [
+        {
+          "title": "DLSS 5 gets toned down for its Hogwarts Legacy debut next month",
+          "link": "https://www.theverge.com/news/1009904/dlss-5-hogwarts-legacy",
+          "published": "2026-10-13T09:55:45-04:00",
+          "author": "Tom Warren",
+          "summary_len": 346,
+          "content_len": 1289
+        },
+        {
+          "title": "Apple launches HomeView, its first smart display for the home",
+          "link": "https://www.theverge.com/tech/1009704/apple-homeview-smart-d",
+          "published": "2026-10-13T09:00:00-04:00",
+          "author": "Jennifer Pattison Tuohy",
+          "summary_len": 345,
+          "content_len": 1289
+        }
+      ],
+      "fixture": "rss_feed.xml",
+      "note": "",
+      "conclusion": "可用"
+    },
+    {
+      "name": "TechCrunch AI",
+      "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
+      "kind": "rss",
+      "status": 200,
+      "error": null,
+      "entries": 20,
+      "has_content": true,
+      "updated": "Tue, 13 Oct 2026 14:00:00 +0000",
+      "size_bytes": 19567,
+      "fields": [
+        "title",
+        "link",
+        "published/updated",
+        "author",
+        "summary",
+        "content(可选)"
+      ],
+      "sample": [
+        {
+          "title": "TechCrunch Disrupt 2026: Day 1",
+          "link": "https://techcrunch.com/2026/10/13/techcrunch-disrupt-2026-da",
+          "published": "Tue, 13 Oct 2026 14:00:00 +0000",
+          "author": "TechCrunch Events",
+          "summary_len": 234,
+          "content_len": 0
+        },
+        {
+          "title": "SpaceXSI bundles X Premium, Grok and Cursor into one subscription",
+          "link": "https://techcrunch.com/2026/10/13/spacexsi-bundles-x-premium",
+          "published": "Tue, 13 Oct 2026 13:50:19 +0000",
+          "author": "Sarah Perez",
+          "summary_len": 135,
+          "content_len": 0
+        }
+      ],
+      "fixture": "rss_feed.xml",
+      "note": "",
+      "conclusion": "可用"
+    },
+    {
+      "name": "Ars Technica AI",
+      "url": "https://arstechnica.com/ai/feed/",
+      "kind": "rss",
+      "status": 200,
+      "error": null,
+      "entries": 20,
+      "has_content": true,
+      "updated": "Mon, 12 Oct 2026 21:10:08 +0000",
+      "size_bytes": 78339,
+      "fields": [
+        "title",
+        "link",
+        "published/updated",
+        "author",
+        "summary",
+        "content(可选)"
+      ],
+      "sample": [
+        {
+          "title": "Epic Games reportedly pivoting to \"AI first\" game development model",
+          "link": "https://arstechnica.com/gaming/2026/10/report-epic-games-goe",
+          "published": "Mon, 12 Oct 2026 20:59:50 +0000",
+          "author": "Kyle Orland",
+          "summary_len": 80,
+          "content_len": 1820
+        },
+        {
+          "title": "Anthropic's Claude AI submitted false murder tip to Philadelphia polic",
+          "link": "https://arstechnica.com/tech-policy/2026/10/anthropics-claud",
+          "published": "Mon, 12 Oct 2026 18:21:36 +0000",
+          "author": "Jon Brodkin",
+          "summary_len": 75,
+          "content_len": 1321
+        }
+      ],
+      "fixture": "rss_feed.xml",
+      "note": "",
+      "conclusion": "可用"
+    },
+    {
+      "name": "量子位",
+      "url": "https://www.qbitai.com/feed",
+      "kind": "rss",
+      "status": 200,
+      "error": null,
+      "entries": 10,
+      "has_content": false,
+      "updated": "Tue, 13 Oct 2026 11:05:39 +0000",
+      "size_bytes": 6557,
+      "fields": [
+        "title",
+        "link",
+        "published/updated",
+        "author",
+        "summary",
+        "content(可选)"
+      ],
+      "sample": [
+        {
+          "title": "魔法原子具身Agent框架拿下MolmoSpaces全球第一",
+          "link": "https://www.qbitai.com/2026/10/503107.html",
+          "published": "Tue, 13 Oct 2026 11:05:39 +0000",
+          "author": "量子位的朋友们",
+          "summary_len": 19,
+          "content_len": 0
+        },
+        {
+          "title": "梁文锋投了Swin Transformer作者！DeepSeek开始布局具身大脑",
+          "link": "https://www.qbitai.com/2026/10/503093.html",
+          "published": "Tue, 13 Oct 2026 09:33:37 +0000",
+          "author": "量子位的朋友们",
+          "summary_len": 11,
+          "content_len": 0
+        }
+      ],
+      "fixture": "rss_feed_zh.xml",
+      "note": "",
+      "conclusion": "可用"
+    }
+  ]
+}

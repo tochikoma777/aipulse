@@ -1,6 +1,7 @@
 sources:
   github_trending:
     enabled: true
+    availability: always          # v1.4：本地可采（不稳），Actions 亦可
     weight: 1.0
     rate_limit: "1/6h"
     windows: [daily, weekly]
@@ -10,6 +11,7 @@ sources:
 
   arxiv:
     enabled: true
+    availability: always
     weight: 0.8
     rate_limit: "3/s"              # 硬限制，超限 503
     categories: [cs.AI, cs.LG, cs.CL, cs.CV, cs.MA, stat.ML]
@@ -19,12 +21,15 @@ sources:
 
   hf_papers:
     enabled: true
+    availability: actions_only    # v1.4：本地 DNS 被污染，仅 Actions 可采
     weight: 0.9
     rate_limit: "1/1s"
+    fallback_endpoints: []        # v1.4 红线：默认走官方；国内用户可自行填 ["https://hf-mirror.com"]
     enrich_repos: true             # 调 /api/arxiv/{id}/repos
 
   hackernews:
     enabled: true
+    availability: always
     weight: 0.85
     rate_limit: "10/1s"
     queries: [AI, LLM, GPT, Claude, "open source model", agent, inference]
@@ -34,6 +39,7 @@ sources:
 
   reddit:
     enabled: true
+    availability: actions_only    # v1.4：本地不可达（DNS 污染 + TCP 不通），Actions 可采
     weight: 0.55                   # v1.2：RSS 模式无 score，降权
     mode: rss                      # rss（默认，免认证）| oauth（M1 仅留配置项，不实现）
     subreddits: [LocalLLaMA, MachineLearning]
@@ -41,6 +47,7 @@ sources:
 
   rss:
     enabled: true
+    availability: always
     weight: 0.6
     rate_limit: "1/1s"
     feeds:
@@ -58,10 +65,12 @@ sources:
       #   ❌ 已移除：Anthropic Blog（官方无 RSS，/rss.xml 返回 404）、HF Blog（本环境不可达，
       #      HF 动向已由 hf_papers 源覆盖）。详见 docs/数据源手册.md
       # ── 中文补充（optional：失效只告警不报错，不阻塞流水线）────────
-      - {name: 量子位, url: "https://www.qbitai.com/feed", tier: optional}
+      # v1.4：仅标题源（摘要 22 字）→ 不参与 TF-IDF 聚类，权重降至最低档
+      - {name: 量子位, url: "https://www.qbitai.com/feed", tier: optional, title_only: true, weight: 0.35}
       #   ❌ 已移除：机器之心（/rss 已下线，302 跳转到 data-service 落地页，0 条）
 
   inbox:
     enabled: true
+    availability: always
     weight: 0.5
     rate_limit: "10/1s"

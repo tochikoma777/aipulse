@@ -1,4 +1,4 @@
-# AI Pulse 设计方案 v1.3
+# AI Pulse 设计方案 v1.5
 
 > 一句话定位：**每日自动采集 AI 领域热点，不只整理，还给出可回测的推演与预言。**
 > 本文档是给开发 Agent（CodeBuddy / Claude Code / Cursor 等）执行的**唯一事实来源（SSOT）**。
@@ -17,6 +17,23 @@ v1.2（第二轮确认）：
 6. **Reddit 先用免认证 RSS**，M1 验收后再评估是否升级 OAuth（§5.6 / §19.1-6）
 7. **M0 即建公开仓库**，README 顶部标注 `WIP / 开发中`（§19.1-14、§14.2）
 8. **日报触达 = 文件 + Web 看板为主**，但**架构上必须预留统一 Notifier 抽象**，后续可加邮件/TG/飞书（§11.2）
+
+v1.5（M1 期间补充，回答"源不可达怎么办 / 能否增删源"）：
+16. **新增 §5.11「数据源全景与可达性兜底」**：明确当前源清单、单源不可达的分级影响、
+    **"任何单一源失效都不会导致功能废掉"的架构性保证**，以及 inbox/OAuth 等兜底手段
+17. **新增 §5.12「数据源可扩展性」**：明确两级扩展门槛（RSS 类改 yaml / 新类型写 collector），
+    并约定 **M1 结束时补写 `docs/新增数据源指南.md`**（借真实采集器总结最佳实践，同时倒逼接口规范化）
+
+v1.4（M0 验收后补丁，★ 基于真实探测结果）：
+12. **数据源按网络环境分级**：`availability: always | actions_only`（§5.10）
+    ——M0 实测发现本地 WSL 与 GitHub Actions 的网络可达性**完全不同**（reddit/hf/importai 本地 DNS 被污染、Actions 可达），
+    同一源在不同环境应有不同行为，避免"本地测不到就永久禁用高质量源"
+13. **HF 镜像站策略**：配置仅预留 `fallback_endpoints: []` **空字段**，默认走官方 `huggingface.co`，国内用户自行填写（§5.4）
+14. **中文源降级为「仅标题源」**：量子位仅 22 字摘要（≈只有标题），`title_only: true`、**不参与 TF-IDF 聚类**（摘要过短会污染聚类结果）（§5.7）
+15. **M0 探测实证结论入档**：DNS 污染、gzip 损坏、GitHub/arXiv 本地成功率约 1/3 等（§18.2）
+
+> **M0 已完成并通过验收**（tag `m0`，仓库 https://github.com/tochikoma777/aipulse）。
+> v1.4 的补丁**必须在 M1 开工前应用**，因为它改变采集器的编写假设。
 
 v1.3（第三轮：无 API 可用性，★ 重要架构变更）：
 9. **引入三档运行模式 `off` / `hybrid` / `full`**，API 从"必需"降级为"可选增强"（§8.5）
@@ -383,6 +400,17 @@ class RawItem(BaseModel):
 - 详情：`GET https://huggingface.co/api/papers/{arxiv_id}` → 摘要、upvotes、AI 生成摘要、关联 GitHub repo
 - 关联资源：`GET https://huggingface.co/api/arxiv/{arxiv_id}/repos` → 该论文的 models/datasets/spaces（**很有价值：能判断论文是否有代码、是否可复现**）
 - 模型趋势（可选，作为"模型发布"信号）：`GET https://huggingface.co/api/models?sort=trending&filter=text-generation&limit=20`
+- **镜像与可达性（v1.4）**：
+  - M0 实测：本地 WSL 下 `huggingface.co` **DNS 被污染**（解析到无关网段后连接超时）；`hf-mirror.com` 可用且 schema 一致（实测拿到 50 条真实数据）。
+  - **配置只预留空字段，默认走官方**：
+    ```yaml
+    hf_papers:
+      availability: actions_only
+      fallback_endpoints: []      # 国内用户可自行填 ["https://hf-mirror.com"]
+    ```
+  - **理由：开源项目的默认配置必须走官方源。** 第三方镜像的可信度、稳定性、更新延迟均不受控，
+    不应由项目替所有用户做这个决定。但把字段留出来，国内用户填一行即可，比改代码友好得多。
+  - 探测脚本（`scripts/probe_sources.py`）中**允许**自动尝试 fallback——那是诊断工具，不是生产默认行为。
 - **去重关键**：HF Daily Papers 与 arXiv 高度重叠，必须以 `arxiv_id` 做交叉去重（`dedup` 层的 `cross_source_key`）。arXiv 提供"有没有"，HF 提供"社区是否买账(upvotes)"——两者应**合并为一条 Item**，而非两条。
 
 ### 5.5 Hacker News
@@ -421,10 +449,18 @@ class RawItem(BaseModel):
 | **主干（英文）** | The Verge AI、TechCrunch AI、Ars Technica | 补充产业与产品动态 |
 | **补充（中文）** | 机器之心、量子位、36氪 AI | 国内视角与工程实践；**失效视为可接受的降级**，不阻塞流水线 |
 
-- **中文源的现实问题（M0 探测必须逐个验证并记录）**：
-  - RSS 常年失效或改为仅输出摘要（无正文）
-  - 营销稿 / 通稿占比高，信噪比低于英文优质源
-  - **应对**：① 中文源在 `sources.yaml` 中标记为 `optional: true`，探测失败或运行时失效**只告警不报错**；② `source_weight` 低于英文主干；③ 为每个中文源准备 1-2 个备用 feed URL，失效时自动切换。
+- **中文源的现实问题（M0 探测实测结论，v1.4 更新）**：
+  - **实测结果**：机器之心、36氪 的 feed **已下线或返回 HTML**（非 RSS）；**仅量子位可用，但摘要仅 22 字（≈只有标题）**。
+  - **v1.4 决策：接受现状，把中文源定义为「仅标题源」**——
+    ```yaml
+    - {name: 量子位, url: "https://www.qbitai.com/feed", tier: optional, title_only: true}
+    ```
+  - **三条配套处理**（Agent 必须实现）：
+    ① `title_only: true` 的源**不参与 TF-IDF 聚类**——摘要过短会导致该源条目与任意条目都算出低相似度，
+       污染聚类结果（要么自成一簇、要么错误并入他簇）。
+    ② `source_weight` 降至最低档（0.35），热度主要靠排名位次与 LLM 判断。
+    ③ 简报的"产业与新闻"板块实质以英文主干为主，中文源仅作补充视角。
+  - **通用应对（保留）**：`optional: true` 的源失效时**只告警不报错**，不影响 pipeline 退出码；为每个源准备 1-2 个备用 feed URL。
 - **探测要求**：M0 阶段 `probe_sources.py` 必须对**每一个** RSS 源单独发请求并记录：HTTP 状态、条数、是否含正文、更新时间。结论写入 `docs/数据源手册.md`，失效源直接从 `sources.yaml` 移除或替换。
 - 输出 Item 时 `metrics` 为空，热度主要由 `source_weight` + 排名位次 + LLM 判断贡献。
 
@@ -450,6 +486,135 @@ aipulse inbox add-file data/inbox/notes.md          # 批量从本地 markdown �
 - `inbox` 条目的 `source_weight` 默认 0.5（低于自动源），但它携带的 `--note`（你自己的观察）会在简报与推演中被作为高价值上下文使用。
 
 > **对 Agent 的要求**：`collectors/` 下**只有** 6 个自动源采集器（github_trending / arxiv / hf_papers / hackernews / reddit / rss）+ 1 个 inbox。**不得新增任何微信或 X 相关的采集器、配置段或环境变量**。若项目负责人后续改变主意，通过新增一个标准 RSS 源即可（通用 RSS 采集器已覆盖），不需要改架构。
+
+### 5.11 数据源全景与可达性兜底（v1.5 新增，回答"源不通是不是就废了"）
+
+#### 5.11.1 当前数据源全景（M0 实测后确认的 7 类入口）
+
+| # | 源 | 类型 | 提供什么信号 | 本地 | Actions | 唯一性 |
+|---|---|---|---|---|---|---|
+| 1 | **GitHub Trending** | API + HTML | 开源项目热度、**star 增速** | △ 不稳 | ✅ | 唯一的"工程落地热度"信号 |
+| 2 | **arXiv API** | API | 论文预印本、研究前沿 | △ 不稳 | ✅ | 唯一的"学术一手"信号 |
+| 3 | **HF Daily Papers** | API | 论文**社区认可度**(upvotes)、是否开源代码 | ❌ DNS | ✅ | 判断"论文是否真被买账" |
+| 4 | **Hacker News** | API(Algolia) | 技术社区舆论、讨论热度 | ✅ | ✅ | 唯一的"高质量开发者舆论" |
+| 5 | **Reddit r/LocalLLaMA** | RSS | 一线玩家真实反馈、草根实践 | ❌ | ✅ | 唯一的"玩家视角" |
+| 6 | **RSS（9 个英文 + 1 中文）** | RSS/Atom | 产业动态、官方发布、名家观点 | 部分 ✅ | ✅ | 唯一的"产业/官方"信号 |
+| 7 | **inbox 手动投喂** | 手动 | 任意来源 + 你自己的观察 | ✅ | ✅ | **永不失效的兜底通道** |
+
+#### 5.11.2 核心结论：任何一个源挂掉，功能都不会废
+
+**这是架构层面的保证，不是运气。** 三条机制叠加：
+
+**① 单源失败隔离（§5.9）**
+每个源独立 try/except，失败只写 `source_runs` 表 + 告警，其余源照常完成，pipeline 退出码不受影响。
+实测：M0 探测时 reddit / HF / importai 三个源全部不可达，探测脚本依然完成了其余 8 个源并产出了完整报告。**这就是这套机制有效性的一次真实验证。**
+
+**② 信号冗余：没有哪个"能力"依赖单一源**
+
+| 能力 | 需要的信号 | 可用源 | 挂掉一个会怎样 |
+|---|---|---|---|
+| 每日简报 | 任意热点条目 | 7 类全部 | **完全无感**——少一个源只是少几条候选，Top N 照样排得出来 |
+| 主题聚类 | ≥2 个条目语义相近 | 任意源 | 无感 |
+| 开源项目板块 | GitHub 数据 | GitHub Trending / Search API（双通道） | Trending HTML 改版 → 自动降级 Search API |
+| 论文板块 | arXiv ID + upvotes | arXiv + HF（**互为备份**，同一篇论文） | 挂一个，另一个仍能提供该论文（只是少 upvotes 或社区热度） |
+| 社区舆论板块 | 讨论热度 | HN + Reddit | 挂一个仍有另一个 |
+| 产业新闻板块 | RSS | 10 个 feed，**英文主干 9 个** | 挂 1-2 个 feed 完全无感 |
+
+**结论：只有"辩论"和"周期长文"会在数据源极度贫瘠时质量下降**（因为需要足够的证据包做推演），
+而且这两个功能本来就在 M5、且只在 `full` 档启用。**采集、打分、聚类、简报、预言、回测这条主链路，不受任何单一源影响。**
+
+**③ inbox 是永不失效的兜底**
+哪怕所有外网源全断，你依然可以 `aipulse inbox add <url>` 手动投喂——**这条链路不依赖任何外网 API**，
+打分、聚类、简报、预言、验证、记分板全部照常工作。
+
+#### 5.11.3 源不可达时的分级应对手册
+
+| 场景 | 表现 | 应对 |
+|---|---|---|
+| 临时抽风（超时/429/503） | 偶发失败 | `tenacity` 退避重试 3 次；HTTP 缓存保留上次成功结果 |
+| 长期限速 | 频繁 429 | 调低该源 `rate_limit`；降低采集频率 |
+| 端点改版（GitHub HTML） | 解析出 0 条 | 快照测试报警 → 自动降级 Search API（已实现双通道） |
+| 域名污染 / 被墙 | 连接超时 | 标 `actions_only`，Actions 环境采集；或配代理 |
+| feed 下线 | 404 / 返回 HTML | `optional` 源静默跳过；`core` 源报警并尽快替换 URL |
+| 源彻底废弃 | 长期不可用 | 从 `sources.yaml` 移除或 `enabled: false`，见 §5.12 |
+
+**判断"要不要修"的标准**：看该源是否是某类信号的**唯一提供者**（见 5.11.1 最后一列）。
+若是唯一的（如 GitHub 是唯一工程热度源），优先修；若有冗余（如 arXiv 与 HF），可以先放着让备份顶上。
+
+### 5.12 数据源可扩展性（v1.5 新增，回答"以后能不能加源"）
+
+**答案：能，而且分两个难度等级。**
+
+| 等级 | 适用 | 操作 | 耗时 |
+|---|---|---|---|
+| **L1：改配置** | 新增/删除/替换任何 **RSS 或 Atom** 源 | 编辑 `configs/sources.yaml` 的 `rss.feeds` 列表，增删一行 | **1 分钟，零代码** |
+| **L2：写模块** | 新增**全新类型**的源（Product Hunt、微博、YouTube 频道、某个新 API） | 在 `collectors/` 下新建一个继承 `BaseCollector` 的类，实现 `fetch()`，在 `registry.py` 注册 | 约 30-60 分钟 |
+
+**为什么 RSS 类这么简单**：`rss.py` 是通用采集器，`feeds` 列表里每一项只需 `name` / `url` / `tier`，
+新增任意 RSS 源不需要写任何解析代码——**这是当初坚持"统一 Item 抽象 + 通用 RSS 采集器"的回报**。
+
+**L2 之所以只需 30-60 分钟**，是因为 `BaseCollector` 把所有脏活都封装好了：
+
+```python
+class MyNewCollector(BaseCollector):
+    source = "my_source"
+    display_name = "某某源"
+
+    async def fetch(self, since, until) -> list[RawItem]:
+        # 你只需要做两件事：1. 拿数据  2. 转成 RawItem
+        # 限速、重试、缓存、代理、超时、失败隔离 —— 全部由 HttpClient 与基类处理
+        ...
+```
+
+然后 `registry.register(MyNewCollector)` 即可。**下游（去重、打分、聚类、简报、预言）零改动**——
+它们只认 `Item`，不认具体源。
+
+**删除源**：`enabled: false`（临时）或从配置/registry 移除（永久）。**不影响历史数据**。
+
+**替换源**：改 URL 即可；若新源字段不同，只改该 collector 的 `fetch()` 解析部分（约 10 行）。
+
+> **约定：M1 结束时补写 `docs/新增数据源指南.md`。**
+> 选这个时机的理由：① 6 个真实采集器刚写完，有真实例子可引用，指南才不是空谈；
+> ② 写指南的过程会**倒逼 M1 把 `BaseCollector` 接口写得规范清晰**——这是本项目对外部贡献者最友好的入口，
+> 也是开源后最容易吸引 PR 的地方（"我加了个 XX 源"是最常见的贡献形式）。
+
+### 5.10 数据源可用性分级（v1.4 新增，M1 必读）
+
+**背景（来自 M0 真实探测）**：本地 WSL 环境与 GitHub Actions 环境的网络可达性**完全不同**。
+若按"本地测不到 = 源不可用"来写采集器，会永久丢失一批在 Actions 里其实完全可用的高质量源。
+
+| 源 | 本地 WSL（无代理） | GitHub Actions | 分级 |
+|---|---|---|---|
+| GitHub Trending / Search API | 可用但不稳定（约 1/3 成功率） | 稳定可用 | `always` |
+| arXiv API | 可用但不稳定 | 稳定可用 | `always` |
+| HF Daily Papers | **DNS 污染**，不可达 | 可达 | `actions_only` |
+| Hacker News Algolia | 可用 | 稳定可用 | `always` |
+| Reddit RSS | **不可达** | 可达 | `actions_only` |
+| RSS · Import AI | **DNS 污染**，不可达 | 可达 | `actions_only` |
+| RSS · 其余英文主干 | 可用 | 稳定可用 | `always` |
+| RSS · 中文（量子位） | 可用，仅标题 | 可用 | `always`（`title_only: true`） |
+
+**配置字段**：
+
+```yaml
+sources:
+  reddit:
+    availability: actions_only   # always | actions_only
+  hf_papers:
+    availability: actions_only
+    fallback_endpoints: []       # 见 §5.4，默认空
+```
+
+**行为约定（Agent 必须实现）**：
+
+| 场景 | `always` | `actions_only` |
+|---|---|---|
+| 本地运行（未设 `AIPULSE_ENV=actions`） | 正常采集，失败计入 `source_runs` 失败统计 | **跳过采集**，写入 `source_runs.status = 'skipped_offline'`，**不计入失败**，退出码不受影响 |
+| Actions 运行（`AIPULSE_ENV=actions`） | 正常采集 | **正常采集**，失败按常规处理 |
+| `aipulse doctor` | 正常探针 | 本地显示 ⏸「本环境不可达，将在 Actions 启用」而非 ❌ |
+
+**为什么必须现在定**：M1 要写 6 个采集器。若没有这个分级，Agent 会因为"reddit 本地测不到"而在采集器里写死跳过逻辑，
+或反过来把本地失败当 bug 反复排查——两种都是错的。
 
 ### 5.9 采集执行与容错
 
@@ -1381,6 +1546,24 @@ Windows 侧也可用"任务计划程序"调用 `wsl -e bash -lc "..."`（需开�
 | 数据合规 | 版权/隐私 | 只存标题+摘要+指标，**不全文转载**；标注来源与原链接；遵守各站 robots.txt 与 User-Agent 要求；Reddit 内容遵循其 48 小时删除同步策略 |
 | Actions 无法持久化 SQLite | signals 历史丢失 | 报告文件 commit + cache 尽力恢复 + 关键增速数据落 `data/reports/.../signals.json` |
 
+### 18.2 M0 探测实证：网络与解析层的已知问题（v1.4 归档，M1 直接复用这些结论）
+
+以下均为 M0 真实探测中遇到的问题及已验证的解决办法，**M1 编写采集器时直接采用，不要重新踩一遍**：
+
+| # | 问题 | 现象 | 已验证的解决办法 |
+|---|---|---|---|
+| 1 | **DNS 污染** | `huggingface.co`、`www.reddit.com`、`importai.substack.com` 解析到无关网段（Facebook/Teredo）后连接超时 | 无法在代码层解决 → 按 §5.10 标 `actions_only`；Actions 环境可达 |
+| 2 | **连接不稳定** | arXiv / GitHub 本地约 1/3 成功率 | 探测默认 4 次重试 + 10s 连接超时；生产采集沿用 `tenacity` 退避 |
+| 3 | **偶发损坏 gzip** | `DecodingError` | ① 把解码失败加入可重试异常；② 对 trending / RSS 请求发 `Accept-Encoding: identity`；③ **注意：坏响应会被写进 HTTP 缓存并持续复现，排查时必须 `--no-cache` 重跑** |
+| 4 | httpx 0.28 API 变更 | `Response.ext` 不存在 | 改用 `extensions`；`httpx.Timeout` 必须显式给 `default=` |
+| 5 | SQLModel 字段冲突 | 字段名 `date` 与 `datetime.date` 注解冲突 | `from datetime import date as date_type` |
+| 6 | alembic autogenerate 漏 import | 生成的迁移缺 `sqlmodel` | 补进 `script.py.mako`；`migrations/` 从 mypy 排除 |
+| 7 | 依赖不存在 | `types-feedparser` 在注册表无此包 | 已从 pyproject 移除 |
+
+**M0 遗留缺口（M1 首步处理）**：`tests/fixtures/reddit_top.json` 缺失（本地不可达）。
+处理方式：M1 在 **Actions 环境**下补测（用 `workflow_dispatch` 跑一次 `probe_sources.py` 并下载 artifact），
+在此之前 reddit 采集器的单测用 `pytest.skip` **显式标记**，不得静默假装通过。
+
 ---
 
 ## 19. 决策记录（v1.2：全部确认项已收敛）
@@ -1405,6 +1588,10 @@ Windows 侧也可用"任务计划程序"调用 `wsl -e bash -lc "..."`（需开�
 | 14 | RSS 源策略 | **英文主干 + 中文补充** | 英文优质源（Simon Willison、Import AI、Latent Space、官方博客、The Verge/TechCrunch/Ars）RSS 极稳定、几乎无营销稿，作为新闻板块基本盘；中文源（机器之心/量子位）标 `optional: true`，失效只告警不阻塞。详见 §5.7 |
 | 15 | Reddit 认证 | **先走免认证 RSS**，M1 验收后再评估 OAuth | OAuth 需注册应用 + 承担 Responsible Builder Policy 义务 + 多一套密钥管理，不要提前付这个成本。score 缺失用「排名位次代理 + 该源降权 + LLM 判断」三重补偿。详见 §5.6 |
 | 16 | 仓库公开时机 | **M0 即公开**，README 顶部标 WIP | 开发过程本身即说服力（完整 git 历史 + 每阶段验收 + 真实取舍理由），且能早期收到反馈。丢掉"等完美再公开"的负担。详见 §14.2 |
+| 21 | **数据源环境分级** | **`availability: always|actions_only`** | M0 实测发现本地 WSL 与 Actions 网络可达性完全不同（reddit/hf/importai 本地 DNS 污染、Actions 可达）。不分级会导致"本地测不到就永久禁用高质量源"。本地跳过且不计失败，Actions 全开。详见 §5.10 |
+| 22 | **HF 镜像站** | **只预留 `fallback_endpoints: []` 空字段，默认走官方** | 第三方镜像的可信度与稳定性不受控，开源项目不应替所有用户做这个决定；但留字段让国内用户填一行即可。探测脚本里可自动尝试（那是诊断工具）。详见 §5.4 |
+| 23 | **中文源** | **接受现状，定义为「仅标题源」** | 实测机器之心/36氪 已下线或返回 HTML，仅量子位可用且摘要仅 22 字。关键处理：**`title_only` 源不参与 TF-IDF 聚类**（短摘要会污染聚类）。详见 §5.7 |
+| 24 | **WSL 网络** | **按无代理推进** | HttpClient 已支持 `HTTP_PROXY/HTTPS_PROXY`，用户后续有代理时配环境变量即可，无需改代码 |
 | 18 | **三档运行模式** | **`off` / `hybrid` / `full`，API 从必需降级为可选** | 让零 API 花费的用户也能用（off 档保留采集/打分/聚类/手写预言/自动验证/校准统计全链路）。API 是"让它更好"而非"让它能用"。详见 §8.5 |
 | 19 | **手写预言交互** | **参数 + 缺参自动降级为交互式向导** | 纯参数方案用户要手写 JSON 判据，太痛苦会导致功能被弃用；纯向导无法脚本化。混合方案只比纯参数多约 40 行，却两者兼得。详见 §11.4.2 |
 | 20 | **量化判据** | **可选字段 + 内置模板库** | 带阈值的预言到期查表即判，零成本；且填判据的过程倒逼预言写得可证伪。不强制，语义型预言仍走人工/LLM。详见 §11.5 |
