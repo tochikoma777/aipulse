@@ -122,19 +122,37 @@ class GitHubTrendingCollector(BaseCollector):
         return TRENDING_URL
 
     async def fetch(self, since: datetime, until: datetime) -> list[RawItem]:
-        items = await self._fetch_trending()
-        min_items = int(self.extra("min_items_before_fallback", 5))
-        if len(items) < min_items and bool(self.extra("fallback_search_api", True)):
-            log.warning(
-                "collector.github_trending.degrade",
-                got=len(items),
-                msg="Trending 结果过少，降级到 GitHub Search API",
-            )
-            self.degraded_to_search_api = True
-            items = await self._fetch_search_api(since) or items
-        return items
+        """双通道采集：Trending HTML 优先，不足 5 条（含请求失败）则降级 Search API。
 
-    async def _fetch_trending(self) -> list[RawItem]:
+        只有**两个通道都拿不到数据**才算该源失败——本环境实测 Trending 页面约 1/3 概率超时，
+        而 `api.github.com` 稳定得多，所以"HTML 挂了"应该降级而不是判死。
+        """
+        min_items = int(self.extra("min_items_before_fallback", 5))
+        trending_items, trending_error = await self._fetch_trending()
+        if len(trending_items) >= min_items:
+            return trending_items
+
+        if not bool(self.extra("fallback_search_api", True)):
+            if trending_items or trending_error is None:
+                return trending_items
+            raise self.raise_error(f"Trending 采集失败：{trending_error}")
+
+        log.warning(
+            "collector.github_trending.degrade",
+            got=len(trending_items),
+            error=trending_error,
+            msg="Trending 结果过少或请求失败，降级到 GitHub Search API",
+        )
+        search_items, search_error = await self._fetch_search_api(since)
+        if search_items or trending_items:
+            self.degraded_to_search_api = True
+            return search_items or trending_items
+        raise self.raise_error(
+            f"Trending 与 Search API 均不可用（trending={trending_error}; search={search_error}）"
+        )
+
+    async def _fetch_trending(self) -> tuple[list[RawItem], str | None]:
+        """返回 `(条目, 错误信息)`；请求失败不抛异常，交由降级逻辑决定。"""
         try:
             response = await self.http.get(
                 TRENDING_URL,
@@ -144,13 +162,14 @@ class GitHubTrendingCollector(BaseCollector):
                 headers={"Accept-Encoding": "identity"},
             )
         except httpx.HTTPError as exc:
-            raise self.raise_error(f"Trending 页面请求失败：{exc}", cause=exc) from exc
+            log.warning("collector.github_trending.unreachable", error=repr(exc))
+            return [], f"{type(exc).__name__}: {exc}"
         if response.status_code >= 400:
-            raise self.raise_error(f"Trending 页面返回 HTTP {response.status_code}")
+            return [], f"HTTP {response.status_code}"
         repos = parse_trending_html(response.text)
-        return [self._to_item(repo) for repo in repos]
+        return [self._to_item(repo) for repo in repos], None
 
-    async def _fetch_search_api(self, since: datetime) -> list[RawItem]:
+    async def _fetch_search_api(self, since: datetime) -> tuple[list[RawItem], str | None]:
         created_after = (since - timedelta(days=7)).date().isoformat()
         per_page = int(self.extra("search_per_page", 50))
         headers = {"Accept": "application/vnd.github+json", "Accept-Encoding": "identity"}
@@ -171,11 +190,11 @@ class GitHubTrendingCollector(BaseCollector):
             )
         except httpx.HTTPError as exc:
             log.warning("collector.github_trending.search_failed", error=repr(exc))
-            return []
+            return [], f"{type(exc).__name__}: {exc}"
         if response.status_code >= 400:
             log.warning("collector.github_trending.search_http", status=response.status_code)
-            return []
-        return [self._to_item(repo) for repo in parse_search_json(response.json())]
+            return [], f"HTTP {response.status_code}"
+        return [self._to_item(repo) for repo in parse_search_json(response.json())], None
 
     def _to_item(self, repo: dict[str, Any]) -> RawItem:
         full_name = str(repo["full_name"])

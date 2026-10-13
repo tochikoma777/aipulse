@@ -72,7 +72,21 @@ async def test_github_trending_degrades_to_search_api_when_empty():
 
 
 @respx.mock
-async def test_github_trending_raises_on_http_error():
+async def test_github_trending_falls_back_when_trending_unreachable():
+    """本环境 Trending 页面约 1/3 概率超时：请求失败也应走 Search API，而不是直接判死。"""
+    respx.get(TRENDING_URL).mock(side_effect=httpx.ConnectTimeout)
+    respx.get(SEARCH_URL).mock(
+        return_value=httpx.Response(200, json=json.loads(fixture_text("github_search.json")))
+    )
+    collector = GitHubTrendingCollector(SourceConfig(rate_limit="1/6h"), _http())
+    since, until = _window()
+    items = await collector.fetch(since, until)
+    assert collector.degraded_to_search_api is True
+    assert len(items) == 10
+
+
+@respx.mock
+async def test_github_trending_raises_only_when_both_channels_fail():
     respx.get(TRENDING_URL).mock(return_value=httpx.Response(500))
     respx.get(SEARCH_URL).mock(return_value=httpx.Response(500))
     collector = GitHubTrendingCollector(SourceConfig(rate_limit="1/6h"), _http())

@@ -35,6 +35,7 @@ def configure_logging(
     log_dir: Path | None = None,
     *,
     console: bool = True,
+    console_stderr: bool = False,
 ) -> None:
     """初始化日志。可重复调用（会重置 handlers），pytest 里建议传 log_dir=tmp_path。"""
     global _CONFIGURED
@@ -55,7 +56,7 @@ def configure_logging(
     if console:
         rich_handler = RichHandler(
             level=level.upper(),
-            console=Console(stderr=False),
+            console=Console(stderr=console_stderr),
             rich_tracebacks=True,
             markup=True,
             show_time=False,

@@ -15,6 +15,7 @@ from rich.console import Console
 from rich.table import Table
 
 from aipulse.core.config import is_actions_env
+from aipulse.core.logging import configure_logging
 from aipulse.pipeline.collect import (
     STATUS_FAILED,
     STATUS_OK,
@@ -47,6 +48,10 @@ def run(
     db: str = typer.Option(None, "--db", help="覆盖数据库路径"),
 ) -> None:
     """执行采集。"""
+    if json_output:
+        # stdout 必须只有 JSON：日志改走 stderr，脚本才能安全地管道消费
+        configure_logging(console_stderr=True)
+
     console = Console()
     wanted = [s.strip() for s in sources.split(",")] if sources else None
     result = asyncio.run(
