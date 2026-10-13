@@ -88,6 +88,20 @@ def migrate_to_head(db_path: str | Path, *, config_file: Path | None = None) -> 
     command.upgrade(cfg, "head")
 
 
+def ensure_schema(db_path: str | Path) -> None:
+    """确保库文件与表结构就绪（CLI 之外的入口，如 pipeline 直跑时用）。
+
+    优先走 alembic（与 `aipulse init` 一致）；alembic.ini 缺失时退化为 create_all。
+    """
+    path = Path(db_path)
+    if path.exists() and "items" in table_names(path):
+        return
+    try:
+        migrate_to_head(path)
+    except StoreError:
+        init_db(path)
+
+
 def table_names(db_path: str | Path) -> set[str]:
     """列出库内表名（测试与 doctor 用）。"""
     from sqlalchemy import inspect

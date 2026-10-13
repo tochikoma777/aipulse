@@ -8,13 +8,15 @@ from pathlib import Path
 import feedparser
 import pytest
 
-FIXTURES = Path(__file__).resolve().parents[1] / "fixtures"
+FIXTURES = Path(__file__).resolve().parents[1] / "fixtures"  # tests/fixtures
 
 API_FIXTURES = [
     "github_trending.html",
     "arxiv_atom.xml",
     "hf_daily_papers.json",
     "hn_search.json",
+    "reddit_top.json",  # M1 首步在 Actions 补测补齐
+    "github_search.json",  # GitHub Search API 降级通道
 ]
 RSS_FIXTURES = ["rss_feed.xml", "rss_feed_zh.xml"]
 
@@ -78,6 +80,14 @@ def test_github_trending_fixture_has_repo_blocks():
     repos = re.findall(r'<h2[^>]*>\s*<a[^>]+href="/([\w.\-]+/[\w.\-]+)"', html)
     assert repos, "Trending 快照必须能抽出仓库名"
     assert "<article" in html
+
+
+def test_reddit_fixture_parses_and_has_no_score():
+    """Reddit RSS 无 score 字段——这是三重补偿（rank_score + 降权）的前提。"""
+    path = _require("reddit_top.json")
+    feed = feedparser.parse(path.read_text(encoding="utf-8"))
+    assert feed.entries, "Reddit 快照必须能解析出条目"
+    assert "score" not in feed.entries[0], "Reddit RSS 不应有 score 字段"
 
 
 @pytest.mark.parametrize("name", RSS_FIXTURES)

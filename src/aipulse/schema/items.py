@@ -73,6 +73,8 @@ class RawItem(BaseModel):
     metrics: SourceMetrics = Field(default_factory=SourceMetrics)
     tags: list[str] = Field(default_factory=list)
     language: str | None = None
+    # 跨源合并后记录"这条被哪些源看到过"（dedup 层填写，空表示单源）
+    seen_in: list[str] = Field(default_factory=list)
     extra: dict[str, Any] = Field(default_factory=dict)
     raw: dict[str, Any] | None = None
 

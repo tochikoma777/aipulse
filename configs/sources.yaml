@@ -18,6 +18,7 @@ sources:
     max_results: 200
     keyword_filter: [llm, agent, multimodal, diffusion, inference, rl, reasoning]
     top_n_after_filter: 60
+    lookback_days: 7              # arXiv 索引滞后 3-4 天，严格 24h 会采空
 
   hf_papers:
     enabled: true

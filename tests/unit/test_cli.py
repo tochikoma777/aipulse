@@ -1,7 +1,7 @@
 import pytest
 from typer.testing import CliRunner
 
-from aipulse.cli.commands import collect, predict
+from aipulse.cli.commands import predict
 from aipulse.cli.commands.doctor import run_doctor
 from aipulse.cli.main import app
 from aipulse.core.config import load_settings
@@ -43,8 +43,7 @@ def test_subcommand_help_visible():
 
 
 def test_placeholder_commands_raise_not_implemented():
-    with pytest.raises(NotImplementedError):
-        collect.app.registered_commands[0].callback()
+    # collect 已在 M1 实现（callback 形式），此处用仍未实现的 predict 验证占位行为
     with pytest.raises(NotImplementedError):
         predict.app.registered_commands[0].callback()
 

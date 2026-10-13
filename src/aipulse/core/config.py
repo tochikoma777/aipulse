@@ -11,10 +11,10 @@ from __future__ import annotations
 
 import os
 import re
+from collections.abc import Mapping
 from enum import StrEnum
 from functools import lru_cache
 from pathlib import Path
-from collections.abc import Mapping
 from typing import Any, Literal
 
 import yaml

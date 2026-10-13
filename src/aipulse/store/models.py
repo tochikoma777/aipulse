@@ -43,6 +43,8 @@ class Item(SQLModel, table=True):
     simhash: str = ""
     hot_score: float = 0.0
     topic_id: str | None = Field(default=None, index=True)
+    # v1.4：仅标题源（量子位，摘要 22 字）不参与 TF-IDF 聚类，避免污染相似度矩阵
+    skip_cluster: bool = False
     is_duplicate: bool = False
     dedup_group_id: str | None = None
     raw_ref: str | None = None
