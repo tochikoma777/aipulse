@@ -1,0 +1,36 @@
+# 量化判据模板库（v1.3，设计方案 §11.5）。
+# 预言可附带一个可机读判据，到期时**直接查库判定，零 API 成本**（M3b 实现判定逻辑）。
+# 每个模板：description 给向导展示，params 为必填/可选参数（type: str|int|float）。
+# 新增模板 = 往下面加一项，无需改代码。
+
+criteria:
+  github_new_repo:
+    description: GitHub 某账号出现新仓库
+    params:
+      - {name: owner, type: str, required: true}
+  github_stars_reach:
+    description: 某仓库 star 数达到阈值
+    params:
+      - {name: repo, type: str, required: true}
+      - {name: threshold, type: int, required: true}
+  hn_story_points:
+    description: HN 上某关键词故事达到 X 分
+    params:
+      - {name: keyword, type: str, required: true}
+      - {name: threshold, type: int, required: true}
+  entity_mentions:
+    description: 某实体在库中提及次数达到阈值
+    params:
+      - {name: entity, type: str, required: true}
+      - {name: threshold, type: int, required: true}
+      - {name: window_days, type: int, required: false, default: 7}
+  arxiv_paper_count:
+    description: arXiv 某关键词论文数达到阈值
+    params:
+      - {name: keyword, type: str, required: true}
+      - {name: threshold, type: int, required: true}
+      - {name: window_days, type: int, required: false, default: 7}
+  custom:
+    description: 手写 JSON 表达式（高级用户兜底）
+    params:
+      - {name: expr, type: str, required: true}

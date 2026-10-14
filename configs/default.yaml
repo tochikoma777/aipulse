@@ -19,7 +19,7 @@ llm:
   timeout_s: 120
   max_retries: 3
   cache_enabled: true
-  json_schema: true                # DeepSeek json_schema 实测不支持时置 false（走 json_object 降级）
+  json_schema: auto                # auto=运行时自动降级；true/false=强制指定（§8.3）
 
 budget:
   daily_limit_cny: 2.0

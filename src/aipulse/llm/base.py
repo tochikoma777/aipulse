@@ -102,9 +102,17 @@ def build_client(settings: Any, *, engine: Any | None = None) -> LLMClient:
     if mode.value == "off":
         return NullLLM()
 
+    from aipulse.llm.budget import BudgetTracker
     from aipulse.llm.openai_compat import OpenAICompatClient
 
-    return OpenAICompatClient(settings.llm, engine=engine)
+    budget = BudgetTracker(
+        engine,
+        daily_limit_cny=settings.budget.daily_limit_cny,
+        price_fast_cny_per_1m=settings.budget.price_fast_cny_per_1m,
+        price_strong_cny_per_1m=settings.budget.price_strong_cny_per_1m,
+        degrade_order=settings.budget.degrade_order,
+    )
+    return OpenAICompatClient(settings.llm, engine=engine, budget=budget)
 
 
 __all__ = [

@@ -73,6 +73,7 @@ class BudgetTracker:
         completion_tokens: int,
         model_tier: str = "fast",
         cache_hit: bool = False,
+        error: str | None = None,
     ) -> None:
         cost = (
             0.0
@@ -96,6 +97,7 @@ class BudgetTracker:
                     completion_tokens=completion_tokens,
                     cost_cny=cost,
                     cache_hit=cache_hit,
+                    error=error,
                 )
             )
             session.commit()

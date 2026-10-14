@@ -171,6 +171,8 @@ class LLMUsage(SQLModel, table=True):
     completion_tokens: int = 0
     cost_cny: float = 0.0
     cache_hit: bool = False
+    # v1.7：记录降级/失败原因（如 "json_schema unsupported → json_object"），便于事后审计
+    error: str | None = None
 
 
 class LLMCache(SQLModel, table=True):

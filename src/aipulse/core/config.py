@@ -73,15 +73,24 @@ class LLMSettings(BaseModel):
     timeout_s: int = 120
     max_retries: int = 3
     cache_enabled: bool = True
-    # DeepSeek 的 response_format={"type":"json_schema"} 支持情况需实测；
-    # 不支持时置 false，走 json_object + prompt 内嵌 schema 的降级路径（§8.3）
-    json_schema: bool = True
+    # v1.7：json_schema 兼容性。auto=首次带 json_schema，报 400 且错误体含
+    # json_schema/response_format/unsupported 等关键词时自动降级 json_object 并记住；
+    # true/false 供用户强制指定（§8.3）
+    json_schema: Literal["auto", "true", "false"] = "auto"
 
     @field_validator("base_url", "api_key", mode="before")
     @classmethod
     def _none_to_empty(cls, value: Any) -> Any:
         """YAML 里 `${VAR}` 未设置时会被解析成 None，这里统一收敛成空串。"""
         return "" if value is None else value
+
+    @field_validator("json_schema", mode="before")
+    @classmethod
+    def _coerce_json_schema(cls, value: Any) -> Any:
+        """兼容旧配置的布尔写法：`true` → "true"，`false` → "false"。"""
+        if isinstance(value, bool):
+            return "true" if value else "false"
+        return value
 
 
 class BudgetSettings(BaseModel):
@@ -265,4 +274,10 @@ def load_scoring(path: str | Path | None = None) -> dict[str, Any]:
 def load_entities(path: str | Path | None = None) -> dict[str, Any]:
     """加载实体词典（`configs/entities.yaml`）。不做缓存，便于运行时重载。"""
     config_path = Path(path) if path else default_config_dir() / "entities.yaml"
+    return load_yaml(config_path)
+
+
+def load_criteria(path: str | Path | None = None) -> dict[str, Any]:
+    """加载量化判据模板库（`configs/criteria.yaml`，v1.3）。不做缓存。"""
+    config_path = Path(path) if path else default_config_dir() / "criteria.yaml"
     return load_yaml(config_path)
