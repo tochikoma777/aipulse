@@ -73,6 +73,9 @@ class LLMSettings(BaseModel):
     timeout_s: int = 120
     max_retries: int = 3
     cache_enabled: bool = True
+    # DeepSeek 的 response_format={"type":"json_schema"} 支持情况需实测；
+    # 不支持时置 false，走 json_object + prompt 内嵌 schema 的降级路径（§8.3）
+    json_schema: bool = True
 
     @field_validator("base_url", "api_key", mode="before")
     @classmethod
@@ -86,6 +89,10 @@ class BudgetSettings(BaseModel):
     degrade_order: list[str] = Field(
         default_factory=lambda: ["debate", "trend", "brief_topn", "all"]
     )
+    # 成本估算单价（元/百万 token，混合输入输出后的保守近似），供 llm_usage.cost_cny 记账。
+    # 真实定价会变动，放配置里可调；仅用于预算护栏，不做精确计费。
+    price_fast_cny_per_1m: float = 1.0
+    price_strong_cny_per_1m: float = 4.0
 
 
 class PipelineSettings(BaseModel):
@@ -246,3 +253,16 @@ def load_sources(path: str | Path | None = None) -> SourcesConfig:
     """加载数据源配置。默认读 `configs/sources.yaml`（不做缓存，便于运行时重载）。"""
     config_path = Path(path) if path else default_config_dir() / "sources.yaml"
     return SourcesConfig(**load_yaml(config_path))
+
+
+@lru_cache(maxsize=2)
+def load_scoring(path: str | Path | None = None) -> dict[str, Any]:
+    """加载热度打分配置（`configs/scoring.yaml`）。缓存：权重改文件后需清缓存或重启进程。"""
+    config_path = Path(path) if path else default_config_dir() / "scoring.yaml"
+    return load_yaml(config_path)
+
+
+def load_entities(path: str | Path | None = None) -> dict[str, Any]:
+    """加载实体词典（`configs/entities.yaml`）。不做缓存，便于运行时重载。"""
+    config_path = Path(path) if path else default_config_dir() / "entities.yaml"
+    return load_yaml(config_path)

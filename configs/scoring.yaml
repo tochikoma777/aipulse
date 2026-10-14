@@ -27,3 +27,14 @@ engagement:
 # 冷启动（无 signals 历史）时 velocity 取源内中位数，并打 warning
 cold_start:
   velocity_fill: median
+  # 源内一条 velocity 都算不出（完全冷启动）时，用中性值 0.5 兜底
+  velocity_neutral: 0.5
+
+# 仅标题源（title_only，如量子位）不参与聚类，其热度权重降至最低档
+title_only_weight: 0.35
+
+# 主题聚类（analysis/cluster.py，设计方案 §9.2）
+cluster:
+  similarity_threshold: 0.35   # 余弦相似度建边阈值
+  min_cluster_size: 2          # 单点簇不落库（避免 1 条即 1 主题的噪音）
+  max_features: 20000          # TF-IDF 词表上限

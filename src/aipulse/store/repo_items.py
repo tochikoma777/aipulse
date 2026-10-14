@@ -8,16 +8,16 @@
 
 from __future__ import annotations
 
-from collections.abc import Sequence
-from datetime import datetime
+from collections.abc import Mapping, Sequence
+from datetime import date, datetime
 from typing import Any
 
 from sqlmodel import Session, select
 
-from aipulse.core.hashing import content_hash, cross_source_key, simhash64
+from aipulse.core.hashing import content_hash, cross_source_key, short_hash, simhash64
 from aipulse.core.timeutil import utcnow
 from aipulse.schema.items import RawItem
-from aipulse.store.models import Item, Signal
+from aipulse.store.models import Entity, Item, Signal, Topic
 
 _PREFIX = "it_"
 
@@ -152,6 +152,133 @@ def write_signals(session: Session, items: Sequence[RawItem], *, ts: datetime | 
 def clusterable_items(session: Session) -> list[Item]:
     """允许参与聚类的条目（v1.4：排除 `skip_cluster` 的仅标题源）。"""
     return list(session.exec(select(Item).where(Item.skip_cluster.is_(False))).all())  # type: ignore[attr-defined]
+
+
+# ── 分析层（M2）读/写辅助 ────────────────────────────────────────────
+
+
+def list_items(
+    session: Session,
+    *,
+    since: datetime | None = None,
+    until: datetime | None = None,
+    limit: int | None = None,
+) -> list[Item]:
+    """按时间窗取条目（按 published_at 倒序）。since/until 为 UTC。"""
+    stmt = select(Item)
+    if since is not None:
+        stmt = stmt.where(Item.published_at >= since)
+    if until is not None:
+        stmt = stmt.where(Item.published_at < until)
+    stmt = stmt.order_by(Item.published_at.desc())  # type: ignore[attr-defined]
+    if limit is not None:
+        stmt = stmt.limit(limit)
+    return list(session.exec(stmt).all())
+
+
+def list_items_collected(
+    session: Session,
+    *,
+    since: datetime | None = None,
+    until: datetime | None = None,
+    limit: int | None = None,
+) -> list[Item]:
+    """按 `collected_at` 时间窗取条目（本日采集的条目，含 arXiv 回看窗口内的旧文）。"""
+    stmt = select(Item)
+    if since is not None:
+        stmt = stmt.where(Item.collected_at >= since)
+    if until is not None:
+        stmt = stmt.where(Item.collected_at < until)
+    stmt = stmt.order_by(Item.collected_at.desc())  # type: ignore[attr-defined]
+    if limit is not None:
+        stmt = stmt.limit(limit)
+    return list(session.exec(stmt).all())
+
+
+def list_topics(session: Session, day: date) -> list[Topic]:
+    return list(session.exec(select(Topic).where(Topic.date == day)).all())
+
+
+def list_entities(session: Session, day: date) -> list[Entity]:
+    return list(session.exec(select(Entity).where(Entity.date == day)).all())
+
+
+def apply_hot_scores(session: Session, scores: Mapping[str, float]) -> int:
+    """把 hot_score 回写到对应条目。返回更新条数。"""
+    updated = 0
+    for item_id, score in scores.items():
+        item = session.get(Item, item_id)
+        if item is None:
+            continue
+        item.hot_score = round(float(score), 4)
+        updated += 1
+    session.commit()
+    return updated
+
+
+def apply_topic_ids(session: Session, mapping: Mapping[str, str | None]) -> int:
+    """回写 items.topic_id（None 表示取消归属）。返回更新条数。"""
+    updated = 0
+    for item_id, topic_id in mapping.items():
+        item = session.get(Item, item_id)
+        if item is None:
+            continue
+        item.topic_id = topic_id
+        updated += 1
+    session.commit()
+    return updated
+
+
+def topic_uid(name: str, day: date) -> str:
+    """主题稳定 id（同一天同名主题复用同一行，避免每日重复建主题）。"""
+    return "tp_" + short_hash(f"{day.isoformat()}:{name}", length=12)
+
+
+def upsert_topics(session: Session, topics: Sequence[Topic]) -> int:
+    """按 id upsert 主题。返回写入条数。"""
+    count = 0
+    for topic in topics:
+        session.merge(topic)
+        count += 1
+    session.commit()
+    return count
+
+
+def upsert_entities(session: Session, entities: Sequence[Entity]) -> int:
+    """批量写入实体提及。同一 (name, type, item_id, date) 只写一次。"""
+    count = 0
+    for entity in entities:
+        exists = session.exec(
+            select(Entity).where(
+                Entity.name == entity.name,
+                Entity.type == entity.type,
+                Entity.item_id == entity.item_id,
+                Entity.date == entity.date,
+            )
+        ).first()
+        if exists is not None:
+            continue
+        session.add(entity)
+        count += 1
+    session.commit()
+    return count
+
+
+def signals_for_entity(
+    session: Session, entity_type: str, entity_key: str, metric: str
+) -> list[Signal]:
+    """取某实体的指标时间序列（按 ts 升序），供增速计算。"""
+    return list(
+        session.exec(
+            select(Signal)
+            .where(
+                Signal.entity_type == entity_type,
+                Signal.entity_key == entity_key,
+                Signal.metric == metric,
+            )
+            .order_by(Signal.ts.asc())  # type: ignore[attr-defined]
+        ).all()
+    )
 
 
 def item_to_dict(item: Item) -> dict[str, Any]:

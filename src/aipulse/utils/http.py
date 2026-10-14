@@ -257,6 +257,7 @@ class HttpClient:
         connect_timeout_s: float = 5.0,
         read_timeout_s: float = 20.0,
         max_retries: int = 3,
+        max_concurrency: int = 6,
         cache_enabled: bool = True,
         cache_path: Path | None = None,
         cache_ttl_s: int = 1800,
@@ -268,6 +269,8 @@ class HttpClient:
         self.connect_timeout_s = connect_timeout_s
         self.read_timeout_s = read_timeout_s
         self.max_retries = max_retries
+        # 供需要并发子请求的采集器（如 RSS 多 feed）自行限流，与全局并发保持一致
+        self.max_concurrency = max_concurrency
         self.cache_enabled = cache_enabled
         self.cache_ttl_s = cache_ttl_s
         self.proxy = proxy if proxy is not None else resolve_proxy()

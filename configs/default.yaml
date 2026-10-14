@@ -19,10 +19,13 @@ llm:
   timeout_s: 120
   max_retries: 3
   cache_enabled: true
+  json_schema: true                # DeepSeek json_schema 实测不支持时置 false（走 json_object 降级）
 
 budget:
   daily_limit_cny: 2.0
   degrade_order: [debate, trend, brief_topn, all]
+  price_fast_cny_per_1m: 1.0       # 成本估算单价（元/百万 token），可调
+  price_strong_cny_per_1m: 4.0
 
 pipeline:
   daily_top_n: 30

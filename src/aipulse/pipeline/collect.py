@@ -167,6 +167,7 @@ async def run_collect(
         connect_timeout_s=settings.http.timeout_connect_s,
         read_timeout_s=settings.http.timeout_read_s,
         max_retries=settings.http.max_retries,
+        max_concurrency=settings.http.max_concurrency,
         cache_enabled=not no_cache,
         cache_path=cache_path,
         cache_ttl_s=settings.http.cache_ttl_s,

@@ -1,0 +1,98 @@
+# 实体词典（analysis/entities.py 用，设计方案 §9.3）。
+# 规则 + 词典优先：零成本、可解释。类型 = model / framework / company / hardware / concept / person。
+# 每个实体 `name` 必填，`aliases` 可选（常见别名/缩写/大小写变体）。
+# 新增实体 = 往对应列表加一行，无需改代码。
+
+entities:
+  model:
+    - name: GPT
+      aliases: [GPT-4, GPT-5, ChatGPT, o1, o3]
+    - name: Claude
+      aliases: [Claude 3, Claude 4, Anthropic Claude]
+    - name: Gemini
+      aliases: [Gemini 2, Gemini 3]
+    - name: Llama
+      aliases: [LLaMA, Llama 3, Llama 4]
+    - name: Qwen
+      aliases: [通义千问, Qwen2, Qwen3]
+    - name: DeepSeek
+      aliases: [DeepSeek-R1, DeepSeek-V3, DeepSeek-V4]
+    - name: Mistral
+      aliases: [Mixtral]
+    - name: Grok
+    - name: Stable Diffusion
+      aliases: [SD3, SDXL, FLUX]
+    - name: Whisper
+
+  framework:
+    - name: vLLM
+    - name: PyTorch
+      aliases: [torch]
+    - name: Triton
+    - name: LangChain
+    - name: Transformers
+      aliases: [HuggingFace Transformers]
+    - name: TensorFlow
+    - name: JAX
+    - name: SGLang
+    - name: LoRA
+    - name: RAG
+    - name: MCP
+      aliases: [Model Context Protocol]
+
+  company:
+    - name: OpenAI
+    - name: Anthropic
+    - name: Google
+      aliases: [Google DeepMind, DeepMind]
+    - name: Meta
+      aliases: [Meta AI, Facebook]
+    - name: Microsoft
+    - name: NVIDIA
+    - name: AMD
+    - name: Alibaba
+      aliases: [阿里, 通义]
+    - name: 腾讯
+    - name: 字节跳动
+      aliases: [字节, ByteDance, 豆包]
+
+  hardware:
+    - name: H100
+    - name: H200
+    - name: B200
+    - name: A100
+    - name: TPU
+    - name: Blackwell
+    - name: Hopper
+    - name: GB200
+    - name: RTX 5090
+
+  concept:
+    - name: 多模态
+      aliases: [multimodal]
+    - name: 强化学习
+      aliases: [RL, reinforcement learning, RLHF]
+    - name: 智能体
+      aliases: [agent, Agent, 智能体]
+    - name: 推理
+      aliases: [reasoning, 推理]
+    - name: 开源模型
+      aliases: [open source model, open-source, 开源]
+    - name: 蒸馏
+      aliases: [distillation, distill]
+    - name: 对齐
+      aliases: [alignment]
+    - name: 世界模型
+      aliases: [world model]
+
+  person:
+    - name: Sam Altman
+      aliases: [Altman]
+    - name: Yann LeCun
+      aliases: [LeCun]
+    - name: Andrej Karpathy
+      aliases: [Karpathy]
+    - name: Ilya Sutskever
+      aliases: [Sutskever]
+    - name: Simon Willison
+    - name: 李开复
