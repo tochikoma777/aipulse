@@ -63,7 +63,7 @@ scripts/cron_daily.sh                                 # 本地 cron 备份（日
 
 产物落盘：`data/reports/YYYY/MM/DD/` 下 6 个文件（全部走 `FileNotifier`，§11.1）：
 `brief.md` / `daily.json` / `meta.json` / **`scoreboard.md`（v1.10：daily 自动产出记分板）** / **`verdicts.md`（本次到期验证结果）** / **`signals.json`（指标快照 + 增速，Actions 无持久化时的跨天佐证）**。
-`meta.json` 里额外有 `predictions` 与 `signals` 两个摘要块，用于跨天比对。
+`meta.json` 里额外有 `predictions` / `prediction_generation` / `signals` 三个摘要块，用于跨天比对。注意 `analysis.new_entity_mention_rows` 是**本次运行新增的实体提及行数**（同日重复提及已去重），不是当日实体总数。
 
 `data/` 布局（均在 `app.data_dir` 下，已 gitignore 部分产物）：`aipulse.db`（主库）/ `cache/http.sqlite`（`utils/http.py` 响应缓存）/ `inbox/`（手动投喂）/ `logs/` / `reports/`。
 手动投喂目前**只能**往 `data/inbox/*.md` 里写（每行一条 URL，行内其余内容当备注）——`aipulse inbox add` 仍是占位命令，别假设它能用。
@@ -73,7 +73,7 @@ scripts/cron_daily.sh                                 # 本地 cron 备份（日
 CI（`.github/workflows/ci.yml`，无 secrets）实际只跑 4 步：`ruff check .` → `ruff format --check .` → `mypy src/aipulse` → `pytest`（**没有覆盖率门禁**，覆盖率是本地基线，不达标不会挂 CI）。`.github/workflows/probe.yml` 是手动触发的探测，不在 CI 链上。
 
 ```bash
-uv run pytest                             # 全量（当前 293 条，约 55s，无需网络、无需密钥）
+uv run pytest                             # 全量（当前 306 条，约 55s，无需网络、无需密钥）
 uv run pytest tests/unit/test_dedup.py                      # 单文件
 uv run pytest "tests/unit/test_dedup.py::test_l2_merges_arxiv_and_hf_same_paper" -q  # 单用例
 uv run pytest -q --cov=aipulse --cov-report=term            # 覆盖率：collectors/ ≥80%、openai_compat ≥80%、TOTAL 88%
@@ -155,7 +155,7 @@ configs/*.yaml ──> collectors/ ──> RawItem ──> normalize/dedup ─�
 | `store/repo_items.py` | `upsert_items` / `write_signals` / `list_items_collected`（当日窗口）/ `apply_hot_scores` / `apply_topic_ids` / `upsert_topics` / `upsert_entities` / `list_topics` / `list_entities` / `list_signals`（全量）/ `topic_uid` |
 | `store/repo_predictions.py` | `prediction_id`（`pred_` + `short_hash(day:statement:origin)`，稳定 id → `predict` 幂等）/ `insert_predictions`（已存在即跳过）/ `list_predictions` / `list_pending_due` / `list_verified_since`（`verdicts.md` 用）/ `save_verdict` |
 | `store/repo_runs.py` | `record_pipeline_run()`：写 `pipeline_runs`（stage=`daily`） |
-| `analysis/signals.py` | `velocity_for_item()`：由 `signals` 历史算 Δmetric/Δhour，无历史返回 `None`；`build_signals_summary()`：按实体聚合**全量历史**成 `signals.json`（含 `delta` / `velocity_per_hour` / `velocity_24h`）|
+| `analysis/signals.py` | `velocity_for_item()`：由 `signals` 历史算 Δmetric/Δhour，无历史返回 `None`；`build_signals_summary()`：按实体聚合**全量历史**成 `signals.json`（含 `status` / `delta` / `velocity_per_hour` / `velocity_24h`）。**增速口径：两次快照间隔 < `signals.min_velocity_window_hours`（默认 6h）标 `insufficient` 且不给数字**，<2 个快照标 `cold_start` |
 | `analysis/score.py` | 热度打分（见下节）。`compute_hot_scores()` 是纯函数（可脱离 DB 单测），`score_items()` 才碰库 |
 | `analysis/cluster.py` | jieba + TF-IDF + 余弦 → 连通分量聚类；排除 `skip_cluster`；单点簇不落库 |
 | `analysis/entities.py` | 词典 + 正则抽实体（`configs/entities.yaml` 驱动，加实体不改代码），`matcher()` 按 `project_root()` 缓存；`count_entities()` 聚合同日实体频次 |
@@ -173,14 +173,15 @@ configs/*.yaml ──> collectors/ ──> RawItem ──> normalize/dedup ─�
 | `render/scoreboard.py` | `render_scoreboard_markdown()`：可直接贴 README 的预言记分板（总览 + 校准表 + 分组），0 样本时优雅空态 |
 | `render/markdown.py` / `render/json_out.py` | 简报渲染；`brief.md` / `daily.json` |
 | `render/verdicts.py` | `render_verdicts_markdown()`：当日到期验证结果 → `verdicts.md`（命中/部分/落空/无法验证 + 判定方 + 依据）|
+| `render/predictions.py` | `render_predictions_markdown()`：当日**新生成**的预言 → `predictions.md`；被校验器拒收的草案也一并列出（拒收理由是质量证据，不藏）|
 | `pipeline/collect.py` | `run_collect()`：`asyncio.gather` + 并发信号量（默认 6），每源独立 `try/except`，写 `source_runs`，落库前去重 |
-| `pipeline/daily.py` | `run_daily()` / `analyze_day()` / `report_dir_for()`：每日一条龙编排；`auto_verify` 后自动产出 `scoreboard.md` / `verdicts.md` / `signals.json`，并把 `predictions`（`_stats_digest`）与 `signals` 摘要写进 `meta.json` |
+| `pipeline/daily.py` | `run_daily()` / `analyze_day()` / `report_dir_for()`：每日一条龙编排。`_generate_daily_predictions()` 在 hybrid/full 档生成当日预言并入库（异常只记 meta，不拖垮日报）；随后产出 `predictions.md` / `scoreboard.md` / `verdicts.md` / `signals.json`，并把 `predictions`（`_stats_digest`）/ `prediction_generation` / `signals` 写进 `meta.json` |
 | `notify/base.py` | `Notifier` Protocol + `RenderedReport`；`notify/file.py::FileNotifier`（唯一实现）。其余渠道明确 `NotImplementedError` |
 | `utils/text.py` | `estimate_tokens`（中文 1 字 1 token / 英文 3.5 字符）+ `truncate_summary(≤300)` |
 | `web/app.py` | M4 只读看板：`create_app()`，5 个页面（`/` `/archive` `/predictions` `/topics` `/search`）+ HTMX 局部刷新 `/search/partial`；「趋势」「辩论」入口置灰占位（M5 点亮）。测试可注入 `db_path` / `reports_dir` |
 | `web/data.py` | `ReadOnlyStore`（SQLite **`mode=ro`** 只读 + `available` 判存在）/ `ReportIndex`（扫 `data/reports/*/*/*/daily.json`）。库不存在时不创建、查询返回空，页面走空态 |
 | `web/charts.py` | `build_calibration_chart()`：校准分桶 → SVG 坐标（纯函数）。对角虚线 = 完美校准 |
-| `web/templates/` · `web/static/style.css` | Jinja2 模板（base/index/archive/predictions/topics/search/_results）+ 极简黑白样式（无前端构建链）|
+| `web/templates/` · `web/static/` | Jinja2 模板（base/index/archive/predictions/topics/search/_results）+ 极简黑白样式（无前端构建链）。**htmx 1.9.12 已收进 `static/htmx.min.js`（不走 CDN）**，且只做渐进增强——脚本没加载时搜索表单退化为普通 GET |
 
 ### 采集编排的三条状态语义
 
@@ -257,6 +258,8 @@ hot_score = 100 * clamp( w_engagement*engagement_norm        # Σ coeff*log1p(me
 
 三档运行模式（`configs/default.yaml` 的 `mode`）：`off`（零 API 花费）/ `hybrid`（预言生成 + 主编点评）/ `full`（全部）。`Settings.effective_mode()` 在 `llm.enabled=false` 或 `api_key` 为空时**自动降级为 `off`**，只提示一次，不报错退出。
 
+**daily 与三档的关系（M4 补齐）**：`daily` 会按档位做 `brief`（hybrid/full → 主编点评）**和 `generate_predictions`（hybrid/full → 当日预言入库）**，`off` 档两条路径都不触发（零网络）。daily.yml 里显式设了 `AIPULSE_MODE=hybrid`——**不设这个，配了 key 记分板样本也不会增长**。
+
 **数据源环境分级（本地 WSL 与 Actions 网络可达性不同）**：
 
 | `availability` | 本地（未设 `AIPULSE_ENV`） | Actions（`AIPULSE_ENV=actions`） |
@@ -274,7 +277,7 @@ hot_score = 100 * clamp( w_engagement*engagement_norm        # Σ coeff*log1p(me
 
 | 文件 | 段 | 消费方 |
 |---|---|---|
-| `default.yaml` | `app` / `mode` / `llm`（含 `json_schema: auto`）/ `budget`（含 `price_*_cny_per_1m`）/ `pipeline`（`daily_top_n` `brief_sections` `predictions_per_day` `prediction_horizons` `auto_verify` `weekly_debate_enabled`）/ `verify`（`grace_days` `evidence_window_grace_days` `evidence_top_k` `similarity_threshold` `strong_similarity` `min_evidence` `partial_tolerance` `max_context_tokens`）/ `output` / `notify` / `http` | `Settings` |
+| `default.yaml` | `app` / `mode` / `llm`（含 `json_schema: auto`）/ `budget`（含 `price_*_cny_per_1m`）/ `pipeline`（`daily_top_n` `brief_sections` `predictions_per_day` `prediction_horizons` `auto_verify` `weekly_debate_enabled`）/ `verify`（`grace_days` `evidence_window_grace_days` `evidence_top_k` `similarity_threshold` `strong_similarity` `min_evidence` `partial_tolerance` `max_context_tokens`）/ **`signals`（`min_velocity_window_hours`，M4）** / `output` / `notify` / `http` | `Settings` |
 | `sources.yaml` | 每源的端点、权重、`availability`、`rate_limit`、`title_only`、`fallback_endpoints` | `collectors/` + `analysis/score.py` |
 | `scoring.yaml` | `weights` / `freshness` / `cross_source_bonus` / `engagement`（每源指标系数）/ `cold_start` / `title_only_weight` / `cluster` | `analysis/score.py` `analysis/cluster.py` |
 | `entities.yaml` | `entities.{model,framework,company,hardware,concept,person}`（name + aliases） | `analysis/entities.py` |
@@ -339,7 +342,7 @@ hot_score = 100 * clamp( w_engagement*engagement_norm        # Σ coeff*log1p(me
 - LLM 链路**可用 `respx` 拦截**：v1.7 起 `llm/openai_compat.py` 改 httpx 直连（走项目 `HttpClient`），`tests/unit/test_openai_compat.py` 即用 `respx` mock `/chat/completions` 与 json_schema→json_object 降级路径。结构化链路也仍可用桩客户端（`FakeLLM` / 自定义 `LLMClient`），off 档用 `NullLLM` 断言零网络。
 - M3a 预言单测：`test_prediction_schema.py`（Pydantic 校验 / 模糊措辞）、`test_predictor.py`（生成 + 一次重写 + 丢弃记账）、`test_predict_cli.py`（`predict add` 双模交互 + 幂等）。
 - M4 单测：`test_web.py`（`TestClient` 打 5 个页面 + **只读断言**：直接对看板 engine 发 DELETE 必须被 SQLite 拒绝；0 样本空态文案；报告 JSON 损坏时的降级；`serve` 用 monkeypatch 的假 `uvicorn.run` 验端口）、`test_signals.py`（`build_signals_summary` 的增速 / 冷启动 / 排序）、`test_verdicts_render.py`、`test_daily.py`（新增 `scoreboard.md`/`signals.json` 落盘与 meta 摘要）。
-- 覆盖率基线（M4 实测）：`web/app` 95% / `web/data` 92% / `web/charts` 100% / `pipeline/daily` 93% / **TOTAL 88%**。
+- 覆盖率基线（M4 实测）：`web/app` 95% / `web/data` 92% / `web/charts` 100% / `render/verdicts`·`render/predictions` 100% / `pipeline/daily` 93% / **TOTAL 89%**。
 
 ---
 
@@ -390,4 +393,6 @@ hot_score = 100 * clamp( w_engagement*engagement_norm        # Σ coeff*log1p(me
 | mypy strict 下可空 datetime 列的列方法/比较 | `Prediction.verified_at` 是 `datetime \| None` → `.is_not()` / `.asc()` 报 `union-attr`、`>=` 报 `operator`，`# type: ignore[union-attr]` 还会因错误码不匹配被判"未使用的 ignore" → 用 `cast(Any, Prediction.verified_at)` 收口（沿用"不要凭印象写错误码"）|
 | 本地验证 `aipulse serve` | 普通 `&` 起的后台进程会在命令结束后被回收，curl 表现成 `status=000`（不是页面 bug）→ 用 `nohup ... &`，或起在同一命令里再 curl |
 | `AIPULSE_ROOT` 指向临时目录 | 找不到 `alembic.ini` → `ensure_schema()` 回落 `create_all`。做隔离演示库时要**先跑一次 `daily`/`ensure_schema` 建表再插数据**，否则 `no such table` |
+| **测试里改 `AIPULSE_ROOT` 会连带打断 prompts/configs** | `prompts_dir()` 与 `load_scoring` / `load_entities` 都按 `project_root()` 解析，root 一改就读不到 `prompts/**.j2` → `FileNotFoundError`。**要跑「会调 LLM」的用例，别改 root**，改成注入 `Settings(app={"data_dir": str(tmp_path / "data")}, ...)` 并 monkeypatch `daily.load_settings`（见 `test_run_daily_hybrid_generates_and_stores_predictions`）|
+| **`daily` 曾经完全不生成预言（M4 补齐）** | `mode: hybrid` 的定义是预言生成 + 主编点评，但 M2/M3a 只把 `brief` 接进了 daily → **配了 key 记分板样本也不会增长**。已补 `_generate_daily_predictions()` 与 `predictions.md`。改档位相关逻辑前先确认这条路径还在 |
 | **全新 clone 下建库失败（Actions 首跑实测）** | `data/` 目录在仓库里不存在（只被 .gitignore 覆盖）→ `migrate_to_head()` 把 `sqlite:///<abs>` 交给 alembic 时父目录缺失，报 `unable to open database file`。已修：该函数里先 `target.parent.mkdir(parents=True, exist_ok=True)`（`engine_for()` 早有这行）。**本地复用旧目录会掩盖这类问题——要验就删掉 `data/` 再跑** |

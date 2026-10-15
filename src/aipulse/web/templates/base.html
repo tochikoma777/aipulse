@@ -5,8 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}AI 脉搏{% endblock %}</title>
   <link rel="stylesheet" href="/static/style.css">
-  {# HTMX 只用于"局部刷新"，是渐进增强：脚本加载失败时下面的表单会退化成普通 GET，功能不受影响 #}
-  <script src="https://unpkg.com/htmx.org@1/dist/htmx.min.js" defer></script>
+  {# HTMX 收进本地 static（v1.9.12，48KB 原始 / ~14KB gzip）：本项目标榜"零外部依赖也能跑完整流程"，
+     首屏不该依赖第三方 CDN；同时它只做渐进增强——脚本没加载时搜索表单退化为普通 GET，功能不受影响 #}
+  <script src="/static/htmx.min.js" defer></script>
 </head>
 <body>
 <header class="topbar">

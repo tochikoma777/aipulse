@@ -129,7 +129,7 @@ def _write_report(reports_dir, day: str, *, headline: str) -> None:
             {
                 "mode": "off",
                 "day": day,
-                "analysis": {"items": 1, "topics": 1, "entities": 2},
+                "analysis": {"items": 1, "topics": 1, "new_entity_mention_rows": 2},
                 "verify": {"verified": 1, "unverifiable": 0, "deferred": 0, "llm_calls": 0},
                 "predictions": {"total": 1, "verified": 1},
                 "signals": {"entities": 3, "points": 4, "with_velocity": 2},
@@ -179,6 +179,19 @@ def test_store_does_not_create_missing_db(tmp_path):
 
 
 # ── 页面 ────────────────────────────────────────────────────────────
+
+
+def test_htmx_is_served_locally_not_from_cdn(tmp_path):
+    """M4：本项目宣称"零外部依赖也能跑完整流程"，首屏不该吊在第三方 CDN 上。"""
+    client = _client(tmp_path)
+
+    asset = client.get("/static/htmx.min.js")
+    assert asset.status_code == 200
+    assert "htmx" in asset.text.lower()
+
+    html = client.get("/").text
+    assert 'src="/static/htmx.min.js"' in html
+    assert "unpkg" not in html and "cdn." not in html
 
 
 def test_all_pages_render_without_any_data(tmp_path):
@@ -266,6 +279,7 @@ def test_archive_lists_and_selects_days(tmp_path):
 
     picked = client.get(f"/archive?date={older}").text
     assert "旧的一天" in picked
+    assert "新增实体提及 2" in picked  # 口径澄清后的字段名（archive 页展示）
 
 
 def test_topics_and_search_pages(tmp_path):

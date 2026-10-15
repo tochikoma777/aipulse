@@ -16,6 +16,11 @@ from sqlmodel import Session
 from aipulse.store.models import Item, Signal
 from aipulse.store.repo_items import signals_for_entity
 
+# 两次快照的最小间隔（小时）：不足则不给增速（`insufficient`）。
+# 真实阈值走 `configs/default.yaml::signals.min_velocity_window_hours`，
+# 这里只是直接调用本模块时的兜底默认值（保持纯函数可测）。
+MIN_VELOCITY_WINDOW_HOURS = 6.0
+
 # 各源可算增速的 (entity_type, metric) 映射；不在表内的源（arxiv/rss/inbox）无信号。
 _SOURCE_SIGNAL = {
     "github_trending": ("repo", "stars"),
@@ -69,6 +74,7 @@ class SignalSeries:
     last_ts: datetime
     first_value: float
     last_value: float
+    min_window_hours: float = MIN_VELOCITY_WINDOW_HOURS
 
     @property
     def delta(self) -> float:
@@ -79,9 +85,18 @@ class SignalSeries:
         return (self.last_ts - self.first_ts).total_seconds() / 3600.0
 
     @property
+    def status(self) -> str:
+        """`ok` 可算增速 / `cold_start` 少于 2 个快照 / `insufficient` 间隔不足。"""
+        if self.points < 2:
+            return "cold_start"
+        if self.hours < self.min_window_hours:
+            return "insufficient"
+        return "ok"
+
+    @property
     def velocity_per_hour(self) -> float | None:
-        """`Δvalue / Δhours`；只有 1 个快照（跨天不足）时为 None。"""
-        if self.points < 2 or self.hours <= 0:
+        """`Δvalue / Δhours`；`status != ok` 时一律为 None（宁缺毋滥）。"""
+        if self.status != "ok":
             return None
         return self.delta / self.hours
 
@@ -92,6 +107,7 @@ class SignalSeries:
             "entity_key": self.entity_key,
             "metric": self.metric,
             "points": self.points,
+            "status": self.status,
             "first_ts": self.first_ts.isoformat(),
             "last_ts": self.last_ts.isoformat(),
             "first_value": self.first_value,
@@ -103,7 +119,7 @@ class SignalSeries:
         }
 
 
-def _series_from(rows: Sequence[Signal]) -> SignalSeries:
+def _series_from(rows: Sequence[Signal], *, min_window_hours: float) -> SignalSeries:
     first, last = rows[0], rows[-1]
     return SignalSeries(
         entity_type=first.entity_type,
@@ -114,11 +130,17 @@ def _series_from(rows: Sequence[Signal]) -> SignalSeries:
         last_ts=last.ts,
         first_value=float(first.value),
         last_value=float(last.value),
+        min_window_hours=min_window_hours,
     )
 
 
-def build_signals_summary(rows: Sequence[Signal]) -> dict[str, Any]:
+def build_signals_summary(
+    rows: Sequence[Signal], *, min_window_hours: float = MIN_VELOCITY_WINDOW_HOURS
+) -> dict[str, Any]:
     """把 signals 快照聚合成「每实体一条序列摘要」，含绝对增量与增速。
+
+    **增速口径**：两次快照间隔必须 ≥ `min_window_hours`，否则标 `insufficient` 不给数字
+    （同一小时内连跑会把 Δ/hour 放大成荒谬的"日增"，那比没有数据更伤可信度）。
 
     **为什么按全量历史（而非当日窗口）聚合**：增速的定义是"两次快照之差 / 时间差"，
     只取当天一个点永远算不出增速。聚合全量历史后，连续跑两天即可得到 star 增速——
@@ -131,7 +153,10 @@ def build_signals_summary(rows: Sequence[Signal]) -> dict[str, Any]:
     for row in rows:
         grouped.setdefault((row.entity_type, row.entity_key, row.metric), []).append(row)
 
-    series = [_series_from(sorted(points, key=lambda s: s.ts)) for points in grouped.values()]
+    series = [
+        _series_from(sorted(points, key=lambda s: s.ts), min_window_hours=min_window_hours)
+        for points in grouped.values()
+    ]
     # 有增速的排前面（增速降序），冷启动（单点）的按实体名排在后面稳定输出
     series.sort(
         key=lambda s: (
@@ -151,7 +176,10 @@ def build_signals_summary(rows: Sequence[Signal]) -> dict[str, Any]:
     return {
         "point_count": len(rows),
         "entity_count": len(series),
-        "with_velocity": sum(1 for s in series if s.velocity_per_hour is not None),
+        "with_velocity": sum(1 for s in series if s.status == "ok"),
+        "insufficient": sum(1 for s in series if s.status == "insufficient"),
+        "cold_start": sum(1 for s in series if s.status == "cold_start"),
+        "min_window_hours": min_window_hours,
         "by_type": by_type,
         "series": [s.to_dict() for s in series],
     }

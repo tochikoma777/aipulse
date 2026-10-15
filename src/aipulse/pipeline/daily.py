@@ -29,14 +29,16 @@ from aipulse.notify.base import RenderedReport
 from aipulse.notify.file import FileNotifier
 from aipulse.pipeline.collect import CollectResult, run_collect
 from aipulse.reasoning.brief import BriefOutput, generate_brief
+from aipulse.reasoning.predictor import PredictOutput, generate_predictions
 from aipulse.reasoning.verifier import verify_due_predictions
 from aipulse.render.json_out import render_json
 from aipulse.render.markdown import render_markdown
+from aipulse.render.predictions import render_predictions_markdown
 from aipulse.render.scoreboard import render_scoreboard_markdown
 from aipulse.render.verdicts import render_verdicts_markdown
 from aipulse.schema.brief import DailyBrief
 from aipulse.store.db import engine_for, ensure_schema
-from aipulse.store.models import Item
+from aipulse.store.models import Item, Topic
 from aipulse.store.repo_items import (
     apply_hot_scores,
     apply_topic_ids,
@@ -47,7 +49,11 @@ from aipulse.store.repo_items import (
     upsert_entities,
     upsert_topics,
 )
-from aipulse.store.repo_predictions import list_predictions, list_verified_since
+from aipulse.store.repo_predictions import (
+    insert_predictions,
+    list_predictions,
+    list_verified_since,
+)
 from aipulse.store.repo_runs import record_pipeline_run
 
 log = get_logger(__name__)
@@ -72,12 +78,17 @@ def report_dir_for(settings: Settings, day: date) -> Path:
 
 
 def analyze_day(session: Session, *, day: date) -> dict[str, Any]:
-    """打分 + 聚类 + 实体统计，落库。返回统计信息。"""
+    """打分 + 聚类 + 实体统计，落库。返回本次运行的落库增量统计。
+
+    注意口径：`new_entity_mention_rows` 是**本次运行新增的实体提及行数**，不是当日实体总数——
+    同一天内同一实体的重复提及会被 `upsert_entities` 去重（这是对的），
+    所以同一天第二次运行时该值会显著变小。要看"当日实体总览"请查库（Web `/topics` 就是这么做的）。
+    """
     start, end = day_window(day)
     items = list_items_collected(session, since=start, until=end)
     if not items:
         log.warning("pipeline.analyze.empty", day=day.isoformat())
-        return {"items": 0, "scored": 0, "topics": 0, "entities": 0}
+        return {"items": 0, "scored": 0, "topics": 0, "new_entity_mention_rows": 0}
 
     scores = score_items(session, items)
     apply_hot_scores(session, scores)
@@ -94,13 +105,13 @@ def analyze_day(session: Session, *, day: date) -> dict[str, Any]:
         items=len(items),
         scored=len(scores),
         topics=len(topics),
-        entities=n_entities,
+        new_entity_mention_rows=n_entities,
     )
     return {
         "items": len(items),
         "scored": len(scores),
         "topics": len(topics),
-        "entities": n_entities,
+        "new_entity_mention_rows": n_entities,
     }
 
 
@@ -127,6 +138,52 @@ async def _auto_verify(
         "failed": outcome.failed,
         "llm_calls": outcome.llm_calls,
     }
+
+
+async def _generate_daily_predictions(
+    session: Session,
+    *,
+    client: LLMClient,
+    settings: Settings,
+    day: date,
+    mode: RunMode,
+    items: list[Item],
+    topics: list[Topic],
+    entity_counts: dict[str, dict[str, Any]],
+    skip_llm: bool,
+) -> tuple[PredictOutput | None, dict[str, Any]]:
+    """★ hybrid/full 档：自动生成当日预言并入库（§8.5 三档模式里 hybrid 的核心动作）。
+
+    **为什么必须接进 daily**：`mode: hybrid` 的定义是"自动预言生成 + 主编点评"，
+    若只生成简报不生成预言，配置 key 也不会让记分板样本增长——那就等于白配。
+    任何异常都降级为一条 meta 记录，绝不中断日报（与 `_auto_verify` 同一策略）。
+    """
+    if mode == RunMode.OFF or skip_llm:
+        return None, {"mode": mode.value, "generated": 0, "inserted": 0, "dropped": []}
+    try:
+        output = await generate_predictions(
+            client=client,
+            settings=settings,
+            items=items,
+            topics=topics,
+            entity_counts=entity_counts,
+            day=day,
+            mode=mode,
+            skip_llm=skip_llm,
+        )
+        inserted = insert_predictions(session, output.predictions)
+    except Exception as exc:  # 预言生成是增强，不允许拖垮主流程
+        log.error("pipeline.predict.failed", error=repr(exc))
+        return None, {"mode": mode.value, "error": repr(exc)}
+    summary = {
+        "mode": mode.value,
+        "generated": len(output.predictions),
+        "inserted": inserted,
+        "dropped": output.meta.get("dropped", []),
+        "llm_calls": output.meta.get("llm_calls", 0),
+    }
+    log.info("pipeline.predict.done", **{k: v for k, v in summary.items() if k != "dropped"})
+    return output, summary
 
 
 def _stats_digest(stats: PredictionStats) -> dict[str, Any]:
@@ -189,6 +246,18 @@ async def run_daily(
             mode=mode,
             skip_llm=skip_llm,
         )
+        # ★ hybrid/full：生成当日预言（off 档直接返回 None，零网络）
+        predict_output, predict_summary = await _generate_daily_predictions(
+            session,
+            client=client,
+            settings=settings,
+            day=report_day,
+            mode=mode,
+            items=items,
+            topics=topics,
+            entity_counts=entity_counts,
+            skip_llm=skip_llm,
+        )
         if settings.pipeline.auto_verify:
             verify_started = utcnow()
             verify_summary = await _auto_verify(
@@ -201,7 +270,10 @@ async def run_daily(
         # ★ v1.10：记分板由 daily 自动产出，因此 Actions 每天 commit 的报告天然含记分板
         pred_stats = compute_prediction_stats(list_predictions(session))
         # ★ M4：signals 快照 + 增速随报告落盘（Actions 无持久化时的跨天佐证）
-        signals_summary = build_signals_summary(list_signals(session))
+        signals_summary = build_signals_summary(
+            list_signals(session),
+            min_window_hours=settings.signals.min_velocity_window_hours,
+        )
         record_pipeline_run(
             session,
             day=report_day,
@@ -233,10 +305,14 @@ async def run_daily(
         }
     meta["verify"] = verify_summary
     meta["predictions"] = _stats_digest(pred_stats)
+    meta["prediction_generation"] = predict_summary
     meta["signals"] = {
         "entities": signals_summary.get("entity_count", 0),
         "points": signals_summary.get("point_count", 0),
         "with_velocity": signals_summary.get("with_velocity", 0),
+        "insufficient": signals_summary.get("insufficient", 0),
+        "cold_start": signals_summary.get("cold_start", 0),
+        "min_window_hours": signals_summary.get("min_window_hours"),
     }
 
     # ── 渲染 + 落盘（走 FileNotifier，符合 §11.2 的 Notifier 抽象）──
@@ -254,6 +330,11 @@ async def run_daily(
             "meta.json": json.dumps(meta, ensure_ascii=False, indent=2),
             "scoreboard.md": render_scoreboard_markdown(pred_stats),
             "verdicts.md": verdicts_md,
+            "predictions.md": render_predictions_markdown(
+                predict_output.predictions if predict_output else [],
+                dropped=predict_summary.get("dropped") or [],
+                generated_at=generated_at,
+            ),
             "signals.json": json.dumps(
                 {
                     "date": report_day.isoformat(),

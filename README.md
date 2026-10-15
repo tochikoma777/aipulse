@@ -33,8 +33,8 @@ aipulse 多做了一件难得多的事：**每天给出 3-5 条可证伪的预�
 | 主题聚类 | jieba + TF-IDF + 余弦连通分量；仅标题源不参与聚类（避免 22 字摘要污染相似度矩阵） |
 | 每日简报 | 头条 / 总览 / 主编点评 / 分板块条目 / 矛盾之处 / 被低估的条目 |
 | **★ 预言系统** | 生成 + 手写 + 不可证伪拦截 → 到期验证（双路径）→ 命中率 / Brier / 校准度 / 5 维分组统计 |
-| Web 看板 | `aipulse serve`：今日简报 / 归档 / **预言记分板 + 校准曲线** / 主题演化 / 检索（**只读**） |
-| 自动化 | GitHub Actions 每日 07:00（北京时间）跑一次，报告 commit 回仓库；本地 cron 作为备份 |
+| Web 看板 | `aipulse serve`：今日简报 / 归档 / **预言记分板 + 校准曲线** / 主题演化 / 检索（**只读**，htmx 已内置，无外部依赖） |
+| 自动化 | GitHub Actions 每日 07:00（北京时间）跑一次（`hybrid` 档：自动生成预言 + 主编点评），报告 commit 回仓库；本地 cron 作为备份 |
 | 零 API 也能用 | 三档模式，未配置 key 自动降级，**采集 / 打分 / 聚类 / 手写预言 / 自动验证 / 统计全链路可用** |
 
 ## 三档运行模式
@@ -109,6 +109,10 @@ uv run aipulse daily                    # hybrid/full 档：自动生成预言 +
 还有按 `category` / `horizon_days` / `origin`（human / llm）/ `model` / `prompt_version` 的分组命中率。
 `serve` 起来的 `/predictions` 页面会把这些画成一张**校准曲线**（点越贴近对角线，系统越清楚自己不知道什么）。
 
+**增速只报可信的数字**：`Δstars / Δhour` 需要两次快照，若间隔不足 `signals.min_velocity_window_hours`（默认 6 小时），
+系统会标 `insufficient` 并**拒绝给出增速**——手动重跑、调试连跑都不会污染数据。
+（把「几分钟涨 3 star」换算成「日增 3000」是自欺；离谱数据比没有数据更伤可信度。）
+
 ## 架构
 
 ```mermaid
@@ -143,6 +147,13 @@ flowchart LR
 ```bash
 gh workflow run daily.yml          # 手动跑一次
 gh run list --workflow=daily.yml   # 看历史运行
+```
+
+档位用仓库变量显式声明：`AIPULSE_MODE: hybrid`（每天 2-3 次调用：预言生成 + 主编点评；`full` 档多出的单条点评对记分板说服力没有帮助）。
+需要配置 secret `AIPULSE_LLM__API_KEY` 才会生效，未配置时自动降级 `off` 档（**不配 key 记分板就只有手写预言**）：
+
+```bash
+gh secret set AIPULSE_LLM__API_KEY     # 粘贴 DeepSeek key；也可在仓库 Settings → Secrets 里加
 ```
 
 三条持久化对策（Actions 每次都是全新的机器）：

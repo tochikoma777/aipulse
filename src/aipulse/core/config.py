@@ -128,6 +128,18 @@ class VerifySettings(BaseModel):
     max_context_tokens: int = 12000  # 证据注入 LLM 的 token 预算
 
 
+class SignalSettings(BaseModel):
+    """指标增速口径（M4）。
+
+    两次快照间隔不足 `min_velocity_window_hours` 时**不计算**增速（标 `insufficient`）：
+    调试/手动重跑常在同一小时内连跑，`Δvalue / Δhours` 会把"几分钟涨 3 star"
+    放大成"日增 3000"这种离谱数字——离谱数据比没有数据更伤害可信度。
+    按天正常运行时（cron 07:00）远大于该阈值，自动恢复正常。
+    """
+
+    min_velocity_window_hours: float = 6.0
+
+
 class OutputSettings(BaseModel):
     formats: list[str] = Field(default_factory=lambda: ["md", "json"])
     html_enabled: bool = True
@@ -156,6 +168,7 @@ class Settings(BaseSettings):
     budget: BudgetSettings = Field(default_factory=BudgetSettings)
     pipeline: PipelineSettings = Field(default_factory=PipelineSettings)
     verify: VerifySettings = Field(default_factory=VerifySettings)
+    signals: SignalSettings = Field(default_factory=SignalSettings)
     output: OutputSettings = Field(default_factory=OutputSettings)
     notify: NotifySettings = Field(default_factory=NotifySettings)
 

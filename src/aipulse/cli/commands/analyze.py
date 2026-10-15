@@ -49,6 +49,6 @@ def run(
     console.print(f"[bold]分析完成[/bold] {day.isoformat()}：")
     console.print(
         f"条目 {stats['items']} · 已打分 {stats['scored']} · "
-        f"主题 {stats['topics']} · 实体 {stats['entities']}"
+        f"主题 {stats['topics']} · 新增实体提及 {stats['new_entity_mention_rows']}"
     )
     raise typer.Exit(code=0)

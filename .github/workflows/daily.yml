@@ -23,6 +23,11 @@ jobs:
       # ★ 打开 actions_only 的源（reddit / hf_papers）。本地 WSL 因 DNS 污染跳过，
       #   在 Actions 环境可达，必须显式声明，否则这两个源会被当成"本地"而跳过。
       AIPULSE_ENV: actions
+      # ★ 显式声明 hybrid 档，不依赖 configs/default.yaml 里的 full 默认值：
+      #   每天只调 2-3 次（预言生成 + 主编点评），配合 budget 每日 2 元上限自动降级，成本可控。
+      #   意义在于**记分板样本会每天自动增长**；full 档多出的单条点评对说服力没有帮助。
+      #   未配置 AIPULSE_LLM__API_KEY 时 effective_mode() 自动降级为 off（不报错退出）。
+      AIPULSE_MODE: hybrid
     steps:
       - uses: actions/checkout@v4
 
@@ -69,6 +74,9 @@ jobs:
           echo
           echo "── scoreboard.md ──"
           cat "data/reports/$day/scoreboard.md"
+          echo
+          echo "── predictions.md ──"
+          cat "data/reports/$day/predictions.md"
 
       # ── §14.1 对策①：报告文件 commit 回仓库（文本即数据库）──────────
       - name: Commit reports

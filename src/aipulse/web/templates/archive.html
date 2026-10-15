@@ -24,7 +24,7 @@
     <p class="meta">
       {% if meta.mode %}模式 <code>{{ meta.mode }}</code>{% endif %}
       {# 下标而非点号：`meta.analysis.items` 会取到 dict.items 方法（Jinja 先属性后键） #}
-      {% if meta.analysis %} · 条目 {{ meta.analysis['items'] }} · 主题 {{ meta.analysis['topics'] }} · 实体 {{ meta.analysis['entities'] }}{% endif %}
+      {% if meta.analysis %} · 条目 {{ meta.analysis['items'] }} · 主题 {{ meta.analysis['topics'] }} · 新增实体提及 {{ meta.analysis['new_entity_mention_rows'] }}{% endif %}
       {% if meta.llm %} · LLM 调用 {{ meta.llm['calls'] }}{% if meta.llm['degraded'] %}（已降级）{% endif %}{% endif %}
     </p>
     {% if daily.headline %}<p class="lede">{{ daily.headline }}</p>{% endif %}

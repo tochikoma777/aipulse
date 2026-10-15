@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import json as _json
 from datetime import UTC, datetime, timedelta
 
 from sqlmodel import Session
@@ -10,7 +11,7 @@ from sqlmodel import Session
 from aipulse.core.config import RunMode, load_settings
 from aipulse.core.timeutil import today_local
 from aipulse.pipeline.daily import analyze_day, run_daily
-from aipulse.store.db import init_db
+from aipulse.store.db import engine_for, init_db
 from aipulse.store.models import Item, Prediction, Signal
 
 
@@ -86,8 +87,6 @@ def test_run_daily_off_mode_produces_reports(monkeypatch, tmp_path):
     assert (result.report_dir / "daily.json").exists()
     assert (result.report_dir / "meta.json").exists()
 
-    import json as _json
-
     daily = _json.loads((result.report_dir / "daily.json").read_text(encoding="utf-8"))
     assert daily["meta"]["mode"] == "off"
     assert len(daily["items"]) == 2
@@ -150,8 +149,6 @@ def test_run_daily_writes_scoreboard_and_signals(monkeypatch, tmp_path):
 
     result = asyncio.run(run_daily(no_collect=True, skip_llm=True, db_path=str(db)))
 
-    import json as _json
-
     assert (result.report_dir / "scoreboard.md").exists()
     assert (result.report_dir / "signals.json").exists()
     assert (result.report_dir / "verdicts.md").exists()
@@ -212,3 +209,138 @@ def test_run_daily_auto_verify_off_mode(monkeypatch, tmp_path):
 
     assert result.meta["verify"]["verified"] == 1
     assert result.meta["verify"]["llm_calls"] == 0
+
+
+def test_run_daily_hybrid_generates_and_stores_predictions(monkeypatch, tmp_path):
+    """★ M4：`mode: hybrid` 下 daily 必须**真的生成预言并入库**。
+
+    没有这条，配了 API key 记分板样本也不会增长——hybrid 檔的定义就是"预言生成 + 主编点评"。
+    用桩 LLM（按 purpose 分发）验证，不碰网络。
+    """
+    import aipulse.pipeline.daily as daily_mod
+    from aipulse.core.config import RunMode, Settings
+    from aipulse.llm.base import LLMResult
+    from aipulse.store.repo_predictions import list_predictions
+
+    # 只把 data_dir 指到临时目录，**不动 AIPULSE_ROOT**——
+    # prompts/ 与 configs/ 都按 project_root() 解析，改了 root 就找不到模板了。
+    settings = Settings(
+        app={"data_dir": str(tmp_path / "data")},
+        mode="hybrid",
+        llm={"api_key": "sk-test-key"},
+    )
+    monkeypatch.setattr(daily_mod, "load_settings", lambda *a, **k: settings)
+    db = tmp_path / "t.db"
+    _seed(db)
+
+    brief_json = _json.dumps(
+        {
+            "headline": "hybrid 头条",
+            "executive_summary": "总览",
+            "editor_note": "主编点评",
+            "sections": [],
+            "contradictions": [],
+            "underrated": [],
+        },
+        ensure_ascii=False,
+    )
+    predict_json = _json.dumps(
+        {
+            "predictions": [
+                {
+                    "statement": "vLLM 将在 30 天内发布 v2 并保持 star 增速领先",
+                    "category": "capability",
+                    "confidence": 0.75,
+                    "horizon_days": 30,
+                    "falsifiable_criteria": "到期日 vLLM 官方仓库 tag 出现 v2.* 即命中",
+                    "rationale": "star 增速与主题热度支持。",
+                    "evidence_item_ids": ["a", "b"],
+                }
+            ]
+        },
+        ensure_ascii=False,
+    )
+
+    class _StubClient:
+        def __init__(self) -> None:
+            self.purposes: list[str] = []
+
+        async def chat(self, messages, **kwargs):  # noqa: ANN001, ANN003
+            purpose = kwargs.get("purpose", "general")
+            self.purposes.append(purpose)
+            content = brief_json if purpose.startswith("brief") else predict_json
+            return LLMResult(content=content, model="stub/strong")
+
+    stub = _StubClient()
+    monkeypatch.setattr(daily_mod, "build_client", lambda *a, **k: stub)
+
+    result = asyncio.run(run_daily(no_collect=True, skip_llm=False, db_path=str(db)))
+
+    assert result.mode == RunMode.HYBRID
+    assert "predict_generate" in stub.purposes
+    gen = result.meta["prediction_generation"]
+    assert gen["mode"] == "hybrid"
+    assert gen["generated"] == 1 and gen["inserted"] == 1
+    assert gen["dropped"] == []
+
+    engine = engine_for(db)
+    with Session(engine, expire_on_commit=False) as s:
+        rows = list_predictions(s)
+    engine.dispose()
+    assert len(rows) == 1
+    assert rows[0].origin == "llm" and rows[0].status == "pending"
+
+    # 预言的判定结果与列表都要落进报告（§11.1）
+    preds_md = (result.report_dir / "predictions.md").read_text(encoding="utf-8")
+    assert "今日新生成的预言" in preds_md
+    assert "vLLM 将在 30 天内发布 v2" in preds_md
+
+    scoreboard = (result.report_dir / "scoreboard.md").read_text(encoding="utf-8")
+    assert "**1** 条预言" in scoreboard  # 0 样本→1 条待验证
+
+    daily_json = _json.loads((result.report_dir / "daily.json").read_text(encoding="utf-8"))
+    assert daily_json["meta"]["prediction_generation"]["generated"] == 1
+
+
+def test_run_daily_off_mode_does_not_call_predictor(monkeypatch, tmp_path):
+    """off 档禁止任何模型请求（红线 8）：预言生成必须完全不触发。"""
+    monkeypatch.setenv("AIPULSE_ROOT", str(tmp_path))
+    monkeypatch.delenv("AIPULSE_LLM__API_KEY", raising=False)
+    load_settings.cache_clear()
+    db = tmp_path / "t.db"
+    _seed(db)
+
+    import aipulse.pipeline.daily as daily_mod
+
+    async def _boom(**kwargs):  # noqa: ANN003
+        raise AssertionError("off 档不得触发预言生成（红线 8）")
+
+    # off 档仍会构造 NullLLM（那本身不产生网络请求），关键是**预言生成整条路径不被触发**
+    monkeypatch.setattr(daily_mod, "generate_predictions", _boom)
+
+    result = asyncio.run(run_daily(no_collect=True, skip_llm=True, db_path=str(db)))
+
+    assert result.meta["prediction_generation"] == {
+        "mode": "off",
+        "generated": 0,
+        "inserted": 0,
+        "dropped": [],
+    }
+    assert "本次运行没有新增预言" in (result.report_dir / "predictions.md").read_text(
+        encoding="utf-8"
+    )
+
+
+def test_meta_analysis_entities_key_is_explicit(monkeypatch, tmp_path):
+    """口径澄清：字段名必须是 `new_entity_mention_rows`（本次新增行数），不是"当日实体数"。"""
+    monkeypatch.setenv("AIPULSE_ROOT", str(tmp_path))
+    load_settings.cache_clear()
+    db = tmp_path / "t.db"
+    _seed(db)
+
+    result = asyncio.run(run_daily(no_collect=True, skip_llm=True, db_path=str(db)))
+
+    assert "new_entity_mention_rows" in result.analysis
+    assert "entities" not in result.analysis
+    assert result.meta["signals"]["min_window_hours"] == 6.0
+    assert "insufficient" in result.meta["signals"]

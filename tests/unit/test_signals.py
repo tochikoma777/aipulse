@@ -7,6 +7,7 @@ from datetime import UTC, datetime, timedelta
 import pytest
 
 from aipulse.analysis.signals import (
+    MIN_VELOCITY_WINDOW_HOURS,
     build_signals_summary,
     item_signal_key,
     velocity_per_hour,
@@ -96,6 +97,51 @@ def test_build_signals_summary_empty():
         "point_count": 0,
         "entity_count": 0,
         "with_velocity": 0,
+        "insufficient": 0,
+        "cold_start": 0,
+        "min_window_hours": MIN_VELOCITY_WINDOW_HOURS,
         "by_type": {},
         "series": [],
     }
+
+
+def test_velocity_requires_minimum_window():
+    """★ M4 保护：两次快照间隔 < 6h 必须标 insufficient 且不给数字。
+
+    调试/手动重跑常在同一小时内连跑，Δ/hour 会把"几分钟涨 3 star"放大成"日增 3000"——
+    离谱数据比没有数据更伤可信度。
+    """
+    summary = build_signals_summary([_signal(100.0, 2.0), _signal(103.0, 1.0)])
+
+    entry = summary["series"][0]
+    assert entry["status"] == "insufficient"
+    assert entry["hours"] < MIN_VELOCITY_WINDOW_HOURS
+    assert entry["velocity_per_hour"] is None
+    assert entry["velocity_24h"] is None
+    assert entry["delta"] == 3.0  # 绝对增量仍如实记录，只是不给"率"
+    assert summary["with_velocity"] == 0
+    assert summary["insufficient"] == 1
+
+
+def test_velocity_boundary_exactly_min_window_is_ok():
+    rows = [_signal(100.0, MIN_VELOCITY_WINDOW_HOURS), _signal(160.0, 0.0)]
+    entry = build_signals_summary(rows)["series"][0]
+
+    assert entry["status"] == "ok"
+    assert entry["velocity_per_hour"] == pytest.approx(10.0)  # 60 / 6h
+
+
+def test_velocity_window_is_configurable():
+    """阈值走配置（`signals.min_velocity_window_hours`），可由调用方传入。"""
+    rows = [_signal(100.0, 2.0), _signal(120.0, 0.0)]
+
+    assert build_signals_summary(rows)["series"][0]["status"] == "insufficient"
+    relaxed = build_signals_summary(rows, min_window_hours=1.0)
+    assert relaxed["series"][0]["status"] == "ok"
+    assert relaxed["min_window_hours"] == 1.0
+
+
+def test_cold_start_is_distinct_from_insufficient():
+    single = build_signals_summary([_signal(100.0, 0.0)])["series"][0]
+    assert single["status"] == "cold_start"
+    assert build_signals_summary([_signal(100.0, 0.0)])["cold_start"] == 1

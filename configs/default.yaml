@@ -46,6 +46,11 @@ verify:
   partial_tolerance: 0.05          # 阈值型判据的 partial 容差带
   max_context_tokens: 12000        # 证据注入 LLM 的 token 预算
 
+# 指标增速（M4）：两次快照间隔 < 该值时不计算增速（标 insufficient），
+# 避免调试连跑时把"几分钟涨 3 star"误报成"日增 3000"
+signals:
+  min_velocity_window_hours: 6.0
+
 output:
   formats: [md, json]
   html_enabled: true
