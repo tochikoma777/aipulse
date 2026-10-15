@@ -1,0 +1,43 @@
+{
+  "mode": "off",
+  "day": "2026-10-15",
+  "generated_at": "2026-10-15T14:47:31.768072+00:00",
+  "analysis": {
+    "items": 178,
+    "scored": 178,
+    "topics": 4,
+    "entities": 236
+  },
+  "llm": {
+    "degraded": false,
+    "degraded_reason": "",
+    "calls": 0
+  },
+  "collect": {
+    "ok_sources": 7,
+    "failed_sources": 0,
+    "skipped": 0,
+    "total_items": 178
+  },
+  "verify": {
+    "verified": 0,
+    "unverifiable": 0,
+    "deferred": 0,
+    "failed": 0,
+    "llm_calls": 0
+  },
+  "predictions": {
+    "total": 0,
+    "verified": 0,
+    "pending": 0,
+    "unverifiable": 0,
+    "hit_rate": null,
+    "weighted_score": null,
+    "brier": null
+  },
+  "signals": {
+    "entities": 65,
+    "points": 65,
+    "with_velocity": 0
+  }
+}
