@@ -1,12 +1,12 @@
 {
   "mode": "off",
   "day": "2026-10-15",
-  "generated_at": "2026-10-15T14:47:31.768072+00:00",
+  "generated_at": "2026-10-15T14:49:07.055040+00:00",
   "analysis": {
-    "items": 178,
-    "scored": 178,
+    "items": 185,
+    "scored": 185,
     "topics": 4,
-    "entities": 236
+    "entities": 5
   },
   "llm": {
     "degraded": false,
@@ -17,7 +17,7 @@
     "ok_sources": 7,
     "failed_sources": 0,
     "skipped": 0,
-    "total_items": 178
+    "total_items": 185
   },
   "verify": {
     "verified": 0,
@@ -37,7 +37,7 @@
   },
   "signals": {
     "entities": 65,
-    "points": 65,
-    "with_velocity": 0
+    "points": 130,
+    "with_velocity": 65
   }
 }
