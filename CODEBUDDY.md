@@ -6,9 +6,10 @@ This file provides guidance to CodeBuddy Code when working with code in this rep
 
 `aipulse`（AI 脉搏）：每日采集 AI 领域热点，产出可回测的推演与预言。Python 3.11 + `uv`，SQLite 单文件存储，MIT。
 
-**里程碑状态（改动前先确认当前阶段）**：M0（骨架 + 数据源探测）与 M1（6 采集器 + inbox + 三级去重）已完成；**当前下一阶段是 M2**（热度打分 / 聚类 / 每日简报）。M3 预言系统 → M4 Actions 自动化 + Web 看板 + README 发布 → M5 周期长文 + 多角色辩论。不要跨阶段实现。
+**里程碑状态（改动前先确认当前阶段）**：M0（骨架 + 数据源探测）、M1（6 采集器 + inbox + 三级去重）、M2（热度打分 / 聚类 / 实体 + LLM 抽象 + 每日简报）、**M3a（★ 预言生成 + 手写 + 不可证伪拦截）、M3b（到期验证 + 命中率 / Brier / 校准度）** 均已完成（tag `m0` / `m1` / `m2` / `m3a`）；**当前下一阶段是 M4**（Actions 自动化 + Web 看板 + README 发布）→ M5（周期长文 + 多角色辩论）。不要跨阶段实现。
 
-`src/aipulse/cli/commands/` 下除 `init` / `doctor` / `collect` 外，其余（`normalize`/`analyze`/`brief`/`predict`/`debate`/`trend`/`daily`/`stats`/`topics`/`search`/`inbox`/`sources`/`serve`）都是 `placeholder_app()` 生成的占位 Typer 子应用，调用时抛 `NotImplementedError`。它们出现在 `--help` 里是刻意的，不是漏实现。
+已实现的 CLI：`init` / `doctor` / `collect` / `analyze` / `brief` / `daily` / `predict`（`add` / `list` / `verify` / `review`）/ `stats`（`stats --predictions`）。
+`src/aipulse/cli/commands/` 下其余子应用（`normalize`/`debate`/`trend`/`topics`/`search`/`inbox`/`sources`/`serve`）仍是 `placeholder_app()` 生成的占位，调用时抛 `NotImplementedError`。它们出现在 `--help` 里是刻意的，不是漏实现。
 
 ---
 
@@ -24,15 +25,38 @@ uv run aipulse doctor                     # 环境体检：Python/LLM key/代理
 uv run aipulse collect --since 24h        # 采集（单源失败隔离，退出码恒为 0）
 uv run aipulse collect --sources arxiv,hackernews --dry-run --json
 uv run aipulse doctor --no-network --json # 离线体检
+
+uv run aipulse analyze --date today --json            # M2：打分 + 聚类 + 实体统计（纯算法，零花费）
+uv run aipulse brief  --date today --skip-llm         # M2：生成简报（零 API 花费的数据版）
+uv run aipulse brief  --date today --top-n 10 --json  # 简报 JSON 到 stdout，日志走 stderr
+uv run aipulse daily  --since 24h --skip-llm          # M2：collect → analyze → brief → render 一条龙
+uv run aipulse daily  --no-collect --skip-llm         # 跳过采集，只做分析 + 简报（离线开发常用）
+
+uv run aipulse predict --date today --json            # M3a：从当日 Top 条目自动生成可证伪预言（hybrid/full 档）
+uv run aipulse predict --skip-llm                     # off 档：不产生 LLM 预言（手写才是 off 档核心）
+uv run aipulse predict add --yes                      # 手写预言（参数齐全、跳过预览；缺参自动降级为交互式向导）
+uv run aipulse predict add --criteria github_stars_reach --param repo=vllm-project/vllm --param threshold=90000
+uv run aipulse predict list --status pending --json   # 按状态（pending|verified|unverifiable）/来源（human|llm）列出
+
+uv run aipulse predict verify --due-date 2026-10-11 --json  # M3b：到期验证（量化判据零 LLM；语义走证据门槛→LLM）
+uv run aipulse predict verify --skip-llm --db data/aipulse.db  # off 档：只做量化判据自动判定，零网络
+uv run aipulse predict review pred_xxxx --verdict hit --note "依据：xxx 已于 10-09 发布"  # 人工兜底，verified_by=human
+uv run aipulse stats --predictions --json             # M3b：命中率 / 加权分 / Brier / 校准表 / 分组
+uv run aipulse stats --predictions --markdown         # 记分板 Markdown（可直接贴 README）
+uv run aipulse stats --predictions --out data/reports/scoreboard.md  # 落盘
 ```
+
+`analyze` / `brief` / `daily` 都支持 `--date YYYY-MM-DD`（默认 `today`，按 `app.timezone` 取本地日）、`--db <path>`、`--json`；`brief` / `daily` 的 `--skip-llm` 与 `--no-llm` 等价，强制本次按 `off` 档跑。`predict` 同样支持 `--date` / `--db` / `--json` / `--skip-llm`，但**尚未接入 `daily`**（独立命令）。
+
+产物落盘：`data/reports/YYYY/MM/DD/{brief.md,daily.json,meta.json}`（`FileNotifier` 唯一渠道）。
 
 ### 测试 / 质量门禁（全部对应 CI：`.github/workflows/ci.yml`）
 
 ```bash
-uv run pytest                             # 全量（约 142 条，无需网络、无需密钥）
+uv run pytest                             # 全量（当前 272 条，无需网络、无需密钥）
 uv run pytest tests/unit/test_dedup.py                      # 单文件
 uv run pytest "tests/unit/test_dedup.py::test_l2_merges_arxiv_and_hf_same_paper" -q  # 单用例
-uv run pytest -q --cov=aipulse --cov-report=term            # 覆盖率（collectors/ 基线 ≥80%）
+uv run pytest -q --cov=aipulse --cov-report=term            # 覆盖率：collectors/ ≥80%、openai_compat ≥80%、TOTAL 88%
 
 uv run ruff check .                       # lint（line-length=100，select=E,F,I,UP,B,SIM）
 uv run ruff format --check .              # 格式检查
@@ -69,12 +93,26 @@ uv run alembic upgrade head                            # 正式建表/演进走 
 
 ```
 configs/*.yaml ──> collectors/ ──> RawItem ──> normalize/dedup ──> store/repo_items ──> SQLite
-      │                  │                          │                     │
-   core/config      utils/http              pipeline/collect        store/models
-  （YAML+${ENV}）  （限速/重试/缓存）        （编排 + 故障隔离）      （SQLModel 9 表）
+      │                  │                          │                     │          │
+   core/config      utils/http              pipeline/collect        store/models    │（读回）
+  （YAML+${ENV}）  （限速/重试/缓存）        （编排 + 故障隔离）      （SQLModel 9 表）  ▼
+                                                              analysis/（打分·聚类·实体，纯算法）
+                                                                        │
+                                              reasoning/brief.py（简报）· reasoning/predictor.py（预言）
+                                                                        │  llm/（NullLLM | OpenAICompat，httpx 直连）
+                                                          render/{markdown,json_out}.py
+                                                                        │
+                                                          notify/file.py → data/reports/YYYY/MM/DD/
 ```
 
-CLI（`typer`）→ `pipeline/collect.py`（编排）是唯一的横向入口；采集器之间不互相调用，只通过 `RawItem` 与编排层通信。
+四条编排链，CLI（`typer`）是唯一横向入口：
+
+- M1：`pipeline/collect.py::run_collect()`（`asyncio.gather` + 并发信号量，单源隔离）。
+- M2：`pipeline/daily.py::run_daily()` = collect → `analyze_day()`（打分/聚类/实体落库）→ `generate_brief()` → `render` → `FileNotifier`。`analyze` 与 `brief` 两个 CLI 分别只跑其中一段（`brief` 不采集也不做分析，直接读库）。
+- M3a：`reasoning/predictor.py::generate_predictions()`（**独立于 `daily`**，由 `aipulse predict` 触发）→ 硬校验 → `store/repo_predictions.py` 落库。手写预言走 `predict add`，不经 LLM 编排。
+- M3b：`reasoning/verifier.py::verify_due_predictions()`（`predict verify` + `daily` 的 `auto_verify` 钩子）→ 量化判据查表 / 语义证据门槛+LLM → 写回 `predictions.status/verdict*`；`analysis/stats.py` + `render/scoreboard.py` 出记分板。
+
+采集器之间不互相调用，只通过 `RawItem` 与编排层通信；`reasoning/` 只依赖 `llm.LLMClient` Protocol，不 import 具体 SDK。
 
 ### 模块职责
 
@@ -92,9 +130,30 @@ CLI（`typer`）→ `pipeline/collect.py`（编排）是唯一的横向入口；
 | `normalize/clean.py` | `strip_html` / `normalize_whitespace` / `clean_text` / `truncate` / `detect_language`（只分 zh/en/None） |
 | `normalize/dedup.py` | 三级去重（见下） |
 | `store/models.py` | 9 张表：`items` / `signals` / `topics` / `entities` / `predictions` / `source_runs` / `pipeline_runs` / `llm_usage` / `llm_cache`。JSON 字段用 `sa_column=Column(JSON)`，不手写 `json.dumps` |
-| `store/repo_items.py` | `upsert_items` / `write_signals` / `clusterable_items` |
+| `store/repo_items.py` | `upsert_items` / `write_signals` / `list_items_collected`（当日窗口）/ `apply_hot_scores` / `apply_topic_ids` / `upsert_topics` / `upsert_entities` / `list_topics` / `list_entities` / `topic_uid` |
+| `store/repo_predictions.py` | `prediction_id`（`pred_` + `short_hash(day:statement:origin)`，稳定 id → `predict` 幂等）/ `insert_predictions`（已存在即跳过）/ `list_predictions` / `list_pending_due` / `save_verdict` |
+| `store/repo_runs.py` | `record_pipeline_run()`：写 `pipeline_runs`（stage=`daily`） |
+| `analysis/signals.py` | `velocity_for_item()`：由 `signals` 历史算 Δmetric/Δhour，无历史返回 `None` |
+| `analysis/score.py` | 热度打分（见下节）。`compute_hot_scores()` 是纯函数（可脱离 DB 单测），`score_items()` 才碰库 |
+| `analysis/cluster.py` | jieba + TF-IDF + 余弦 → 连通分量聚类；排除 `skip_cluster`；单点簇不落库 |
+| `analysis/entities.py` | 词典 + 正则抽实体（`configs/entities.yaml` 驱动，加实体不改代码），`matcher()` 按 `project_root()` 缓存；`count_entities()` 聚合同日实体频次 |
+| `llm/base.py` | `LLMClient` Protocol + `NullLLM`（off 档零网络）+ `FakeLLM`（测试用）+ `build_client()`（按 `effective_mode()` 选实现，hybrid/full 才懒加载 `OpenAICompatClient`） |
+| `llm/structured.py` | `generate_structured()`：response_model → JSON Schema → 校验 → **一次**修复重试 → 再失败返回 `None`（降级，绝不 raise 到 pipeline） |
+| `llm/prompt.py` | 加载 `prompts/**.j2`，解析 front-matter（`model_tier` / `temperature` / `purpose`），`version_hash` = 全文 sha256 前 8 位 |
+| `llm/openai_compat.py` | 唯一真实实现：**httpx 直连**（复用项目 `HttpClient`；`openai` SDK 已在 v1.7 移除，`uv.lock` 无 openai），fast/strong 双模型；`llm.json_schema: auto` 下首次 json_schema 收到 400 即降级 json_object + prompt 内嵌 schema，并进程内记忆（降级原因写 `llm_usage.error`，迁移 `a3c1d9f2e07b`） |
+| `llm/cache.py` / `llm/budget.py` | `llm_cache` 表缓存 / 每日预算（`budget.daily_limit_cny`）与降级顺序 |
+| `reasoning/brief.py` | `generate_brief()`：Top N 上下文组装（token 预算裁剪）→ LLM → 失败降级为 `_data_brief()` 数据版 |
+| `reasoning/predictor.py` | `generate_predictions()`：Top N + 主题 + 实体频次组装上下文 → `prompts/predict/generate.j2` → 结构化 `PredictionBatch` → 硬校验 → **一次**语义重写 → 仍不合法丢弃记账（任何 LLM 异常都降级为空，绝不 raise 到 pipeline） |
+| `reasoning/criteria.py` | 量化判据模板库（`configs/criteria.yaml`）的加载/渲染：`criteria_names` / `render_criteria` / `coerce_param` / `parse_param_assignments`。M3b 的 verifier 将复用同一套模板定义 |
+| `schema/prediction.py` | `Prediction` / `PredictionBatch` / `Verdict` + `find_vague_phrases`（模糊措辞黑名单，"可能"用负向断言排除"不可能"）+ `validate_prediction`（可证伪红线校验） |
+| `reasoning/verifier.py` | M3b 到期验证：**双路径**——`judge_criteria()` 量化判据查表（6 模板 + `custom` 受限 AST 求值，**零 LLM**）/ 语义路径 `retrieve_evidence()`（TF-IDF+余弦，窗口 `[生成日, due_date+3]`）→ 充分度门槛 → `generate_structured(Verdict)`。`verify_due_predictions()` 编排；**unverifiable 只由证据门槛产生**，LLM 失败保持 pending |
+| `analysis/stats.py` | `compute_prediction_stats()`：命中率 / 加权分 / Brier（`partial=0.5`）/ 校准分桶（含 `[0.05,0.5)`）/ 按 category·horizon·origin·model·prompt_version 分组；`unverifiable`+`pending` 不入分母 |
+| `render/scoreboard.py` | `render_scoreboard_markdown()`：可直接贴 README 的预言记分板（总览 + 校准表 + 分组），0 样本时优雅空态 |
+| `render/markdown.py` / `render/json_out.py` | 简报渲染；`brief.md` / `daily.json` |
 | `pipeline/collect.py` | `run_collect()`：`asyncio.gather` + 并发信号量（默认 6），每源独立 `try/except`，写 `source_runs`，落库前去重 |
-| `notify/base.py` | `Notifier` Protocol + `FileNotifier`（唯一实现）。其余渠道明确 `NotImplementedError` |
+| `pipeline/daily.py` | `run_daily()` / `analyze_day()` / `report_dir_for()`：每日一条龙编排 |
+| `notify/base.py` | `Notifier` Protocol + `RenderedReport`；`notify/file.py::FileNotifier`（唯一实现）。其余渠道明确 `NotImplementedError` |
+| `utils/text.py` | `estimate_tokens`（中文 1 字 1 token / 英文 3.5 字符）+ `truncate_summary(≤300)` |
 
 ### 采集编排的三条状态语义
 
@@ -119,6 +178,52 @@ CLI（`typer`）→ `pipeline/collect.py`（编排）是唯一的横向入口；
 
 存储层再保证一次：`Item.id` = `_PREFIX + content_hash(cross_source_key or url)[:16]`，**源无关**——这是"arXiv 与 HF 同一篇论文永远落在同一行"的落地方式，跨源后 `seen_in` 累加。
 
+### M2 分析层：热度 / 聚类 / 实体 / 简报
+
+**热度公式**（`analysis/score.py`，权重全部读 `configs/scoring.yaml`，改配置不改代码）：
+
+```
+hot_score = 100 * clamp( w_engagement*engagement_norm        # Σ coeff*log1p(metric)，源内分位归一化
+                       + w_freshness *exp(-max(0,age_h-grace)/tau)
+                       + w_velocity  *velocity_norm          # Δmetric/Δh，源内分位
+                       + w_source    *source_weight          # sources.yaml 静态权重
+                       + 0.05*(len(seen_in)-1) )             # 跨源印证加成，每个额外源 +5 分
+```
+
+三条容易踩的语义：engagement 与 velocity **只在源内**归一化（不可跨源比）；某源一条 velocity 都算不出时用 `cold_start.velocity_neutral` 兜底并打 warning；**全零 engagement 的源（rss / inbox）直接归 0**，不做分位归一化——否则无信号维度会被中性值凭空抬高热度。
+
+**聚类**（`analysis/cluster.py`）：中文 jieba 分词、英文按词切；`skip_cluster=True`（title_only，如量子位 22 字摘要）**不进相似度矩阵**；余弦 ≥ `cluster.similarity_threshold`（0.35）建边 → 连通分量即主题；成员数 < `min_cluster_size`（2）不落库；代表条目 = 簇内 hot_score 最高者，keywords = TF-IDF top-5，name = top-3 拼接。
+
+**实体**（`analysis/entities.py`）：词典 + 正则，词典在 `configs/entities.yaml`（加实体 = 加一行），类型 = model/framework/company/hardware/concept/person。
+
+**三档模式在 M2 的落地**：`off`（或无 key 自动降级）→ 注入 `NullLLM`，产出 `_data_brief()` 数据版简报，零网络；`hybrid` → daily_brief（主编点评）；`full` → 再加每条 item_comment。`--skip-llm` / `--no-llm` 强制当次走 off。**任何 LLM 失败（网络 / 结构化校验失败）都降级为数据版简报并置 `meta.degraded`，绝不中断流水线。**
+
+### M3a 预言系统：生成 / 手写 / 不可证伪拦截
+
+**生成链路**（`reasoning/predictor.py::generate_predictions()`）：当日 Top N + 主题 + 实体频次组装上下文（token 预算裁剪）→ `prompts/predict/generate.j2`（`model_tier: strong`）→ 结构化输出 `PredictionBatch` → 硬校验 → 不合法触发**一次**语义重写（把问题回传要求只重出合法 JSON）→ 仍不合法则丢弃并写 `meta["dropped"]`。off 档 / `--skip-llm` 直接返回空（手写才是 off 档核心）。
+
+**可证伪红线**（`schema/prediction.py::validate_prediction`，违反即拒收）：`falsifiable_criteria` 非空是**硬性必填**；`statement` 命中模糊措辞黑名单（"可能/也许/或许/未来可期/值得期待/值得关注/有望/或将/大概率/早晚/迟早"，"可能"用负向断言排除"不可能"）即拦截；`confidence` 必须是 0.05 的整数倍且 ∈[0.05, 0.95]；`horizon_days ∈ {7,30,90,180}`；`category ∈ {capability,product,research,business,policy,hardware,community}`；**LLM 生成要求证据 ≥2 条**（`require_evidence=True`），手写预言不强求证据（§11.4）。
+
+**两种来源**（`origin`）：`llm` 走自动生成（hybrid/full 档；off 档空转）；`human` 走 `aipulse predict add`（**全档位核心**）——「参数 + 缺参自动降级为交互式向导」：传 `--criteria` 判据模板则 `falsifiable_criteria` 自动渲染（如 `github_stars_reach(repo='…', threshold=90000)`），缺必填参数用 `rich.prompt` 追问；不设模板则追问一句话判据；末尾预览卡片 + 二次确认，`--yes` 跳过。
+
+**幂等**：`prediction_id = pred_ + short_hash(day:statement:origin)`，同一天同一句话重复跑不会刷出重复行（`insert_predictions` 遇已存在 id 跳过，不覆盖人工已 review 的记录）。
+
+**判据模板库**（`configs/criteria.yaml`，加模板不改代码）：github_new_repo / github_stars_reach / hn_story_points / entity_mentions / arxiv_paper_count / custom——到期时**查库即判、零 API 成本**（M3b 实现判定）。
+
+**本阶段边界（M3a 视角，已由 M3b 补全）**：M3a 只做生成 / 手写；`predict verify` / `predict review` / `stats` 由 M3b 实现。
+
+### M3b 到期验证与统计（★ 闭环）
+
+**双路径**（`reasoning/verifier.py`）：`criteria` 非空 → `judge_criteria()` 查 `signals`/`entities`/`items` **直接判定，零 LLM**（6 模板 + `custom` 受限 AST 求值，见 `configs/criteria.yaml`）；`criteria` 为空 → `retrieve_evidence()`（TF-IDF 余弦，窗口 `[生成日, due_date + evidence_window_grace_days]`，Top `evidence_top_k`）→ 证据充分度门槛（`≥min_evidence` 条过阈值 或 单条 `≥strong_similarity`）→ 达标才调 `prompts/predict/verify.j2` 出 `hit/partial/miss`。
+
+**不可逾越的红线（v1.9）**：`unverifiable` **只由系统的证据门槛产生**（写在 `status`，**不是** `verdict`；`Verdict` 保持 3 值），LLM 不得输出——否则它会变成逃避 miss 的软出口。证据不足**不调 LLM**：`today ≤ due_date + grace_days` 保持 `pending` 重试，超期转 `unverifiable`；**LLM 失败保持 `pending`，绝不当 miss**；`miss` 的前提是"证据覆盖已充分"（查不到 ≠ 没发生）。`partial` 高度克制（仅多子条件部分满足 / 阈值容差带，默认 5%）。
+
+**人工兜底**：`predict review <id> --verdict --note` 写 `verified_by='human'`，可覆盖 auto 结果，**同样计入统计**。
+
+**统计口径**（`analysis/stats.py`，v1.9）：`unverifiable`/`pending` **不入分母**；命中率 = hits/已验证；加权分 = `mean(verdict_score)`；Brier = `mean((confidence − verdict_score)²)`（`partial` 按 0.5）；校准分桶 `[0.05,0.5) / 0.5-0.6 / 0.6-0.7 / 0.7-0.8 / 0.8+`；记分板 Markdown 由 `render/scoreboard.py` 生成（0 样本优雅空态）。
+
+**编排接入**：`pipeline/daily.py` 在 brief 之后按 `pipeline.auto_verify` 调 `_auto_verify()`（异常只降级写 meta，绝不拖垮日报）。off 档下量化判据可完成"生成→到期→自动验证→记分板"全闭环，零 LLM。
+
 ---
 
 ## 配置与环境
@@ -138,6 +243,16 @@ CLI（`typer`）→ `pipeline/collect.py`（编排）是唯一的横向入口；
 
 `configs/sources.yaml` 的 `rate_limit` 是**必填**项，形状 `"N/period"`，period 支持 `s/m/h/d`（如 `3/s`、`10/1s`、`1/6h`）。
 
+五份配置的分工（`core/config.py` 的 `load_settings` / `load_sources` / `load_scoring` / `load_entities` / `load_criteria`）：
+
+| 文件 | 段 | 消费方 |
+|---|---|---|
+| `default.yaml` | `app` / `mode` / `llm`（含 `json_schema: auto`）/ `budget`（含 `price_*_cny_per_1m`）/ `pipeline`（`daily_top_n` `brief_sections` `predictions_per_day` `prediction_horizons` `auto_verify` `weekly_debate_enabled`）/ `verify`（`grace_days` `evidence_window_grace_days` `evidence_top_k` `similarity_threshold` `strong_similarity` `min_evidence` `partial_tolerance` `max_context_tokens`）/ `output` / `notify` / `http` | `Settings` |
+| `sources.yaml` | 每源的端点、权重、`availability`、`rate_limit`、`title_only`、`fallback_endpoints` | `collectors/` + `analysis/score.py` |
+| `scoring.yaml` | `weights` / `freshness` / `cross_source_bonus` / `engagement`（每源指标系数）/ `cold_start` / `title_only_weight` / `cluster` | `analysis/score.py` `analysis/cluster.py` |
+| `entities.yaml` | `entities.{model,framework,company,hardware,concept,person}`（name + aliases） | `analysis/entities.py` |
+| `criteria.yaml` | `criteria.{name}`（`description` + `params[{name,type,required,default}]`，type ∈ str/int/float） | `reasoning/criteria.py`（`predict add` 向导 + M3b 验证） |
+
 ---
 
 ## 硬性约定（CI 与人工验收都会查）
@@ -146,7 +261,7 @@ CLI（`typer`）→ `pipeline/collect.py`（编排）是唯一的横向入口；
 
 1. 不一次性生成整个项目——分阶段，DoD 全勾再进下一张卡。
 2. **不凭想象写字段解析**——必须基于 `tests/fixtures/` 的真实响应快照。
-3. **prompt 不写进 `.py`**——一律 `prompts/**.j2`（目录已建：`brief/` `debate/` `trend/` `predict/`）。
+3. **prompt 不写进 `.py`**——一律 `prompts/**.j2`，头部必须有 YAML front-matter（`model_tier` / `temperature` / `purpose`）。已实现：`brief/daily_brief.j2`、`brief/item_comment.j2`、`predict/generate.j2`、`predict/verify.j2`；`debate/` `trend/` 仍为空，等 M5。
 4. LLM 输出不直接 `json.loads`——必须 response_model + 校验 + 一次修复重试 + 再失败降级跳过。
 5. 单源异常不得导致整条流水线崩溃。
 6. **不实现任何微信 / X（Twitter）相关的采集器、配置段、环境变量或 RSS 桥**——v1.1 已彻底移除，相关内容只能走 `aipulse inbox add <url>` 手动投喂。
@@ -193,6 +308,9 @@ CLI（`typer`）→ `pipeline/collect.py`（编排）是唯一的横向入口；
 - `tests/integration/test_fixtures.py` 是 **fixtures 契约测试**：快照缺失时 `pytest.skip` 显式标出（**不得静默通过**），并断言每个源探测记录都有明确结论、失败源带错误信息。
 - **测试统一用 30 天窗口**写断言——fixture 是冻结快照，用 `--since 24h` 会随时间流逝而失效。
 - `collectors/` 覆盖率基线 ≥80%（当前 87%）。
+- M2 分析层单测（`test_score.py` / `test_cluster.py` / `test_entities.py` / `test_signals.py`）走**纯函数**路线：直接构造 `Item` 调 `compute_hot_scores()` / `cluster_items()`，不依赖 DB。
+- LLM 链路**可用 `respx` 拦截**：v1.7 起 `llm/openai_compat.py` 改 httpx 直连（走项目 `HttpClient`），`tests/unit/test_openai_compat.py` 即用 `respx` mock `/chat/completions` 与 json_schema→json_object 降级路径。结构化链路也仍可用桩客户端（`FakeLLM` / 自定义 `LLMClient`），off 档用 `NullLLM` 断言零网络。
+- M3a 预言单测：`test_prediction_schema.py`（Pydantic 校验 / 模糊措辞）、`test_predictor.py`（生成 + 一次重写 + 丢弃记账）、`test_predict_cli.py`（`predict add` 双模交互 + 幂等）。
 
 ---
 
@@ -205,10 +323,12 @@ CLI（`typer`）→ `pipeline/collect.py`（编排）是唯一的横向入口；
 | `docs/AI Pulse 设计方案 v1` | 设计 SSOT（1649 行），代码注释里的 `§5.x` / `§6.2` / `§7` 都指向它 |
 | `docs/数据源手册.md` | 每个源的端点、真实字段、限速、失效降级路径、探测结论 |
 | `docs/新增数据源指南.md` | 加源的标准流程（L1 改配置 / L2 写模块）+ 自检清单 + 常见坑 |
-| `docs/开发日志.md` | 每阶段"做了什么 / 踩了什么坑 / 为什么这么决策"，**每阶段结束必须追加** |
-| `prompts/{brief,debate,trend,predict}/` | M2+ 的 Jinja2 模板落点（当前为空目录） |
+| `docs/开发日志.md` | 每阶段"做了什么 / 踩了什么坑 / 为什么这么决策"，**每阶段结束必须追加**；已有 M0/M1/M2/M3a/**M3b** 五章 |
+| `docs/verify设计.md` | M3b 验证与统计的设计稿：判定口径、证据检索策略、量化判据判定、统计口径、`verify.j2` 成品 |
+| `prompts/{brief,predict,debate,trend}/` | Jinja2 模板落点。`brief/` 有 `daily_brief.j2` + `item_comment.j2`，`predict/` 有 `generate.j2`；`debate/` `trend/` 待 M5 |
+| `docs/模型使用策略_保守版.md` | 开发期模型分档策略（简单任务用 Flash、关键节点用 strong）；核心约定是"减少轮次比降档位更省" |
 
-`configs/scoring.yaml` 已落 M2 打分权重骨架（engagement / freshness / velocity / source_weight），M2 实现时读取，改配置不应改代码。
+`configs/scoring.yaml` 的打分权重与 `cluster` 段已被 M2 实际读取（engagement / freshness / velocity / source_weight / cold_start / title_only_weight / cluster），调权重改配置即可，不要改代码。
 
 ---
 
@@ -227,3 +347,11 @@ CLI（`typer`）→ `pipeline/collect.py`（编排）是唯一的横向入口；
 | 抓不到就丢条目 | 手动投喂降级保留（标题退化为 URL），见 `collectors/inbox.py` |
 | 库缺 `skip_cluster` 列导致 collect 崩 | pipeline 入口加 `ensure_schema()` 自动 upgrade |
 | 装 `types-feedparser` | 注册表无此包，已从 pyproject 移除，不要加回来 |
+| `expire_on_commit` 是 **Session** 参数 | `create_engine(expire_on_commit=...)` 直接报错；要在 session 关闭后继续读 item 属性，写 `Session(engine, expire_on_commit=False)`，否则渲染时 `DetachedInstanceError` |
+| 实体匹配器全局缓存被 `AIPULSE_ROOT` 污染 | monkeypatch root 后缓存的正则来自空 entities.yaml → 以 `project_root()` 为缓存键，root 变化即 `reset_matcher()` |
+| ~~openai 3.x 自带 httpx2 传输~~ | **已作废**：v1.7 移除 `openai` SDK 改 httpx 直连，`respx` 现可拦截 LLM 链路（`tests/unit/test_openai_compat.py`）。不要再按旧结论用桩客户端绕测 |
+| Typer `invoke_without_command=True` 回调 + 子命令路由冲突 | 回调在带子命令时也会触发（实测 `predict list` 会先跑自动生成）→ 回调首参加 `ctx: typer.Context`，`ctx.invoked_subcommand is not None` 时直接 return（"默认动作 + 子命令"标准写法） |
+| LLM 缓存键未区分 response_format | json_schema 与 json_object 两种响应用同一缓存键会互相污染 → 缓存键的 `response_model_name` 追加 `:js`/`:jo` 后缀 |
+| ruff B008 误报 Typer 可重复选项 | `param: list[str] = typer.Option(None, ...)` 被 B008 拦（list 类型默认值）→ 加 `# noqa: B008`（Typer 可重复选项标准写法） |
+| 同一作用域复用 `zip` 循环变量名 | 元素类型不同会让 mypy strict 报冲突 → 改名 |
+| SQLModel `date` 字段（M2 再现） | `schema/brief.py` 同样用 `from datetime import date as date_type` |

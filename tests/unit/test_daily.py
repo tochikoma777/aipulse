@@ -3,14 +3,15 @@
 from __future__ import annotations
 
 import asyncio
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 
 from sqlmodel import Session
 
 from aipulse.core.config import RunMode, load_settings
+from aipulse.core.timeutil import today_local
 from aipulse.pipeline.daily import analyze_day, run_daily
 from aipulse.store.db import init_db
-from aipulse.store.models import Item
+from aipulse.store.models import Item, Prediction, Signal
 
 
 def _seed(db_path):
@@ -90,3 +91,45 @@ def test_run_daily_off_mode_produces_reports(monkeypatch, tmp_path):
     daily = _json.loads((result.report_dir / "daily.json").read_text(encoding="utf-8"))
     assert daily["meta"]["mode"] == "off"
     assert len(daily["items"]) == 2
+
+
+def test_run_daily_auto_verify_off_mode(monkeypatch, tmp_path):
+    """`daily` 在 off 档自动验证量化判据预言（零 LLM），并写进 meta。"""
+    monkeypatch.setenv("AIPULSE_ROOT", str(tmp_path))
+    load_settings.cache_clear()
+    db = tmp_path / "t.db"
+    _seed(db)
+    today = today_local()
+    engine = init_db(db)
+    with Session(engine, expire_on_commit=False) as s:
+        s.add(
+            Prediction(
+                id="pred_due",
+                date=today - timedelta(days=30),
+                statement="acme 将出现新仓库",
+                category="community",
+                confidence=0.7,
+                horizon_days=30,
+                due_date=today - timedelta(days=1),
+                falsifiable_criteria="窗口内 acme 出现新仓库即命中",
+                status="pending",
+                criteria="github_new_repo",
+                criteria_params={"owner": "acme"},
+            )
+        )
+        s.add(
+            Signal(
+                entity_type="repo",
+                entity_key="acme/new",
+                metric="stars",
+                value=1,
+                ts=datetime.now(tz=UTC) - timedelta(days=10),
+            )
+        )
+        s.commit()
+    engine.dispose()
+
+    result = asyncio.run(run_daily(no_collect=True, skip_llm=True, db_path=str(db)))
+
+    assert result.meta["verify"]["verified"] == 1
+    assert result.meta["verify"]["llm_calls"] == 0

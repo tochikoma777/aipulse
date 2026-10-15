@@ -281,6 +281,85 @@ def signals_for_entity(
     )
 
 
+# ── 到期验证（M3b）读辅助 ───────────────────────────────────────────
+
+
+def signals_max_value(
+    session: Session,
+    *,
+    entity_type: str,
+    entity_key: str,
+    metric: str,
+    since: datetime | None = None,
+    until: datetime | None = None,
+) -> float | None:
+    """某实体-指标在时间窗内的最大值（量化判据查表用）。无数据返回 None。"""
+    stmt = select(Signal).where(
+        Signal.entity_type == entity_type,
+        Signal.entity_key == entity_key,
+        Signal.metric == metric,
+    )
+    if since is not None:
+        stmt = stmt.where(Signal.ts >= since)
+    if until is not None:
+        stmt = stmt.where(Signal.ts <= until)
+    values = [row.value for row in session.exec(stmt).all()]
+    return max(values) if values else None
+
+
+def signal_first_seen_map(
+    session: Session, *, entity_type: str, key_prefix: str
+) -> dict[str, datetime]:
+    """某前缀下所有实体键的**首次观测时间** → `{entity_key: first_ts}`。
+
+    用于 `github_new_repo`：首次观测落在窗口内的键 = 窗口内"新出现"的仓库。
+    """
+    stmt = select(Signal).where(
+        Signal.entity_type == entity_type,
+        Signal.entity_key.like(f"{key_prefix}%"),  # type: ignore[attr-defined]
+    )
+    first: dict[str, datetime] = {}
+    for row in session.exec(stmt).all():
+        current = first.get(row.entity_key)
+        if current is None or row.ts < current:
+            first[row.entity_key] = row.ts
+    return first
+
+
+def count_entities_in_range(
+    session: Session,
+    *,
+    since_day: date,
+    until_day: date,
+    name: str | None = None,
+) -> int:
+    """统计窗口内实体提及行数；`name=None` 时统计全部（用于判断"有无覆盖"）。"""
+    stmt = select(Entity).where(Entity.date >= since_day, Entity.date <= until_day)
+    if name is not None:
+        stmt = stmt.where(Entity.name == name)
+    return len(list(session.exec(stmt).all()))
+
+
+def items_by_source(
+    session: Session,
+    *,
+    source: str,
+    since: datetime | None = None,
+    until: datetime | None = None,
+    limit: int | None = None,
+) -> list[Item]:
+    """按源 + `published_at` 时间窗取条目（量化判据关键词检索用）。"""
+    stmt = select(Item).where(Item.source == source)
+    if since is not None:
+        stmt = stmt.where(Item.published_at >= since)
+    if until is not None:
+        stmt = stmt.where(Item.published_at <= until)
+    stmt = stmt.order_by(Item.published_at.desc())  # type: ignore[attr-defined]
+    if limit is not None:
+        stmt = stmt.limit(limit)
+    return list(session.exec(stmt).all())
+
+
 def item_to_dict(item: Item) -> dict[str, Any]:
     return {
         "id": item.id,

@@ -35,6 +35,17 @@ pipeline:
   auto_verify: true
   weekly_debate_enabled: true
 
+# 到期验证（M3b，设计方案 §10.2.2 / §10.2.3 v1.9）
+verify:
+  grace_days: 7                    # 证据不足时的重试窗口（due_date 后再等 N 天）
+  evidence_window_grace_days: 3    # 检索窗口右界宽限：[生成日, due_date + N]
+  evidence_top_k: 20               # 证据截断条数
+  similarity_threshold: 0.15       # TF-IDF 余弦下限（进候选池）
+  strong_similarity: 0.30          # 单条强证据阈值
+  min_evidence: 3                  # 证据充分度下限（少于 3 条且无强证据 → 不调 LLM）
+  partial_tolerance: 0.05          # 阈值型判据的 partial 容差带
+  max_context_tokens: 12000        # 证据注入 LLM 的 token 预算
+
 output:
   formats: [md, json]
   html_enabled: true

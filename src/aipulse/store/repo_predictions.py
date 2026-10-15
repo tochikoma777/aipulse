@@ -14,6 +14,7 @@ from datetime import date
 from sqlmodel import Session, select
 
 from aipulse.core.hashing import short_hash
+from aipulse.core.timeutil import utcnow
 from aipulse.store.models import Prediction
 
 _PREFIX = "pred_"
@@ -55,4 +56,48 @@ def list_predictions(
     return list(session.exec(stmt).all())
 
 
-__all__ = ["insert_predictions", "list_predictions", "prediction_id"]
+def list_pending_due(session: Session, today: date) -> list[Prediction]:
+    """到期待验证队列：`status=pending AND due_date <= today`（设计方案 §10.2.2 步骤 1）。"""
+    stmt = (
+        select(Prediction)
+        .where(Prediction.status == "pending", Prediction.due_date <= today)
+        .order_by(Prediction.due_date.asc(), Prediction.statement)  # type: ignore[attr-defined]
+    )
+    return list(session.exec(stmt).all())
+
+
+def save_verdict(
+    session: Session,
+    prediction: Prediction,
+    *,
+    status: str,
+    verdict: str | None,
+    verdict_score: float | None,
+    note: str,
+    evidence_ids: Sequence[str] | None,
+    verified_by: str,
+) -> Prediction:
+    """写入判定结果并提交。
+
+    - `status`：`verified`（有 verdict）或 `unverifiable`（无 verdict）。
+    - `verified_by`：`auto`（验证器）/ `human`（人工 review 覆盖）。
+    """
+    prediction.status = status
+    prediction.verdict = verdict
+    prediction.verdict_score = verdict_score
+    prediction.verdict_note = note
+    prediction.verdict_evidence_ids = list(evidence_ids) if evidence_ids is not None else None
+    prediction.verified_at = utcnow()
+    prediction.verified_by = verified_by
+    session.add(prediction)
+    session.commit()
+    return prediction
+
+
+__all__ = [
+    "insert_predictions",
+    "list_pending_due",
+    "list_predictions",
+    "prediction_id",
+    "save_verdict",
+]

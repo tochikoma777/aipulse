@@ -309,16 +309,132 @@ def list_cmd(
     raise typer.Exit(code=0)
 
 
-# ── M3b 占位 ─────────────────────────────────────────────────────────
+# ── 到期验证 + 人工复核（M3b）────────────────────────────────────────
 
 
 @app.command("verify")
-def verify() -> None:
-    """到期验证（M3b 实现）。"""
-    raise NotImplementedError("`aipulse predict verify` 尚未实现（M3b 验证与统计）")
+def verify_cmd(
+    due_date: str = typer.Option(
+        None, "--due-date", help="验证 due_date <= 该日期的预言（默认今天）"
+    ),
+    db: str = typer.Option(None, "--db", help="数据库路径（默认 data/aipulse.db）"),
+    limit: int = typer.Option(None, "--limit", help="最多验证多少条（调试用）"),
+    skip_llm: bool = typer.Option(False, "--skip-llm", help="off 档：不做 LLM 语义判定"),
+    no_llm: bool = typer.Option(False, "--no-llm", help="同 --skip-llm"),
+    json_output: bool = typer.Option(False, "--json", help="以 JSON 输出摘要"),
+) -> None:
+    """到期验证：量化判据查表零 LLM；语义判据走证据门槛 → LLM 三值判定。"""
+    if json_output:
+        configure_logging(console_stderr=True)
+    settings = load_settings()
+    day = _parse_day(due_date, settings)
+    skip = skip_llm or no_llm
+    mode = RunMode.OFF if skip else settings.effective_mode()
+    target_db = _target_db(db, settings)
+    ensure_schema(target_db)
+    engine = engine_for(target_db)
+
+    from aipulse.reasoning.verifier import verify_due_predictions
+
+    with Session(engine, expire_on_commit=False) as session:
+        client = build_client(settings, engine=engine)
+        outcome = asyncio.run(
+            verify_due_predictions(
+                session=session,
+                client=client,
+                settings=settings,
+                today=day,
+                mode=mode,
+                limit=limit,
+            )
+        )
+    engine.dispose()
+
+    if json_output:
+        console.print_json(
+            json.dumps(
+                {
+                    "day": day.isoformat(),
+                    "due": outcome.meta.get("due", 0),
+                    "verified": outcome.verified,
+                    "unverifiable": outcome.unverifiable,
+                    "deferred": outcome.deferred,
+                    "failed": outcome.failed,
+                    "llm_calls": outcome.llm_calls,
+                    "details": outcome.details,
+                },
+                ensure_ascii=False,
+            )
+        )
+        raise typer.Exit(code=0)
+
+    console.print(
+        f"[bold]验证完成[/bold] {day.isoformat()}：已验证 {outcome.verified} · "
+        f"无法验证 {outcome.unverifiable} · 延后重试 {outcome.deferred} · 失败 {outcome.failed}"
+    )
+    for detail in outcome.details:
+        mark = {"verified": "✓", "unverifiable": "?", "deferred": "…", "failed": "✗"}.get(
+            str(detail["status"]), "·"
+        )
+        verdict = f"[{detail['verdict']}]" if detail.get("verdict") else ""
+        console.print(f"  {mark} {detail['id']} {verdict} {detail.get('note', '')}")
+    raise typer.Exit(code=0)
 
 
 @app.command("review")
-def review() -> None:
-    """人工判定闭环（M3b 实现）。"""
-    raise NotImplementedError("`aipulse predict review` 尚未实现（M3b 验证与统计）")
+def review_cmd(
+    prediction_id: str = typer.Argument(..., help="预言 id（见 predict list）"),
+    verdict: str = typer.Option(..., "--verdict", help="hit | partial | miss"),
+    note: str = typer.Option("", "--note", help="判定依据（建议引用 Item id）"),
+    db: str = typer.Option(None, "--db", help="数据库路径（默认 data/aipulse.db）"),
+    json_output: bool = typer.Option(False, "--json", help="以 JSON 输出"),
+) -> None:
+    """人工判定闭环：写入 verified_by='human'，可覆盖 auto 结果，同样计入统计。"""
+    from aipulse.reasoning.verifier import VERDICT_SCORES
+    from aipulse.store.models import Prediction as PredictionRow
+    from aipulse.store.repo_predictions import save_verdict
+
+    if verdict not in VERDICT_SCORES:
+        console.print(f"[red]✗ verdict 必须是 hit / partial / miss，收到 {verdict!r}[/red]")
+        raise typer.Exit(code=1)
+    if json_output:
+        configure_logging(console_stderr=True)
+    settings = load_settings()
+    target_db = _target_db(db, settings)
+    ensure_schema(target_db)
+    engine = engine_for(target_db)
+
+    with Session(engine, expire_on_commit=False) as session:
+        row = session.get(PredictionRow, prediction_id)
+        if row is None:
+            engine.dispose()
+            console.print(f"[red]✗ 找不到预言：{prediction_id}[/red]")
+            raise typer.Exit(code=1)
+        save_verdict(
+            session,
+            row,
+            status="verified",
+            verdict=verdict,
+            verdict_score=VERDICT_SCORES[verdict],
+            note=note,
+            evidence_ids=None,
+            verified_by="human",
+        )
+        payload = {
+            "id": row.id,
+            "verdict": verdict,
+            "verdict_score": VERDICT_SCORES[verdict],
+            "note": note,
+            "verified_by": "human",
+        }
+    engine.dispose()
+
+    if json_output:
+        console.print_json(json.dumps(payload, ensure_ascii=False))
+        raise typer.Exit(code=0)
+    console.print(
+        f"✅ 已人工判定 {prediction_id} → [bold]{verdict}[/bold]（{VERDICT_SCORES[verdict]}）"
+    )
+    if note:
+        console.print(f"   依据：{note}")
+    raise typer.Exit(code=0)

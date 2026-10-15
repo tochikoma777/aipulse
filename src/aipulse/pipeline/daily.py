@@ -22,11 +22,12 @@ from aipulse.analysis.score import score_items
 from aipulse.core.config import RunMode, Settings, load_settings
 from aipulse.core.logging import get_logger
 from aipulse.core.timeutil import day_window, today_local, utcnow
-from aipulse.llm.base import build_client
+from aipulse.llm.base import LLMClient, build_client
 from aipulse.notify.base import RenderedReport
 from aipulse.notify.file import FileNotifier
 from aipulse.pipeline.collect import CollectResult, run_collect
 from aipulse.reasoning.brief import BriefOutput, generate_brief
+from aipulse.reasoning.verifier import verify_due_predictions
 from aipulse.render.json_out import render_json
 from aipulse.render.markdown import render_markdown
 from aipulse.schema.brief import DailyBrief
@@ -97,6 +98,31 @@ def analyze_day(session: Session, *, day: date) -> dict[str, Any]:
     }
 
 
+async def _auto_verify(
+    session: Session,
+    *,
+    client: LLMClient,
+    settings: Settings,
+    day: date,
+    mode: RunMode,
+) -> dict[str, Any]:
+    """每日自动验证到期的预言；任何异常都降级为一条 meta 记录，绝不中断日报。"""
+    try:
+        outcome = await verify_due_predictions(
+            session=session, client=client, settings=settings, today=day, mode=mode
+        )
+    except Exception as exc:  # 验证是增强，不允许拖垮主流程
+        log.error("pipeline.verify.failed", error=repr(exc))
+        return {"error": repr(exc)}
+    return {
+        "verified": outcome.verified,
+        "unverifiable": outcome.unverifiable,
+        "deferred": outcome.deferred,
+        "failed": outcome.failed,
+        "llm_calls": outcome.llm_calls,
+    }
+
+
 async def run_daily(
     *,
     since: str = "24h",
@@ -119,6 +145,7 @@ async def run_daily(
 
     analysis: dict[str, Any] = {}
     brief_out: BriefOutput | None = None
+    verify_summary: dict[str, Any] | None = None
     # expire_on_commit=False：提交后实例属性不过期，session 关闭后仍可安全渲染 items
     with Session(engine, expire_on_commit=False) as session:
         analysis = analyze_day(session, day=report_day)
@@ -140,12 +167,16 @@ async def run_daily(
             mode=mode,
             skip_llm=skip_llm,
         )
+        if settings.pipeline.auto_verify:
+            verify_summary = await _auto_verify(
+                session, client=client, settings=settings, day=report_day, mode=mode
+            )
         record_pipeline_run(
             session,
             day=report_day,
             stage="daily",
             status="ok",
-            stats={"mode": mode.value, **analysis},
+            stats={"mode": mode.value, **analysis, "verify": verify_summary},
         )
     engine.dispose()
 
@@ -168,6 +199,7 @@ async def run_daily(
             "skipped": len(collected.skipped),
             "total_items": len(collected.items),
         }
+    meta["verify"] = verify_summary
 
     # ── 渲染 + 落盘（走 FileNotifier，符合 §11.2 的 Notifier 抽象）──
     generated_at = utcnow()

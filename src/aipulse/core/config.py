@@ -115,6 +115,19 @@ class PipelineSettings(BaseModel):
     weekly_debate_enabled: bool = True
 
 
+class VerifySettings(BaseModel):
+    """到期验证参数（设计方案 §10.2.2 / v1.9，全部可调）。"""
+
+    grace_days: int = 7  # 证据不足时的重试窗口：due_date 后最多再等 N 天
+    evidence_window_grace_days: int = 3  # 判定窗口右界宽限（窗口 = [生成日, due_date + N]）
+    evidence_top_k: int = 20  # 检索证据的截断条数
+    similarity_threshold: float = 0.15  # 进候选池的 TF-IDF 余弦下限
+    strong_similarity: float = 0.30  # 单条即可视为强证据的阈值
+    min_evidence: int = 3  # 语义路径的证据充分度下限
+    partial_tolerance: float = 0.05  # 量化阈值型判据的 partial 容差带（默认 5%）
+    max_context_tokens: int = 12000  # 证据注入 LLM 的 token 预算
+
+
 class OutputSettings(BaseModel):
     formats: list[str] = Field(default_factory=lambda: ["md", "json"])
     html_enabled: bool = True
@@ -142,6 +155,7 @@ class Settings(BaseSettings):
     llm: LLMSettings = Field(default_factory=LLMSettings)
     budget: BudgetSettings = Field(default_factory=BudgetSettings)
     pipeline: PipelineSettings = Field(default_factory=PipelineSettings)
+    verify: VerifySettings = Field(default_factory=VerifySettings)
     output: OutputSettings = Field(default_factory=OutputSettings)
     notify: NotifySettings = Field(default_factory=NotifySettings)
 
