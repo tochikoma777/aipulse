@@ -1,12 +1,12 @@
 {
   "mode": "off",
   "day": "2026-10-15",
-  "generated_at": "2026-10-15T15:13:27.554010+00:00",
+  "generated_at": "2026-10-15T15:15:09.352768+00:00",
   "analysis": {
-    "items": 191,
-    "scored": 191,
+    "items": 193,
+    "scored": 193,
     "topics": 5,
-    "new_entity_mention_rows": 4
+    "new_entity_mention_rows": 3
   },
   "llm": {
     "degraded": false,
@@ -17,7 +17,7 @@
     "ok_sources": 7,
     "failed_sources": 0,
     "skipped": 0,
-    "total_items": 178
+    "total_items": 185
   },
   "verify": {
     "verified": 0,
@@ -42,11 +42,11 @@
     "dropped": []
   },
   "signals": {
-    "entities": 67,
-    "points": 196,
+    "entities": 68,
+    "points": 262,
     "with_velocity": 0,
-    "insufficient": 65,
-    "cold_start": 2,
+    "insufficient": 67,
+    "cold_start": 1,
     "min_window_hours": 6.0
   }
 }
