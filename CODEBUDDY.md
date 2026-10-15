@@ -390,3 +390,4 @@ hot_score = 100 * clamp( w_engagement*engagement_norm        # Σ coeff*log1p(me
 | mypy strict 下可空 datetime 列的列方法/比较 | `Prediction.verified_at` 是 `datetime \| None` → `.is_not()` / `.asc()` 报 `union-attr`、`>=` 报 `operator`，`# type: ignore[union-attr]` 还会因错误码不匹配被判"未使用的 ignore" → 用 `cast(Any, Prediction.verified_at)` 收口（沿用"不要凭印象写错误码"）|
 | 本地验证 `aipulse serve` | 普通 `&` 起的后台进程会在命令结束后被回收，curl 表现成 `status=000`（不是页面 bug）→ 用 `nohup ... &`，或起在同一命令里再 curl |
 | `AIPULSE_ROOT` 指向临时目录 | 找不到 `alembic.ini` → `ensure_schema()` 回落 `create_all`。做隔离演示库时要**先跑一次 `daily`/`ensure_schema` 建表再插数据**，否则 `no such table` |
+| **全新 clone 下建库失败（Actions 首跑实测）** | `data/` 目录在仓库里不存在（只被 .gitignore 覆盖）→ `migrate_to_head()` 把 `sqlite:///<abs>` 交给 alembic 时父目录缺失，报 `unable to open database file`。已修：该函数里先 `target.parent.mkdir(parents=True, exist_ok=True)`（`engine_for()` 早有这行）。**本地复用旧目录会掩盖这类问题——要验就删掉 `data/` 再跑** |

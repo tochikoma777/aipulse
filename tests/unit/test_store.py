@@ -3,7 +3,7 @@ from datetime import date
 from sqlmodel import Session, select
 
 from aipulse.core.timeutil import utcnow
-from aipulse.store.db import engine_for, init_db, migrate_to_head, table_names
+from aipulse.store.db import engine_for, ensure_schema, init_db, migrate_to_head, table_names
 from aipulse.store.models import Item, Prediction, Signal, SourceRun
 
 EXPECTED_TABLES = {
@@ -110,3 +110,18 @@ def test_engine_for_creates_parent_dirs(tmp_path):
         assert db.parent.exists()
     finally:
         engine.dispose()
+
+
+def test_ensure_schema_creates_missing_parent_dir(tmp_path):
+    """回归：全新 clone（无 data/ 目录）下 `aipulse daily` 必须能建库。
+
+    Actions 上实测过 `sqlite3.OperationalError: unable to open database file`——
+    `ensure_schema` 走 alembic 时不建父目录。父目录缺失是**正常起点**，不是异常。
+    """
+    db = tmp_path / "fresh" / "data" / "aipulse.db"  # 父目录都不存在
+    assert not db.parent.exists()
+
+    ensure_schema(db)
+
+    assert db.exists()
+    assert table_names(db) >= EXPECTED_TABLES

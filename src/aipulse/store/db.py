@@ -83,8 +83,13 @@ def migrate_to_head(db_path: str | Path, *, config_file: Path | None = None) -> 
     ini = Path(config_file) if config_file else project_root() / "alembic.ini"
     if not ini.exists():
         raise StoreError(f"找不到 alembic.ini：{ini}")
+    target = Path(db_path).resolve()
+    # 全新 clone 下 `data/` 目录并不存在（它只被 .gitignore 覆盖，仓库里没有占位文件），
+    # 而 alembic 会直接连接 SQLite —— 父目录缺失时报 "unable to open database file"。
+    # GitHub Actions 首次运行必然命中这种情况，所以这里必须先建目录。
+    target.parent.mkdir(parents=True, exist_ok=True)
     cfg = Config(str(ini))
-    cfg.set_main_option("sqlalchemy.url", f"sqlite:///{Path(db_path).resolve()}")
+    cfg.set_main_option("sqlalchemy.url", f"sqlite:///{target}")
     command.upgrade(cfg, "head")
 
 
