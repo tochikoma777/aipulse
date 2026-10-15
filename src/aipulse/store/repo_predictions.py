@@ -9,7 +9,8 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
-from datetime import date
+from datetime import date, datetime
+from typing import Any, cast
 
 from sqlmodel import Session, select
 
@@ -66,6 +67,18 @@ def list_pending_due(session: Session, today: date) -> list[Prediction]:
     return list(session.exec(stmt).all())
 
 
+def list_verified_since(session: Session, since: datetime) -> list[Prediction]:
+    """取本次运行以来产生判定结果的预言（`verdicts.md` 用，§11.1）。"""
+    # verified_at 可空，类属性注解是 `datetime | None`，mypy 下无法直接用列方法
+    verified_at = cast(Any, Prediction.verified_at)
+    stmt = (
+        select(Prediction)
+        .where(verified_at.is_not(None), verified_at >= since)
+        .order_by(verified_at.asc())
+    )
+    return list(session.exec(stmt).all())
+
+
 def save_verdict(
     session: Session,
     prediction: Prediction,
@@ -98,6 +111,7 @@ __all__ = [
     "insert_predictions",
     "list_pending_due",
     "list_predictions",
+    "list_verified_since",
     "prediction_id",
     "save_verdict",
 ]

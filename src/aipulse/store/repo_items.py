@@ -264,6 +264,25 @@ def upsert_entities(session: Session, entities: Sequence[Entity]) -> int:
     return count
 
 
+def list_signals(
+    session: Session,
+    *,
+    since: datetime | None = None,
+    until: datetime | None = None,
+    limit: int | None = None,
+) -> list[Signal]:
+    """取指标快照（按 ts 升序）。M4：供当日 `signals.json` 导出与增速复盘。"""
+    stmt = select(Signal)
+    if since is not None:
+        stmt = stmt.where(Signal.ts >= since)
+    if until is not None:
+        stmt = stmt.where(Signal.ts <= until)
+    stmt = stmt.order_by(Signal.ts.asc())  # type: ignore[attr-defined]
+    if limit is not None:
+        stmt = stmt.limit(limit)
+    return list(session.exec(stmt).all())
+
+
 def signals_for_entity(
     session: Session, entity_type: str, entity_key: str, metric: str
 ) -> list[Signal]:

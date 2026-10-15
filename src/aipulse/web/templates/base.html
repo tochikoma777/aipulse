@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}AI 脉搏{% endblock %}</title>
+  <link rel="stylesheet" href="/static/style.css">
+  {# HTMX 只用于"局部刷新"，是渐进增强：脚本加载失败时下面的表单会退化成普通 GET，功能不受影响 #}
+  <script src="https://unpkg.com/htmx.org@1/dist/htmx.min.js" defer></script>
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="/">AI 脉搏 <span class="brand-sub">aipulse</span></a>
+  <nav>
+    <a href="/" class="{% if active == 'index' %}on{% endif %}">今日</a>
+    <a href="/archive" class="{% if active == 'archive' %}on{% endif %}">归档</a>
+    <a href="/predictions" class="{% if active == 'predictions' %}on{% endif %}">预言记分板</a>
+    <a href="/topics" class="{% if active == 'topics' %}on{% endif %}">主题</a>
+    <a href="/search" class="{% if active == 'search' %}on{% endif %}">检索</a>
+    {% for entry in m5_entries %}
+    <span class="nav-disabled" title="M5 完成后点亮">{{ entry.label }}</span>
+    {% endfor %}
+  </nav>
+</header>
+<main>
+{% block content %}{% endblock %}
+</main>
+<footer>
+  <p>数据声明：仅存储标题、摘要与公开指标，均标注来源与原链接，<strong>不做全文转载</strong>。</p>
+  <p>不抓取微信公众号与 X（Twitter）；相关内容请用 <code>data/inbox/*.md</code> 手动投喂。</p>
+  <p class="muted">本页只读：数据来自 SQLite（只读连接）与 <code>data/reports/</code> 下的报告文件。</p>
+</footer>
+</body>
+</html>

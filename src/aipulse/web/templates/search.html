@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}检索 · AI 脉搏{% endblock %}
+{% block content %}
+
+<h1>检索</h1>
+<form class="search" action="/search" method="get"
+      hx-get="/search/partial" hx-target="#results" hx-swap="innerHTML" hx-include="[name='q']">
+  <input type="search" name="q" value="{{ q }}" placeholder="关键词（标题 / 摘要）" autofocus>
+  <button type="submit">搜索</button>
+</form>
+
+<div id="results">
+  {% include "_results.html" %}
+</div>
+
+{% endblock %}

@@ -1,4 +1,4 @@
-# AI Pulse 设计方案 v1.5
+# AI Pulse 设计方案 v1.10
 
 > 一句话定位：**每日自动采集 AI 领域热点，不只整理，还给出可回测的推演与预言。**
 > 本文档是给开发 Agent（CodeBuddy / Claude Code / Cursor 等）执行的**唯一事实来源（SSOT）**。
@@ -17,6 +17,53 @@ v1.2（第二轮确认）：
 6. **Reddit 先用免认证 RSS**，M1 验收后再评估是否升级 OAuth（§5.6 / §19.1-6）
 7. **M0 即建公开仓库**，README 顶部标注 `WIP / 开发中`（§19.1-14、§14.2）
 8. **日报触达 = 文件 + Web 看板为主**，但**架构上必须预留统一 Notifier 抽象**，后续可加邮件/TG/飞书（§11.2）
+
+v1.10（M3b 验收后：★ 预言系统已闭环，四项口径裁定）：
+33. **★ M3b 完成，预言系统闭环**：采集→简报→预言→到期验证→记分板全链路打通，
+    **off 档零 API 花费可跑通全流程**（实测 `llm_usage` 行数 = 0）
+34. **验证模型按档位联动**：`hybrid` 档用 `fast`、`full` 档用 `strong`，配置 `verify.model_tier`（§10.2.2）
+35. **`custom` 判据保持 5 原语 + and/or/not，暂不扩展** —— YAGNI，6 个模板已覆盖常见场景（§11.5）
+36. **记分板由 daily 流水线自动产出** `data/reports/YYYY/MM/DD/scoreboard.md`；
+    `stats` 命令默认只读打印，`--out` 才落盘（§11.1）
+37. **M3b 实证坑位归档**：mypy strict 类型别名、`no-any-return` 误写 `type: ignore`（§18.5）
+
+> **重要节点**：M3b 完成后，**记分板的价值开始随时间自动增长**。
+> 因此 M4 的第一优先级是 Actions 自动化——**让系统尽快开始每天跑**。
+
+v1.9（M3b 设计评审后裁定，★ 三处统计口径，直接影响记分板可信度）：
+29. **证据窗口 = `[生成日, due_date + 3天]`**（左界从生成日起，非 `due_date ± 3 天`）——
+    否则"生成后很早就兑现"的预言会因窗口未覆盖而被误判成 miss（§10.2.2）
+30. **Brier 的 partial 按 `outcome = 0.5` 计入**：`mean((confidence - verdict_score)^2)`，
+    `verdict_score` 取 hit=1.0 / partial=0.5 / miss=0.0（§10.2.3）
+31. **校准分桶补低置信桶 `[0.05, 0.5)`**：`confidence` 下限是 0.05，只统计 0.5+ 会静默丢弃
+    大量低置信样本，导致校准曲线系统性偏高失真（§10.2.3）
+32. **`unverifiable` 归 `status` 而非 `verdict`**，且只由证据门槛产生、**LLM 不得输出**——
+    否则会变成逃避 miss 的软出口，污染命中率与 Brier（§10.2.2）
+
+v1.8（M3a 验收后补丁）：
+26. **手写预言 `falsifiable_criteria` 必填**：量化判据（`criteria`）可选，但判据**文本**必填——
+    选模板时自动渲染、选"不设定"时向导追问一句话判据（§11.4.1）
+27. **`category` 加入手写预言向导**：7 个序号选项 + 默认 `capability`（直接回车）。
+    **理由：若手写预言全默认 capability，M3b 的"按 category 分组命中率"统计将失去意义**（§11.4.4）
+28. **M3a 实证坑位归档**：Typer `invoke_without_command`、`expire_on_commit`、ruff B008、
+    **json_schema/json_object 共用缓存键会串**（§18.4）
+
+v1.7（M2 验收后补丁，★ 涉及依赖与架构调整）：
+22. **移除 `openai` SDK 依赖，改为 httpx 直连**（§8.2）——它自带的 httpx 2.x 与项目 httpx 冲突、
+    且导致 `respx` 无法 mock（M3 的 LLM 测试强依赖 mock 能力）
+23. **json_schema 运行时自动降级**（§8.3）——json_schema 报 400 时自动重试 `json_object`，
+    比让用户手动改配置友好得多
+24. **SSOT 文档归属约定**：文档由项目负责人**出全量版本并覆盖**仓库内 `docs/`，避免两处漂移（§19.4）
+25. **M3 拆为 M3a（生成）/ M3b（验证与统计）两个子阶段**（§16.1）
+
+v1.6（M1 验收后补丁）：
+18. **Import AI 改用官方可达 URL**：`importai.substack.com` 被墙 → 改用 `https://importai.net/feed`
+    （301 → `jack-clark.net`，官方站，**且含全文**），因此从 `actions_only` 升为 `always`（§5.10 表、§18.3）
+19. **arXiv `lookback_days: 7`**：arXiv Atom 的 `published` 是提交日且**索引滞后 3-4 天**，
+    严格按 24h 窗口会永远采空。7 天是实测得出的合理默认（§18.3）
+20. **RSS 内部改为并发拉取**：本地串行 8 个 feed 耗时 298s，M2 前需改为每 feed 一个任务（仍受全局并发 6 限制）（§18.3）
+21. **M1 实证坑位归档**：arXiv 索引滞后、单 feed 失败拖垮整源、HN 全挂伪装成"没热点"、
+    迁移未执行导致缺列、Trending 双通道、正则误匹配 SVG `<path>`、`--json` 被日志污染、HF fallback 语义（§18.3）
 
 v1.5（M1 期间补充，回答"源不可达怎么办 / 能否增删源"）：
 16. **新增 §5.11「数据源全景与可达性兜底」**：明确当前源清单、单源不可达的分级影响、
@@ -590,7 +637,7 @@ class MyNewCollector(BaseCollector):
 | HF Daily Papers | **DNS 污染**，不可达 | 可达 | `actions_only` |
 | Hacker News Algolia | 可用 | 稳定可用 | `always` |
 | Reddit RSS | **不可达** | 可达 | `actions_only` |
-| RSS · Import AI | **DNS 污染**，不可达 | 可达 | `actions_only` |
+| RSS · Import AI | ✅ 可达（v1.6 改用 `importai.net/feed`，官方站且含全文） | 可达 | **`always`**（v1.6 升级） |
 | RSS · 其余英文主干 | 可用 | 稳定可用 | `always` |
 | RSS · 中文（量子位） | 可用，仅标题 | 可用 | `always`（`title_only: true`） |
 
@@ -751,13 +798,36 @@ class LLMClient(Protocol):
     ) -> LLMResult: ...   # LLMResult: content: str | BaseModel, usage, cached: bool
 ```
 
-### 8.2 Provider（v1.1 定为 DeepSeek）
+### 8.2 Provider（v1.1 定为 DeepSeek；**v1.7：移除 openai SDK，改 httpx 直连**）
 
-- 统一走 `openai_compat`：`base_url` + `api_key` + `model`，用官方 `openai` SDK。
-- **默认厂商 = DeepSeek**，理由：① 价格低（本项目每天几十次调用，成本可忽略）；② 中文表达强，适合产出中文简报与长文；③ 完全兼容 OpenAI 协议，未来换厂商**只改环境变量，不改一行代码**。
+- **v1.7 决策：不再依赖 `openai` SDK，用项目自带的 `httpx` 直连 `POST {base_url}/chat/completions`。**
+
+  **变更理由（M2 实测暴露的问题）**：
+  1. `openai` 3.x 自带 **httpx 2.x**，与项目 `utils/http.py` 依赖的 httpx 版本冲突
+  2. **导致 `respx` 无法 mock** —— 而 M3 的预言生成/验证逻辑**强依赖**对 LLM 调用的 mock 测试
+     （实测 `openai_compat` 覆盖率因此为 0%）
+  3. OpenAI 的 chat/completions 本质就是一个 POST 请求，自研约 60 行即可，**无需重依赖**
+
+  **收益**：消除版本冲突、恢复 mock 能力（M3 必需）、少一个重依赖（对贡献者友好）、
+  且项目**已有**重试/缓存/限速/预算全套基建，不需要 SDK 再提供一遍。
+
+  **实现要点**（`llm/openai_compat.py`）：
+  ```python
+  # POST {base_url}/chat/completions
+  # headers: Authorization: Bearer {api_key}, Content-Type: application/json
+  # body: {model, messages, temperature, max_tokens, [response_format]}
+  # 解析: choices[0].message.content + usage.{prompt_tokens, completion_tokens}
+  # 错误处理: 401/403 → ConfigError（不重试）; 429/5xx → 走 HttpClient 退避重试
+  ```
+  - **必须仍走 `HttpClient`**（复用限速、重试、缓存、代理、UA），不得裸建 httpx 客户端。
+  - 错误分类：401/403 → `ConfigError` 立即失败并提示检查 key；429/5xx/超时 → 退避重试；
+    其余 4xx → 记录并降级。
+
+- **默认厂商 = DeepSeek**，理由：① 价格低；② 中文表达强；③ 完全兼容 OpenAI 协议，
+  未来换厂商**只改环境变量，不改一行代码**。
 - 双模型分层（省钱且效果好）：
   - `fast_model = deepseek-chat`：分类、单条点评、证据判定等轻任务
-  - `strong_model = deepseek-reasoner`：**预言生成、预言验证、多角色辩论、周期长文**——这四类任务是项目质量天花板，值得用好模型
+  - `strong_model = deepseek-reasoner`：**预言生成、预言验证、多角色辩论、周期长文**
 - 配置示例（`.env`）：
   ```env
   AIPULSE_LLM__PROVIDER=openai_compat
@@ -767,59 +837,38 @@ class LLMClient(Protocol):
   AIPULSE_LLM__FAST_MODEL=deepseek-chat       # 轻任务
   AIPULSE_LLM__STRONG_MODEL=deepseek-reasoner # 预言/验证/辩论/长文
   ```
-- 未提供 key 时：`FakeLLM` 模式（模板化输出），保证 pipeline 能端到端跑通用于开发/测试/CI。
-- **注意**：DeepSeek 的 `response_format={"type":"json_schema"}` 支持情况需在 M2 实测确认；若不支持则走 §8.3 的降级路径（`json_object` + prompt 内嵌 schema）。实测结论请写入 `docs/数据源手册.md`。
-
-### 8.5 三档运行模式（v1.3 核心变更：API 从必需变为可选）
-
-**设计动机**：LLM API 是收费的，且并非所有使用者都愿意或能够配置。**一个必须付费才能跑的开源工具，传播力会大打折扣。**
-因此把 API 从「必需依赖」降级为「可选增强」——**零 API 花费下，aipulse 依然是一个完整可用的工具。**
-
-#### 8.5.1 三档定义
-
-| 档位 | `mode` 值 | LLM 调用 | 具备能力 | 缺失能力 |
-|---|---|---|---|---|
-| **off**<br>零成本 | `off` | **零次** | 全源采集、算法打分排序、三级去重、主题聚类、实体频次与趋势检测、**手写预言 + 自动验证 + 命中率 + 校准曲线**、数据版简报（Top N 列表，无点评，含热度分/增速/来源徽章）、Actions 自动跑、Web 看板 | AI 点评、自动预言生成、多角色辩论、周期长文 |
-| **hybrid**<br>省钱 | `hybrid` | 仅**预言生成 + 主编点评**<br>（约 2-3 次/日） | off 全部 + 自动预言生成、主编一句话点评；证据判定走量化判据或人工 | 深度辩论、2000 字长文、叙事化改写 |
-| **full**<br>完整 | `full`<br>（默认） | 全部 | 全部能力 | 无 |
-
-#### 8.5.2 关键实现约束（Agent 红线）
-
-1. **`mode: off` 时，代码路径上严禁出现任何发往模型服务商的网络请求。** 用 `LLMClient` 注入 `NullLLM` 实现，测试需断言"off 档下 httpx 从未请求过 `base_url`"。
-2. **未配置 `api_key` 时，不得因缺 key 而报错退出**——自动降级到 `off` 档并打印一次提示（不是每次运行都刷屏）。
-3. **`hybrid` 档不做细分开关**——档位本身就是开关。配置项只多一个枚举，保持简单。
-4. 档位差异**必须在报告元信息中体现**：`meta.json` 与 `brief.md` 末尾固定写明"本次运行模式：off（未启用 LLM）"，让人知道这份报告有没有 AI 参与。
-5. 三档共用同一套数据管道，**不存在两套代码路径**——差异只在"某个 LLM 环节是否执行"。
-
-#### 8.5.3 各功能对 API 的依赖矩阵
-
-| 功能 | off | hybrid | full | 无 API 时的替代方案 |
-|---|---|---|---|---|
-| 数据采集（6 源） | ✅ | ✅ | ✅ | 本就不需要 API |
-| 热度打分 / 排序 | ✅ | ✅ | ✅ | 纯算法（§9.1） |
-| 去重 / 聚类 | ✅ | ✅ | ✅ | SimHash + TF-IDF（§6.2、§9.2） |
-| 实体抽取与趋势 | ✅ | ✅ | ✅ | 词典 + 规则（§9.3） |
-| star 增速检测 | ✅ | ✅ | ✅ | `signals` 时序快照 |
-| 每日简报（数据版） | ✅ | ✅ | ✅ | Jinja2 模板渲染排序结果 |
-| 简报「主编点评」 | ❌ | ✅ | ✅ | 改为渲染"今日数据摘要"（Top 主题 + 增速异常项） |
-| 单条 AI 点评 | ❌ | ❌ | ✅ | 渲染条目自带的摘要 |
-| **手写预言** | ✅ | ✅ | ✅ | **全档位可用，见 §11.4** |
-| **预言自动验证（量化判据）** | ✅ | ✅ | ✅ | 查 `signals` 表判定，零成本 |
-| 预言自动验证（语义型） | ❌ | 人工 | ✅ | 人工 `predict review` |
-| 自动预言生成 | ❌ | ✅ | ✅ | 手写预言替代 |
-| 周期趋势长文 | ❌ | ❌ | ✅ | 渲染数据表格（主题演化 + 实体增速 TopN） |
-| 多角色辩论 | ❌ | ❌ | ✅ | 无替代（这是纯 LLM 能力） |
-| 命中率 / Brier / 校准曲线 | ✅ | ✅ | ✅ | 纯统计，与预言来源无关 |
-
-> **结论：off 档已经具备本项目最有辨识度的资产——可回测预言系统。**
-> 因为预言的**价值在于被追踪与验证，而不在于由谁生成**。手写预言同样进入记分板、同样算 Brier Score。
+- 未提供 key 时：`mode` 自动降级为 `off`，注入 `NullLLM`，保证 pipeline 端到端跑通（§8.5）。
+- **依赖变更**：从 `pyproject.toml` 移除 `openai`；`uv.lock` 同步更新。
+  **M3 开工第一件事就是执行这个移除并补齐 `openai_compat` 的单测**（目标覆盖率 ≥80%）。
 
 ### 8.3 结构化输出保障（必须实现）
 
-1. 用 `response_model.model_json_schema()` 生成 JSON Schema，通过 `response_format={"type":"json_schema", ...}` 下发（不支持的厂商降级为 `json_object` + prompt 内嵌 schema）。
+1. 用 `response_model.model_json_schema()` 生成 JSON Schema，通过 `response_format={"type":"json_schema", ...}` 下发。
+   **v1.7：不支持时运行时自动降级**（见下方专项说明）。
 2. 拿到响应后 `response_model.model_validate_json()`。
 3. 失败 → 触发**一次修复重试**：把错误信息与原输出回传，要求"修正为合法 JSON"。
 4. 再失败 → 记录 `llm_usage.error`，该条目降级跳过（绝不中断整条流水线）。
+
+#### json_schema 运行时自动降级（v1.7）
+
+**背景**：DeepSeek 是否支持 `response_format={"type":"json_schema"}` **无法在无 key 环境下实测**（M2 已确认）。
+
+**决策：采用运行时自动降级，而非让用户手动改配置。**
+
+```
+首次请求 → 带 json_schema
+   ├─ 成功 → 记住"该模型支持 json_schema"，后续沿用（写入 llm_usage 与内存标记）
+   └─ 400 且错误表明不支持该参数 → 自动改用 json_object + prompt 内嵌 schema 重试
+        └─ 成功 → 记住"不支持"，后续直接走 json_object（不再每次白试一次）
+```
+
+**为什么值得多写这约 20 行**：手动开关（`llm.json_schema: false`）意味着**每个新用户都要先踩一次失败**、
+翻文档、改配置才能跑通——这对开源项目的第一印象是致命的。自动降级让用户开箱即用。
+
+**实现要点**：
+- 判定"不支持"的依据：HTTP 400 且错误体含 `json_schema` / `response_format` / `unsupported` 等关键词。
+- 状态记忆：进程内缓存 + 写入 `llm_usage.error` 便于事后审计；可选持久化到 `llm_cache` 避免每次重启重探。
+- 配置仍保留 `llm.json_schema: auto|true|false`（默认 `auto`），供用户强制指定。
 
 ### 8.4 缓存与预算
 
@@ -940,9 +989,22 @@ class DailyBrief(BaseModel):
 - 命令：`aipulse predict verify --due-date 2026-10-11`（每日流水线自动跑）。
 - 流程：
   1. 取出 `status=pending AND due_date <= today` 的预言。
-  2. 为每个预言检索**证据**：用预言中的实体/关键词在库中检索 `due_date ± 3 天` 窗口内的 Items（关键词 + TF-IDF 相似度；M5 后可用 embedding），取 Top 20 条。
+  2. 为每个预言检索**证据**：用预言中的实体/关键词在库中检索 **`[生成日, due_date + 3天]`** 窗口内的 Items
+     （关键词 + TF-IDF 相似度；M5 后可用 embedding），取 Top 20 条。
+     **★ v1.9：窗口左界从"生成日"起算**（而非 `due_date ± 3 天`）。
+     理由：预言可能在生成后很早就兑现（如"30 天内会发布"、结果第 5 天就发布了），
+     若窗口只覆盖 due_date 附近，这类**已兑现的 hit 会因检索不到证据而被误判成 miss**——
+     这会**系统性压低命中率、恶化 Brier**，是必须避免的严重偏差。
+  - **模型档位（v1.10）**：验证用 `fast` 还是 `strong` **按运行档位联动** ——
+    `hybrid` 档用 `fast`（省钱档就该省到底），`full` 档用 `strong`（追求判定质量）。
+    配置项 `verify.model_tier: auto|fast|strong`（默认 `auto` = 跟随档位）。
+  - **证据充分度门槛**：证据不足（如少于 3 条过阈值、且无 ≥0.30 强相关单条）→ **不得调用 LLM**，
+    直接走 `unverifiable` / 保留 `pending`。既省成本，也避免 LLM 在空白证据上"编造判定"。
+  - **`unverifiable` 只能由系统的证据门槛产生，LLM 不得输出该值**（见 §10.2.3 专项说明）。
   3. LLM 按 `falsifiable_criteria` 判定：`hit`(1.0) / `partial`(0.5) / `miss`(0.0) + `verdict_note` + 引用证据 id。
-  4. 证据不足 → 标记 `unverifiable`，并保留 `pending` 最多再延后 7 天；仍不足则转 `unverifiable`。
+  4. 证据不足 → 标记 `unverifiable`（`status` 字段），并保留 `pending` 最多再延后 7 天（grace period）；
+     仍不足则转 `unverifiable`。**LLM 调用失败时保持 `pending`，绝不当 miss 处理。**
+  5. 人工 `predict review` 可覆盖 `auto` 判定结果，且**同样计入统计**。
 - **人工兜底通道（必须实现）**：
   ```bash
   aipulse predict review <prediction_id> --verdict hit --note "依据：xxx 已于 10-09 发布"
@@ -955,12 +1017,28 @@ class DailyBrief(BaseModel):
 `aipulse stats --predictions` 输出：
 
 - 总数 / 已验证数 / 命中率（hit 比例）/ 加权分（verdict_score 均值）
-- **Brier Score**：`mean((confidence - outcome)^2)`，越低越好（<0.20 优秀，0.25 为随机猜测基线附近）
-- **校准曲线**：按置信度分桶（0.5-0.6 / 0.6-0.7 / 0.7-0.8 / 0.8+），对比"声称置信度" vs "实际命中率"——**这是最有力的可信度证明**
+- **Brier Score**：`mean((confidence - verdict_score)^2)`，越低越好（<0.20 优秀，0.25 为随机猜测基线附近）。
+  **★ v1.9：partial 按 `outcome = 0.5` 计入**（与 `verdict_score` 一致），不另设规则
+- **校准曲线**：按置信度分桶 **`[0.05,0.5) / 0.5-0.6 / 0.6-0.7 / 0.7-0.8 / 0.8+`**（v1.9 新增低置信桶），
+  对比"声称置信度" vs "实际命中率"——**这是最有力的可信度证明**。
+  **★ 为什么必须补 `[0.05, 0.5)` 桶**：`confidence` 下限是 0.05，若只统计 0.5+ 的样本，
+  所有低置信预言会被静默丢弃——而低置信预言本就该更容易不命中，
+  丢掉它们会让校准曲线**系统性偏高失真**，失去作为可信度证明的意义
+- **分母口径**：`unverifiable` 与 `pending` **不计入分母**——它们没有判定结果，计入会稀释统计意义
 - 按 `category` / `horizon_days` / `model` / `prompt_version` 分组的命中率
 - 自动生成"预言记分板" Markdown/HTML，作为 README 与 Web 首页的核心展示模块
 
 > 展示建议：README 顶部直接放一张「预言记分板」表格 + 校准曲线图。这在开源社区极具传播力，也是本项目最有辨识度的资产。
+
+#### `unverifiable` 的归属与防滥用（v1.9 明确）
+
+| 项 | 规定 |
+|---|---|
+| 归属 | **`status` 字段**，不是 `verdict`。`Verdict` 保持 3 值契约（`hit` / `partial` / `miss`）不变 |
+| 产生方 | **只允许系统的证据门槛产生**，LLM **不得**输出 `unverifiable` |
+| 理由 | 若允许 LLM 输出，它会变成**逃避 miss 的软出口**——模型一旦犹豫就标"无法验证"，<br>命中率与 Brier 都会被系统性美化，整个记分板失去意义 |
+| 部分命中 | `partial` 必须**高度克制**：仅当①存在可列举的多个子条件且部分满足，或②量化阈值落在容差带（默认 5%）时使用。<br>**"拿不准" ≠ partial**——拿不准应走证据门槛 → `unverifiable` 或延后重试 |
+| miss 的前提 | **证据覆盖已充分**。"查不到"不等于"没发生"，不得因检索不到就判 miss |
 
 ### 10.3 周期趋势长文（`trend`）
 
@@ -1002,9 +1080,15 @@ class DailyBrief(BaseModel):
 | `brief.html` | HTML 版（可选，带基础样式，便于分享） |
 | `predictions.md` | 当日新生成的预言 |
 | `verdicts.md` | 当日到期的验证结果 |
+| `scoreboard.md` | **★ 预言记分板（v1.10：`daily` 流水线自动产出）** |
 | `debate-<slug>.md` | 辩论记录（若有） |
 | `daily.json` | 全量结构化结果（机器读，供 Web/二次开发） |
 | `meta.json` | 运行元信息：耗时、各源条数、LLM 调用次数/花费、降级情况 |
+
+**记分板产出时机（v1.10）**：`daily` 流水线在 `auto_verify` 之后**自动**生成
+`data/reports/YYYY/MM/DD/scoreboard.md`（这样 Actions 每天 commit 的报告中天然包含记分板）。
+`aipulse stats --predictions` 命令本身**默认只打印，不落盘**，需 `--out <path>` 显式指定才写文件——
+查询类命令默认不产生副作用，符合 CLI 直觉。
 
 **报告模板原则**：
 - Markdown 顶部有元信息块（生成时间、模型、数据源统计、花费）
@@ -1111,6 +1195,23 @@ aipulse predict add
 - 向导末尾必须渲染**预览卡片**并二次确认——预言一旦入库就参与统计，不能误写。
 - 生成的预言 `origin = "human"`，与模型预言 `origin = "llm"` 在记分板上可分组对比。
 
+### 11.4.4 向导的字段收集策略（v1.8 明确）
+
+| 字段 | 是否收集 | 说明 |
+|---|---|---|
+| `statement` | ✅ 必填，第一步 | |
+| `confidence` | ✅ 必填（有默认 0.6，回车即可） | |
+| `horizon_days` | ✅ 必填（7/30/90/180 序号选择） | |
+| `criteria`（量化判据） | ⚠️ **可选** | 选模板 → 自动渲染 `falsifiable_criteria` |
+| **`falsifiable_criteria`（判据文本）** | ✅ **必填（红线）** | 选了模板 → 自动填充；**选"不设定" → 向导必须追问一句话判据**，不得留空 |
+| **`category`** | ✅ 收集（v1.8 新增，有默认值） | 7 个序号选项，默认 `capability`，回车跳过 |
+| `rationale` | ⚠️ 可选 | `--note` 或向导末尾可选填写 |
+
+**为什么 `category` 必须收集**（v1.8 决策）：
+M3b 要做「按 `category` 分组的命中率统计」（§10.2.3）。若手写预言全部默认 `capability`，
+这个分组维度就只剩单一取值，**统计完全失去意义**。收集成本极低（一步序号选择 + 回车默认），
+收益是保住一个分析维度。
+
 ### 11.5 量化判据（v1.3 新增，可选字段）
 
 预言可附带一个**可机读的判据**，到期时**直接查库判定，零 API 成本**。
@@ -1131,7 +1232,7 @@ aipulse predict add
 | `hn_story_points` | HN 上某关键词故事达 X 分 | `keyword`, `threshold` | 检索 `items` 中 `source=hackernews` 且标题含关键词 |
 | `entity_mentions` | 某实体在库中提及数达阈值 | `entity`, `threshold`, `window_days` | 统计 `entities` 表 |
 | `arxiv_paper_count` | arXiv 某关键词论文数达阈值 | `keyword`, `threshold`, `window_days` | 统计 `items` 中 `source=arxiv` |
-| `custom` | 手写 JSON 表达式 | `expr` | 兜底，供高级用户 |
+| `custom` | 手写表达式 | `expr` | 兜底，供高级用户。**当前支持 5 原语 + `and`/`or`/`not`** |
 | *（不设定）* | 到期人工判定 | — | off/hybrid 档人工 `predict review`；full 档走 LLM |
 
 **三重收益**：
@@ -1140,6 +1241,10 @@ aipulse predict add
 3. **倒逼预言质量**——填判据的过程会强迫你把预言写清楚，"大模型会变得更聪明"这类模糊句根本填不出判据
 
 **不强制**：允许不设判据（走人工或 LLM 判定），因为有些预言本质是语义判断，强行量化会损失有意义的预言。
+
+**关于 `custom` 的覆盖面（v1.10 裁定）**：当前支持 5 原语 + `and`/`or`/`not`。
+**暂不扩展比较与算术运算符**——6 个内置模板已覆盖绝大多数场景，
+`custom` 定位是"高级用户兜底"而非常规路径。若后续真实使用中确实遇到表达不了的需求，再按需扩展（YAGNI）。
 
 ---
 
@@ -1463,6 +1568,23 @@ Windows 侧也可用"任务计划程序"调用 `wsl -e bash -lc "..."`（需开�
 - [ ] LLM 输出非法 JSON 时自动修复重试，二次失败降级跳过且不中断（有单测）
 - [ ] 预算超限自动降级，并在 `meta.json` 中体现
 
+### 16.1 M3 拆分为 M3a / M3b（v1.7）
+
+**M3 是项目灵魂，也是最大的一个里程碑，拆成两个子阶段执行。**
+
+| 子阶段 | 内容 | 交付物 | 会话策略 |
+|---|---|---|---|
+| **M3a · 生成** | 预言生成、入库、不可证伪拦截、手写预言 `predict add`（含交互式向导）、量化判据模板库 | `predict` 命令可用，预言能入库 | 独立会话（S/A 档模型） |
+| **M3b · 验证与统计** | 到期验证、证据检索、量化判据自动判定、人工 review、命中率/Brier/校准曲线、记分板 | 记分板可生成，闭环成立 | 独立会话（A 档模型） |
+
+**拆分理由**：
+1. **单次会话负担过重** —— 生成 + 验证 + 统计 + 记分板一次做完，上下文里塞太多东西，质量难保证
+2. **生成逻辑需要单独验收** —— 如果生成有问题（比如拦截规则太松导致预言含糊），
+   等验证和统计都做完才发现，返工成本大得多
+3. **每个子阶段上下文干净** —— 符合 §6.5 的会话管理原则
+
+> **注意**：M3a 完成后预言**还不能闭环**（没有验证与统计），这是预期状态，不是缺陷。
+
 ### M3 · 预言系统（★ 最关键，1-2 天）
 1. `reasoning/predictor.py` + `prompts/predict/generate.j2`；`schema/prediction.py`。
 2. 不可证伪措辞拦截规则（正则黑名单 + 二次生成）。
@@ -1560,6 +1682,48 @@ Windows 侧也可用"任务计划程序"调用 `wsl -e bash -lc "..."`（需开�
 | 6 | alembic autogenerate 漏 import | 生成的迁移缺 `sqlmodel` | 补进 `script.py.mako`；`migrations/` 从 mypy 排除 |
 | 7 | 依赖不存在 | `types-feedparser` 在注册表无此包 | 已从 pyproject 移除 |
 
+### 18.3 M1 实证结论与待办（v1.6 归档）
+
+| # | 发现 | 结论 / 处理 |
+|---|---|---|
+| 1 | **arXiv 索引滞后 3-4 天** | Atom 的 `published` 是提交日，严格 24h 窗口永远采空 → 新增 `lookback_days: 7`（放宽时 warning）。**这是只有真实数据才暴露的问题** |
+| 2 | 单 feed / subreddit / 关键词失败拖垮整源 | 三层都改内部隔离，**全部失败才判源级失败** |
+| 3 | HN 全关键词失败时静默返回空 | 会伪装成"今天没热点" → 显式抛 `CollectorError`，区分"真为空"和"全挂了" |
+| 4 | 本地库缺 `skip_cluster` 列导致崩溃 | 迁移已生成但未执行 → pipeline 入口加 `ensure_schema()` 自动 upgrade 到 head |
+| 5 | Trending 页面约 1/3 概率超时 | 改"HTML 失败也走 Search API"，**两通道都拿不到才判死** |
+| 6 | 正则 `<p[^>]*>` 误匹配 SVG `<path>` | 改为 `<p(?:\s[^>]*)?>` |
+| 7 | `--json` 输出被日志污染 | `--json` 时日志走 stderr，stdout 保持纯 JSON |
+| 8 | HF fallback 语义 | 用户只填镜像基址，路径由代码拼接（`{base}/api/daily_papers`） |
+| 9 | **本地 RSS 串行 8 feed 耗时 298s** | **M2 待办**：改为每 feed 一个任务并发拉取（仍受全局并发 6 限制）。逐 feed 隔离已就位，改造风险低 |
+
+**M1 成果**：142 passed（M0 时 64），collectors 覆盖率 87.7%，TOTAL 91%；
+真实采集 107 条 / 4 源成功 / 2 源按设计跳过 / 0 失败 / 退出码 0。
+
+### 18.4 M3a 实证结论（v1.8 归档）
+
+| # | 发现 | 处理 |
+|---|---|---|
+| 1 | Typer `invoke_without_command=True` 的回调**在带子命令时也会触发** | 回调首参加 `ctx: typer.Context`，`ctx.invoked_subcommand is not None` 时 `return` |
+| 2 | `session.add` 后 `commit` 默认过期 | `Session(engine, expire_on_commit=False)`（M2 已遇，M3a 复现） |
+| 3 | ruff B008 误报 `list[str] = typer.Option(...)` | 加 `# noqa: B008` |
+| 4 | **★ `json_schema` / `json_object` 两种响应格式共用缓存键会串** | **缓存键追加 `:js` / `:jo` 后缀**。这个坑很微妙：同一 prompt 在自动降级前后会命中错误的缓存结果 |
+| 5 | 模糊拦截需防"过度拦截" | 已加负向用例：`"该模型不可能在 30 天内发布"` 不应被误伤（"不可能"是可证伪的否定断言） |
+
+**M3a 成果**：229 passed（M2 时 180），TOTAL 88%，`openai_compat` 覆盖率 **94%**（改造目标 ≥80% 达成）。
+8 种模糊句拦截 + 1 个负向防误伤用例。**预言尚未闭环**（`verify` / `review` / `stats` 为占位），符合 M3a 设计。
+
+### 18.5 M3b 实证结论（v1.10 归档）
+
+| # | 发现 | 处理 |
+|---|---|---|
+| 1 | mypy strict：`dict[str, Any]` 存处理器导致返回值推断为 `Any` | 用 `Callable[...]` 类型别名精确标注 |
+| 2 | `float(dict.get(...))` 触发 `Any \| None` | 先取列表再 `if v is not None` 过滤 |
+| 3 | 误写 `# type: ignore[return-value]`（实际错误码是 `no-any-return`） | 改用 `cast(Verdict, parsed)`。**不要凭印象写错误码，mypy 会报"未使用的 ignore"** |
+
+**M3b 成果**：272 passed（M3a 时 229，+43），TOTAL 88%，`analysis/stats` 覆盖率 100%。
+**★ 预言系统闭环**：off 档实测 `llm_usage` 行数 = 0，即零 API 花费完成
+"手写预言 → 到期自动判定 → 记分板更新"全链路。
+
 **M0 遗留缺口（M1 首步处理）**：`tests/fixtures/reddit_top.json` 缺失（本地不可达）。
 处理方式：M1 在 **Actions 环境**下补测（用 `workflow_dispatch` 跑一次 `probe_sources.py` 并下载 artifact），
 在此之前 reddit 采集器的单测用 `pytest.skip` **显式标记**，不得静默假装通过。
@@ -1620,7 +1784,24 @@ Windows 侧也可用"任务计划程序"调用 `wsl -e bash -lc "..."`（需开�
 - 里程碑顺序 → M4 发布与自动化 / M5 深度推演
 - embedding → 默认关闭
 
-### 19.4 关于"预言数量"的一条提醒
+### 19.4 SSOT 文档归属与同步约定（v1.7）
+
+**问题**：设计文档由项目负责人（在沙箱/本地）产出，而 Agent 在仓库内也会改 `docs/`，
+两处同时修改会产生**版本漂移**——SSOT 出错的代价极高（Agent 会按错误文档写代码）。
+
+**约定：文档以项目负责人产出的全量版本为唯一权威，每次覆盖仓库内 `docs/`。**
+
+| 角色 | 职责 |
+|---|---|
+| 项目负责人 | 产出 `AI_Pulse_设计方案_vX.md` 与 `AI_Pulse_Agent开发执行手册_vX.md` 的**全量版本** |
+| 项目负责人 | 每轮开始时把这两份文档**覆盖**到仓库 `docs/` |
+| Agent | **只读**这两份 SSOT；可在 `docs/开发日志.md`、`docs/数据源手册.md`、`docs/新增数据源指南.md` 中追加内容 |
+| Agent | **不得修改** SSOT 两份文档（已在红线中约束） |
+
+**为什么是全量覆盖而非增量补丁**：补丁容易冲突或漏合，而 SSOT 出错会导致 Agent 按错误规格写代码，
+代价远高于"每轮拷贝一次文件"。
+
+### 19.5 关于"预言数量"的一条提醒
 
 预言条数**不是越多越好**。样本量决定了统计量的可信度，但每条预言的质量决定了这个项目的声誉。建议：**每天 3-5 条，宁缺毋滥**——一条"3 个月内会出现 X"且最终被验证的预言，比 20 条含糊其辞的预言有价值得多。校验器（§10.2）会拒收不可证伪的条目，此时宁可当天只产出 2 条，也不要为了凑数放宽标准。
 

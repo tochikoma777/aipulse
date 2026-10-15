@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% block title %}预言记分板 · AI 脉搏{% endblock %}
+{% block content %}
+
+<h1>🎯 预言记分板</h1>
+<p class="lede">
+  本项目的门面：每天 3-5 条可证伪的预言，到期自动验证，命中率与校准度随时间沉淀。
+  预言条数不是越多越好——<strong>宁缺毋滥</strong>。
+</p>
+
+{% if not stats.has_results %}
+<section class="card empty">
+  <p>{{ empty_state }}</p>
+  <p class="muted">
+    已累计 <strong>{{ stats.total }}</strong> 条预言：待验证 {{ stats.pending }} ·
+    无法验证 {{ stats.unverifiable }}（后两者均不计入分母）。
+  </p>
+  {% if stats.total == 0 %}
+  <pre>uv run aipulse predict add --yes            # 手写预言（零 API 花费）
+uv run aipulse predict --date today         # 自动生成（需配置 API key）</pre>
+  {% endif %}
+</section>
+{% else %}
+<section class="card">
+  <h2>总览</h2>
+  <table>
+    <tbody>
+      <tr><th>命中率（hit 占比）</th><td><strong>{{ stats.hit_rate }}</strong>（{{ stats.hits }}/{{ stats.verified }}）</td></tr>
+      <tr><th>加权分（verdict_score 均值）</th><td>{{ stats.weighted_score }}</td></tr>
+      <tr><th>Brier Score（越低越好）</th><td>{{ stats.brier }} · {{ stats.brier_label }}</td></tr>
+      <tr><th>命中 / 部分 / 落空</th><td>{{ stats.hits }} / {{ stats.partials }} / {{ stats.misses }}</td></tr>
+      <tr><th>分母口径</th><td class="muted">已验 {{ stats.verified }}；pending {{ stats.pending }} 与 unverifiable {{ stats.unverifiable }} 不计入</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="card">
+  <h2>置信度校准曲线</h2>
+  <p class="muted">横轴 = 声称置信度，纵轴 = 实际命中率。虚线是"完美校准"，点越贴近虚线越可信。</p>
+  {% if chart.has_points %}
+  <svg viewBox="0 0 {{ chart.width }} {{ chart.height }}" class="chart" role="img"
+       aria-label="置信度校准曲线">
+    <rect x="{{ chart.x0 }}" y="{{ chart.y1 }}"
+          width="{{ chart.x1 - chart.x0 }}" height="{{ chart.y0 - chart.y1 }}" class="plot"/>
+    {% for t in chart.ticks %}
+      <line x1="{{ t.x }}" y1="{{ chart.y1 }}" x2="{{ t.x }}" y2="{{ chart.y0 }}" class="grid"/>
+      <text x="{{ t.x }}" y="{{ chart.y0 + 18 }}" class="tick mid">{{ t.label }}</text>
+      <line x1="{{ chart.x0 }}" y1="{{ t.y }}" x2="{{ chart.x1 }}" y2="{{ t.y }}" class="grid"/>
+      <text x="{{ chart.x0 - 10 }}" y="{{ t.y + 4 }}" class="tick end">{{ t.label }}</text>
+    {% endfor %}
+    <line x1="{{ chart.diagonal.x1 }}" y1="{{ chart.diagonal.y1 }}"
+          x2="{{ chart.diagonal.x2 }}" y2="{{ chart.diagonal.y2 }}" class="diag"/>
+    <polyline points="{{ chart.polyline }}" class="series"/>
+    {% for p in chart.points %}
+      <circle cx="{{ p.cx }}" cy="{{ p.cy }}" r="4.5" class="dot"/>
+      <text x="{{ p.cx + 9 }}" y="{{ p.cy - 7 }}" class="pt">{{ p.label }}（n={{ p.n }}）</text>
+    {% endfor %}
+    <text x="{{ (chart.x0 + chart.x1) / 2 }}" y="{{ chart.height - 10 }}" class="tick mid">平均置信度</text>
+  </svg>
+  {% else %}
+  <p class="muted">样本为 0，暂不绘制曲线。</p>
+  {% endif %}
+
+  <table>
+    <thead><tr><th>置信度区间</th><th>样本</th><th>平均置信度</th><th>实际命中率</th></tr></thead>
+    <tbody>
+    {% for b in buckets %}
+      <tr>
+        <td>{{ b.label }}</td>
+        <td class="num">{{ b.n }}</td>
+        <td class="num">{{ b.mean_confidence }}</td>
+        <td class="num">{{ b.hit_rate }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</section>
+
+{% for group in stats.groups %}
+<section class="card">
+  <h2>分组：{{ group.name }}</h2>
+  <table>
+    <thead><tr><th>取值</th><th>样本</th><th>命中率</th><th>加权分</th></tr></thead>
+    <tbody>
+    {% for row in group.rows %}
+      <tr><td>{{ row.label }}</td><td class="num">{{ row.n }}</td>
+          <td class="num">{{ row.hit_rate }}</td><td class="num">{{ row.weighted_score }}</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endfor %}
+
+<details class="card">
+  <summary>记分板 Markdown（可直接贴进 README）</summary>
+  <pre>{{ scoreboard_md }}</pre>
+</details>
+{% endif %}
+
+<section class="card">
+  <h2>预言列表（最近 {{ predictions|length }} 条）</h2>
+  {% if predictions %}
+  <table>
+    <thead>
+      <tr><th>生成日</th><th>预言</th><th>置信度</th><th>到期</th><th>状态</th><th>来源</th><th>依据</th></tr>
+    </thead>
+    <tbody>
+    {% for p in predictions %}
+      <tr>
+        <td>{{ p.date.isoformat() }}</td>
+        <td>
+          {{ p.statement }}
+          <div class="muted">判据：{{ p.falsifiable_criteria }}</div>
+        </td>
+        <td class="num">{{ '%.2f'|format(p.confidence) }}</td>
+        <td>{{ p.due_date.isoformat() }}</td>
+        <td>
+          {% if p.verdict == 'hit' %}✅ 命中
+          {% elif p.verdict == 'partial' %}🟡 部分
+          {% elif p.verdict == 'miss' %}❌ 落空
+          {% elif p.status == 'unverifiable' %}⏭ 无法验证
+          {% else %}⏳ 待验证{% endif %}
+        </td>
+        <td>{{ p.origin }}{% if p.verified_by %} · {{ p.verified_by }}{% endif %}</td>
+        <td class="muted">{{ p.verdict_note or '' }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="muted">还没有预言记录。</p>
+  {% endif %}
+</section>
+
+{% endblock %}

@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% block title %}今日简报 · AI 脉搏{% endblock %}
+{% block content %}
+
+{% if daily %}
+  <h1>{{ daily.headline or (day ~ ' 日报') }}</h1>
+  <p class="meta">
+    {{ day }}
+    {% if meta.mode %} · 模式 <code>{{ meta.mode }}</code>{% endif %}
+    {# 注意：Jinja 的 `foo.bar` 会先取属性再取键，dict 的 .items 会命中方法本身 → 必须用下标 #}
+    {% if meta.analysis %} · 条目 {{ meta.analysis['items'] }} · 主题 {{ meta.analysis['topics'] }}{% endif %}
+    {% if meta.predictions %} · 预言 {{ meta.predictions['total'] }}（已验 {{ meta.predictions['verified'] }}）{% endif %}
+    {% if meta.signals %} · 信号实体 {{ meta.signals['entities'] }}（可算增速 {{ meta.signals['with_velocity'] }}）{% endif %}
+  </p>
+
+  {% if daily.executive_summary %}<p class="lede">{{ daily.executive_summary }}</p>{% endif %}
+
+  {% if daily.editor_note %}
+  <section class="card">
+    <h2>主编点评</h2>
+    <p>{{ daily.editor_note }}</p>
+  </section>
+  {% endif %}
+
+  {% if meta.verify and meta.verify.verified is defined %}
+  <section class="card">
+    <h2>到期验证</h2>
+    <p>
+      本次处理 {{ meta.verify.verified + meta.verify.unverifiable + meta.verify.deferred }}
+      条到期预言：判定 {{ meta.verify.verified }} · 无法验证 {{ meta.verify.unverifiable }}
+      · 延后 {{ meta.verify.deferred }} · LLM 调用 {{ meta.verify.llm_calls }} 次
+    </p>
+  </section>
+  {% endif %}
+
+  {% set items = daily.get('items') or {} %}
+  {% set comments = daily.get('comments') or [] %}
+  {% for section in daily.get('sections') or [] %}
+    {% if section.item_ids %}
+    <section class="card">
+      <h2>{{ section.name }}</h2>
+      {% if section.summary %}<p class="section-summary">{{ section.summary }}</p>{% endif %}
+      <ol class="items">
+        {% for iid in section.item_ids %}
+          {% set item = items.get(iid) %}
+          {% if item %}
+          <li>
+            <a href="{{ item.url }}" target="_blank" rel="noopener">{{ item.title }}</a>
+            <span class="tag">{{ item.source }}</span>
+            <span class="hot">热度 {{ item.hot_score }}</span>
+            {% if item.seen_in and item.seen_in|length > 1 %}
+              <span class="tag">跨源 {{ item.seen_in|join(' / ') }}</span>
+            {% endif %}
+            {% if item.summary %}<p class="summary">{{ item.summary }}</p>{% endif %}
+            {% for c in comments %}{% if c.item_id == iid %}
+              <p class="comment">
+                {% if c.one_liner %}<strong>一句话</strong>：{{ c.one_liner }}{% endif %}
+                {% if c.why_it_matters %}<br><strong>为什么重要</strong>：{{ c.why_it_matters }}{% endif %}
+                {% if c.what_to_watch %}<br><strong>下一步关注</strong>：{{ c.what_to_watch }}{% endif %}
+              </p>
+            {% endif %}{% endfor %}
+          </li>
+          {% endif %}
+        {% endfor %}
+      </ol>
+    </section>
+    {% endif %}
+  {% endfor %}
+
+  {% if daily.get('contradictions') or daily.get('underrated') %}
+  <section class="card two-col">
+    {% if daily.get('contradictions') %}
+    <div>
+      <h2>今日矛盾</h2>
+      <ul>{% for line in daily.contradictions %}<li>{{ line }}</li>{% endfor %}</ul>
+    </div>
+    {% endif %}
+    {% if daily.get('underrated') %}
+    <div>
+      <h2>被低估</h2>
+      <ul>{% for line in daily.underrated %}<li>{{ line }}</li>{% endfor %}</ul>
+    </div>
+    {% endif %}
+  </section>
+  {% endif %}
+
+  <p class="muted">
+    近期报告：
+    {% for d in days %}<a href="/archive?date={{ d }}">{{ d }}</a>{% if not loop.last %} · {% endif %}{% endfor %}
+  </p>
+
+{% else %}
+  <h1>今日简报</h1>
+  <section class="card empty">
+    <p>还没有任何报告。先跑一次流水线：</p>
+    <pre>uv run aipulse daily --skip-llm</pre>
+    <p class="muted">产出的 <code>brief.md</code> / <code>daily.json</code> 会自动出现在这里。</p>
+  </section>
+  {% if fallback_items %}
+  <section class="card">
+    <h2>最近采集到的条目</h2>
+    <ol class="items">
+      {% for item in fallback_items %}
+      <li>
+        <a href="{{ item.url }}" target="_blank" rel="noopener">{{ item.title }}</a>
+        <span class="tag">{{ item.source }}</span>
+        <span class="hot">热度 {{ item.hot_score }}</span>
+      </li>
+      {% endfor %}
+    </ol>
+  </section>
+  {% endif %}
+{% endif %}
+
+{% endblock %}

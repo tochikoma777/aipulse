@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 数据源相关问题（采集不到 / 想加源）
+    url: https://github.com/tochikoma777/aipulse/blob/master/docs/%E6%95%B0%E6%8D%AE%E6%BA%90%E6%89%8B%E5%86%8C.md
+    about: 先看数据源手册：端点、限速、已实测结论与失效降级路径都在里面
+  - name: 想知道某段代码为什么这么写
+    url: https://github.com/tochikoma777/aipulse/blob/master/CODEBUDDY.md
+    about: CODEBUDDY.md 里有模块职责与"已归档的坑"，多数疑问在那里有答案

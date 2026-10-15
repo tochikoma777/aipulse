@@ -93,6 +93,85 @@ def test_run_daily_off_mode_produces_reports(monkeypatch, tmp_path):
     assert len(daily["items"]) == 2
 
 
+def test_run_daily_writes_scoreboard_and_signals(monkeypatch, tmp_path):
+    """M4：记分板（v1.10）与 signals 快照必须随报告落盘，且进 meta 摘要。"""
+    monkeypatch.setenv("AIPULSE_ROOT", str(tmp_path))
+    load_settings.cache_clear()
+    db = tmp_path / "t.db"
+    _seed(db)
+    today = today_local()
+    engine = init_db(db)
+    with Session(engine, expire_on_commit=False) as s:
+        # 两次快照 → 可算 star 增速（跨天在 Actions 中由 cache 恢复得到）
+        s.add(
+            Signal(
+                entity_type="repo",
+                entity_key="org/a",
+                metric="stars",
+                value=1000,
+                ts=datetime.now(tz=UTC) - timedelta(hours=24),
+            )
+        )
+        s.add(
+            Signal(
+                entity_type="repo",
+                entity_key="org/a",
+                metric="stars",
+                value=1200,
+                ts=datetime.now(tz=UTC) - timedelta(hours=1),
+            )
+        )
+        s.add(
+            Prediction(
+                id="pred_ok",
+                date=today - timedelta(days=30),
+                statement="acme 将出现新仓库",
+                category="community",
+                confidence=0.8,
+                horizon_days=30,
+                due_date=today - timedelta(days=1),
+                falsifiable_criteria="窗口内 acme 出现新仓库即命中",
+                status="pending",
+                criteria="github_new_repo",
+                criteria_params={"owner": "acme"},
+            )
+        )
+        s.add(
+            Signal(
+                entity_type="repo",
+                entity_key="acme/new",
+                metric="stars",
+                value=1,
+                ts=datetime.now(tz=UTC) - timedelta(days=10),
+            )
+        )
+        s.commit()
+    engine.dispose()
+
+    result = asyncio.run(run_daily(no_collect=True, skip_llm=True, db_path=str(db)))
+
+    import json as _json
+
+    assert (result.report_dir / "scoreboard.md").exists()
+    assert (result.report_dir / "signals.json").exists()
+    assert (result.report_dir / "verdicts.md").exists()
+
+    signals = _json.loads((result.report_dir / "signals.json").read_text(encoding="utf-8"))
+    assert signals["date"] == result.day.isoformat()
+    assert signals["with_velocity"] >= 1
+    hot = next(s for s in signals["series"] if s["entity_key"] == "org/a")
+    assert hot["points"] == 2
+    assert hot["delta"] == 200.0
+    assert hot["velocity_per_hour"] is not None
+
+    # meta.json 里要有可直接比对的关键摘要
+    assert result.meta["signals"]["with_velocity"] >= 1
+    assert result.meta["predictions"]["verified"] == 1
+
+    assert "🎯 预言记分板" in (result.report_dir / "scoreboard.md").read_text(encoding="utf-8")
+    assert "命中" in (result.report_dir / "verdicts.md").read_text(encoding="utf-8")
+
+
 def test_run_daily_auto_verify_off_mode(monkeypatch, tmp_path):
     """`daily` 在 off 档自动验证量化判据预言（零 LLM），并写进 meta。"""
     monkeypatch.setenv("AIPULSE_ROOT", str(tmp_path))

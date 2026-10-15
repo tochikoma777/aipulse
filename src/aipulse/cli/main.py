@@ -1,7 +1,9 @@
 """CLI 入口（`aipulse`）。
 
-M0：注册全部子命令，未实现的用 `NotImplementedError` 占位（但 `--help` 中可见）；
-已实现 `init` 与 `doctor`。
+已实现：`init` / `doctor` / `serve`，以及 `collect` / `analyze` / `brief` / `daily` /
+`predict` / `stats`（各自的 app 在 commands/ 内实现）。
+未实现的子命令由 `placeholder_app()` 占位——调用时显式抛 `NotImplementedError`，
+但 `--help` 中可见（刻意的，不是漏实现）。
 """
 
 from __future__ import annotations
@@ -18,7 +20,6 @@ from aipulse.cli.commands import (
     normalize,
     predict,
     search,
-    serve,
     sources,
     stats,
     topics,
@@ -26,6 +27,7 @@ from aipulse.cli.commands import (
 )
 from aipulse.cli.commands.doctor import doctor_command
 from aipulse.cli.commands.init import init_command
+from aipulse.cli.commands.serve import app as serve_app
 
 app = typer.Typer(
     name="aipulse",
@@ -39,6 +41,8 @@ app.command("init", help="初始化：建库 + 生成配置骨架 + 创建目录
 app.command("doctor", help="环境体检：Python / LLM key / 代理 / 磁盘 / 数据库 / 各源连通性")(
     doctor_command
 )
+# Web 看板（M4，只读）：`aipulse serve --port 8000`
+app.add_typer(serve_app)
 
 # 待实现（占位，--help 可见）
 for _sub in (
@@ -55,7 +59,6 @@ for _sub in (
     search,
     inbox,
     sources,
-    serve,
 ):
     app.add_typer(_sub.app)
 

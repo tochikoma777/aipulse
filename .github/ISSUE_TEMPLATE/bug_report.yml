@@ -1,0 +1,64 @@
+name: 🐛 Bug 报告
+description: 采集失效、解析错乱、统计口径不对等问题
+title: "[bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        提 issue 前请先跑 `uv run aipulse doctor --no-network --json` 与 `uv run aipulse doctor`，
+        多数"采集不到"是环境问题（代理 / DNS 污染 / 源已下线）而不是代码 bug。
+
+  - type: input
+    id: version
+    attributes:
+      label: 版本 / commit
+      description: 例如 tag `m3b`，或 `git rev-parse --short HEAD`
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: 影响范围
+      options:
+        - 采集（源全挂 / 条目为空 / 字段解析错）
+        - 分析（打分 / 聚类 / 实体）
+        - 简报与渲染（brief.md / daily.json）
+        - 预言与验证（predict / verify / 统计口径）
+        - Web 看板（serve）
+        - 自动化（Actions / cron）
+        - CLI / 配置 / 文档
+    validations:
+      required: true
+
+  - type: textarea
+    id: what
+    attributes:
+      label: 现象与复现步骤
+      description: 贴出完整命令、退出码、以及报错或异常输出（请勿粘贴 API key）
+      placeholder: |
+        1. 运行 `uv run aipulse collect --sources arxiv --json`
+        2. 期望 ...，实际 ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: env
+    attributes:
+      label: 环境
+      description: WSL2 / Linux / macOS？Python 与 uv 版本？是否配置了代理或 API key？
+      placeholder: |
+        - OS: WSL2 (Ubuntu 24.04)
+        - Python: 3.11.x / uv 0.4.x
+        - AIPULSE_ENV: 未设置（本地）
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: 确认
+      options:
+        - label: 我已确认输出中不含 API key、`.env` 内容或其他敏感信息
+          required: true

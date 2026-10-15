@@ -19,6 +19,8 @@ from sqlmodel import Session
 from aipulse.analysis.cluster import cluster_items
 from aipulse.analysis.entities import build_entity_rows, count_entities
 from aipulse.analysis.score import score_items
+from aipulse.analysis.signals import build_signals_summary
+from aipulse.analysis.stats import PredictionStats, compute_prediction_stats
 from aipulse.core.config import RunMode, Settings, load_settings
 from aipulse.core.logging import get_logger
 from aipulse.core.timeutil import day_window, today_local, utcnow
@@ -30,6 +32,8 @@ from aipulse.reasoning.brief import BriefOutput, generate_brief
 from aipulse.reasoning.verifier import verify_due_predictions
 from aipulse.render.json_out import render_json
 from aipulse.render.markdown import render_markdown
+from aipulse.render.scoreboard import render_scoreboard_markdown
+from aipulse.render.verdicts import render_verdicts_markdown
 from aipulse.schema.brief import DailyBrief
 from aipulse.store.db import engine_for, ensure_schema
 from aipulse.store.models import Item
@@ -38,10 +42,12 @@ from aipulse.store.repo_items import (
     apply_topic_ids,
     list_entities,
     list_items_collected,
+    list_signals,
     list_topics,
     upsert_entities,
     upsert_topics,
 )
+from aipulse.store.repo_predictions import list_predictions, list_verified_since
 from aipulse.store.repo_runs import record_pipeline_run
 
 log = get_logger(__name__)
@@ -123,6 +129,19 @@ async def _auto_verify(
     }
 
 
+def _stats_digest(stats: PredictionStats) -> dict[str, Any]:
+    """记分板关键指标的精简摘要（写进 meta.json，便于跨天对比与 Web 首页）。"""
+    return {
+        "total": stats.total,
+        "verified": stats.verified,
+        "pending": stats.pending,
+        "unverifiable": stats.unverifiable,
+        "hit_rate": stats.hit_rate,
+        "weighted_score": stats.weighted_score,
+        "brier": stats.brier,
+    }
+
+
 async def run_daily(
     *,
     since: str = "24h",
@@ -146,6 +165,9 @@ async def run_daily(
     analysis: dict[str, Any] = {}
     brief_out: BriefOutput | None = None
     verify_summary: dict[str, Any] | None = None
+    pred_stats: PredictionStats | None = None
+    verdicts_md = ""
+    signals_summary: dict[str, Any] = {}
     # expire_on_commit=False：提交后实例属性不过期，session 关闭后仍可安全渲染 items
     with Session(engine, expire_on_commit=False) as session:
         analysis = analyze_day(session, day=report_day)
@@ -168,9 +190,18 @@ async def run_daily(
             skip_llm=skip_llm,
         )
         if settings.pipeline.auto_verify:
+            verify_started = utcnow()
             verify_summary = await _auto_verify(
                 session, client=client, settings=settings, day=report_day, mode=mode
             )
+            # 本次运行产生的判定结果 → verdicts.md（§11.1）
+            verdicts_md = render_verdicts_markdown(
+                list_verified_since(session, verify_started), generated_at=utcnow()
+            )
+        # ★ v1.10：记分板由 daily 自动产出，因此 Actions 每天 commit 的报告天然含记分板
+        pred_stats = compute_prediction_stats(list_predictions(session))
+        # ★ M4：signals 快照 + 增速随报告落盘（Actions 无持久化时的跨天佐证）
+        signals_summary = build_signals_summary(list_signals(session))
         record_pipeline_run(
             session,
             day=report_day,
@@ -181,6 +212,7 @@ async def run_daily(
     engine.dispose()
 
     assert brief_out is not None
+    assert pred_stats is not None
     meta: dict[str, Any] = {
         "mode": mode.value,
         "day": report_day.isoformat(),
@@ -200,6 +232,12 @@ async def run_daily(
             "total_items": len(collected.items),
         }
     meta["verify"] = verify_summary
+    meta["predictions"] = _stats_digest(pred_stats)
+    meta["signals"] = {
+        "entities": signals_summary.get("entity_count", 0),
+        "points": signals_summary.get("point_count", 0),
+        "with_velocity": signals_summary.get("with_velocity", 0),
+    }
 
     # ── 渲染 + 落盘（走 FileNotifier，符合 §11.2 的 Notifier 抽象）──
     generated_at = utcnow()
@@ -214,6 +252,17 @@ async def run_daily(
                 brief_out.brief, brief_out.items, meta, generated_at=generated_at
             ),
             "meta.json": json.dumps(meta, ensure_ascii=False, indent=2),
+            "scoreboard.md": render_scoreboard_markdown(pred_stats),
+            "verdicts.md": verdicts_md,
+            "signals.json": json.dumps(
+                {
+                    "date": report_day.isoformat(),
+                    "generated_at": generated_at.isoformat(),
+                    **signals_summary,
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
         },
     )
     notifier = FileNotifier(str(settings.data_dir() / "reports"))

@@ -1,0 +1,28 @@
+{# 搜索结果片段：整页 /search 与 HTMX 局部刷新 /search/partial 共用 #}
+{% if searched %}
+  <p class="muted">共 {{ results|length }} 条结果（最多 100 条）</p>
+  {% if results %}
+  <table>
+    <thead><tr><th>时间</th><th>热度</th><th>标题</th><th>来源</th></tr></thead>
+    <tbody>
+    {% for item in results %}
+      <tr>
+        <td class="muted">{{ item.published_at[:10] }}</td>
+        <td class="num">{{ item.hot_score }}</td>
+        <td>
+          <a href="{{ item.url }}" target="_blank" rel="noopener">{{ item.title }}</a>
+          {% if item.summary %}<div class="summary">{{ item.summary[:180] }}</div>{% endif %}
+        </td>
+        <td>{{ item.source }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <section class="card empty"><p>没有匹配的条目。</p></section>
+  {% endif %}
+{% else %}
+  <section class="card empty">
+    <p>输入关键词检索已归档的条目（只读 LIKE 查询，不改动数据库）。</p>
+  </section>
+{% endif %}

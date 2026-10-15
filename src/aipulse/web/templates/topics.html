@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}主题演化 · AI 脉搏{% endblock %}
+{% block content %}
+
+<h1>主题演化</h1>
+<p class="lede">单日热点噪音大，<strong>同一个主题连续几天出现</strong>才是真趋势。</p>
+
+{% if not topics and not history %}
+<section class="card empty">
+  <p>还没有主题数据。先跑一次 <code>uv run aipulse analyze --date today</code>。</p>
+</section>
+{% else %}
+
+{% if history %}
+<section class="card">
+  <h2>跨日主题（最近 14 天）</h2>
+  <p class="muted">柱状密度：█ 当天 ≥3 条 · ▄ 当天 1-2 条 · · 当天无（从旧到新，每格一天）</p>
+  <table>
+    <thead><tr><th>主题</th><th>天数</th><th>累计条目</th><th>近 14 天</th><th>关键词</th></tr></thead>
+    <tbody>
+    {% for row in history %}
+      <tr>
+        <td>{{ row.name }}</td>
+        <td class="num">{{ row.day_count }}</td>
+        <td class="num">{{ row.total }}</td>
+        <td class="spark">{{ row.spark }}</td>
+        <td class="muted">{{ (row.keywords or [])|join(' / ') }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endif %}
+
+{% if topics %}
+<section class="card">
+  <h2>{{ day }} 的主题（{{ topics|length }}）</h2>
+  <table>
+    <thead><tr><th>主题</th><th>条目</th><th>平均热度</th><th>关键词</th></tr></thead>
+    <tbody>
+    {% for t in topics %}
+      <tr>
+        <td>{{ t.name }}</td>
+        <td class="num">{{ t.item_count }}</td>
+        <td class="num">{{ t.avg_hot_score }}</td>
+        <td class="muted">{{ t.keywords|join(' / ') }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endif %}
+
+{% if entities %}
+<section class="card">
+  <h2>{{ day }} 的实体提及（前 {{ entities|length }}）</h2>
+  <table>
+    <thead><tr><th>实体</th><th>类型</th><th>提及权重</th></tr></thead>
+    <tbody>
+    {% for e in entities %}
+      <tr><td>{{ e.name }}</td><td>{{ e.type }}</td><td class="num">{{ e.mentions }}</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endif %}
+
+{% endif %}
+
+{% endblock %}

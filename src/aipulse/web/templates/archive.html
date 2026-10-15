@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}归档 · AI 脉搏{% endblock %}
+{% block content %}
+
+<h1>归档</h1>
+
+{% if not days %}
+<section class="card empty">
+  <p>还没有任何报告可归档。</p>
+</section>
+{% else %}
+<section class="card">
+  <h2>已产出的报告（{{ days|length }} 天）</h2>
+  <p class="chips">
+    {% for d in days %}
+      <a class="chip {% if d == selected %}on{% endif %}" href="/archive?date={{ d }}">{{ d }}</a>
+    {% endfor %}
+  </p>
+</section>
+
+{% if selected %}
+  <h2>{{ selected }} 的简报</h2>
+  {% if daily %}
+    <p class="meta">
+      {% if meta.mode %}模式 <code>{{ meta.mode }}</code>{% endif %}
+      {# 下标而非点号：`meta.analysis.items` 会取到 dict.items 方法（Jinja 先属性后键） #}
+      {% if meta.analysis %} · 条目 {{ meta.analysis['items'] }} · 主题 {{ meta.analysis['topics'] }} · 实体 {{ meta.analysis['entities'] }}{% endif %}
+      {% if meta.llm %} · LLM 调用 {{ meta.llm['calls'] }}{% if meta.llm['degraded'] %}（已降级）{% endif %}{% endif %}
+    </p>
+    {% if daily.headline %}<p class="lede">{{ daily.headline }}</p>{% endif %}
+    {% if daily.executive_summary %}<p>{{ daily.executive_summary }}</p>{% endif %}
+    {% if daily.editor_note %}
+      <section class="card"><h2>主编点评</h2><p>{{ daily.editor_note }}</p></section>
+    {% endif %}
+
+    {% set items = daily.get('items') or {} %}
+    <section class="card">
+      <h2>条目（{{ items|length }}）</h2>
+      <table>
+        <thead><tr><th>热度</th><th>标题</th><th>来源</th></tr></thead>
+        <tbody>
+        {% for iid, item in items.items() %}
+          <tr>
+            <td class="num">{{ item.hot_score }}</td>
+            <td><a href="{{ item.url }}" target="_blank" rel="noopener">{{ item.title }}</a></td>
+            <td>{{ item.source }}{% if item.seen_in and item.seen_in|length > 1 %} <span class="tag">跨源</span>{% endif %}</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </section>
+  {% else %}
+    <section class="card empty"><p>该日期没有报告文件。</p></section>
+  {% endif %}
+{% endif %}
+{% endif %}
+
+{% endblock %}

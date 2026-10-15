@@ -1,0 +1,118 @@
+/* 极简黑白 + 数据表格（设计方案 §19.1 决策 10：无需前端构建链，终端/打印/分享都好用）*/
+:root {
+  --fg: #16181d;
+  --muted: #6b7280;
+  --line: #e3e6ea;
+  --bg: #ffffff;
+  --accent: #16181d;
+  --wash: #f6f7f9;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font: 15px/1.65 -apple-system, "Segoe UI", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+a { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--line); }
+a:hover { border-bottom-color: var(--accent); }
+
+.topbar {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 18px;
+  padding: 14px 24px; border-bottom: 1px solid var(--line);
+}
+.brand { font-weight: 700; border: 0; font-size: 17px; }
+.brand-sub { color: var(--muted); font-weight: 400; font-size: 13px; }
+.topbar nav { display: flex; gap: 14px; flex-wrap: wrap; }
+.topbar nav a { border: 0; color: var(--muted); }
+.topbar nav a.on { color: var(--fg); font-weight: 600; }
+.nav-disabled {
+  color: #b6bcc6; cursor: not-allowed;
+  border-bottom: 1px dashed #d7dbe1;
+}
+
+main { max-width: 980px; margin: 0 auto; padding: 24px; }
+
+h1 { font-size: 25px; line-height: 1.35; margin: 8px 0 6px; }
+h2 { font-size: 17px; margin: 0 0 10px; }
+.lede { font-size: 16px; color: #33383f; }
+.meta, .muted { color: var(--muted); font-size: 13px; }
+.meta { margin: 4px 0 18px; }
+
+.card {
+  border: 1px solid var(--line); border-radius: 8px;
+  padding: 16px 18px; margin: 16px 0; background: var(--bg);
+}
+.card.empty { background: var(--wash); }
+.card.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+@media (max-width: 720px) { .card.two-col { grid-template-columns: 1fr; } }
+
+pre {
+  background: var(--wash); border: 1px solid var(--line); border-radius: 6px;
+  padding: 10px 12px; overflow-x: auto; font-size: 12.5px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+code {
+  background: var(--wash); padding: 1px 5px; border-radius: 4px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12.5px;
+}
+
+table { width: 100%; border-collapse: collapse; margin: 6px 0; font-size: 14px; }
+th, td { text-align: left; padding: 7px 9px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { color: var(--muted); font-weight: 600; white-space: nowrap; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+tbody tr:hover { background: var(--wash); }
+
+.items { margin: 0; padding-left: 20px; }
+.items > li { margin-bottom: 14px; }
+.tag {
+  display: inline-block; margin-left: 6px; padding: 0 6px;
+  border: 1px solid var(--line); border-radius: 999px;
+  color: var(--muted); font-size: 12px;
+}
+.hot { margin-left: 6px; color: var(--muted); font-size: 12.5px; }
+.summary { margin: 4px 0 0; color: #3c424a; font-size: 13.5px; }
+.comment {
+  margin: 6px 0 0; padding-left: 10px; border-left: 2px solid var(--line);
+  color: #3c424a; font-size: 13.5px;
+}
+.section-summary { color: #3c424a; font-size: 14px; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  padding: 2px 9px; border: 1px solid var(--line); border-radius: 999px; font-size: 13px;
+}
+.chip.on { background: var(--fg); color: #fff; border-color: var(--fg); }
+
+.spark { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: 2px; }
+
+.search { display: flex; gap: 8px; margin: 14px 0; }
+.search input[type="search"] {
+  flex: 1; padding: 9px 12px; font-size: 15px;
+  border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--fg);
+}
+.search button {
+  padding: 9px 18px; font-size: 14px; cursor: pointer;
+  border: 1px solid var(--fg); border-radius: 6px; background: var(--fg); color: #fff;
+}
+
+/* ── 校准曲线（内联 SVG，纯 CSS 上色）────────────────────────────── */
+.chart { width: 100%; max-width: 640px; height: auto; margin: 6px 0 10px; }
+.chart .plot { fill: #fcfcfd; stroke: var(--line); }
+.chart .grid { stroke: var(--line); stroke-width: 1; }
+.chart .diag { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 4; }
+.chart .series { fill: none; stroke: var(--fg); stroke-width: 2; }
+.chart .dot { fill: var(--fg); }
+.chart .tick { fill: var(--muted); font-size: 11px; }
+.chart .tick.mid { text-anchor: middle; }
+.chart .tick.end { text-anchor: end; }
+.chart .pt { fill: var(--fg); font-size: 11px; }
+
+footer {
+  max-width: 980px; margin: 30px auto 40px; padding: 16px 24px 0;
+  border-top: 1px solid var(--line); color: var(--muted); font-size: 12.5px;
+}
+footer p { margin: 4px 0; }

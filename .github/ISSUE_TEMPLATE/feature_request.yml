@@ -1,0 +1,37 @@
+name: ✨ 功能建议
+description: 新数据源、新板块、新的推演能力
+title: "[feat] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        这个项目的边界很明确（V1 明确不做的事见设计方案 §1.2）。**以下方向的 PR 不会被合入**：
+        抓取微信公众号 / X（Twitter）、接 OAuth、实现 SMTP / Telegram / 飞书推送、给 Web 页面加写操作。
+        开 PR 前请先确认你的想法不在这条边界内。
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: 你想解决什么问题
+      description: 先说问题，再说方案。避免"我觉得应该加个 XX"式的描述。
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: 建议的做法
+      description: |
+        如果涉及数据源，请附上**实测结论**（`uv run python scripts/probe_sources.py --only <源>`），
+        并说明失效时的降级路径（其他源挂掉不能让流水线崩）。
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: 考虑过的替代方案
+      description: 为什么不用现成做法 / 为什么不做成配置项？
+    validations:
+      required: false

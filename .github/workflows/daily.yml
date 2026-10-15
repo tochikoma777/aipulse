@@ -1,0 +1,84 @@
+name: daily
+
+# ★ M4 头号产物：让系统每天真的自动跑起来。
+# 记分板的价值只能靠时间沉淀——越早开始跑，命中率与校准曲线的说服力越强。
+on:
+  schedule:
+    - cron: "0 23 * * *" # UTC 23:00 = 北京 07:00
+  workflow_dispatch:
+
+permissions:
+  contents: write # 报告要 commit 回仓库（文本即数据库，§14.1 对策①）
+
+# 手动触发与定时触发撞车时不要并跑（共享同一份 cache 里的 DB）
+concurrency:
+  group: daily
+  cancel-in-progress: false
+
+jobs:
+  daily:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      # ★ 打开 actions_only 的源（reddit / hf_papers）。本地 WSL 因 DNS 污染跳过，
+      #   在 Actions 环境可达，必须显式声明，否则这两个源会被当成"本地"而跳过。
+      AIPULSE_ENV: actions
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Set up Python 3.11
+        run: uv python install 3.11
+
+      - name: Install dependencies
+        run: uv sync --frozen --no-dev || uv sync --no-dev
+
+      # ── §14.1 对策②：SQLite 走 Actions cache「尽力而为」 ──────────────
+      # key 每次 run 都不同（run_number）→ 每次都把最新的 DB 存一份；
+      # restore-keys 前缀匹配 → 下次拿到最近一次保存的那份。
+      # 注意：key 若按周/月复用，本周内的运行会命中旧 cache 而不再回写，
+      #       signals 序列会出现空档，故必须用"每次 run 一个 key"。
+      - name: Restore SQLite history
+        uses: actions/cache@v4
+        with:
+          path: data/aipulse.db
+          key: aipulse-db-${{ github.run_number }}
+          restore-keys: |
+            aipulse-db-
+
+      - name: Run daily pipeline
+        env:
+          # 未配置该 secret 时为空串 → 自动降级 off 档，零 API 花费也不报错（§8.5）
+          AIPULSE_LLM__API_KEY: ${{ secrets.AIPULSE_LLM__API_KEY }}
+          # fine-grained PAT（可选，更宽松的限速）；未配置时回落到 Actions 自动 token
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN || secrets.GITHUB_TOKEN }}
+        run: uv run aipulse daily --date today --json
+
+      - name: Preview 记分板与 signals 增速
+        run: |
+          day=$(date -u -d "+8 hours" +%Y/%m/%d)
+          echo "── meta.json ──"
+          cat "data/reports/$day/meta.json"
+          echo
+          echo "── signals.json（前 40 行）──"
+          head -40 "data/reports/$day/signals.json"
+          echo
+          echo "── scoreboard.md ──"
+          cat "data/reports/$day/scoreboard.md"
+
+      # ── §14.1 对策①：报告文件 commit 回仓库（文本即数据库）──────────
+      - name: Commit reports
+        run: |
+          git config user.name "aipulse-bot"
+          git config user.email "aipulse-bot@users.noreply.github.com"
+          git add data/reports
+          if git diff --staged --quiet; then
+            echo "本次运行没有新增报告内容，跳过提交"
+            exit 0
+          fi
+          git commit -m "chore(reports): $(date -u -d '+8 hours' +%F) 日报与记分板"
+          git push origin HEAD:${{ github.ref_name }}
