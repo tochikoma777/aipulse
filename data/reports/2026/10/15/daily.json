@@ -1,7 +1,7 @@
 {
   "date": "2026-10-15",
   "headline": "morluto/rea",
-  "executive_summary": "今日共采集 30 条，覆盖 4 个主题、3 个来源；热度最高：morluto/rea。",
+  "executive_summary": "今日共采集 30 条，覆盖 6 个主题、3 个来源；热度最高：morluto/rea。",
   "editor_note": "off 档：未启用 LLM，本简报为数据版（无点评）。",
   "contradictions": [],
   "underrated": [],
@@ -13,12 +13,13 @@
         "it_074fdde051a02187",
         "it_db643b160f4cefa8",
         "it_a1cda4e529350fd0",
-        "it_b02b6b38ee45f34c",
         "it_1ab40dd4fd0ea2df",
+        "it_b02b6b38ee45f34c",
         "it_8374e30db02abb47",
         "it_59958c8085efe8d1",
+        "it_f859b2d15e1457f4",
         "it_e81d845b796616e3",
-        "it_f859b2d15e1457f4"
+        "it_2433c7a262761cc3"
       ]
     },
     {
@@ -27,23 +28,22 @@
       "item_ids": [
         "it_ac306084fe593349",
         "it_d691f24c2a5509e0",
+        "it_e63612d88eae12db",
+        "it_7d1779be808aab92",
         "it_4286996003f2f448",
+        "it_c6332939f1619598",
         "it_24a587f23249efe0",
+        "it_733b75a047c0d31f",
         "it_261929a082473034",
         "it_35d30c6c92c789ca",
-        "it_c6332939f1619598",
-        "it_7d1779be808aab92",
-        "it_54b19b33642fe469",
-        "it_e63612d88eae12db",
-        "it_6930a264689712e8",
-        "it_733b75a047c0d31f",
-        "it_c0bbd420b363de5e",
         "it_72799b4bc7aace46",
         "it_4781ef3f9776dcda",
         "it_c16920b58ce6ae38",
-        "it_beb718a691935e4b",
-        "it_60ff838470a07971",
-        "it_b3875050c7c080aa"
+        "it_54b19b33642fe469",
+        "it_6930a264689712e8",
+        "it_c0bbd420b363de5e",
+        "it_ee938f8e85b1fdcb",
+        "it_1bf08a1d50fe4753"
       ]
     },
     {
@@ -51,17 +51,17 @@
       "summary": "",
       "item_ids": [
         "it_c099e6f9efcc9ade",
-        "it_9bf5ebea18efb041"
+        "it_80bb9be476165690"
       ]
     }
   ],
   "comments": [],
   "stats": {
     "total_items": 30,
-    "topics": 4,
+    "topics": 6,
     "sources": {
-      "github_trending": 9,
-      "hf_papers": 19,
+      "github_trending": 10,
+      "hf_papers": 18,
       "hackernews": 2
     },
     "top_entities": [
@@ -91,17 +91,17 @@
         "count": 11
       },
       {
-        "name": "蒸馏",
-        "type": "concept",
-        "count": 10
-      },
-      {
         "name": "多模态",
         "type": "concept",
-        "count": 10
+        "count": 11
       },
       {
         "name": "对齐",
+        "type": "concept",
+        "count": 11
+      },
+      {
+        "name": "蒸馏",
         "type": "concept",
         "count": 10
       },
@@ -111,8 +111,8 @@
         "count": 9
       },
       {
-        "name": "Claude",
-        "type": "model",
+        "name": "NVIDIA",
+        "type": "company",
         "count": 8
       }
     ]
@@ -138,7 +138,7 @@
       "title": "debpalash/VoiceStudio",
       "url": "https://github.com/debpalash/VoiceStudio",
       "summary": "VoiceStudio is the open-source, fully-local ElevenLabs alternative — voice cloning, voice design, video dubbing, dictation, transcription & audiobook creation in 646 languages.",
-      "hot_score": 92.2727,
+      "hot_score": 94.0909,
       "topic_id": null,
       "seen_in": [
         "github_trending"
@@ -152,7 +152,7 @@
       "title": "Any Time, Any Space: A World-State-Centric Framework for Agentic Video Generation",
       "url": "arxiv:2610.20571",
       "summary": "Long-form agentic video generation must turn a screenplay into shots that remain spatially and temporally consistent across nonconsecutive requests. Passing prompts or recent frames between shots does not provide a shared spatial frame for revisiting a scene or a time-indexed record for replaying an earlier event. We present Any Time, Any Space (ATAS), which compiles a screenplay into shot requests with explicit location, camera, and event-time references. Before generation, it retrieves relevant evidence from a scene memory of registered static geometry and an event memory of dynamic observations indexed by scene, event, and time. After generation, ATAS reconstructs and registers the clip. It updates memory only when review and state checks accept the observation, while film delivery remains independent of memory admission. Across four video generators, ATAS improves all reported cross-shot consistency measures and achieves the highest aggregate benchmark score for each backbone. It also outperforms the compared agents and 3D-guided methods on target-image spatial revisit, leads three event-recapture criteria, and receives the highest human ratings on all six criteria. The video results and code are available on our project page: https://lhmd.top/atas/.",
-      "hot_score": 90.2841,
+      "hot_score": 90.6117,
       "topic_id": null,
       "seen_in": [
         "arxiv",
@@ -167,7 +167,7 @@
       "title": "Player-1: Learning to Play from Synthetic Experience",
       "url": "arxiv:2610.20584",
       "summary": "Computer-use agents have demonstrated strong capabilities in interpreting screens and executing keyboard and mouse actions. However, games, with their visually rich worlds and diverse mechanics, remain challenging and offer a demanding next step toward general digital control. Current game-agent learning pipelines often rely on large-scale demonstrations with limited coverage of dynamic game states, while scalable environments for interactive training remain difficult to obtain. We introduce Player-1, a post-training framework for learning game control beyond demonstrations through synthetic experience. We extend the computer-use action space with relative pointer motion, sustained inputs, and composite actions. For supervised initialization, we fine-tune computer-use models on 6,044 curated gameplay trajectories that pair recorded actions with task instructions and visual reasoning. We construct Player-1-Gym, sixteen synthetic 2D and 3D environments designed around control demands shared across games. Programmatically verifiable rewards and randomized observations and control dynamics support multi-environment reinforcement learning with PPO. The resulting Player-1-9B and Player-1-35B-A3B improve MineDojo-300 success over their SFT policies by 27.8 and 17.7 percentage points, respectively. Player-1-9B reaches 38.33% success compared with 12.63% for the strongest evaluated baseline, with further gains over SFT on ViZDoom-10 and GameWorld. Further analyses show that broader synthetic environment coverage improves transfer, while the use of composite actions that combine multiple keyboard and mouse inputs increases during RL. We demonstrate that learning from synthetic experience substantially improves game control beyond supervised initialization, with gains that generalize beyond the RL training suite.",
-      "hot_score": 88.4473,
+      "hot_score": 87.5872,
       "topic_id": null,
       "seen_in": [
         "arxiv",
@@ -182,7 +182,7 @@
       "title": "LFM2.5-24B-A2B: Built for fast on-device agents",
       "url": "https://www.liquid.ai/blog/lfm2-5-24b-a2b",
       "summary": "",
-      "hot_score": 83.4021,
+      "hot_score": 83.2268,
       "topic_id": null,
       "seen_in": [
         "hackernews"
@@ -196,7 +196,7 @@
       "title": "NationalSecurityAgency/ghidra",
       "url": "https://github.com/NationalSecurityAgency/ghidra",
       "summary": "Ghidra is a software reverse engineering (SRE) framework",
-      "hot_score": 82.7273,
+      "hot_score": 80.9091,
       "topic_id": null,
       "seen_in": [
         "github_trending"
@@ -204,13 +204,55 @@
       "published_at": "2026-10-15T14:47:23.502396+00:00",
       "language": "Java"
     },
+    "it_1ab40dd4fd0ea2df": {
+      "id": "it_1ab40dd4fd0ea2df",
+      "source": "github_trending",
+      "title": "K-Dense-AI/scientific-agent-skills",
+      "url": "https://github.com/K-Dense-AI/scientific-agent-skills",
+      "summary": "Turn any AI agent into an AI Scientist. The #1 Agent Skills library for science, used by 250,000+ scientists worldwide. 177 ready-to-use validated skills plus 100+ scientific databases covering biology, chemistry, medicine, and drug discovery. Compatible with Cursor, Claude Code, Codex, Pi, Antigravity, and the open Agent Skills standard.",
+      "hot_score": 78.1818,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-15T14:47:23.502359+00:00",
+      "language": "Python"
+    },
+    "it_e63612d88eae12db": {
+      "id": "it_e63612d88eae12db",
+      "source": "hf_papers",
+      "title": "Beyond Domain-Routed Supervision: Cross-Teacher Guarding for Multi-Teacher On-Policy Distillation",
+      "url": "arxiv:2610.13521",
+      "summary": "Multi-teacher on-policy distillation (MOPD) extends on-policy distillation (OPD) by routing domain-specific data to specialized teachers, integrating their capabilities through dense token-level supervision on student-generated trajectories. However, domain routing only distinguishes the supervision sources for different domains; updates from all domains still act on shared parameters. When teachers differ substantially in response style and domain expertise, supervision that is effective in isolation may still lead to persistent gradient conflicts and capability degradation during joint optimization. To address this challenge, we propose Cross-Teacher Guarding for MOPD (Road MOPD), which introduces non-routed teachers as auxiliary cross-domain critics on the same student trajectories and coordinates multi-teacher supervision through token-level credit assignment and gradient updates. Specifically, cross-teacher-guided credit assignment uses teacher agreement to strengthen token-level corrections jointly supported by the teachers and attenuate conflicting signals; preventive multi-teacher gradient projection uses auxiliary gradients from the same trajectories to constrain potentially conflicting updates and adaptively controls projection strength to retain target-domain learning signals. In experiments, Road MOPD mitigates degradation in the disadvantaged domain, gains over 5 percentage points under high conflict, and improves overall performance in low-conflict and three-domain settings.",
+      "hot_score": 76.6292,
+      "topic_id": "tp_255b3d094de3",
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-08T20:00:00+00:00",
+      "language": "en"
+    },
+    "it_7d1779be808aab92": {
+      "id": "it_7d1779be808aab92",
+      "source": "hf_papers",
+      "title": "LatentLoop: Scaling Looped MoE Models with Asymmetric Compute Allocation",
+      "url": "arxiv:2610.19975",
+      "summary": "Looped Mixture-of-Experts (MoE) models combine parameter reuse with sparse computation to improve performance under matched budgets. Prior work demonstrates that different loop visits can play different roles even when they share parameters. To probe the contributions of different loop visits, we learn separate residual coefficients in a model that applies a shared block twice, observing a smaller scale in the first visit. Fixed coefficient experiments show that reducing the first visit's scale preserves or improves performance, whereas the same reductions to the second hurt it. This asymmetry motivates us to explore asymmetric compute allocation. We propose LatentLoop, which compresses the first visit's sequence, retains full resolution in the second, and reallocates saved computation to increase the hidden size. We further learn how strongly the first visit updates the full sequence, and share MoE weights across visits while using separate attention parameters to accommodate their different sequence resolutions. Across 15 configurations spanning 1.3B--7B parameters, with the largest budget exceeding 10^{21} FLOPs, LatentLoop consistently lowers validation NLL. At a fitted NLL of 1.988, predicted compute savings are 19.0\\% and 7.9\\% relative to vanilla MoE and the looped baseline. It also improves average scores on nine benchmarks at all sizes in 0-shot and 5-shot settings. These results suggest asymmetric compute allocation is a promising direction for looped MoE models.",
+      "hot_score": 75.8841,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-13T20:00:00+00:00",
+      "language": "en"
+    },
     "it_b02b6b38ee45f34c": {
       "id": "it_b02b6b38ee45f34c",
       "source": "github_trending",
       "title": "affaan-m/ECC",
       "url": "https://github.com/affaan-m/ECC",
       "summary": "The agent harness performance optimization system. Skills, instincts, memory, security, and research-first development for Claude Code, Codex, Opencode, Cursor and beyond.",
-      "hot_score": 78.6364,
+      "hot_score": 75.0,
       "topic_id": null,
       "seen_in": [
         "github_trending"
@@ -224,7 +266,7 @@
       "title": "Recovering Reliable Supervision via Critique-Guided On-Policy Distillation",
       "url": "arxiv:2610.20572",
       "summary": "On-policy distillation (OPD) trains a student model on its own rollouts with token-level supervision from a teacher, assuming that the teacher can reach a correct answer from any prefix the student writes. We call this property the recoverability of the teacher and show it fails on incorrect rollouts: the teacher follows student errors, although it recognizes them. We propose CriticOPD, using error recognition to restore recoverability. The teacher critiques an incorrect rollout, allowing the student to rewrite its solution following the error. The resulting output, including the critique as privileged information, is scored by the teacher while the student uses the revision without the critique for training. On two Qwen3 students and six mathematical reasoning benchmarks, CriticOPD improves OPD, with the largest gains on competition problems.",
-      "hot_score": 75.4882,
+      "hot_score": 73.0505,
       "topic_id": "tp_255b3d094de3",
       "seen_in": [
         "arxiv",
@@ -233,13 +275,27 @@
       "published_at": "2026-10-13T20:00:00+00:00",
       "language": "en"
     },
+    "it_c6332939f1619598": {
+      "id": "it_c6332939f1619598",
+      "source": "hf_papers",
+      "title": "Many Right Answers, One Training Example: Removing Responder Noise from GRPO for LLM Recommenders",
+      "url": "arxiv:2610.17771",
+      "summary": "A recommendation request on Reddit draws several replies, each naming different titles. When an LLM recommender is trained on such threads with reinforcement learning (RL), which replies should a generated list be rewarded against? The state-of-the-art recipe, Rank-GRPO, picks one reply per training example, so the advantage mostly records which reply was drawn (85% of its variance) rather than how good the list is. We argue that RL should train on the request, not on each answer, and propose ReMaRk: it scores every list once against the union of all replies' titles and samples each request equally. This makes RL cheaper. On seven backbones and three datasets, ReMaRk reaches the validation recall of 2,000 per-reply RL steps in 25 to 53% of the steps and leads at that budget; trained until neither improves, it is never significantly behind Rank-GRPO and in four of seven pairs reaches Rank-GRPO's best with fewer GPU-hours. The same reward helps on ProtoQA, where about 100 people answer each question, which points to a simple rule for RL with several valid human answers: reward them jointly.",
+      "hot_score": 71.8431,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-12T20:00:00+00:00",
+      "language": "en"
+    },
     "it_24a587f23249efe0": {
       "id": "it_24a587f23249efe0",
       "source": "hf_papers",
       "title": "Cortex: Consolidating Context into Parametric Memory",
       "url": "arxiv:2610.20399",
       "summary": "Context can improve large language model performance, but these gains may be lost after context removal. Inspired by biological systems consolidation, we formulate Memory Consolidation (MC) as internalizing these gains while preserving non-target capabilities, connecting context-specified editing, skill learning, and behavioral steering under a common objective. We introduce a five-task-family testbed measuring consolidation and retention under single, batch, and sequential updates. We propose Cortex, which generates prospective queries to anticipate uses of context and distills context-conditioned outputs into mergeable low-rank or structural feed-forward network updates. Across 4B--120B dense and mixture-of-experts backbones, including both text-only and multimodal models, Cortex lies on the empirical consolidation--retention Pareto frontier in most evaluated settings. After 50 sequential factual edits on a 14B model, Cortex-Structural recovers 88.9% of the context-induced gain while retaining 99.8% of original non-target performance.",
-      "hot_score": 74.5698,
+      "hot_score": 71.7005,
       "topic_id": null,
       "seen_in": [
         "arxiv",
@@ -248,19 +304,19 @@
       "published_at": "2026-10-13T20:00:00+00:00",
       "language": "en"
     },
-    "it_1ab40dd4fd0ea2df": {
-      "id": "it_1ab40dd4fd0ea2df",
-      "source": "github_trending",
-      "title": "K-Dense-AI/scientific-agent-skills",
-      "url": "https://github.com/K-Dense-AI/scientific-agent-skills",
-      "summary": "Turn any AI agent into an AI Scientist. The #1 Agent Skills library for science, used by 250,000+ scientists worldwide. 177 ready-to-use validated skills plus 100+ scientific databases covering biology, chemistry, medicine, and drug discovery. Compatible with Cursor, Claude Code, Codex, Pi, Antigravity, and the open Agent Skills standard.",
-      "hot_score": 74.5455,
+    "it_733b75a047c0d31f": {
+      "id": "it_733b75a047c0d31f",
+      "source": "hf_papers",
+      "title": "Towards Agentic Robots: Model, Data, Environment, and Harness",
+      "url": "arxiv:2610.20442",
+      "summary": "Foundation models are driving a paradigm shift in robotic intelligence, moving beyond low-level action prediction to goal-directed orchestration of data collection, model training, task planning, and real-world execution. We characterize this emerging paradigm as an agentic robots, in which agents reason over human instructions, interact with robotic environments, rectify execution errors autonomously, and dynamically adjust operational strategies. Although this field develops fast, current studies are not well connected. Researchers have no consistent view of how to combine different agentic functions into a complete robot system. This paper provides a unified overview of existing research on agentic robots. We first trace the development from robot policies to agentic systems, covering vision-language-action models, world models, and world-action models. We then clarify the definition and scope of agentic robots and organize existing research into seventeen categories across four functional domains: Model, Data, Environment, and Harness. Across these domains, we examine how agents shape model learning and robot decisions, collect and curate robot data, construct worlds, tasks, and tests for learning and evaluation, and organize capabilities for robot use. Finally, we discuss open challenges and outline directions for future research. Looking forward, we hope this work contributes to a clearer understanding of agentic robots and supports new approaches to making them more capable, reliable, and adaptive.",
+      "hot_score": 70.0341,
       "topic_id": null,
       "seen_in": [
-        "github_trending"
+        "hf_papers"
       ],
-      "published_at": "2026-10-15T14:47:23.502359+00:00",
-      "language": "Python"
+      "published_at": "2026-10-13T20:00:00+00:00",
+      "language": "en"
     },
     "it_261929a082473034": {
       "id": "it_261929a082473034",
@@ -268,7 +324,7 @@
       "title": "Doc2Harness: Benchmarking LLMs on Long-Horizon Harness Engineering of Coding Agents",
       "url": "arxiv:2610.20344",
       "summary": "Agents driven by large language models are increasingly deployed on long-horizon tasks, where they use tools and modify real workspaces. How well they perform depends as much on the harness around the model as on the model itself. Existing benchmarks measure downstream task success under a fixed harness, leaving harness engineering itself unexplored. We propose Doc2Harness, a two-stage benchmark that evaluates long-horizon harness engineering directly. In Stage 1, a build model operating inside a fixed builder harness receives an interface-only contract skeleton and a development document that consolidates behavior across twelve frontier harnesses, and then constructs a complete candidate harness in an isolated container. In Stage 2, the frozen candidate harness runs in containers separate from the construction environment, one per test case, and is driven end to end by a scripted mock model. We score each test case using four observable channels, namely the requests sent to the model, the files on disk, the process exit code, and the command output; positive controls rule out vacuous passes. Across nineteen frontier models, each evaluated with three independent builds on 328 test cases, GPT-6 Astra achieves the highest pass rate at 53.05%, while the weakest model reaches 27.44%, a gap of roughly twenty-six percentage points. Even the strongest model fails nearly half of the test cases, and failures cluster around how cross-cutting functionality is split across modules. To our knowledge, Doc2Harness provides the first deterministic benchmark for measuring long-horizon harness engineering.",
-      "hot_score": 72.3249,
+      "hot_score": 69.8505,
       "topic_id": null,
       "seen_in": [
         "hf_papers"
@@ -282,7 +338,7 @@
       "title": "More Methods, Better Agents? A Reality Check on Self-Distillation in Agentic Reinforcement Learning",
       "url": "arxiv:2610.19789",
       "summary": "Self-distillation in agentic reinforcement learning has produced a growing number of methods. However, existing evaluations often reuse published baseline scores under differing experimental conditions, provide few direct comparisons among contemporaneous methods, and give limited attention to training stability and computational cost. These limitations obscure the source of reported gains and the practical strengths and weaknesses of competing methods. Costly agent training further motivates a common basis for comparison. To address these gaps, we compare ten representative methods against GRPO on ALFWorld, ScienceWorld, Search-QA, and WebShop across three model sizes. Our study comprises 132 training runs totaling 12,124.4 recorded H800 GPU-hours, with repeated evaluations over eight rollout seeds for the pretrained backbones and all eleven trained methods. Beyond final task performance, we examine training progress, stability, and measured computational cost. Our evaluation yields three key findings. First, gains over GRPO remain limited in scope, with no method consistently outperforming it across settings. Second, strong final performance can mask unstable training. Third, additional training cost does not consistently translate into better performance. We establish this benchmark to support fair, comprehensive comparison and guide future research toward reliable and cost-effective improvements in agent training. Project page: https://aim-uofa.github.io/Self-Distillation-AgentRL/",
-      "hot_score": 71.4065,
+      "hot_score": 68.9505,
       "topic_id": null,
       "seen_in": [
         "hf_papers"
@@ -290,32 +346,47 @@
       "published_at": "2026-10-13T20:00:00+00:00",
       "language": "en"
     },
-    "it_c6332939f1619598": {
-      "id": "it_c6332939f1619598",
+    "it_72799b4bc7aace46": {
+      "id": "it_72799b4bc7aace46",
       "source": "hf_papers",
-      "title": "Many Right Answers, One Training Example: Removing Responder Noise from GRPO for LLM Recommenders",
-      "url": "arxiv:2610.17771",
-      "summary": "A recommendation request on Reddit draws several replies, each naming different titles. When an LLM recommender is trained on such threads with reinforcement learning (RL), which replies should a generated list be rewarded against? The state-of-the-art recipe, Rank-GRPO, picks one reply per training example, so the advantage mostly records which reply was drawn (85% of its variance) rather than how good the list is. We argue that RL should train on the request, not on each answer, and propose ReMaRk: it scores every list once against the union of all replies' titles and samples each request equally. This makes RL cheaper. On seven backbones and three datasets, ReMaRk reaches the validation recall of 2,000 per-reply RL steps in 25 to 53% of the steps and leads at that budget; trained until neither improves, it is never significantly behind Rank-GRPO and in four of seven pairs reaches Rank-GRPO's best with fewer GPU-hours. The same reward helps on ProtoQA, where about 100 people answer each question, which points to a simple rule for RL with several valid human answers: reward them jointly.",
-      "hot_score": 69.8457,
+      "title": "SwarmRSI: Recursive Self-Improvement through Evolving Scientific Agent Swarm",
+      "url": "arxiv:2610.20431",
+      "summary": "Recursive self-improvement (RSI) in scientific research aims to improve agents' research capabilities through their own experimental experience. Scientific agent swarms can combine evidence and implementations from different research directions to guide their agents' subsequent experiments. However, poor experimental results can leave unclear whether to revise a hypothesis or its implementation, while overall program scores can hide components useful to other agents. To address these challenges, we introduce SwarmRSI, a framework that evolves scientific agent swarms for recursive self-improvement. We devise Feedback-Guided Swarm Mutation to refine hypotheses and their implementations using experimental feedback from other agents. We also propose Complementary Swarm Recombination to reuse retained hypotheses and complementary program components across agents, allowing partial results to support new research. Recursive Swarm Evolution integrates both mechanisms into a feedback loop, using new experimental evidence to guide subsequent research. Experiments on OpenProblems, NatureBench and MLE-Bench Lite demonstrate SwarmRSI's state-of-the-art (SOTA) performance. Further evaluations show that accumulated research experience improves performance on held-out tasks. Biologists also reproduce its programs for follow-up biological analyses.",
+      "hot_score": 67.8341,
+      "topic_id": null,
+      "seen_in": [
+        "arxiv",
+        "hf_papers"
+      ],
+      "published_at": "2026-10-13T20:00:00+00:00",
+      "language": "en"
+    },
+    "it_4781ef3f9776dcda": {
+      "id": "it_4781ef3f9776dcda",
+      "source": "hf_papers",
+      "title": "RuleTrek: Benchmarking Agentic Rule Reasoning in Complex Scenarios",
+      "url": "arxiv:2610.19698",
+      "summary": "Large language models (LLMs) increasingly tackle complex real-world tasks in specialized domains. However, identifying and correctly applying domain-specific rules remains challenging when scenario information is distributed across multiple files. Existing rule-reasoning benchmarks typically represent scenarios using only a few factual statements, simplifying the identification and application of relevant rules. To address this gap, this paper introduces RuleTrek, a multi-domain benchmark for agentic rule reasoning in complex scenarios. Its rule-grounded construction pipeline extracts structured rule graphs, generates and incrementally composes rule-specific sub-scenarios while ensuring consistency and solvability. To systematically evaluate agentic rule reasoning in complex scenarios, RuleTrek assesses three capabilities in interactive workspaces: Rule Identification (RI), Rule Deduction (RD), and End-to-End Rule Reasoning (E2E). Experiments on 11 frontier LLMs show that the highest RI and RD scores are only 62.47\\% and 60.43\\%, respectively, while E2E scores range from 26.97\\% to 55.29\\%. These results demonstrate that current LLM agents face substantial challenges in rule reasoning over complex scenarios. We make our code and dataset publicly available at https://github.com/yuan247/RuleTrek{RuleTrek}.",
+      "hot_score": 67.3341,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-13T20:00:00+00:00",
+      "language": "en"
+    },
+    "it_c16920b58ce6ae38": {
+      "id": "it_c16920b58ce6ae38",
+      "source": "hf_papers",
+      "title": "Hybrid Reasoning Agents",
+      "url": "arxiv:2610.18861",
+      "summary": "How can we build an agent that thinks beyond human language, yet still acts through it in the external environment? Modern LLM agents still reason and interact through text, while latent reasoning offers an efficient internal medium but lacks native tool access and reasoning transparency. We bridge these two directions with Hybrid Reasoning Agents (HybridAgents), which dynamically navigate between latent reasoning and text-based interaction throughout a unified generation process. Architecturally, a lightweight HybridLink enables seamless transitions between text and latent modes, while the agent's continuous working memory preserves lossless hybrid context across multiple turns. These designs preserve tool-integrated agentic capabilities while making latent thoughts directly inspectable. Building on this architecture, we further develop dedicated post-training algorithms for hybrid reasoning: HybridSFT stabilizes tool-integrated hybrid generation by teaching the backbone to coordinate with HybridLink, then HybridRL scales reasoning by learning when to think in latent space and when to act through text. We evaluate HybridAgent at 3 model scales across 11 benchmarks covering mathematics, science, medicine, search, and agentic reasoning. Compared with frontier LLM Agents and agentic frameworks spanning both text-based and latent methods, HybridAgent consistently improves performance by 10.4%, while delivering 35.5%-54.7% token reduction, 1.8x-2.6x faster inference, and 2.7x-3.7x cost savings. Code and data are available at https://github.com/togethercomputer/HybridAgent.",
+      "hot_score": 65.6737,
       "topic_id": null,
       "seen_in": [
         "hf_papers"
       ],
       "published_at": "2026-10-12T20:00:00+00:00",
-      "language": "en"
-    },
-    "it_7d1779be808aab92": {
-      "id": "it_7d1779be808aab92",
-      "source": "hf_papers",
-      "title": "LatentLoop: Scaling Looped MoE Models with Asymmetric Compute Allocation",
-      "url": "arxiv:2610.19975",
-      "summary": "Looped Mixture-of-Experts (MoE) models combine parameter reuse with sparse computation to improve performance under matched budgets. Prior work demonstrates that different loop visits can play different roles even when they share parameters. To probe the contributions of different loop visits, we learn separate residual coefficients in a model that applies a shared block twice, observing a smaller scale in the first visit. Fixed coefficient experiments show that reducing the first visit's scale preserves or improves performance, whereas the same reductions to the second hurt it. This asymmetry motivates us to explore asymmetric compute allocation. We propose LatentLoop, which compresses the first visit's sequence, retains full resolution in the second, and reallocates saved computation to increase the hidden size. We further learn how strongly the first visit updates the full sequence, and share MoE weights across visits while using separate attention parameters to accommodate their different sequence resolutions. Across 15 configurations spanning 1.3B--7B parameters, with the largest budget exceeding 10^{21} FLOPs, LatentLoop consistently lowers validation NLL. At a fitted NLL of 1.988, predicted compute savings are 19.0\\% and 7.9\\% relative to vanilla MoE and the looped baseline. It also improves average scores on nine benchmarks at all sizes in 0-shot and 5-shot settings. These results suggest asymmetric compute allocation is a promising direction for looped MoE models.",
-      "hot_score": 68.6514,
-      "topic_id": null,
-      "seen_in": [
-        "hf_papers"
-      ],
-      "published_at": "2026-10-13T20:00:00+00:00",
       "language": "en"
     },
     "it_54b19b33642fe469": {
@@ -324,26 +395,12 @@
       "title": "ActionOPD: Distilling Decisions, Not Tokens",
       "url": "arxiv:2610.19820",
       "summary": "Distilling capable language-model agents into smaller models requires aligning the student's behavior with the teacher's. This raises a fundamental question: at which states and at what granularity should this alignment be performed? Offline imitation provides dense but token-specific supervision and can suffer from state-distribution mismatch. Token-level on-policy distillation (OPD) addresses this mismatch but typically requires teacher token probabilities and compatible tokenization. We argue that semantic actions provide a natural unit of supervision for agent distillation. We introduce ActionOPD, an action-level on-policy distillation method motivated by maximizing expected teacher-action likelihood at student-encountered states. At each such state, ActionOPD samples actions from both the student and a black-box teacher, rewarding student actions according to their semantic agreement with the sampled teacher actions. Through policy optimization, ActionOPD aligns the student's action-level behavior with the teacher's decisions without requiring reproduction of teacher-written reasoning or access to teacher token probabilities. Training Qwen3-4B and Qwen3-8B with two teachers on diverse, curated tool-use tasks yields average gains of 3.3-6.9 percentage points across four out-of-distribution benchmarks. ActionOPD scales favorably with student size and teacher capability, without requiring the teacher and student to share a model family or tokenizer. On τ^2-bench, ActionOPD achieves competitive performance against offline distillation and token-level OPD. We further explore Self-ActionOPD with a same-model teacher and privileged context. These results establish ActionOPD as a promising approach to agent distillation.",
-      "hot_score": 67.7331,
+      "hot_score": 65.3505,
       "topic_id": "tp_255b3d094de3",
       "seen_in": [
         "hf_papers"
       ],
       "published_at": "2026-10-13T20:00:00+00:00",
-      "language": "en"
-    },
-    "it_e63612d88eae12db": {
-      "id": "it_e63612d88eae12db",
-      "source": "hf_papers",
-      "title": "Beyond Domain-Routed Supervision: Cross-Teacher Guarding for Multi-Teacher On-Policy Distillation",
-      "url": "arxiv:2610.13521",
-      "summary": "Multi-teacher on-policy distillation (MOPD) extends on-policy distillation (OPD) by routing domain-specific data to specialized teachers, integrating their capabilities through dense token-level supervision on student-generated trajectories. However, domain routing only distinguishes the supervision sources for different domains; updates from all domains still act on shared parameters. When teachers differ substantially in response style and domain expertise, supervision that is effective in isolation may still lead to persistent gradient conflicts and capability degradation during joint optimization. To address this challenge, we propose Cross-Teacher Guarding for MOPD (Road MOPD), which introduces non-routed teachers as auxiliary cross-domain critics on the same student trajectories and coordinates multi-teacher supervision through token-level credit assignment and gradient updates. Specifically, cross-teacher-guided credit assignment uses teacher agreement to strengthen token-level corrections jointly supported by the teachers and attenuate conflicting signals; preventive multi-teacher gradient projection uses auxiliary gradients from the same trajectories to constrain potentially conflicting updates and adaptively controls projection strength to retain target-domain learning signals. In experiments, Road MOPD mitigates degradation in the disadvantaged domain, gains over 5 percentage points under high conflict, and improves overall performance in low-conflict and three-domain settings.",
-      "hot_score": 67.226,
-      "topic_id": "tp_255b3d094de3",
-      "seen_in": [
-        "hf_papers"
-      ],
-      "published_at": "2026-10-08T20:00:00+00:00",
       "language": "en"
     },
     "it_6930a264689712e8": {
@@ -352,7 +409,7 @@
       "title": "Seeing, Maintaining, and Learning: The Evolution of Multimodal Agent Memory",
       "url": "arxiv:2610.19366",
       "summary": "Multimodal models and agents have emerged to enable AI systems to learn from and interact with the real world more like humans by integrating information across multiple modalities. However, enabling multimodal agents to continually acquire useful information from complex, heterogeneous multimodal data remains a significant challenge as they move toward long-horizon tasks and lifelong settings. Addressing this challenge requires effective memory mechanisms that can maintain continuity across sessions, adapt to changing users and environments, and refine memory-management policies through accumulated experience. We introduce a two-axis analytical framework for multimodal agent memory structured around two key questions: how multimodal information is formed and represented (Axis I, Formation and Representation), and how its management adapts with accumulated experience (Axis II, Memory Management). Axis I, Formation and Representation, characterizes what information is retained and how it is encoded (e.g., modality-specific embeddings, textual and structured records, latent and parametric representations) to support subsequent reasoning and action. Axis II, Memory Management, distinguishes three tiers: T1 Static Memory reuses fixed memory; T2 Dynamic Memory updates memory through a stable policy; and T3 Self-Evolving Memory updates memory through an evolving policy. Based on this framework, we synthesize recurring design patterns and derive principles for balancing source fidelity with abstraction, maintaining temporal validity and provenance, grounding memory use in recoverable evidence, and evolving memory policies over time. Furthermore, we discuss the challenges and potential future directions for the memory mechanism of multimodal agents.",
-      "hot_score": 67.0583,
+      "hot_score": 64.6913,
       "topic_id": null,
       "seen_in": [
         "hf_papers"
@@ -366,7 +423,7 @@
       "title": "anthropics/claude-plugins-official",
       "url": "https://github.com/anthropics/claude-plugins-official",
       "summary": "Official, Anthropic-managed directory of high quality Claude Code Plugins.",
-      "hot_score": 65.9091,
+      "hot_score": 64.0909,
       "topic_id": null,
       "seen_in": [
         "github_trending"
@@ -380,7 +437,7 @@
       "title": "mksglu/context-mode",
       "url": "https://github.com/mksglu/context-mode",
       "summary": "Context window optimization for AI coding agents. Sandboxes tool output (98% reduction), persists session memory, and enforces routing across 17 platforms via MCP + hooks.",
-      "hot_score": 65.0,
+      "hot_score": 61.3636,
       "topic_id": null,
       "seen_in": [
         "github_trending"
@@ -388,47 +445,19 @@
       "published_at": "2026-10-15T14:47:23.502390+00:00",
       "language": "TypeScript"
     },
-    "it_733b75a047c0d31f": {
-      "id": "it_733b75a047c0d31f",
-      "source": "hf_papers",
-      "title": "Towards Agentic Robots: Model, Data, Environment, and Harness",
-      "url": "arxiv:2610.20442",
-      "summary": "Foundation models are driving a paradigm shift in robotic intelligence, moving beyond low-level action prediction to goal-directed orchestration of data collection, model training, task planning, and real-world execution. We characterize this emerging paradigm as an agentic robots, in which agents reason over human instructions, interact with robotic environments, rectify execution errors autonomously, and dynamically adjust operational strategies. Although this field develops fast, current studies are not well connected. Researchers have no consistent view of how to combine different agentic functions into a complete robot system. This paper provides a unified overview of existing research on agentic robots. We first trace the development from robot policies to agentic systems, covering vision-language-action models, world models, and world-action models. We then clarify the definition and scope of agentic robots and organize existing research into seventeen categories across four functional domains: Model, Data, Environment, and Harness. Across these domains, we examine how agents shape model learning and robot decisions, collect and curate robot data, construct worlds, tasks, and tests for learning and evaluation, and organize capabilities for robot use. Finally, we discuss open challenges and outline directions for future research. Looking forward, we hope this work contributes to a clearer understanding of agentic robots and supports new approaches to making them more capable, reliable, and adaptive.",
-      "hot_score": 64.0596,
-      "topic_id": null,
-      "seen_in": [
-        "hf_papers"
-      ],
-      "published_at": "2026-10-13T20:00:00+00:00",
-      "language": "en"
-    },
     "it_c0bbd420b363de5e": {
       "id": "it_c0bbd420b363de5e",
       "source": "hf_papers",
       "title": "LensErase: A Foundation Model for Erase Anything",
       "url": "arxiv:2610.18072",
       "summary": "We introduce LensErase, a general-purpose mask-based Erase Anything foundation model designed to cover a broad spectrum of real-world erase scenarios. LensErase supports diverse objects, visual text, watermarks, associated visual effects, multiple-object removal, and a wide range of object scales, aspect ratios, and image resolutions. First, to enable such broad coverage, we construct LensErase-100M, a large-scale dataset containing 101.07 million paired source-mask-target examples spanning diverse erase scenarios. Second, we pretrain LensErase from the text-to-image model Lens, adapting its strong generative prior to mask-based erasing. To efficiently incorporate the source image and erase mask, we propose Mask-Aware RoPE, a 3D rotary positional encoding that directly injects mask information into the source-image tokens without introducing a separate mask token sequence. Finally, we refine the model through supervised fine-tuning and reinforcement learning with contract-guided, region-aware rewards, and apply TraceFusion at inference to preserve high-fidelity content outside the effective edit region. Across six public benchmarks and the proposed LensErase-Bench, LensErase achieves substantial improvements under both reference-based objective metrics and reference-free VLM evaluation. We hope LensErase can serve as a foundational model for erase-related applications and systems.",
-      "hot_score": 63.5701,
+      "hot_score": 61.2503,
       "topic_id": null,
       "seen_in": [
         "hf_papers"
       ],
       "published_at": "2026-10-13T05:56:02+00:00",
       "language": "en"
-    },
-    "it_e81d845b796616e3": {
-      "id": "it_e81d845b796616e3",
-      "source": "github_trending",
-      "title": "xerj-org/xerj",
-      "url": "https://github.com/xerj-org/xerj",
-      "summary": "XERJ is the new way for AI to search data. Its autoindex capability activates agents to know your data without the token waste of grep and sed. One command indexes code, docs, logs and PDFs for search, RAG, security audits and agent memory, using 40x fewer tokens than grep. Elasticsearch compatible, so existing clients just work.",
-      "hot_score": 61.3636,
-      "topic_id": null,
-      "seen_in": [
-        "github_trending"
-      ],
-      "published_at": "2026-10-15T14:47:23.502412+00:00",
-      "language": "Rust"
     },
     "it_f859b2d15e1457f4": {
       "id": "it_f859b2d15e1457f4",
@@ -444,115 +473,86 @@
       "published_at": "2026-10-15T14:47:23.502377+00:00",
       "language": "Shell"
     },
-    "it_72799b4bc7aace46": {
-      "id": "it_72799b4bc7aace46",
+    "it_ee938f8e85b1fdcb": {
+      "id": "it_ee938f8e85b1fdcb",
       "source": "hf_papers",
-      "title": "SwarmRSI: Recursive Self-Improvement through Evolving Scientific Agent Swarm",
-      "url": "arxiv:2610.20431",
-      "summary": "Recursive self-improvement (RSI) in scientific research aims to improve agents' research capabilities through their own experimental experience. Scientific agent swarms can combine evidence and implementations from different research directions to guide their agents' subsequent experiments. However, poor experimental results can leave unclear whether to revise a hypothesis or its implementation, while overall program scores can hide components useful to other agents. To address these challenges, we introduce SwarmRSI, a framework that evolves scientific agent swarms for recursive self-improvement. We devise Feedback-Guided Swarm Mutation to refine hypotheses and their implementations using experimental feedback from other agents. We also propose Complementary Swarm Recombination to reuse retained hypotheses and complementary program components across agents, allowing partial results to support new research. Recursive Swarm Evolution integrates both mechanisms into a feedback loop, using new experimental evidence to guide subsequent research. Experiments on OpenProblems, NatureBench and MLE-Bench Lite demonstrate SwarmRSI's state-of-the-art (SOTA) performance. Further evaluations show that accumulated research experience improves performance on held-out tasks. Biologists also reproduce its programs for follow-up biological analyses.",
-      "hot_score": 59.8759,
-      "topic_id": null,
-      "seen_in": [
-        "arxiv",
-        "hf_papers"
-      ],
-      "published_at": "2026-10-13T20:00:00+00:00",
-      "language": "en"
-    },
-    "it_4781ef3f9776dcda": {
-      "id": "it_4781ef3f9776dcda",
-      "source": "hf_papers",
-      "title": "RuleTrek: Benchmarking Agentic Rule Reasoning in Complex Scenarios",
-      "url": "arxiv:2610.19698",
-      "summary": "Large language models (LLMs) increasingly tackle complex real-world tasks in specialized domains. However, identifying and correctly applying domain-specific rules remains challenging when scenario information is distributed across multiple files. Existing rule-reasoning benchmarks typically represent scenarios using only a few factual statements, simplifying the identification and application of relevant rules. To address this gap, this paper introduces RuleTrek, a multi-domain benchmark for agentic rule reasoning in complex scenarios. Its rule-grounded construction pipeline extracts structured rule graphs, generates and incrementally composes rule-specific sub-scenarios while ensuring consistency and solvability. To systematically evaluate agentic rule reasoning in complex scenarios, RuleTrek assesses three capabilities in interactive workspaces: Rule Identification (RI), Rule Deduction (RD), and End-to-End Rule Reasoning (E2E). Experiments on 11 frontier LLMs show that the highest RI and RD scores are only 62.47\\% and 60.43\\%, respectively, while E2E scores range from 26.97\\% to 55.29\\%. These results demonstrate that current LLM agents face substantial challenges in rule reasoning over complex scenarios. We make our code and dataset publicly available at https://github.com/yuan247/RuleTrek{RuleTrek}.",
-      "hot_score": 59.4677,
+      "title": "Super-Resolution in The Right Latent Space: A Frozen Vision-Foundation Substrate",
+      "url": "arxiv:2610.04781",
+      "summary": "In an image latent space, the embeddings of high-resolution, natural, and sharp images form a manifold. Degradation of high-resolution images pushes their embeddings off this manifold. Real-world super-resolution (SR) then becomes the task of mapping the degraded embedding back onto this manifold --- not anywhere on the manifold, but to the point that preserves what the input still carries, both its semantics and pixel details. Every published method implements this mapping in a reconstruction-oriented latent space or pixel space. We claim these spaces are the wrong substrates for SR. Low-resolution and degraded images are embedded far from the manifold, making the mapping difficult and expensive. The lack of semantic information in these substrates also makes it difficult to navigate to the faithful point on the manifold, causing severe hallucination when degradation is heavy. Thus, restoring in a suitable latent space is crucial to the SR task. We show that the latent space of 23 fused layers of a frozen DINOv3-L is one such space that makes the SR task easier. Degraded images are embedded near the manifold. Moreover, this substrate contains a hierarchy of information, from pixel record to degradation robust semantics, guiding the model to find the faithful point on the manifold. On this substrate, a 415M decoder is trained under reconstruction and adversarial objectives to map the degraded embeddings back and decode to pixel space in one pass. The resulting model, RAESR, attains the best fidelity--perception trade-off among state-of-the-art adversarial and diffusion-based restorers on RealSR, DRealSR, LSDIR and DIV2K-Val, at 37 ms per 512 by 512 image on a single H20 GPU. Swapping the substrate for a VAE latent under an identical recipe loses on every metric.",
+      "hot_score": 60.3527,
       "topic_id": null,
       "seen_in": [
         "hf_papers"
       ],
-      "published_at": "2026-10-13T20:00:00+00:00",
+      "published_at": "2026-10-07T20:00:00+00:00",
       "language": "en"
     },
-    "it_c16920b58ce6ae38": {
-      "id": "it_c16920b58ce6ae38",
+    "it_e81d845b796616e3": {
+      "id": "it_e81d845b796616e3",
+      "source": "github_trending",
+      "title": "xerj-org/xerj",
+      "url": "https://github.com/xerj-org/xerj",
+      "summary": "XERJ is the new way for AI to search data. Its autoindex capability activates agents to know your data without the token waste of grep and sed. One command indexes code, docs, logs and PDFs for search, RAG, security audits and agent memory, using 40x fewer tokens than grep. Elasticsearch compatible, so existing clients just work.",
+      "hot_score": 59.5455,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-15T14:47:23.502412+00:00",
+      "language": "Rust"
+    },
+    "it_1bf08a1d50fe4753": {
+      "id": "it_1bf08a1d50fe4753",
       "source": "hf_papers",
-      "title": "Hybrid Reasoning Agents",
-      "url": "arxiv:2610.18861",
-      "summary": "How can we build an agent that thinks beyond human language, yet still acts through it in the external environment? Modern LLM agents still reason and interact through text, while latent reasoning offers an efficient internal medium but lacks native tool access and reasoning transparency. We bridge these two directions with Hybrid Reasoning Agents (HybridAgents), which dynamically navigate between latent reasoning and text-based interaction throughout a unified generation process. Architecturally, a lightweight HybridLink enables seamless transitions between text and latent modes, while the agent's continuous working memory preserves lossless hybrid context across multiple turns. These designs preserve tool-integrated agentic capabilities while making latent thoughts directly inspectable. Building on this architecture, we further develop dedicated post-training algorithms for hybrid reasoning: HybridSFT stabilizes tool-integrated hybrid generation by teaching the backbone to coordinate with HybridLink, then HybridRL scales reasoning by learning when to think in latent space and when to act through text. We evaluate HybridAgent at 3 model scales across 11 benchmarks covering mathematics, science, medicine, search, and agentic reasoning. Compared with frontier LLM Agents and agentic frameworks spanning both text-based and latent methods, HybridAgent consistently improves performance by 10.4%, while delivering 35.5%-54.7% token reduction, 1.8x-2.6x faster inference, and 2.7x-3.7x cost savings. Code and data are available at https://github.com/togethercomputer/HybridAgent.",
-      "hot_score": 58.7232,
+      "title": "The Thinking Leakage in Reinforcement Learning for LLMs",
+      "url": "arxiv:2610.14270",
+      "summary": "Hybrid reasoning models such as the Qwen3 series switch between a THINK mode and a NO-THINK mode through a few chat-template tokens. A popular recipe trains such models with reinforcement learning in NO-THINK mode and reports improved reasoning performance. We provide evidence that much of this gain can be explained by thinking leakage: the gain comes largely from partially reactivating the reasoning abilities of the original model's THINK mode instead of learning enhanced reasoning behavior. We train Qwen3-1.7B, 4B, and 8B with GRPO in NO-THINK mode. As accuracy improves, responses become longer and more reflective, are increasingly judged by the original model to resemble its own thinking, and the model's internal activations shift toward its THINK mode. We then investigate at the level of weights, activations, and attention heads: scaling the RL update further elicits THINK-mode behavior and approaches THINK-mode accuracy but does not exceed it; in Qwen3-8B, replacing a low-dimensional THINK-related activation subspace of the RL-trained model with its original-model value removes most of the RL gain, and the reverse exchange transfers a considerable fraction of the gain to the original model; and the RL-induced shift passes through the attention heads that read the empty think block. We further identify a possible mechanism in the GRPO training signal: responses favored by the advantage-weighted update are more THINK-like, and a gradient step computed from this signal moves the model toward its THINK state. Thus, gains in NO-THINK mode can largely reflect reactivation of reasoning abilities already present in the original model.",
+      "hot_score": 58.2262,
       "topic_id": null,
       "seen_in": [
         "hf_papers"
       ],
-      "published_at": "2026-10-12T20:00:00+00:00",
+      "published_at": "2026-10-08T20:00:00+00:00",
       "language": "en"
     },
-    "it_9bf5ebea18efb041": {
-      "id": "it_9bf5ebea18efb041",
+    "it_2433c7a262761cc3": {
+      "id": "it_2433c7a262761cc3",
+      "source": "github_trending",
+      "title": "JuliusBrussee/caveman",
+      "url": "https://github.com/JuliusBrussee/caveman",
+      "summary": "🪨 why use many token when few token do trick. Viral skill + proxy for coding agents that cuts 65% of tokens by talking like a caveman.",
+      "hot_score": 58.1818,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-15T14:47:23.502365+00:00",
+      "language": "Go"
+    },
+    "it_80bb9be476165690": {
+      "id": "it_80bb9be476165690",
       "source": "hackernews",
-      "title": "Show HN: Petal, open-source CoScreen/ScreenHero finally free",
-      "url": "https://petal.live/",
-      "summary": "Hi HN! I’m Jason Thomas, one of the founders of CoScreen. As some of you may know, Datadog sunset the CoScreen service on July 31st. Four of us from the original CoScreen team have spent the last couple months building a free and open source pair programming tool inspired by those that came before us: It’s called Petal ( https://github.com/kiruna-labs/petal ) Some history first, because when we started CoScreen we had hoped to break the sad and established pattern of this industry. Screenhero wa",
-      "hot_score": 58.6448,
+      "title": "Wayland desktop for Linux with skeuomorphic design",
+      "url": "https://github.com/fyzugx/DEsk",
+      "summary": "",
+      "hot_score": 57.75,
       "topic_id": null,
       "seen_in": [
         "hackernews"
       ],
-      "published_at": "2026-10-14T18:23:14+00:00",
-      "language": "en"
-    },
-    "it_beb718a691935e4b": {
-      "id": "it_beb718a691935e4b",
-      "source": "hf_papers",
-      "title": "Share the Symbol, Not the Vector: Training-Free Fact Communication Across Language Models",
-      "url": "arxiv:2610.19696",
-      "summary": "Multi-agent systems allow language models to solve tasks collaboratively by sharing complementary information. These systems typically communicate through text, while recent approaches also explore exchanging internal model states. However, sharing these states across architectures often requires learned translators or assumptions about model compatibility. We introduce SYNC (Symbol-Indexed Neural Communication), a word-indexed interface that connects heterogeneous models without fine-tuning or a learned translator. From descriptions only it can see, the sender selects words from a shared list and sends their indices for each object, without seeing the questions. The receiver writes the described facts into its hidden states using its own word directions, vectors fitted once from its activations. We test selective use by swapping one attribute between two objects and requiring correct answers about both changed and unchanged attributes before and after the swap, four answers in total. We choose an early write layer on four development receivers and then fix it. With three different senders and nine newer receivers from five families, four-answer success on new scenes reaches 72.0-98.3%, up to 96 percentage points above middle-layer writing, and the two largest receivers match plain text. A task-free probe predicted in advance which depths each new receiver can use (45 of 45 cases). Without retuning, messages listing every fact keep 89.6-100% success under new layouts, and sender messages reach 23.9-64.0% on a landmark task with multi-token symbols, below text but from 0% without a message. These results show that shared word indices and receiver-local directions can support selective fact use across model families without additional training.",
-      "hot_score": 58.3365,
-      "topic_id": null,
-      "seen_in": [
-        "hf_papers"
-      ],
-      "published_at": "2026-10-14T03:19:43+00:00",
-      "language": "en"
-    },
-    "it_60ff838470a07971": {
-      "id": "it_60ff838470a07971",
-      "source": "hf_papers",
-      "title": "KV4-RL: Unlocking Faster Asynchronous Rollouts for RLVR with INT4 KV Cache Quantization",
-      "url": "arxiv:2610.14448",
-      "summary": "Asynchronous rollout improves the efficiency of reinforcement learning with verifiable rewards (RLVR) by reducing under-utilization during long-tail generation. Sustained concurrency also concentrates context processing into fewer decode steps, increasing the KV workload per step. We characterize this KV concentration and find that KV cache quantization delivers substantially greater acceleration than weight-only and weight-activation quantization in our matched-workload comparisons. However, INT4 KV rollout can degrade learning even with token-level truncated importance sampling (TIS). We propose KV4-RL, which combines calibration-free INT4 KV quantization with selective INT8 protection of attention sinks and recent context. Protecting a bounded number of positions reduces sampler mismatch while retaining most of the speedup from INT4. Across 400 iterations of Qwen3-8B-Base GRPO training, KV4-RL achieves 1.80times cumulative rollout speedup and 1.27times cumulative full-iteration speedup over BF16 rollout, reaching 1.97times rollout speedup over the final 50 iterations. Under a common BF16 evaluator, its final six-benchmark mean accuracy is within 0.5 percentage points of BF16-rollout training for both Qwen3-4B-Base and Qwen3-8B-Base.",
-      "hot_score": 58.2855,
-      "topic_id": null,
-      "seen_in": [
-        "hf_papers"
-      ],
-      "published_at": "2026-10-09T20:00:00+00:00",
-      "language": "en"
-    },
-    "it_b3875050c7c080aa": {
-      "id": "it_b3875050c7c080aa",
-      "source": "hf_papers",
-      "title": "APT: Feedback-Driven Agentic Post-Training for Text-to-Image Generation",
-      "url": "arxiv:2610.18097",
-      "summary": "Post-training is crucial for improving text-to-image models, yet existing pipelines typically rely on manually curated training data and fixed training distributions. We introduce APT (Agentic Post-Training), a fully automated framework that adaptively post-trains a base model according to its evolving capability profile. APT coordinates three agents to construct evaluation sets from user requirements, diagnose model-specific strengths and failure modes, and generate reinforcement learning data with an adaptive prompt distribution that emphasizes underperforming capabilities. By repeatedly evaluating, diagnosing, and updating the generator, APT lets the current model's behavior shape its next training tasks, forming a feedback loop inspired by recursive self-improvement. For general-purpose settings without user-specified evaluation scenarios, we further develop an evaluation harness that enables broad and diverse evaluation set generation. Experiments across multiple base models, benchmarks, and generation architectures demonstrate that APT is model-agnostic, benchmark-agnostic, architecture-agnostic, and fully automated.",
-      "hot_score": 57.183,
-      "topic_id": null,
-      "seen_in": [
-        "hf_papers"
-      ],
-      "published_at": "2026-10-13T06:14:23+00:00",
+      "published_at": "2026-10-15T13:23:44+00:00",
       "language": "en"
     }
   },
   "meta": {
     "mode": "off",
     "day": "2026-10-15",
-    "generated_at": "2026-10-15T14:49:07.055059+00:00",
+    "generated_at": "2026-10-15T15:13:27.554035+00:00",
     "analysis": {
-      "items": 185,
-      "scored": 185,
-      "topics": 4,
-      "entities": 5
+      "items": 191,
+      "scored": 191,
+      "topics": 5,
+      "new_entity_mention_rows": 4
     },
     "llm": {
       "degraded": false,
@@ -563,7 +563,7 @@
       "ok_sources": 7,
       "failed_sources": 0,
       "skipped": 0,
-      "total_items": 185
+      "total_items": 178
     },
     "verify": {
       "verified": 0,
@@ -581,10 +581,19 @@
       "weighted_score": null,
       "brier": null
     },
+    "prediction_generation": {
+      "mode": "off",
+      "generated": 0,
+      "inserted": 0,
+      "dropped": []
+    },
     "signals": {
-      "entities": 65,
-      "points": 130,
-      "with_velocity": 65
+      "entities": 67,
+      "points": 196,
+      "with_velocity": 0,
+      "insufficient": 65,
+      "cold_start": 2,
+      "min_window_hours": 6.0
     }
   }
 }

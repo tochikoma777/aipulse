@@ -1,12 +1,12 @@
 {
   "mode": "off",
   "day": "2026-10-15",
-  "generated_at": "2026-10-15T14:49:07.055040+00:00",
+  "generated_at": "2026-10-15T15:13:27.554010+00:00",
   "analysis": {
-    "items": 185,
-    "scored": 185,
-    "topics": 4,
-    "entities": 5
+    "items": 191,
+    "scored": 191,
+    "topics": 5,
+    "new_entity_mention_rows": 4
   },
   "llm": {
     "degraded": false,
@@ -17,7 +17,7 @@
     "ok_sources": 7,
     "failed_sources": 0,
     "skipped": 0,
-    "total_items": 185
+    "total_items": 178
   },
   "verify": {
     "verified": 0,
@@ -35,9 +35,18 @@
     "weighted_score": null,
     "brier": null
   },
+  "prediction_generation": {
+    "mode": "off",
+    "generated": 0,
+    "inserted": 0,
+    "dropped": []
+  },
   "signals": {
-    "entities": 65,
-    "points": 130,
-    "with_velocity": 65
+    "entities": 67,
+    "points": 196,
+    "with_velocity": 0,
+    "insufficient": 65,
+    "cold_start": 2,
+    "min_window_hours": 6.0
   }
 }
