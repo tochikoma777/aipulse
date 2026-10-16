@@ -71,6 +71,9 @@ class LLMSettings(BaseModel):
     strong_model: str = "deepseek-reasoner"
     temperature: float = 0.4
     timeout_s: int = 120
+    # strong 档（deepseek-reasoner）会先吐思维链再出结论，同样的活儿比 fast 慢得多：
+    # 共用 120s 时预言生成会被读超时打断（Actions 首跑 hybrid 就是这样 0 条的）。
+    timeout_strong_s: int = 180
     max_retries: int = 3
     cache_enabled: bool = True
     # v1.7：json_schema 兼容性。auto=首次带 json_schema，报 400 且错误体含

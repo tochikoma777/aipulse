@@ -2,27 +2,32 @@ app:
   name: aipulse
   timezone: Asia/Shanghai          # 存储统一 UTC，展示用此
   data_dir: data
-  log_level: INFO
+  log_level: ${AIPULSE_LOG_LEVEL:-INFO}
 
 # v1.3：运行模式。off=零 API 花费；hybrid=仅预言+点评；full=全部
-# 未配置 api_key 时自动降级为 off，不报错退出
-mode: full
+# 未配置 api_key（或 base_url）时自动降级为 off，不报错退出
+# ★ 必须写成占位符：`load_settings` 用 `Settings(**yaml)` 构造，init kwargs 优先级高于
+#   环境变量，写成字面量会让 `AIPULSE_MODE`（daily.yml 声明的 hybrid）被静默无视。
+mode: ${AIPULSE_MODE:-full}
 
 llm:
-  enabled: true                    # mode 为 off 时强制 false
+  enabled: ${AIPULSE_LLM__ENABLED:-true}   # mode 为 off 时强制 false
   provider: openai_compat
   base_url: ${AIPULSE_LLM__BASE_URL}
   api_key: ${AIPULSE_LLM__API_KEY}
-  fast_model: deepseek-chat
-  strong_model: deepseek-reasoner
+  # 厂商/模型名随 base_url 一起变，光换 base_url 换不动模型（换厂商的真实操作）
+  fast_model: ${AIPULSE_LLM__FAST_MODEL:-deepseek-chat}
+  strong_model: ${AIPULSE_LLM__STRONG_MODEL:-deepseek-reasoner}
   temperature: 0.4
-  timeout_s: 120
+  # 读超时：strong 档走思维链，比 fast 慢得多，故分开设（见 config.py 的注释）
+  timeout_s: ${AIPULSE_LLM__TIMEOUT_S:-120}
+  timeout_strong_s: ${AIPULSE_LLM__TIMEOUT_STRONG_S:-180}
   max_retries: 3
   cache_enabled: true
   json_schema: auto                # auto=运行时自动降级；true/false=强制指定（§8.3）
 
 budget:
-  daily_limit_cny: 2.0
+  daily_limit_cny: ${AIPULSE_BUDGET__DAILY_LIMIT_CNY:-2.0}
   degrade_order: [debate, trend, brief_topn, all]
   price_fast_cny_per_1m: 1.0       # 成本估算单价（元/百万 token），可调
   price_strong_cny_per_1m: 4.0

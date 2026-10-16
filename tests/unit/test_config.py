@@ -79,6 +79,33 @@ def test_build_client_returns_null_without_base_url():
     assert isinstance(build_client(settings), NullLLM)
 
 
+def test_env_overrides_placeholders_in_yaml(monkeypatch):
+    """★ 回归防线：`load_settings` 是 `Settings(**yaml)`，init kwargs 优先级高于环境变量。
+
+    所以 YAML 里写成字面量的字段**永远**吃不到 `AIPULSE_*` 覆盖——daily.yml 声明的
+    `AIPULSE_MODE: hybrid` 就是这样被静默无视、实际跑成 full 档的。
+    凡是"按环境需要覆盖"的字段，都必须写成 `${VAR:-default}` 占位符。
+    """
+    monkeypatch.setenv("AIPULSE_MODE", "hybrid")
+    monkeypatch.setenv("AIPULSE_LLM__BASE_URL", "https://api.deepseek.com/v1")
+    monkeypatch.setenv("AIPULSE_LLM__API_KEY", "sk-x")
+    monkeypatch.setenv("AIPULSE_LLM__STRONG_MODEL", "deepseek-chat")
+    monkeypatch.setenv("AIPULSE_LOG_LEVEL", "DEBUG")
+
+    settings = load_settings()
+
+    assert settings.mode == RunMode.HYBRID
+    assert settings.effective_mode() == RunMode.HYBRID
+    assert settings.llm.strong_model == "deepseek-chat"
+    assert settings.app.log_level == "DEBUG"
+
+
+def test_strong_timeout_is_longer_than_fast():
+    """strong 档走思维链，读超时必须比 fast 更长，否则预言生成会被中途掐断。"""
+    settings = load_settings.__wrapped__() if hasattr(load_settings, "__wrapped__") else Settings()
+    assert settings.llm.timeout_strong_s > settings.llm.timeout_s
+
+
 def test_load_yaml_missing_file_returns_empty(tmp_path):
     assert load_yaml(tmp_path / "nope.yaml") == {}
 
