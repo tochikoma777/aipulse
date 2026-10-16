@@ -331,6 +331,100 @@ def test_run_daily_off_mode_does_not_call_predictor(monkeypatch, tmp_path):
     )
 
 
+def _seed_windowed(db_path):
+    """窗口内 1 条 + 窗口外 1 条。
+
+    窗口按 `collected_at` 过滤（不是 published_at）——窗口语义是"本次运行采集到的"，
+    所以这里必须差的是 collected_at。
+    """
+    engine = init_db(db_path)
+    now = datetime.now(tz=UTC)
+    rows = [
+        ("in_window", "窗口内的条目", now - timedelta(hours=1), "h-in"),
+        ("out_window", "窗口外的条目", now - timedelta(hours=30), "h-out"),
+    ]
+    with Session(engine) as s:
+        for item_id, title, collected, chash in rows:
+            s.add(
+                Item(
+                    id=item_id,
+                    source="github_trending",
+                    external_id=item_id,
+                    title=title,
+                    url=f"https://example.com/{item_id}",
+                    summary=title,
+                    collected_at=collected,
+                    published_at=collected,
+                    metrics={"stars_total": 10},
+                    seen_in=["github_trending"],
+                    content_hash=chash,
+                    hot_score=0.0,
+                )
+            )
+        s.commit()
+    engine.dispose()
+
+
+def test_daily_passes_one_window_to_both_collect_and_analyze(monkeypatch, tmp_path):
+    """★ 回归防线：collect 与 analyze 必须共用同一个窗口对象。
+
+    之前两处独立计算（collect 按 `--since` 往前滚、analyze 按本地自然日切），
+    定时在北京 07:00 跑时只重叠约 7 小时，实测当天 analysis.items=1——
+    日报实际只覆盖 7 小时却自称"过去 24 小时"。
+    """
+    monkeypatch.setenv("AIPULSE_ROOT", str(tmp_path))
+    load_settings.cache_clear()
+    db = tmp_path / "t.db"
+    _seed_windowed(db)
+
+    import aipulse.pipeline.daily as daily_mod
+
+    captured: dict[str, object] = {}
+
+    async def _spy(**kwargs):  # noqa: ANN003
+        captured["window"] = kwargs.get("window")
+        return None
+
+    monkeypatch.setattr(daily_mod, "run_collect", _spy)
+
+    result = asyncio.run(run_daily(since="24h", skip_llm=True, db_path=str(db)))
+
+    window = captured["window"]
+    assert window is not None, "daily 必须把窗口显式传给 run_collect"
+    start, end = window  # type: ignore[misc]
+    assert end - start == timedelta(hours=24)
+
+    # analyze 用的是同一个窗口：30 小时前的那条不能进来
+    assert result.analysis["items"] == 1
+    # 窗口要写进报告，且是滚动 24h 而不是"本地自然日"
+    assert result.meta["window"]["hours"] == 24.0
+    assert result.meta["window"]["since"] == start.isoformat()
+    brief_md = (result.report_dir / "brief.md").read_text(encoding="utf-8")
+    assert "覆盖窗口" in brief_md
+
+
+def test_analyze_day_honors_explicit_window_over_local_day(monkeypatch, tmp_path):
+    """显式传窗口时不得再退回 `day_window(day)`。"""
+    monkeypatch.setenv("AIPULSE_ROOT", str(tmp_path))
+    load_settings.cache_clear()
+    db = tmp_path / "t.db"
+    _seed_windowed(db)
+
+    engine = engine_for(db)
+    now = datetime.now(tz=UTC)
+    with Session(engine) as s:
+        # 只取最近 2 小时 → 两条都不在窗口内
+        stats = analyze_day(s, day=today_local(), window=(now - timedelta(hours=2), now))
+    engine.dispose()
+    assert stats["items"] == 1  # 只有 1 小时前那条
+
+    with Session(engine) as s:
+        # 取最近 48 小时 → 两条都在
+        stats_wide = analyze_day(s, day=today_local(), window=(now - timedelta(hours=48), now))
+    engine.dispose()
+    assert stats_wide["items"] == 2
+
+
 def test_meta_analysis_entities_key_is_explicit(monkeypatch, tmp_path):
     """口径澄清：字段名必须是 `new_entity_mention_rows`（本次新增行数），不是"当日实体数"。"""
     monkeypatch.setenv("AIPULSE_ROOT", str(tmp_path))

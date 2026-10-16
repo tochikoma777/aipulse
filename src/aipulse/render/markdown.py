@@ -60,6 +60,13 @@ def render_markdown(
 
     ts = generated_at.isoformat() if generated_at else ""
     out.append(f"> 生成时间：{ts} · 运行模式：{_mode_label(mode)}")
+    # ★ 窗口是滚动 24h，跨两个自然日，不写清楚会让人以为漏采了半天
+    win = meta.get("window")
+    if isinstance(win, dict) and win.get("since_local"):
+        out.append(
+            f"> 覆盖窗口：{win['since_local']} → {win['until_local']}"
+            f"（{win.get('tz', '')}，约 {win.get('hours', '?')} 小时）"
+        )
     stats = brief.stats or {}
     if stats.get("total_items") is not None:
         out.append(f"> 条目 {stats['total_items']} · 主题 {stats.get('topics', 0)}")

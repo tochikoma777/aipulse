@@ -10,9 +10,10 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass, field
-from datetime import date
+from datetime import date, datetime
 from pathlib import Path
 from typing import Any
+from zoneinfo import ZoneInfo
 
 from sqlmodel import Session
 
@@ -23,7 +24,7 @@ from aipulse.analysis.signals import build_signals_summary
 from aipulse.analysis.stats import PredictionStats, compute_prediction_stats
 from aipulse.core.config import RunMode, Settings, load_settings
 from aipulse.core.logging import get_logger
-from aipulse.core.timeutil import day_window, today_local, utcnow
+from aipulse.core.timeutil import day_window, today_local, utcnow, window_since
 from aipulse.llm.base import LLMClient, build_client
 from aipulse.notify.base import RenderedReport
 from aipulse.notify.file import FileNotifier
@@ -77,14 +78,38 @@ def report_dir_for(settings: Settings, day: date) -> Path:
     return settings.data_dir() / "reports" / parts[0] / parts[1] / parts[2]
 
 
-def analyze_day(session: Session, *, day: date) -> dict[str, Any]:
+def window_digest(window: tuple[datetime, datetime], tz_name: str) -> dict[str, Any]:
+    """把窗口写成报告可读的摘要（UTC 原值 + 本地展示串）。"""
+    start, end = window
+    zone = ZoneInfo(tz_name)
+    local = end.astimezone(zone)
+    return {
+        "since": start.isoformat(),
+        "until": end.isoformat(),
+        "hours": round((end - start).total_seconds() / 3600, 1),
+        # 展示用本地时区：UTC 串会让"覆盖哪一天"看起来对不上
+        "since_local": start.astimezone(zone).isoformat(timespec="minutes"),
+        "until_local": local.isoformat(timespec="minutes"),
+        "tz": tz_name,
+    }
+
+
+def analyze_day(
+    session: Session,
+    *,
+    day: date,
+    window: tuple[datetime, datetime] | None = None,
+) -> dict[str, Any]:
     """打分 + 聚类 + 实体统计，落库。返回本次运行的落库增量统计。
+
+    `window` 为 None 时退回 `day_window(day)`（本地自然日，CLI `analyze --date` 用）；
+    `daily` 必须显式传入与 collect 共用的滚动窗口。
 
     注意口径：`new_entity_mention_rows` 是**本次运行新增的实体提及行数**，不是当日实体总数——
     同一天内同一实体的重复提及会被 `upsert_entities` 去重（这是对的），
     所以同一天第二次运行时该值会显著变小。要看"当日实体总览"请查库（Web `/topics` 就是这么做的）。
     """
-    start, end = day_window(day)
+    start, end = window if window is not None else day_window(day)
     items = list_items_collected(session, since=start, until=end)
     if not items:
         log.warning("pipeline.analyze.empty", day=day.isoformat())
@@ -215,9 +240,15 @@ async def run_daily(
     ensure_schema(target_db)
     engine = engine_for(target_db)
 
+    # ★ 窗口只在这里算一次，collect / analyze / brief / predict 全部共用。
+    #   之前 collect 按 `--since 24h` 往前滚、analyze 按本地自然日切，两处独立计算：
+    #   定时在北京 07:00 跑时窗口只重叠约 7 小时（实测当天 analysis.items=1），
+    #   日报实际只覆盖 7 小时而不是"过去 24 小时"。
+    window = window_since(since)
+
     collected: CollectResult | None = None
     if not no_collect:
-        collected = await run_collect(since=since, db_path=str(target_db))
+        collected = await run_collect(since=since, window=window, db_path=str(target_db))
 
     analysis: dict[str, Any] = {}
     brief_out: BriefOutput | None = None
@@ -227,9 +258,10 @@ async def run_daily(
     signals_summary: dict[str, Any] = {}
     # expire_on_commit=False：提交后实例属性不过期，session 关闭后仍可安全渲染 items
     with Session(engine, expire_on_commit=False) as session:
-        analysis = analyze_day(session, day=report_day)
+        analysis = analyze_day(session, day=report_day, window=window)
 
-        start, end = day_window(report_day)
+        # 简报与预言的条目也取自同一个窗口，否则"分析过的"和"拿去生成预言的"不是一批
+        start, end = window
         items = list_items_collected(session, since=start, until=end)
         topics = list_topics(session, report_day)
         entity_rows = list_entities(session, report_day)
@@ -289,6 +321,8 @@ async def run_daily(
         "mode": mode.value,
         "day": report_day.isoformat(),
         "generated_at": utcnow().isoformat(),
+        # ★ 日报现在跨两个自然日，不标窗口会让人以为漏采了半天
+        "window": window_digest(window, settings.app.timezone),
         "analysis": analysis,
         "llm": {
             "degraded": brief_out.meta.get("degraded", False),

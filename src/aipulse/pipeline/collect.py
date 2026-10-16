@@ -155,11 +155,16 @@ async def run_collect(
     no_cache: bool = False,
     db_path: str | None = None,
     env: dict[str, str] | None = None,
+    window: tuple[datetime, datetime] | None = None,
 ) -> CollectResult:
-    """执行一次采集。返回结构化结果（CLI 负责渲染与退出码）。"""
+    """执行一次采集。返回结构化结果（CLI 负责渲染与退出码）。
+
+    `window` 由调用方（`daily`）显式传入时直接使用——**采集与分析必须是同一个窗口**，
+    各算各的会让日报只覆盖两个窗口的交集（实测只剩 7 小时）。
+    """
     settings = load_settings()
     sources_cfg = load_sources().sources
-    since_dt, until_dt = window_since(since)
+    since_dt, until_dt = window if window is not None else window_since(since)
     result = CollectResult(since=since_dt, until=until_dt)
 
     cache_path = None if no_cache else settings.cache_path() / "http.sqlite"
