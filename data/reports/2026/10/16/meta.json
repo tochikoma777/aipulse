@@ -1,0 +1,52 @@
+{
+  "mode": "off",
+  "day": "2026-10-16",
+  "generated_at": "2026-10-16T01:03:59.861075+00:00",
+  "analysis": {
+    "items": 33,
+    "scored": 33,
+    "topics": 3,
+    "new_entity_mention_rows": 39
+  },
+  "llm": {
+    "degraded": false,
+    "degraded_reason": "",
+    "calls": 0
+  },
+  "collect": {
+    "ok_sources": 5,
+    "failed_sources": 2,
+    "skipped": 0,
+    "total_items": 68
+  },
+  "verify": {
+    "verified": 0,
+    "unverifiable": 0,
+    "deferred": 0,
+    "failed": 0,
+    "llm_calls": 0
+  },
+  "predictions": {
+    "total": 0,
+    "verified": 0,
+    "pending": 0,
+    "unverifiable": 0,
+    "hit_rate": null,
+    "weighted_score": null,
+    "brier": null
+  },
+  "prediction_generation": {
+    "mode": "off",
+    "generated": 0,
+    "inserted": 0,
+    "dropped": []
+  },
+  "signals": {
+    "entities": 70,
+    "points": 276,
+    "with_velocity": 12,
+    "insufficient": 55,
+    "cold_start": 3,
+    "min_window_hours": 6.0
+  }
+}
