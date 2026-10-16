@@ -10,6 +10,7 @@ falsifiable_criteria / 证据 ≥2）→ 不合法触发**一次**语义重写 �
 from __future__ import annotations
 
 import json
+from collections.abc import Collection
 from dataclasses import dataclass, field
 from datetime import date
 from typing import Any, cast
@@ -68,13 +69,18 @@ def _trim_to_budget(
 
 
 def _validate_batch(
-    drafts: list[Prediction], *, require_evidence: bool
+    drafts: list[Prediction],
+    *,
+    require_evidence: bool,
+    known_item_ids: Collection[str] | None = None,
 ) -> tuple[list[Prediction], list[dict[str, Any]]]:
     """拆成 (合法, 不合法)。不合法项附带 reason 供重写与日志。"""
     valid: list[Prediction] = []
     dropped: list[dict[str, Any]] = []
     for draft in drafts:
-        problems = validate_prediction(draft, require_evidence=require_evidence)
+        problems = validate_prediction(
+            draft, require_evidence=require_evidence, known_item_ids=known_item_ids
+        )
         if problems:
             dropped.append({"statement": draft.statement, "problems": problems})
         else:
@@ -137,10 +143,29 @@ async def generate_predictions(
     contexts = _trim_to_budget(
         [_item_context(it, topic_names.get(it.topic_id or "")) for it in ranked]
     )
+    # ★ 候选证据池 == 注入 prompt 的那批条目。注入什么就只允许引用什么，
+    #   事后校验才有可判定的依据（否则"证据真实存在"这句话无从核实）。
+    known_item_ids = {c["id"] for c in contexts}
+    if len(known_item_ids) < 2:
+        # 池子凑不出 2 条证据时别浪费一次 LLM 调用：生成出来也必然被拒收。
+        log.warning("predict.evidence_pool_too_small", pool=len(known_item_ids))
+        return PredictOutput(
+            meta={
+                "mode": mode.value,
+                "generated": 0,
+                "llm_calls": 0,
+                "dropped": [],
+                "degraded": True,
+                "degraded_reason": (
+                    f"候选证据池不足 2 条（实际 {len(known_item_ids)}），本次未生成预言"
+                ),
+            }
+        )
 
     rendered, template = render_prompt(
         "predict/generate",
         items_json=json.dumps(contexts, ensure_ascii=False),
+        evidence_pool="\n".join(f"- [{c['id']}] {c['title']}" for c in contexts),
         topics_json=json.dumps(
             [{"name": t.name, "keywords": t.keywords, "item_count": t.item_count} for t in topics],
             ensure_ascii=False,
@@ -187,7 +212,9 @@ async def generate_predictions(
     assert result is not None  # parsed 非 None 时 result 必非 None（同一调用返回）
 
     batch = cast(PredictionBatch, parsed)
-    valid, dropped = _validate_batch(batch.predictions, require_evidence=True)
+    valid, dropped = _validate_batch(
+        batch.predictions, require_evidence=True, known_item_ids=known_item_ids
+    )
 
     # ── 一次语义重写：把问题回传，要求修正 ──────────────────────────
     if dropped:
@@ -210,7 +237,9 @@ async def generate_predictions(
             meta["llm_calls"] += 1
             if reparsed is not None:
                 valid, dropped = _validate_batch(
-                    cast(PredictionBatch, reparsed).predictions, require_evidence=True
+                    cast(PredictionBatch, reparsed).predictions,
+                    require_evidence=True,
+                    known_item_ids=known_item_ids,
                 )
         except Exception as exc:  # 重写失败：保留第一轮结果，不中断
             log.warning("predict.rewrite_failed", error=repr(exc))

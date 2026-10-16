@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import math
 import re
+from collections.abc import Collection
 from datetime import date as date_type
 from typing import Any, Literal
 
@@ -130,11 +131,20 @@ class Verdict(BaseModel):
     verdict_evidence_ids: list[str] = Field(default_factory=list)
 
 
-def validate_prediction(pred: Prediction, *, require_evidence: bool = True) -> list[str]:
+def validate_prediction(
+    pred: Prediction,
+    *,
+    require_evidence: bool = True,
+    known_item_ids: Collection[str] | None = None,
+) -> list[str]:
     """硬校验（红线拦截）。返回问题清单；空列表表示通过。
 
     - `require_evidence=True`：LLM 生成要求 ≥2 条证据；手写预言传 False（§11.4 不强求证据）。
     - 缺 `falsifiable_criteria` 一律拒收（红线，手写/LLM 均适用）。
+    - `known_item_ids`：候选证据池。给了就必须全在里面——**只校验数量是不够的**：
+      prompt 里写"只能引用输入中的 id"，模型照样会编出看着合理的 id，
+      于是预言挂着一串查不到的证据进了记分板，整个项目唯一的可信度资产被架空。
+      手写预言不传（那时条目可能还没入库）。
     """
     problems: list[str] = []
     vague = find_vague_phrases(pred.statement)
@@ -144,6 +154,13 @@ def validate_prediction(pred: Prediction, *, require_evidence: bool = True) -> l
         problems.append("缺少 falsifiable_criteria（红线：不得入库）")
     if require_evidence and len(pred.evidence_item_ids) < 2:
         problems.append(f"证据条目不足：需 ≥2 条，实际 {len(pred.evidence_item_ids)}")
+    if known_item_ids is not None:
+        unknown = [i for i in pred.evidence_item_ids if i not in known_item_ids]
+        if unknown:
+            problems.append(
+                f"证据 id 不在候选池内（疑似编造）：{', '.join(unknown[:3])}"
+                f"——只能引用输入中列出的条目 id"
+            )
     return problems
 
 

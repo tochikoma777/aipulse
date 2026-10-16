@@ -120,6 +120,36 @@ def test_valid_prediction_passes():
     assert validate_prediction(_pred()) == []
 
 
+def test_evidence_ids_must_exist_in_candidate_pool():
+    """★ 只校验数量是不够的：模型会编出看着合理的 id（Actions 首跑 hybrid 实测）。
+
+    当时窗口内只有 1 条真实条目，却生成了 4 条各带 ≥2 条"证据"的预言——
+    那些 id 必然是编造的，而旧校验只查 `len >= 2`，全部放行。
+    """
+    pool = {"it_a", "it_b", "it_c"}
+
+    # 池内 id：放行
+    assert validate_prediction(_pred(evidence_item_ids=["it_a", "it_c"]), known_item_ids=pool) == []
+
+    # 池外 id：拒收，且要说清是"疑似编造"
+    problems = validate_prediction(_pred(evidence_item_ids=["it_a", "it_zzz"]), known_item_ids=pool)
+    assert any("不在候选池" in p for p in problems)
+    assert "it_zzz" in " ".join(problems)
+
+
+def test_pool_check_does_not_affect_handwritten_predictions():
+    """负向用例：手写预言不传池（条目可能还没入库），不能被新校验误伤。"""
+    pred = _pred(evidence_item_ids=[], origin="human")
+    assert validate_prediction(pred, require_evidence=False) == []
+    # 手写时即便带了 id 也不校验存在性，避免把人写的合法预言拦掉
+    assert (
+        validate_prediction(
+            _pred(evidence_item_ids=["it_unknown"], origin="human"), require_evidence=False
+        )
+        == []
+    )
+
+
 def test_batch_parses_list():
     batch = PredictionBatch.model_validate(
         {

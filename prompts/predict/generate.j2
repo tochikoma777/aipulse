@@ -23,6 +23,11 @@ purpose: predict_generate
 {{ entities_json }}
 ```
 
+# ★ 候选证据池（只允许引用这里列出的 id）
+```
+{{ evidence_pool }}
+```
+
 # 产出要求
 只输出一个 JSON 对象，结构为：
 ```json
@@ -38,8 +43,11 @@ purpose: predict_generate
 4. **horizon_days**：只能是 {{ horizons|join(" / ") }} 之一。
 5. **falsifiable_criteria**：明确写清"截至到期日，满足什么算命中、什么算落空"。必须具体到可观测信号与阈值（如"GitHub 上出现 ≥3 个 star>2000 的实现"）。
 6. **rationale**：3-5 句推理链，说明为什么下这个判断、依据了哪些证据。
-7. **evidence_item_ids**：从上面给出的条目 id 中选取 **≥2 条** 作为证据（必须真实存在于输入里）。
+7. **evidence_item_ids**：从上面「候选证据池」中选取 **≥2 条** 作为证据。
+   **只能逐字复制该列表里出现的 id**，不得改写、拼接、推测或自行构造任何 id——
+   引用池外 id 的预言会被自动拒收（这是硬性校验，不会通融）。
 
 # 硬性规则
 - 任何没有明确 falsifiable_criteria 的预言都会被拒绝入库。
+- 引用了候选证据池之外 id 的预言会被拒绝入库。
 - 宁少勿滥：如果当日数据不足以支撑 3 条，就只输出你确有把握的那几条。

@@ -113,6 +113,73 @@ async def test_timeout_is_degraded_not_failed():
     assert "失败" not in out.meta["degraded_reason"]
 
 
+async def test_evidence_pool_injected_into_prompt():
+    """预防层：候选池必须真的出现在 prompt 里，否则"只能引用这些 id"是空话。"""
+
+    class _CaptureClient(_StubClient):
+        def __init__(self, contents: list[str]) -> None:
+            super().__init__(contents)
+            self.messages: list[str] = []
+
+        async def chat(self, messages, **kwargs):  # noqa: ANN001, ANN003
+            self.messages = [m.content for m in messages]
+            return await super().chat(messages, **kwargs)
+
+    client = _CaptureClient([_batch("推理框架将在 30 天内全面超越闭源")])
+    await generate_predictions(
+        client=client,
+        settings=Settings(),
+        items=_items(),
+        topics=_topics(),
+        entity_counts={},
+        day=date(2026, 10, 14),
+        mode=RunMode.HYBRID,
+    )
+    rendered = client.messages[0]
+    assert "候选证据池" in rendered
+    assert "[it_1]" in rendered and "[it_2]" in rendered
+
+
+async def test_fabricated_evidence_id_is_dropped_after_rewrite():
+    """兜底层：模型编了池外 id → 一次重写 → 仍不改 → 拒收并记录理由。"""
+    client = _StubClient(
+        [
+            _batch("推理框架将在 30 天内全面超越闭源", evidence=["it_1", "it_fake"]),
+            _batch("推理框架将在 30 天内全面超越闭源", evidence=["it_1", "it_fake2"]),
+        ]
+    )
+    out = await generate_predictions(
+        client=client,
+        settings=Settings(),
+        items=_items(),
+        topics=_topics(),
+        entity_counts={},
+        day=date(2026, 10, 14),
+        mode=RunMode.HYBRID,
+    )
+    assert out.predictions == []
+    assert len(out.meta["dropped"]) == 1
+    problems = " ".join(out.meta["dropped"][0]["problems"])
+    assert "不在候选池" in problems
+
+
+async def test_tiny_evidence_pool_skips_llm_call():
+    """池子凑不出 2 条证据时别浪费调用：生成出来也必然被拒收。"""
+    client = _StubClient([_batch("推理框架将在 30 天内全面超越闭源")])
+    out = await generate_predictions(
+        client=client,
+        settings=Settings(),
+        items=[_item("it_1", "只有一条", 10.0)],
+        topics=_topics(),
+        entity_counts={},
+        day=date(2026, 10, 14),
+        mode=RunMode.HYBRID,
+    )
+    assert client.calls == 0
+    assert out.predictions == []
+    assert "候选证据池不足" in out.meta["degraded_reason"]
+
+
 async def test_valid_batch_generates_rows():
     client = _StubClient([_batch("推理框架将在 30 天内全面超越闭源")])
     settings = Settings()
