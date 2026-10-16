@@ -59,6 +59,11 @@ jobs:
         env:
           # 未配置该 secret 时为空串 → 自动降级 off 档，零 API 花费也不报错（§8.5）
           AIPULSE_LLM__API_KEY: ${{ secrets.AIPULSE_LLM__API_KEY }}
+          # ★ repo variable 不会自动注入 step env，必须显式取值。
+          #   缺它时 base_url 被插值成空串，effective_mode() 会降级为 off——
+          #   也就是"配了 key 却什么都没生成"这种最难排查的静默失败。
+          #   未设置该 variable 时回落到 .env.example 里的 DeepSeek 默认值。
+          AIPULSE_LLM__BASE_URL: ${{ vars.AIPULSE_LLM__BASE_URL || 'https://api.deepseek.com/v1' }}
           # fine-grained PAT（可选，更宽松的限速）；未配置时回落到 Actions 自动 token
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN || secrets.GITHUB_TOKEN }}
         run: uv run aipulse daily --date today --json

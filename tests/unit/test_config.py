@@ -11,6 +11,7 @@ from aipulse.core.config import (
     load_yaml,
     project_root,
 )
+from aipulse.llm.base import NullLLM, build_client
 
 
 @pytest.fixture(autouse=True)
@@ -47,8 +48,35 @@ def test_effective_mode_degrades_without_api_key(monkeypatch):
     settings = Settings(llm={"api_key": ""})  # type: ignore[arg-type]
     assert settings.effective_mode() == RunMode.OFF
 
-    settings_full = Settings(mode=RunMode.FULL, llm={"api_key": "sk-x"})  # type: ignore[arg-type]
+    settings_full = Settings(  # type: ignore[arg-type]
+        mode=RunMode.FULL, llm={"api_key": "sk-x", "base_url": "https://api.example.com/v1"}
+    )
     assert settings_full.effective_mode() == RunMode.FULL
+
+
+def test_effective_mode_degrades_without_base_url():
+    """只有 key 没有 base_url（Actions 漏配环境变量的现场）必须降级 off，而不是崩溃。
+
+    回归防线：`build_client` 拿到非 off 档就会构造 `OpenAICompatClient`，
+    后者在 base_url 为空时抛 ConfigError——daily 会被这一条直接带崩。
+    """
+    settings = Settings(  # type: ignore[arg-type]
+        mode=RunMode.FULL, llm={"api_key": "sk-x", "base_url": ""}
+    )
+    assert settings.effective_mode() == RunMode.OFF
+
+    blank = Settings(  # type: ignore[arg-type]
+        mode=RunMode.HYBRID, llm={"api_key": "sk-x", "base_url": "   "}
+    )
+    assert blank.effective_mode() == RunMode.OFF
+
+
+def test_build_client_returns_null_without_base_url():
+    """effective_mode 之后是真客户端还是 NullLLM——这条断言直接锁住运行行为。"""
+    settings = Settings(  # type: ignore[arg-type]
+        mode=RunMode.FULL, llm={"api_key": "sk-x", "base_url": ""}
+    )
+    assert isinstance(build_client(settings), NullLLM)
 
 
 def test_load_yaml_missing_file_returns_empty(tmp_path):

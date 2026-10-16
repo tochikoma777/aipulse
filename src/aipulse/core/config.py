@@ -173,8 +173,16 @@ class Settings(BaseSettings):
     notify: NotifySettings = Field(default_factory=NotifySettings)
 
     def effective_mode(self) -> RunMode:
-        """实际运行档位：未配置 api_key / 关闭 llm 时自动降级为 off（不报错）。"""
-        if not self.llm.enabled or not self.llm.api_key.strip():
+        """实际运行档位：关闭 llm / 缺 api_key / 缺 base_url 时自动降级为 off（不报错）。
+
+        **为什么 base_url 必须和 api_key 一样参与判断**（Actions 首跑 hybrid 时炸出来的坑）：
+        `configs/default.yaml` 里 `base_url` 是 `${AIPULSE_LLM__BASE_URL}` 占位符，
+        环境变量没设时会被插值成空串。若只看 api_key，那么"配了 key 但没配 base_url"的环境
+        （典型就是 Actions：注入了 API key 的 secret，却漏配 base_url）会判定成 hybrid/full，
+        一路走到 `OpenAICompatClient.__init__` 撞上 ConfigError——**整条 daily 崩溃**，
+        直接违反红线 9（缺配置应降级，不报错退出）。
+        """
+        if not self.llm.enabled or not self.llm.api_key.strip() or not self.llm.base_url.strip():
             return RunMode.OFF
         return self.mode
 
