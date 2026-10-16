@@ -1,0 +1,133 @@
+# configs/watchlist.yaml —— 建议初始清单
+# 用法：复制本文件内容到 configs/watchlist.yaml
+# 随时可增删（改 yaml 即可，1 分钟，无需改代码、无需重启）
+
+# ── 一、推理 / 服务框架（工程落地最热，天天有新东西）────────────
+entities:
+  - name: vLLM
+    aliases: [vllm]
+    category: infra
+    reason: 推理引擎事实标准，生态变化最快
+
+  - name: SGLang
+    aliases: [sglang]
+    category: infra
+    reason: vLLM 主要竞品，结构化输出与长上下文场景更强
+
+  - name: llama.cpp
+    aliases: ["llama.cpp", "llamacpp"]
+    category: infra
+    reason: 本地/端侧部署主力，量化与硬件适配风向标
+
+  - name: Ollama
+    category: infra
+    reason: 本地运行入口，普及度极高
+
+  - name: TensorRT-LLM
+    aliases: ["tensorrt-llm", "trt-llm"]
+    category: infra
+    reason: NVIDIA 官方推理栈，生产环境常用
+
+# ── 二、模型与厂商（谁在发新东西）──────────────────────────────
+  - name: Qwen
+    aliases: ["通义千问", "Qwen2", "Qwen3"]
+    category: model
+    reason: 国内开源主力，迭代极快
+
+  - name: DeepSeek
+    aliases: ["深度求索", "deepseek-v3", "deepseek-r1"]
+    category: model
+    reason: 推理模型与低成本路线的代表
+
+  - name: Llama
+    aliases: ["llama3", "llama4"]
+    category: model
+    reason: Meta 开源基座，生态最广
+
+  - name: Claude
+    aliases: ["Anthropic", "claude-4"]
+    category: model
+    reason: 闭源前沿，Agent/Coding 能力强
+
+  - name: GPT
+    aliases: ["OpenAI", "gpt-5", "o3", "o4"]
+    category: model
+    reason: 行业风向标
+
+  - name: Gemini
+    aliases: ["Google", "gemini-3"]
+    category: model
+    reason: 多模态与长上下文前沿
+
+  - name: GLM
+    aliases: ["智谱", "glm-4", "glm-5"]
+    category: model
+    reason: 国内另一主力
+
+  - name: Kimi
+    aliases: ["月之暗面", "kimi-k2"]
+    category: model
+    reason: 长上下文与 Agent 方向
+
+# ── 三、技术方向（概念类，判断趋势用）──────────────────────────
+  - name: Agent
+    aliases: ["agentic", "多智能体", "multi-agent", "MCP"]
+    category: concept
+    reason: 当前最热方向，落地变化快
+
+  - name: Reasoning
+    aliases: ["推理模型", "reasoning model", "思维链", "CoT", "test-time compute"]
+    category: concept
+    reason: 近两年最重要的范式变化
+
+  - name: RAG
+    aliases: ["检索增强", "retrieval"]
+    category: concept
+    reason: 工程实践高频
+
+  - name: MoE
+    aliases: ["混合专家", "mixture of experts"]
+    category: concept
+    reason: 主流大模型架构
+
+  - name: Multimodal
+    aliases: ["多模态", "vision", "视频生成", "VLM"]
+    category: concept
+    reason: 能力边界扩展最快
+
+  - name: Quantization
+    aliases: ["量化", "量化部署", "FP8", "INT4", "AWQ", "GPTQ"]
+    category: concept
+    reason: 降本落地的关键手段
+
+  - name: RL
+    aliases: ["强化学习", "RLHF", "RLVR", "GRPO"]
+    category: concept
+    reason: 后训练与能力跃升的核心方法
+
+# ── 四、底层基建（硬核，出现即值得关注）────────────────────────
+  - name: FlashAttention
+    aliases: ["flashattention", "flash-attn"]
+    category: infra
+    reason: 注意力计算基石
+
+  - name: Triton
+    aliases: ["triton-lang", "OpenAI Triton"]
+    category: infra
+    reason: 算子开发主流方式
+
+  - name: CUDA
+    aliases: ["NVIDIA", "Hopper", "Blackwell"]
+    category: infra
+    reason: 硬件生态与算力供给
+
+# ── 关键词（不走实体抽取，直接全文匹配，用于兜底）────────────────
+keywords:
+  - AI infra
+  - inference optimization
+  - context length
+  - KV cache
+  - speculative decoding
+  - model distillation
+  - function calling
+  - tool use

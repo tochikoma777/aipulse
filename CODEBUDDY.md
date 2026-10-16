@@ -8,8 +8,8 @@ This file provides guidance to CodeBuddy Code when working with code in this rep
 
 **里程碑状态（改动前先确认当前阶段）**：M0（骨架 + 数据源探测）、M1（6 采集器 + inbox + 三级去重）、M2（打分 / 聚类 / 实体 + LLM 抽象 + 简报）、**M3a / M3b（★ 预言生成 + 到期验证 + 命中率 / Brier / 校准度）**、**M4（Actions 自动化 + Web 看板 + README 发布）** 均已完成（tag `m0` / `m1` / `m2` / `m3a` / `m3b`）；**当前下一阶段是 M5**（周期长文 `trend` + 多角色辩论 `debate`）。M5 的入口已留好：`prompts/trend/` 与 `prompts/debate/` 是空目录，`cli/commands/{trend,debate}.py` 与 `reasoning/` 下对应模块是占位。不要跨阶段实现。
 
-已实现的 CLI：`init` / `doctor` / `collect` / `analyze` / `brief` / `daily` / `predict`（`add` / `list` / `verify` / `review`）/ `stats`（`stats --predictions`）/ **`serve`（M4 只读看板）**。
-`src/aipulse/cli/commands/` 下其余子应用（`normalize`/`debate`/`trend`/`topics`/`search`/`inbox`/`sources`）仍是 `placeholder_app()` 生成的占位，调用时抛 `NotImplementedError`。它们出现在 `--help` 里是刻意的，不是漏实现。
+已实现的 CLI：`init` / `doctor` / `collect` / `analyze` / `brief` / `daily` / `predict`（`add` / `list` / `verify` / `review`）/ `stats`（`stats --predictions`）/ **`serve`（M4 只读看板）** / **`inbox`（`add` / `add-file` / `list`，v1.1 手动投喂通道）**。
+`src/aipulse/cli/commands/` 下其余子应用（`normalize`/`debate`/`trend`/`topics`/`search`/`sources`）仍是 `placeholder_app()` 生成的占位，调用时抛 `NotImplementedError`。它们出现在 `--help` 里是刻意的，不是漏实现。其中 `sources` 占位**不影响加源**：增删 RSS/Atom 源改 `configs/sources.yaml` 即可（见「采集器六条约定」末段）。
 
 **M4 已落地的东西（改之前先看这里，别重复造）**：`src/aipulse/web/` 是完整的只读看板（FastAPI + Jinja2 + HTMX，见模块表）；`cli/commands/serve.py` 是真实现；`.github/workflows/` 三个工作流——`ci.yml`（push/PR：ruff + format + mypy + pytest）、`probe.yml`（手动数据源探测）、**`daily.yml`（每天 23:00 UTC 跑 `aipulse daily` 并 commit `data/reports`）**。`scripts/cron_daily.sh` 是 WSL 本地 cron 备份入口。
 
@@ -52,6 +52,10 @@ uv run aipulse stats --predictions --out data/reports/scoreboard.md  # 落盘
 
 uv run aipulse serve --port 8000                      # M4：只读看板（今日/归档/记分板/主题/检索）
 uv run aipulse serve --port 8000 --db data/aipulse.db --reports-dir data/reports
+
+uv run aipulse inbox add <url> --note "..."           # 手动投喂一条（v1.1 微信/X 唯一合规入口；抓不到也保留，标题退化为 URL）
+uv run aipulse inbox add-file notes.md                # 批量导入（每行一条 URL，行内其余内容为备注）
+uv run aipulse inbox list                             # 查看已投喂条目
 ```
 ```bash
 # 自动化（需要 gh 已登录；daily.yml 也可在 Actions 页面手动触发）
@@ -66,17 +70,17 @@ scripts/cron_daily.sh                                 # 本地 cron 备份（日
 `meta.json` 里额外有 `predictions` / `prediction_generation` / `signals` 三个摘要块，用于跨天比对。注意 `analysis.new_entity_mention_rows` 是**本次运行新增的实体提及行数**（同日重复提及已去重），不是当日实体总数。
 
 `data/` 布局（均在 `app.data_dir` 下，已 gitignore 部分产物）：`aipulse.db`（主库）/ `cache/http.sqlite`（`utils/http.py` 响应缓存）/ `inbox/`（手动投喂）/ `logs/` / `reports/`。
-手动投喂目前**只能**往 `data/inbox/*.md` 里写（每行一条 URL，行内其余内容当备注）——`aipulse inbox add` 仍是占位命令，别假设它能用。
+手动投喂两条路：① `aipulse inbox add <url> --note "..."` / `aipulse inbox add-file <path>`（CLI 直接入库）；② 往 `data/inbox/*.md` 里写（每行一条 URL，行内其余内容当备注），常规采集 `collect --sources inbox` 自动扫描。**抓不到标题也保留条目**（标题退化为 URL）——这是 v1.1"外网全断仍能走完整链路"的兜底契约。
 
 ### 测试 / 质量门禁
 
 CI（`.github/workflows/ci.yml`，无 secrets）实际只跑 4 步：`ruff check .` → `ruff format --check .` → `mypy src/aipulse` → `pytest`（**没有覆盖率门禁**，覆盖率是本地基线，不达标不会挂 CI）。`.github/workflows/probe.yml` 是手动触发的探测，不在 CI 链上。
 
 ```bash
-uv run pytest                             # 全量（当前 306 条，约 55s，无需网络、无需密钥）
+uv run pytest                             # 全量（当前 313 条，约 55s，无需网络、无需密钥）
 uv run pytest tests/unit/test_dedup.py                      # 单文件
 uv run pytest "tests/unit/test_dedup.py::test_l2_merges_arxiv_and_hf_same_paper" -q  # 单用例
-uv run pytest -q --cov=aipulse --cov-report=term            # 覆盖率：collectors/ ≥80%、openai_compat ≥80%、TOTAL 88%
+uv run pytest -q --cov=aipulse --cov-report=term            # 覆盖率：collectors/ ≥80%、openai_compat ≥80%、TOTAL 89%
 
 uv run ruff check .                       # lint（line-length=100，select=E,F,I,UP,B,SIM）
 uv run ruff format --check .              # 格式检查
@@ -294,7 +298,7 @@ hot_score = 100 * clamp( w_engagement*engagement_norm        # Σ coeff*log1p(me
 3. **prompt 不写进 `.py`**——一律 `prompts/**.j2`，头部必须有 YAML front-matter（`model_tier` / `temperature` / `purpose`）。已实现：`brief/daily_brief.j2`、`brief/item_comment.j2`、`predict/generate.j2`、`predict/verify.j2`；`debate/` `trend/` 仍为空，等 M5。
 4. LLM 输出不直接 `json.loads`——必须 response_model + 校验 + 一次修复重试 + 再失败降级跳过。
 5. 单源异常不得导致整条流水线崩溃。
-6. **不实现任何微信 / X（Twitter）相关的采集器、配置段、环境变量或 RSS 桥**——v1.1 已彻底移除，相关内容只能走 inbox 手动投喂（**当前可用路径是往 `data/inbox/*.md` 写 URL**；`aipulse inbox add` 仍是占位命令）。
+6. **不实现任何微信 / X（Twitter）相关的采集器、配置段、环境变量或 RSS 桥**——v1.1 已彻底移除，相关内容只能走 inbox 手动投喂（`aipulse inbox add` / `add-file`，或往 `data/inbox/*.md` 写 URL）。
 7. 里程碑顺序不得搞反：**M4 = Actions 自动化 + Web 看板 + README 发布（先做）；M5 = 周期长文 + 多角色辩论（后做）**。
 8. `mode: off` 下禁止发任何到模型服务商的网络请求——注入 `NullLLM`，单测用 `respx` 断言 0 次调用。
 9. 现在不实现 OAuth / 邮件 / Telegram / 飞书推送——只留 `Notifier` Protocol 与 `mode: oauth` 配置项。
@@ -324,7 +328,7 @@ hot_score = 100 * clamp( w_engagement*engagement_norm        # Σ coeff*log1p(me
 5. 缺失字段填 `None`，**不要填 `0`**（`0` 会被打分公式当成真实数据污染排序）。
 6. 部分失败要内部隔离（逐 feed / 逐 subreddit / 逐关键词），全部失败才算源级失败——参考 `rss.py`、`reddit.py`、`hackernews.py`。
 
-新增数据源：RSS/Atom 类**改 `configs/sources.yaml` 的 `rss.feeds` 即可，零代码**；新类型源才写 `BaseCollector` 子类 + 在 `registry.py` 注册。扩 `SourceEnum` 需同步改 3 处（枚举、`_DISPLAY_NAMES`、指南文档）——这是刻意的摩擦，先确认现有源 + RSS 覆盖不了。完整流程见 `docs/新增数据源指南.md`。
+新增数据源：**增删 RSS/Atom 源 = 改 `configs/sources.yaml` 的 `rss.feeds` 列表，无需命令、无需代码**（`sources` 子命令是占位，加源不依赖它）；新增全新类型源见 `docs/新增数据源指南.md`，才需要写 `BaseCollector` 子类 + 在 `registry.py` 注册。扩 `SourceEnum` 需同步改 3 处（枚举、`_DISPLAY_NAMES`、指南文档）——这是刻意的摩擦，先确认现有源 + RSS 覆盖不了。完整流程见 `docs/新增数据源指南.md`。
 
 ---
 
@@ -342,7 +346,8 @@ hot_score = 100 * clamp( w_engagement*engagement_norm        # Σ coeff*log1p(me
 - LLM 链路**可用 `respx` 拦截**：v1.7 起 `llm/openai_compat.py` 改 httpx 直连（走项目 `HttpClient`），`tests/unit/test_openai_compat.py` 即用 `respx` mock `/chat/completions` 与 json_schema→json_object 降级路径。结构化链路也仍可用桩客户端（`FakeLLM` / 自定义 `LLMClient`），off 档用 `NullLLM` 断言零网络。
 - M3a 预言单测：`test_prediction_schema.py`（Pydantic 校验 / 模糊措辞）、`test_predictor.py`（生成 + 一次重写 + 丢弃记账）、`test_predict_cli.py`（`predict add` 双模交互 + 幂等）。
 - M4 单测：`test_web.py`（`TestClient` 打 5 个页面 + **只读断言**：直接对看板 engine 发 DELETE 必须被 SQLite 拒绝；0 样本空态文案；报告 JSON 损坏时的降级；`serve` 用 monkeypatch 的假 `uvicorn.run` 验端口）、`test_signals.py`（`build_signals_summary` 的增速 / 冷启动 / 排序）、`test_verdicts_render.py`、`test_daily.py`（新增 `scoreboard.md`/`signals.json` 落盘与 meta 摘要）。
-- 覆盖率基线（M4 实测）：`web/app` 95% / `web/data` 92% / `web/charts` 100% / `render/verdicts`·`render/predictions` 100% / `pipeline/daily` 93% / **TOTAL 89%**。
+- inbox CLI 单测（`test_inbox_cli.py`）：`add` 正常入库 / **抓不到标题也保留条目**（标题退化为 URL，断网契约）/ 重复投喂幂等 / `add-file` 批量导入 / `list` 空态与展示。
+- 覆盖率基线（M4 实测）：`web/app` 95% / `web/data` 92% / `web/charts` 100% / `render/verdicts`·`render/predictions` 100% / `pipeline/daily` 93% / `cli/commands/inbox` 98% / **TOTAL 89%**。
 
 ---
 
@@ -357,6 +362,7 @@ hot_score = 100 * clamp( w_engagement*engagement_norm        # Σ coeff*log1p(me
 | `docs/AI Pulse 设计方案 v1` | 设计 SSOT（1649 行），代码注释里的 `§5.x` / `§6.2` / `§7` 都指向它 |
 | `docs/数据源手册.md` | 每个源的端点、真实字段、限速、失效降级路径、探测结论 |
 | `docs/新增数据源指南.md` | 加源的标准流程（L1 改配置 / L2 写模块）+ 自检清单 + 常见坑 |
+| `docs/watchlist建议.yaml` | 建议的实体观察清单（23 实体 + 8 关键词，分推理框架/模型厂商/技术方向/底层基建四组），复制为 `configs/watchlist.yaml` 即用（改 yaml 即可，无需改代码）；仓库内暂无代码读取该文件 |
 | `docs/开发日志.md` | 每阶段"做了什么 / 踩了什么坑 / 为什么这么决策"，**每阶段结束必须追加**；已有 M0/M1/M2/M3a/M3b/**M4** 六章 |
 | `docs/verify设计.md` | M3b 验证与统计的设计稿：判定口径、证据检索策略、量化判据判定、统计口径、`verify.j2` 成品 |
 | `prompts/{brief,predict,debate,trend}/` | Jinja2 模板落点。`brief/` 有 `daily_brief.j2` + `item_comment.j2`，`predict/` 有 `generate.j2`；`debate/` `trend/` 待 M5 |
@@ -378,7 +384,7 @@ hot_score = 100 * clamp( w_engagement*engagement_norm        # Σ coeff*log1p(me
 | alembic 迁移漏 `import sqlmodel` | 已补进 `script.py.mako`；migrations 目录整体排除 mypy 与 ruff |
 | HTML 正则 `r"<p[^>]*>"` | 会误匹配 SVG 的 `<path ...>`，写成 `r"<p(?:\s[^>]*)?>"` |
 | 依赖易变 CSS class 解析 HTML | 只用稳定结构（`<article>`、`h2>a[href]`、`itemprop`、文本模式）+ 准备降级通道 |
-| 抓不到就丢条目 | 手动投喂降级保留（标题退化为 URL），见 `collectors/inbox.py` |
+| 抓不到就丢条目 | 手动投喂降级保留（标题退化为 URL），见 `collectors/inbox.py`；CLI `aipulse inbox add` 同样保证（有回归测试） |
 | 库缺 `skip_cluster` 列导致 collect 崩 | pipeline 入口加 `ensure_schema()` 自动 upgrade |
 | 装 `types-feedparser` | 注册表无此包，已从 pyproject 移除，不要加回来 |
 | `expire_on_commit` 是 **Session** 参数 | `create_engine(expire_on_commit=...)` 直接报错；要在 session 关闭后继续读 item 属性，写 `Session(engine, expire_on_commit=False)`，否则渲染时 `DetachedInstanceError` |
