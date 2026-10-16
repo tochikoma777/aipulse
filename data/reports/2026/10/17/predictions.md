@@ -1,16 +1,17 @@
 ## 🔮 今日新生成的预言
 
-本次共生成 **4** 条可证伪预言：
+本次共生成 **5** 条可证伪预言：
 
 | 预言 | 类别 | 置信度 | 周期 | 到期日 | 判据 |
 |---|---|---|---|---|---|
-| 截至 30 天后，没有任何非 Elorian 主体发布独立评测，复现「Glimpse 在科学图表推理上超过 GPT-6 Astra」这一结论。 | research | 0.75 | 30 天 | 2026-11-16 | 截至到期日，在 LMArena、Artificial Analysis、Hugging Face Open VLM Leaderboard、Papers with Code 及 arXiv 标题/摘要中检索关键词「Glimpse」「Elorian」；若出现 ≥1 个由非 Elorian 主体发布、且明确给出 Glimpse 在图表或科学图像推理任务上优于 GPT-6 Astra 的量化评测结果（含具体分数与测试集），则本条落空；若仅检索到 Elorian 自评、媒体转述或无论文的二手报道，则本条命中。 |
-| Elorian 在 30 天内不会为 Glimpse 提供任何公开可用的直接调用入口（公开 API、免申请 demo 页面或开放权重）。 | product | 0.60 | 30 天 | 2026-11-16 | 截至到期日，检查 elorian 官网/官方 X 账号/GitHub 组织：若存在任一公开入口，使非等待名单用户可直接提交图像并获得 Glimpse 输出（公开 demo、公开 API endpoint 或可下载权重，任一即可），则本条落空；若只有等待名单、宣传视频、论文预印本或纯文字描述，则本条命中。 |
-| 90 天内，至少一家头部模型提供方（OpenAI、Google DeepMind、Anthropic、Meta、阿里 Qwen、DeepSeek）发布官方模型卡或博客，把「直接对图像进行推理而非先转文本描述」列为核心能力并附带图表/视频理解公开评测数字。 | capability | 0.65 | 90 天 | 2027-01-15 | 截至到期日，在上述六家机构的官方博客、模型卡或技术报告中，若 ≥1 家明确以「原生图像推理 / reasoning with images」为版本核心卖点，并给出至少一项图表理解或视频描述的公开评测分数，则本条命中；若仅出现带视觉输入但表述为「图像理解」的常规多模态更新、无专门评测数字，则本条落空。 |
-| Elorian 在 90 天内不会公布任何融资、被收购或与外部机构的商业合作消息。 | business | 0.55 | 90 天 | 2027-01-15 | 截至到期日，检索 Elorian 官方渠道（官网新闻页、官方 X/领英账号）及 TechCrunch、The Information、路透等主流科技媒体的报道：若出现 ≥1 条关于 Elorian 完成融资轮次、被收购或与具名企业/研究机构达成合作的官方或主流媒体报道，则本条落空；若仅有模型评测相关内容，则本条命中。 |
+| 在 30 天内，GitHub 上至少出现 3 个 star 数超过 2000 的仓库，用于把本地电脑/终端的软件变成可供 LLM 智能体调用的 agent-native CLI 封装层。 | product | 0.60 | 30 天 | 2026-11-16 | 截至到期日，在 GitHub 搜索主题为 agent-native CLI / CLI-Anything 同类工具，统计 star>2000 且创建或大幅更新于本窗口内的独立仓库数量；≥3 个算命中，≤2 个算落空。 |
+| 在 30 天内，苹果不会发布任何以「Muse」或「Spark」命名的、面向第三方开发者的开源模型权重下载包。 | product | 0.65 | 30 天 | 2026-11-16 | 截至到期日，检查 Apple ML Research 官方页面、Hugging Face 上 Apple 组织账号、以及 GitHub apple 组织仓库：若出现可下载权重且标注为 Muse/Spark 的模型卡则算落空；否则算命中。 |
+| 在 90 天内，至少 2 篇当日候选池中的智能体自进化（self-evolving / recursive self-improve）论文会在 Hugging Face 上放出公开代码仓库。 | research | 0.55 | 90 天 | 2027-01-15 | 截至到期日，在 Hugging Face Papers 对应论文页面的 GitHub 链接或模型/数据集区，统计 Self-Evolving Agent Harness、Terminal-RSI 两篇中放出可运行公开仓库的篇数；≥2 篇算命中，≤1 篇算落空。 |
+| 在 30 天内，不会出现任何单一 GUI/计算机操作智能体在 MAI-Gym 或 OpenGCUA 公布的公开榜单上，同时在移动端和桌面端两个评测中取得第一名。 | capability | 0.70 | 30 天 | 2026-11-16 | 截至到期日，查看 MAI-Gym 与 OpenGCUA 的官方榜单页：若存在同一个模型同时占据移动端与桌面端榜首，则算落空；否则算命中。 |
+| 在 30 天内，OpenAI、Anthropic、Google 中至少一家会公开宣称其旗舰模型在 StarCraft BW 编程智能体基准（StarSkirmish Bench 或同类）上取得超过当日 Gemini 4 Argon 的得分。 | community | 0.30 | 30 天 | 2026-11-16 | 截至到期日，检索厂商官方博客或 StarSkirmish Bench 榜单：若任一厂商发布宣称在该基准上超越当日 Argon 成绩的官方材料算命中；否则算落空。 |
 
 > 这些预言的判定结果会在到期后自动出现在当天的 `verdicts.md`，并计入记分板。
 
 ---
 
-_生成时间：2026-10-16T16:18:15.673263+00:00_
+_生成时间：2026-10-16T16:47:09.942296+00:00_

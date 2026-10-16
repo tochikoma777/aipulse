@@ -1,23 +1,31 @@
 {
   "mode": "hybrid",
   "day": "2026-10-17",
-  "generated_at": "2026-10-16T16:18:15.673234+00:00",
+  "generated_at": "2026-10-16T16:47:09.942250+00:00",
+  "window": {
+    "since": "2026-10-15T16:45:50.100152+00:00",
+    "until": "2026-10-16T16:45:50.100152+00:00",
+    "hours": 24.0,
+    "since_local": "2026-10-16T00:45+08:00",
+    "until_local": "2026-10-17T00:45+08:00",
+    "tz": "Asia/Shanghai"
+  },
   "analysis": {
-    "items": 1,
-    "scored": 1,
-    "topics": 0,
-    "new_entity_mention_rows": 2
+    "items": 164,
+    "scored": 164,
+    "topics": 4,
+    "new_entity_mention_rows": 259
   },
   "llm": {
-    "degraded": false,
-    "degraded_reason": "",
+    "degraded": true,
+    "degraded_reason": "LLM 结构化输出失败，已降级为数据版",
     "calls": 1
   },
   "collect": {
-    "ok_sources": 7,
-    "failed_sources": 0,
+    "ok_sources": 6,
+    "failed_sources": 1,
     "skipped": 0,
-    "total_items": 166
+    "total_items": 118
   },
   "verify": {
     "verified": 0,
@@ -27,9 +35,9 @@
     "llm_calls": 0
   },
   "predictions": {
-    "total": 4,
+    "total": 9,
     "verified": 0,
-    "pending": 4,
+    "pending": 9,
     "unverifiable": 0,
     "hit_rate": null,
     "weighted_score": null,
@@ -37,17 +45,17 @@
   },
   "prediction_generation": {
     "mode": "hybrid",
-    "generated": 4,
-    "inserted": 4,
+    "generated": 5,
+    "inserted": 5,
     "dropped": [],
     "llm_calls": 1
   },
   "signals": {
-    "entities": 129,
-    "points": 410,
+    "entities": 130,
+    "points": 477,
     "with_velocity": 12,
     "insufficient": 114,
-    "cold_start": 3,
+    "cold_start": 4,
     "min_window_hours": 6.0
   }
 }
