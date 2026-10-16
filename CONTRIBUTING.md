@@ -61,8 +61,8 @@ docs: 补 signals.json 的字段说明
 
 | 想做什么 | 先读 |
 |---|---|
-| 了解整体架构与决策 | [`docs/AI Pulse 设计方案 v1`](AI%20Pulse%20设计方案%20v1) |
-| 按阶段任务卡执行 | [`docs/AI Pulse · Agent 开发执行手册 v1`](AI%20Pulse%20·%20Agent%20开发执行手册%20v1) |
-| 新增 / 修复数据源 | [`docs/新增数据源指南.md`](新增数据源指南.md)、[`docs/数据源手册.md`](数据源手册.md) |
-| 理解某段代码为什么这么写 | [`CODEBUDDY.md`](../CODEBUDDY.md)（模块职责 + 已归档的坑） |
-| 看每阶段实测结论 | [`docs/开发日志.md`](开发日志.md) |
+| 了解整体架构与决策 | [`docs/AI Pulse 设计方案 v1`](docs/AI%20Pulse%20设计方案%20v1) |
+| 按阶段任务卡执行 | [`docs/AI Pulse · Agent 开发执行手册 v1`](docs/AI%20Pulse%20·%20Agent%20开发执行手册%20v1) |
+| 新增 / 修复数据源 | [`docs/新增数据源指南.md`](docs/新增数据源指南.md)、[`docs/数据源手册.md`](docs/数据源手册.md) |
+| 理解某段代码为什么这么写 | [`CODEBUDDY.md`](CODEBUDDY.md)（模块职责 + 已归档的坑） |
+| 看每阶段实测结论 | [`docs/开发日志.md`](docs/开发日志.md) |

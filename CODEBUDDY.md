@@ -6,7 +6,7 @@ This file provides guidance to CodeBuddy Code when working with code in this rep
 
 `aipulse`（AI 脉搏）：每日采集 AI 领域热点，产出可回测的推演与预言。Python 3.11 + `uv`，SQLite 单文件存储，MIT。
 
-**里程碑状态（改动前先确认当前阶段）**：M0（骨架 + 数据源探测）、M1（6 采集器 + inbox + 三级去重）、M2（打分 / 聚类 / 实体 + LLM 抽象 + 简报）、**M3a / M3b（★ 预言生成 + 到期验证 + 命中率 / Brier / 校准度）**、**M4（Actions 自动化 + Web 看板 + README 发布）** 均已完成（tag `m0` / `m1` / `m2` / `m3a` / `m3b`）；**当前下一阶段是 M5**（周期长文 `trend` + 多角色辩论 `debate`）。M5 的入口已留好：`prompts/trend/` 与 `prompts/debate/` 是空目录，`cli/commands/{trend,debate}.py` 与 `reasoning/` 下对应模块是占位。不要跨阶段实现。
+**里程碑状态（改动前先确认当前阶段）**：M0（骨架 + 数据源探测）、M1（6 采集器 + inbox + 三级去重）、M2（打分 / 聚类 / 实体 + LLM 抽象 + 简报）、**M3a / M3b（★ 预言生成 + 到期验证 + 命中率 / Brier / 校准度）**、**M4（Actions 自动化 + Web 看板 + README 发布）** 均已完成（tag `m0` / `m1` / `m2` / `m3a` / `m3b`）；**当前下一阶段是 M5**（周期长文 `trend` + 多角色辩论 `debate`）。M5 的入口已留好：`prompts/trend/` 与 `prompts/debate/` 是空目录，`cli/commands/{trend,debate}.py` 是占位（`reasoning/` 下目前**没有** trend / debate 模块，M5 才从零建）。不要跨阶段实现。
 
 已实现的 CLI：`init` / `doctor` / `collect` / `analyze` / `brief` / `daily` / `predict`（`add` / `list` / `verify` / `review`）/ `stats`（`stats --predictions`）/ **`serve`（M4 只读看板）** / **`inbox`（`add` / `add-file` / `list`，v1.1 手动投喂通道）**。
 `src/aipulse/cli/commands/` 下其余子应用（`normalize`/`debate`/`trend`/`topics`/`search`/`sources`）仍是 `placeholder_app()` 生成的占位，调用时抛 `NotImplementedError`。它们出现在 `--help` 里是刻意的，不是漏实现。其中 `sources` 占位**不影响加源**：增删 RSS/Atom 源改 `configs/sources.yaml` 即可（见「采集器六条约定」末段）。
@@ -65,8 +65,8 @@ scripts/cron_daily.sh                                 # 本地 cron 备份（日
 
 `analyze` / `brief` / `daily` 都支持 `--date YYYY-MM-DD`（默认 `today`，按 `app.timezone` 取本地日）、`--db <path>`、`--json`；`brief` / `daily` 的 `--skip-llm` 与 `--no-llm` 等价，强制本次按 `off` 档跑。`predict` 同样支持 `--date` / `--db` / `--json` / `--skip-llm`，但**尚未接入 `daily`**（独立命令）。
 
-产物落盘：`data/reports/YYYY/MM/DD/` 下 6 个文件（全部走 `FileNotifier`，§11.1）：
-`brief.md` / `daily.json` / `meta.json` / **`scoreboard.md`（v1.10：daily 自动产出记分板）** / **`verdicts.md`（本次到期验证结果）** / **`signals.json`（指标快照 + 增速，Actions 无持久化时的跨天佐证）**。
+产物落盘：`data/reports/YYYY/MM/DD/` 下 **7 个文件**（全部走 `FileNotifier`，§11.1）：
+`brief.md` / `daily.json` / `meta.json` / **`scoreboard.md`（v1.10：daily 自动产出记分板）** / **`verdicts.md`（本次到期验证结果）** / **`predictions.md`（当日新生成的预言，被校验器拒收的草案也列出）** / **`signals.json`（指标快照 + 增速，Actions 无持久化时的跨天佐证）**。
 `meta.json` 里额外有 `predictions` / `prediction_generation` / `signals` 三个摘要块，用于跨天比对。注意 `analysis.new_entity_mention_rows` 是**本次运行新增的实体提及行数**（同日重复提及已去重），不是当日实体总数。
 
 `data/` 布局（均在 `app.data_dir` 下，已 gitignore 部分产物）：`aipulse.db`（主库）/ `cache/http.sqlite`（`utils/http.py` 响应缓存）/ `inbox/`（手动投喂）/ `logs/` / `reports/`。
@@ -77,7 +77,7 @@ scripts/cron_daily.sh                                 # 本地 cron 备份（日
 CI（`.github/workflows/ci.yml`，无 secrets）实际只跑 4 步：`ruff check .` → `ruff format --check .` → `mypy src/aipulse` → `pytest`（**没有覆盖率门禁**，覆盖率是本地基线，不达标不会挂 CI）。`.github/workflows/probe.yml` 是手动触发的探测，不在 CI 链上。
 
 ```bash
-uv run pytest                             # 全量（当前 313 条，约 55s，无需网络、无需密钥）
+uv run pytest                             # 全量（当前 313 条，约 60s，无需网络、无需密钥）
 uv run pytest tests/unit/test_dedup.py                      # 单文件
 uv run pytest "tests/unit/test_dedup.py::test_l2_merges_arxiv_and_hf_same_paper" -q  # 单用例
 uv run pytest -q --cov=aipulse --cov-report=term            # 覆盖率：collectors/ ≥80%、openai_compat ≥80%、TOTAL 89%
@@ -90,6 +90,8 @@ uv run pre-commit install                 # 钩子：ruff --fix + ruff-format + 
 ```
 
 `mypy` 为全局 `strict = true`，但对 `aipulse.cli.*` / `aipulse.collectors.*` / `aipulse.pipeline.*` / `aipulse.web.*` 关闭了 `disallow_untyped_defs` 与 `disallow_untyped_calls`。`core/` `schema/` `analysis/` 必须完整通过 strict。
+
+`pyproject.toml` 的 ruff per-file-ignores 里 `tests/* = ["S101"]` 是**当前无效的配置**（`S` 不在 `select` 列表里，只为将来开 `S` 规则预留）——不要以为项目已经在跑 bandit 类检查，也不要当冗余删掉。
 
 ### 数据源探测（M0 产物，需要联网；加源或改 URL 前必跑）
 
@@ -260,7 +262,7 @@ hot_score = 100 * clamp( w_engagement*engagement_norm        # Σ coeff*log1p(me
 
 ## 配置与环境
 
-三档运行模式（`configs/default.yaml` 的 `mode`）：`off`（零 API 花费）/ `hybrid`（预言生成 + 主编点评）/ `full`（全部）。`Settings.effective_mode()` 在 `llm.enabled=false` 或 `api_key` 为空时**自动降级为 `off`**，只提示一次，不报错退出。
+三档运行模式（`configs/default.yaml` 的 `mode`，仓库默认 `full`）：`off`（零 API 花费）/ `hybrid`（预言生成 + 主编点评）/ `full`（全部，M5 后叠加长文与辩论）。`Settings.effective_mode()` 在 `llm.enabled=false` 或 `api_key` 为空时**自动降级为 `off`**，只提示一次，不报错退出。
 
 **daily 与三档的关系（M4 补齐）**：`daily` 会按档位做 `brief`（hybrid/full → 主编点评）**和 `generate_predictions`（hybrid/full → 当日预言入库）**，`off` 档两条路径都不触发（零网络）。daily.yml 里显式设了 `AIPULSE_MODE=hybrid`——**不设这个，配了 key 记分板样本也不会增长**。
 
@@ -281,7 +283,7 @@ hot_score = 100 * clamp( w_engagement*engagement_norm        # Σ coeff*log1p(me
 
 | 文件 | 段 | 消费方 |
 |---|---|---|
-| `default.yaml` | `app` / `mode` / `llm`（含 `json_schema: auto`）/ `budget`（含 `price_*_cny_per_1m`）/ `pipeline`（`daily_top_n` `brief_sections` `predictions_per_day` `prediction_horizons` `auto_verify` `weekly_debate_enabled`）/ `verify`（`grace_days` `evidence_window_grace_days` `evidence_top_k` `similarity_threshold` `strong_similarity` `min_evidence` `partial_tolerance` `max_context_tokens`）/ **`signals`（`min_velocity_window_hours`，M4）** / `output` / `notify` / `http` | `Settings` |
+| `default.yaml` | `app` / `mode` / `llm`（含 `json_schema: auto`）/ `budget`（含 `price_*_cny_per_1m`）/ `pipeline`（`daily_top_n` `brief_sections` `predictions_per_day` `prediction_horizons`（默认 `[7,30,90]`，`180` 虽合法但未启用）`auto_verify` `weekly_debate_enabled`）/ `verify`（`grace_days` `evidence_window_grace_days` `evidence_top_k` `similarity_threshold` `strong_similarity` `min_evidence` `partial_tolerance` `max_context_tokens`）/ **`signals`（`min_velocity_window_hours`，M4）** / `output` / `notify` / `http` | `Settings` |
 | `sources.yaml` | 每源的端点、权重、`availability`、`rate_limit`、`title_only`、`fallback_endpoints` | `collectors/` + `analysis/score.py` |
 | `scoring.yaml` | `weights` / `freshness` / `cross_source_bonus` / `engagement`（每源指标系数）/ `cold_start` / `title_only_weight` / `cluster` | `analysis/score.py` `analysis/cluster.py` |
 | `entities.yaml` | `entities.{model,framework,company,hardware,concept,person}`（name + aliases） | `analysis/entities.py` |
