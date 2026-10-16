@@ -5,6 +5,8 @@ from __future__ import annotations
 import json
 from datetime import date
 
+import httpx
+
 from aipulse.core.config import RunMode, Settings
 from aipulse.llm.base import ChatMessage, LLMResult
 from aipulse.reasoning.predictor import generate_predictions
@@ -22,6 +24,17 @@ class _StubClient:
         content = self.contents[min(self.calls, len(self.contents) - 1)]
         self.calls += 1
         return LLMResult(content=content, model="deepseek-reasoner")
+
+
+class _TimeoutClient:
+    """模拟 LLM 读超时（Actions 首跑 hybrid 时的真实故障）。"""
+
+    def __init__(self) -> None:
+        self.calls = 0
+
+    async def chat(self, messages: list[ChatMessage], **kwargs) -> LLMResult:
+        self.calls += 1
+        raise httpx.ReadTimeout("")
 
 
 def _item(item_id: str, title: str, hot: float) -> Item:
@@ -76,6 +89,28 @@ async def test_off_mode_returns_empty_without_llm():
     assert out.predictions == []
     assert out.meta["mode"] == "off"
     assert client.calls == 0
+
+
+async def test_timeout_is_degraded_not_failed():
+    """读超时 = 本次未生成（warning），不能记成 llm_failed（error）。
+
+    超时是网络抖动 / 模型慢，不是模型判错；预言按天生成，明天会自然重跑。
+    混进失败口径会让记分板的"生成失败率"看起来像模型问题。
+    """
+    client = _TimeoutClient()
+    out = await generate_predictions(
+        client=client,
+        settings=Settings(),
+        items=_items(),
+        topics=_topics(),
+        entity_counts={},
+        day=date(2026, 10, 14),
+        mode=RunMode.HYBRID,
+    )
+    assert out.predictions == []
+    assert out.meta["degraded"] is True
+    assert "超时" in out.meta["degraded_reason"]
+    assert "失败" not in out.meta["degraded_reason"]
 
 
 async def test_valid_batch_generates_rows():

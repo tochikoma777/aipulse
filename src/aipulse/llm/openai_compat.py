@@ -22,6 +22,8 @@ from __future__ import annotations
 import json
 from typing import Any
 
+import httpx
+
 from aipulse.core.config import LLMSettings
 from aipulse.core.errors import ConfigError, LLMError
 from aipulse.core.logging import get_logger
@@ -198,6 +200,13 @@ class OpenAICompatClient:
         wants_schema = json_schema is not None
         use_schema = self._decide_use_schema(model, wants_schema)
         error_note: str | None = None
+        # ★ 读超时必须显式传：不传就会吃 HttpClient 的默认 20s（那是给采集请求定的），
+        #   `llm.timeout_s` / `llm.timeout_strong_s` 会变成死配置。strong 档（思维链）
+        #   比 fast 慢得多，故分档给不同的读超时。
+        read_timeout_s = (
+            self.settings.timeout_strong_s if model_tier == "strong" else self.settings.timeout_s
+        )
+        timeout = httpx.Timeout(None, read=read_timeout_s)
 
         for _attempt in range(2):  # 最多一次 json_schema → json_object 降级
             if json_schema is not None:
@@ -239,6 +248,7 @@ class OpenAICompatClient:
                 source="llm",
                 headers=self._headers(),
                 json_body=body,
+                timeout=timeout,
             )
 
             # ── 成功 ──────────────────────────────────────────────

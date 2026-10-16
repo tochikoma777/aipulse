@@ -82,6 +82,34 @@ async def test_success_parses_content_and_usage():
 
 
 @respx.mock
+async def test_read_timeout_comes_from_llm_settings_not_http_default():
+    """★ 回归防线：不显式传 timeout，就会吃 HttpClient 的默认 20s——那是对采集请求定的。
+
+    Actions 首跑 hybrid 时 20s 读超时把预言生成打断，generated=0；而 `llm.timeout_s: 120`
+    当时完全是死配置。strong 档（思维链）比 fast 慢，故单独给更长的读超时。
+    """
+
+    class _SpyHttp:
+        def __init__(self) -> None:
+            self.read_timeouts: list[float | None] = []
+
+        async def request(
+            self, method, url, *, source=None, headers=None, json_body=None, timeout=None, **kwargs
+        ):
+            self.read_timeouts.append(timeout.read)
+            return _ok_json("{}")
+
+    spy = _SpyHttp()
+    settings = _settings(timeout_s=42, timeout_strong_s=180)
+    client = OpenAICompatClient(settings, http=spy)
+
+    await client.chat(_messages(), model_tier="fast")
+    await client.chat(_messages(), model_tier="strong")
+
+    assert spy.read_timeouts == [42, 180]
+
+
+@respx.mock
 async def test_strong_model_selected():
     route = respx.post(ENDPOINT).mock(return_value=_ok_json("x"))
     client = _client()

@@ -14,6 +14,8 @@ from dataclasses import dataclass, field
 from datetime import date
 from typing import Any, cast
 
+import httpx
+
 from aipulse.core.config import RunMode, Settings
 from aipulse.core.logging import get_logger
 from aipulse.llm.base import ChatMessage, LLMClient
@@ -164,7 +166,14 @@ async def generate_predictions(
             purpose="predict_generate",
             model_tier=template.model_tier,
         )
-    except Exception as exc:  # 网络/预算异常：降级，不中断
+    except httpx.TimeoutException as exc:
+        # ★ 超时只是"这一次没等到结果"，不是模型判错了：预言按天生成，明天会自然重跑，
+        #   记成 llm_failed 会把一次网络抖动混进失败口径，污染对预言系统的判断。
+        log.warning("predict.llm_timeout", error=repr(exc))
+        meta["degraded"] = True
+        meta["degraded_reason"] = "LLM 调用超时：本次未生成预言"
+        return PredictOutput(meta=meta)
+    except Exception as exc:  # 其余网络/预算异常：降级，不中断
         log.error("predict.llm_failed", error=repr(exc))
         meta["degraded"] = True
         meta["degraded_reason"] = f"LLM 调用失败：{type(exc).__name__}"
