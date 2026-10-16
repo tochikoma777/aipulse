@@ -34,7 +34,7 @@ aipulse 多做了一件难得多的事：**每天给出 3-5 条可证伪的预�
 | 每日简报 | 头条 / 总览 / 主编点评 / 分板块条目 / 矛盾之处 / 被低估的条目 |
 | **★ 预言系统** | 生成 + 手写 + 不可证伪拦截 → 到期验证（双路径）→ 命中率 / Brier / 校准度 / 5 维分组统计 |
 | Web 看板 | `aipulse serve`：今日简报 / 归档 / **预言记分板 + 校准曲线** / 主题演化 / 检索（**只读**，htmx 已内置，无外部依赖） |
-| 自动化 | GitHub Actions 每日 07:00（北京时间）跑一次（`hybrid` 档：自动生成预言 + 主编点评），报告 commit 回仓库；本地 cron 作为备份 |
+| 自动化 | GitHub Actions 每日 08:00（北京时间）跑一次（`hybrid` 档：自动生成预言 + 主编点评），报告 commit 回仓库；本地 cron 作为备份 |
 | 零 API 也能用 | 三档模式，未配置 key 自动降级，**采集 / 打分 / 聚类 / 手写预言 / 自动验证 / 统计全链路可用** |
 
 ## 三档运行模式
@@ -130,7 +130,7 @@ flowchart LR
     R -.->|"到期后"| V["verifier：量化判据查表（零 LLM）<br/>或证据门槛 → LLM 三值判定"] -.-> DB
     DB --> ST["stats → 命中率 / Brier / 校准度 / 记分板"]
 
-    GH["GitHub Actions<br/>每天 07:00 CST"] -.->|"aipulse daily"| N
+    GH["GitHub Actions<br/>每天 08:00 CST"] -.->|"aipulse daily"| N
     GH -.->|"commit data/reports"| OUT
 ```
 
@@ -142,7 +142,11 @@ flowchart LR
 
 ## 自动化（每天真的在跑）
 
-`.github/workflows/daily.yml`：`cron: 0 23 * * *`（UTC 23:00 = 北京 07:00）+ 手动触发。
+`.github/workflows/daily.yml`：`cron: 0 0 * * *`（UTC 00:00 = 北京 08:00）+ 手动触发。
+选这个点是因为 AI 新闻高度美国中心：滚动 24h 窗口换算到美西是「前一日 17:00 → 当日 17:00」，
+刚好完整覆盖当日美国工作日；改到北京 07:00 会只覆盖约 7 小时，改到北京 23:30 又会错过当日美西发布。
+
+日报按**滚动 24h** 取数（不是自然日），所以会跨两个自然日——`meta.json` 的 `window` 与 `brief.md` 顶部都标了窗口起止。
 
 ```bash
 gh workflow run daily.yml          # 手动跑一次
