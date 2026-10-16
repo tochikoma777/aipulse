@@ -1,23 +1,23 @@
 {
-  "mode": "off",
+  "mode": "full",
   "day": "2026-10-16",
-  "generated_at": "2026-10-16T01:03:59.861075+00:00",
+  "generated_at": "2026-10-16T15:46:55.844041+00:00",
   "analysis": {
-    "items": 33,
-    "scored": 33,
-    "topics": 3,
-    "new_entity_mention_rows": 39
+    "items": 163,
+    "scored": 163,
+    "topics": 4,
+    "new_entity_mention_rows": 220
   },
   "llm": {
-    "degraded": false,
-    "degraded_reason": "",
+    "degraded": true,
+    "degraded_reason": "LLM 调用失败：ReadTimeout",
     "calls": 0
   },
   "collect": {
-    "ok_sources": 5,
-    "failed_sources": 2,
+    "ok_sources": 7,
+    "failed_sources": 0,
     "skipped": 0,
-    "total_items": 68
+    "total_items": 165
   },
   "verify": {
     "verified": 0,
@@ -36,17 +36,18 @@
     "brier": null
   },
   "prediction_generation": {
-    "mode": "off",
+    "mode": "full",
     "generated": 0,
     "inserted": 0,
-    "dropped": []
+    "dropped": [],
+    "llm_calls": 0
   },
   "signals": {
-    "entities": 70,
-    "points": 276,
+    "entities": 129,
+    "points": 343,
     "with_velocity": 12,
     "insufficient": 55,
-    "cold_start": 3,
+    "cold_start": 62,
     "min_window_hours": 6.0
   }
 }
