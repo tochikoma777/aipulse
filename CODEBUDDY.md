@@ -2,6 +2,10 @@
 
 This file provides guidance to CodeBuddy Code when working with code in this repository.
 
+> **off 档跑得再久也覆盖不了 hybrid/full 路径。** 涉及 LLM 的改动，本地桩测试全绿不等于真实可用——必须配 key 实跑一次才算验证过。
+>
+> 依据：M4 的 `data/` 目录缺失、以及首跑 hybrid 连炸 5 个 bug（缺 `base_url` 崩溃、`AIPULSE_MODE` 被 yaml 字面量压掉、`llm.timeout_s` 是死配置、证据 id 幻觉、窗口只覆盖 7 小时），**全部只有真实运行才暴露**，桩测试一条都没抓到。
+
 ## 项目身份
 
 `aipulse`（AI 脉搏）：每日采集 AI 领域热点，产出可回测的推演与预言。Python 3.11 + `uv`，SQLite 单文件存储，MIT。
@@ -288,6 +292,16 @@ hot_score = 100 * clamp( w_engagement*engagement_norm        # Σ coeff*log1p(me
 | `scoring.yaml` | `weights` / `freshness` / `cross_source_bonus` / `engagement`（每源指标系数）/ `cold_start` / `title_only_weight` / `cluster` | `analysis/score.py` `analysis/cluster.py` |
 | `entities.yaml` | `entities.{model,framework,company,hardware,concept,person}`（name + aliases） | `analysis/entities.py` |
 | `criteria.yaml` | `criteria.{name}`（`description` + `params[{name,type,required,default}]`，type ∈ str/int/float） | `reasoning/criteria.py`（`predict add` 向导 + M3b 验证） |
+
+### ★ 分析窗口：collect 与 analyze 必须共用同一个窗口
+
+`pipeline/daily.py` 里**只算一次** `window = window_since(since)`（滚动 24h，截至运行时刻），显式传给 `run_collect(window=...)` 与 `analyze_day(window=...)`，简报与预言取条目也用它。
+
+**为什么**：曾经 collect 按 `--since 24h` 往前滚、analyze 按 `day_window(本地今天)` 切，两处独立计算。定时在 UTC 23:00（北京 07:00）跑，两个窗口只重叠约 7 小时——实测当天 `analysis.items = 1`，日报自称"过去 24 小时"却只覆盖 7 小时。cron 也据此改到 **UTC 00:00（北京 08:00 = 美西前一日 17:00）**：滚动 24h 刚好完整覆盖当日美国工作日，重要发布读到时不会滞后一天。
+
+**代价（接受）**：日报跨两个自然日，所以 `meta.json` 有 `window`（含 `since_local` / `until_local` / `hours`），`brief.md` 顶部也标了"覆盖窗口"。改窗口逻辑前先看 `tests/unit/test_daily.py::test_daily_passes_one_window_to_both_collect_and_analyze`。
+
+注意：窗口按 `collected_at` 过滤（不是 `published_at`）——语义是"本次运行采集到的条目"，窗口外的历史条目不会混进当天。
 
 ---
 
