@@ -368,6 +368,8 @@ async def run_daily(
                 predict_output.predictions if predict_output else [],
                 dropped=predict_summary.get("dropped") or [],
                 generated_at=generated_at,
+                # 证据 id 翻成标题写进报告：库里看得到 ≠ 报告里审得了
+                items=brief_out.items,
             ),
             "signals.json": json.dumps(
                 {

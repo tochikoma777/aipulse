@@ -7,11 +7,11 @@
 
 from __future__ import annotations
 
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from datetime import datetime
 from typing import Any
 
-from aipulse.store.models import Prediction
+from aipulse.store.models import Item, Prediction
 
 
 def _escape(text: str) -> str:
@@ -23,8 +23,13 @@ def render_predictions_markdown(
     *,
     dropped: Sequence[dict[str, Any]] | None = None,
     generated_at: datetime | None = None,
+    items: Mapping[str, Item] | None = None,
 ) -> str:
-    """渲染当日新生成的预言；0 条时给出明确原因而不是空白。"""
+    """渲染当日新生成的预言；0 条时给出明确原因而不是空白。
+
+    `items` 用于把 `evidence_item_ids` 翻成标题**写进报告**——证据留在库里就没法审，
+    报告里看不到"这条预言到底依据了哪几条"，也就无从发现编造的 id。
+    """
     out: list[str] = ["## 🔮 今日新生成的预言", ""]
     dropped = list(dropped or [])
 
@@ -41,16 +46,26 @@ def render_predictions_markdown(
         out += [
             f"本次共生成 **{len(rows)}** 条可证伪预言：",
             "",
-            "| 预言 | 类别 | 置信度 | 周期 | 到期日 | 判据 |",
-            "|---|---|---|---|---|---|",
+            "| 预言 | 类别 | 置信度 | 周期 | 到期日 | 判据 | 证据 id |",
+            "|---|---|---|---|---|---|---|",
         ]
         for row in rows:
             out.append(
                 f"| {_escape(row.statement)} | {row.category} | {row.confidence:.2f} "
                 f"| {row.horizon_days} 天 | {row.due_date.isoformat()} "
-                f"| {_escape(row.falsifiable_criteria)} |"
+                f"| {_escape(row.falsifiable_criteria)} "
+                f"| {' '.join(f'`{i}`' for i in row.evidence_item_ids)} |"
             )
         out.append("")
+
+        if items:
+            out += ["### 证据条目对照（人工核验用）", ""]
+            for row in rows:
+                for eid in row.evidence_item_ids:
+                    item = items.get(eid)
+                    title = _escape(item.title) if item is not None else "⚠️ 库里查不到该条目"
+                    out.append(f"- `{eid}` → {title}")
+            out.append("")
         out.append("> 这些预言的判定结果会在到期后自动出现在当天的 `verdicts.md`，并计入记分板。")
         out.append("")
 
@@ -61,10 +76,10 @@ def render_predictions_markdown(
             "| 草案 | 拒收原因 |",
             "|---|---|",
         ]
-        for item in dropped:
-            problems = item.get("problems") or []
+        for entry in dropped:
+            problems = entry.get("problems") or []
             joined = "；".join(str(p) for p in problems)
-            out.append(f"| {_escape(str(item.get('statement', '')))} | {_escape(joined)} |")
+            out.append(f"| {_escape(str(entry.get('statement', '')))} | {_escape(joined)} |")
         out.append("")
 
     if generated_at is not None:

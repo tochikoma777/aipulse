@@ -96,4 +96,7 @@ jobs:
             exit 0
           fi
           git commit -m "chore(reports): $(date -u -d '+8 hours' +%F) 日报与记分板"
+          # ★ 远端可能已被别的 push 推进（人工改代码、或上一次运行），直接 push 会被拒，
+          #   而报告即数据库——被拒就等于当天报告丢失。先 rebase 再推。
+          git pull --rebase --no-edit origin ${{ github.ref_name }}
           git push origin HEAD:${{ github.ref_name }}
