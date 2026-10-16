@@ -13,7 +13,7 @@ from collections.abc import Sequence
 from dataclasses import dataclass, field
 from datetime import date
 
-from aipulse.core.timeutil import utcnow
+from aipulse.core.timeutil import now_local
 from aipulse.store.models import Prediction
 
 # 校准分桶（上界用 0.951 以纳入 confidence 上限 0.95）
@@ -87,7 +87,9 @@ def compute_prediction_stats(
     rows: Sequence[Prediction], *, generated_at: str | None = None
 ) -> PredictionStats:
     """从预言行计算全部统计量。只把 `verified` 且有 verdict 的行计入分母。"""
-    stats = PredictionStats(generated_at=generated_at or utcnow().isoformat())
+    # ★ 记分板是给人看的，生成时间必须走展示口径（本地时区），不能是 UTC：
+    #   UTC 时间戳在北京时间 00:00–08:00 会显示成"昨天"，与报告日期对不上。
+    stats = PredictionStats(generated_at=generated_at or now_local().isoformat())
     buckets: dict[str, CalibrationBucket] = {
         label: CalibrationBucket(label=label) for label, _, _ in CALIBRATION_BUCKETS
     }
