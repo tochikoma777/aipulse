@@ -97,7 +97,7 @@ uv run aipulse daily                    # hybrid/full 档：自动生成预言 +
 `daily` 每天也会把 `scoreboard.md` 写进当日报告目录。最新数据见
 [`data/reports/2026/10/17/scoreboard.md`](data/reports/2026/10/17/scoreboard.md)。
 
-> 截至 **2026-10-17**，系统已累计 **29** 条预言，全部处于待验证状态（**0** 条已到期）。具体成绩将在首批预言到期并验证后展示——**让时间说话**。
+> 截至 **2026-10-17**，系统已累计 **34** 条预言，全部处于待验证状态（**0** 条已到期）。具体成绩将在首批预言到期并验证后展示——**让时间说话**。
 
 下表是完整结构（当前尚无已验证样本，数据会自动填充）：
 
@@ -107,7 +107,7 @@ uv run aipulse daily                    # hybrid/full 档：自动生成预言 +
 | 加权分（verdict_score 均值，`hit=1 / partial=0.5 / miss=0`） | — |
 | Brier Score（`mean((confidence − outcome)²)`，越低越好，<0.20 优秀，0.25 ≈ 随机） | — |
 | 命中 / 部分 / 落空 | 0 / 0 / 0 |
-| 待验证（pending） | 29 |
+| 待验证（pending） | 34 |
 | 分母 | 已验证的预言；`pending` 与 `unverifiable` **不计入** |
 
 **置信度校准**（声称置信度 vs 实际命中率——最有说服力的部分）：
@@ -239,7 +239,7 @@ uv run aipulse doctor --no-network --json
 | **M3** | ★ 预言系统：可证伪生成 + 手写 + 到期验证 + 命中率 / Brier / 校准度 | ✅ |
 | **M4** | **Actions 自动化 + Web 看板 + 开源发布包装** | ✅ |
 | **M6a** | 简报格式规范化 + 快照型源修复 + predict 截断修复 | ✅ |
-| **P0** | star 追踪：★ 总数 / 增量 + 增速榜 + `source_runs.json` | ✅（代码，待 Actions 实跑） |
+| **P0** | star 追踪：★ 总数 / 增量 + 增速榜 + `source_runs.json` | ✅（Actions 实跑验证 2026-10-17） |
 | **M6b** | 「为什么重要 / 立场」全量 LLM 增强 | ⏸ 暂缓 |
 | **M6c** | 知识库 | ⬜ 待做 |
 | **M5** | 周期趋势长文 + 多角色辩论 | ⬜ 待做 |
