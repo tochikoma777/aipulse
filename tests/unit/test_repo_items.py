@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 
 from sqlmodel import Session, select
 
@@ -13,6 +13,7 @@ from aipulse.store.models import Item, Signal
 from aipulse.store.repo_items import (
     clusterable_items,
     item_id,
+    list_items_in_window,
     to_item_model,
     upsert_items,
     write_signals,
@@ -161,3 +162,84 @@ def test_to_item_model_carries_metrics_and_hashes():
     assert model.metrics["stars_total"] == 1234
     assert model.content_hash and model.simhash
     assert model.hot_score == 0.0
+
+
+def test_state_source_stays_visible_for_three_consecutive_days(tmp_path):
+    """★ v1.14 核心回归：持续在榜的 trending 项目必须连续三天都进窗口。
+
+    旧实现把 trending 当事件型源，upsert 保留首次 `published_at`/`collected_at`，
+    第二天窗口一滑就永久消失。现在状态型源看 `last_seen_at`。
+    """
+    engine = init_db(tmp_path / "a.db")
+    try:
+        with Session(engine) as session:
+            first_day = datetime(2026, 10, 15, 9, 0, tzinfo=UTC)
+            repo = _repo_item("morluto/rea")
+            repo.published_at = first_day
+
+            # 事件型对照：比首日窗口起点更早发布，之后不该因为"又被采到"而重现
+            paper = RawItem(
+                source=SourceEnum.ARXIV,
+                external_id="2610.00001",
+                title="A paper published on day one",
+                url="arxiv:2610.00001",
+                published_at=first_day - timedelta(hours=2),
+            )
+
+            for offset in range(3):
+                collect_at = first_day + timedelta(days=offset)
+                upsert_items(session, [repo, paper], now=collect_at)
+                start = collect_at - timedelta(hours=24)
+                end = collect_at + timedelta(hours=1)
+                visible = list_items_in_window(
+                    session,
+                    since=start,
+                    until=end,
+                    state_sources={"github_trending"},
+                )
+                titles = {row.title for row in visible}
+                assert "morluto/rea" in titles, f"第 {offset + 1} 天丢了持续在榜项目"
+                assert ("A paper published on day one" in titles) is (offset == 0)
+    finally:
+        engine.dispose()
+
+
+def test_discovery_source_appears_only_on_first_seen_day(tmp_path):
+    """★ v1.15：索引滞后的论文连续三天被采到，只在首次发现那天出现一次。
+
+    arXiv/HF 的 published_at 是 4 天前（索引滞后），不能按它过滤；
+    discovery 用 first_seen_at，且 upsert 绝不覆盖——既不丢失，也不重复。
+    """
+    engine = init_db(tmp_path / "a.db")
+    try:
+        with Session(engine) as session:
+            first_collect = datetime(2026, 10, 15, 9, 0, tzinfo=UTC)
+            paper = RawItem(
+                source=SourceEnum.ARXIV,
+                external_id="2610.99999",
+                title="A paper indexed three days late",
+                url="arxiv:2610.99999",
+                published_at=first_collect - timedelta(days=4),
+            )
+
+            for offset in range(3):
+                collect_at = first_collect + timedelta(days=offset)
+                upsert_items(session, [paper], now=collect_at)
+                visible = list_items_in_window(
+                    session,
+                    # 23h 窗口：模拟真实滚动窗口相对采集时刻有偏移，
+                    # 避免 first_seen_at 恰好落在窗口左边界上（边界属于 [since, until)）
+                    since=collect_at - timedelta(hours=23),
+                    until=collect_at + timedelta(hours=1),
+                    discovery_sources={"arxiv"},
+                )
+                assert ("A paper indexed three days late" in {row.title for row in visible}) is (
+                    offset == 0
+                ), f"第 {offset + 1} 天出现状态错误"
+
+            row = session.exec(
+                select(Item).where(Item.title == "A paper indexed three days late")
+            ).one()
+            assert row.first_seen_at == first_collect
+    finally:
+        engine.dispose()

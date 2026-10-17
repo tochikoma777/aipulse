@@ -35,6 +35,12 @@ class Item(SQLModel, table=True):
     author: str | None = None
     published_at: datetime = Field(default_factory=utcnow, index=True)
     collected_at: datetime = Field(default_factory=utcnow)
+    # v1.15：首次发现。只在第一次入库时设置，之后 upsert 不更新。
+    # discovery 语义（arXiv / HF，索引滞后 3-4 天）按它过滤——读者关心"今天新发现了什么"。
+    first_seen_at: datetime = Field(default_factory=utcnow, index=True)
+    # v1.14：状态型源（GitHub Trending）没有发布时间，窗口过滤必须用"最近一次仍被采到"。
+    # 每次 upsert 无条件更新；事件型源不依赖它。
+    last_seen_at: datetime = Field(default_factory=utcnow, index=True)
     language: str | None = None
     tags: list[str] = Field(default_factory=list, sa_column=Column(JSON, nullable=False))
     metrics: dict[str, Any] = Field(default_factory=dict, sa_column=Column(JSON, nullable=False))

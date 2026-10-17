@@ -118,6 +118,13 @@ class PipelineSettings(BaseModel):
     weekly_debate_enabled: bool = True
 
 
+class BriefSettings(BaseModel):
+    """简报呈现参数（v1.15）。"""
+
+    # 每个板块最多列 N 条；超出显示「另有 N 条」。24 条论文全列出来会让人无从下手。
+    max_items_per_section: int = 10
+
+
 class VerifySettings(BaseModel):
     """到期验证参数（设计方案 §10.2.2 / v1.9，全部可调）。"""
 
@@ -170,6 +177,7 @@ class Settings(BaseSettings):
     llm: LLMSettings = Field(default_factory=LLMSettings)
     budget: BudgetSettings = Field(default_factory=BudgetSettings)
     pipeline: PipelineSettings = Field(default_factory=PipelineSettings)
+    brief: BriefSettings = Field(default_factory=BriefSettings)
     verify: VerifySettings = Field(default_factory=VerifySettings)
     signals: SignalSettings = Field(default_factory=SignalSettings)
     output: OutputSettings = Field(default_factory=OutputSettings)
@@ -237,6 +245,10 @@ class SourceConfig(BaseModel):
     availability: Availability = "always"
     weight: float = 1.0
     rate_limit: str = "1/1s"
+    # v1.15：时间语义三态。
+    # event=published_at（HN/RSS）；state=last_seen_at（Trending）；
+    # discovery=first_seen_at（arXiv/HF，索引滞后，关心"今天新发现了什么"）。
+    time_semantics: Literal["event", "state", "discovery"] = "event"
     feeds: list[FeedConfig] = Field(default_factory=list)
 
     def is_available(self, env: Mapping[str, str] | None = None) -> bool:
@@ -268,6 +280,14 @@ class SourcesConfig(BaseModel):
 
     def enabled_sources(self) -> dict[str, SourceConfig]:
         return {name: cfg for name, cfg in self.sources.items() if cfg.enabled}
+
+    def state_sources(self) -> set[str]:
+        """状态型源名称（窗口过滤用 `last_seen_at`，见设计方案 §5.13）。"""
+        return {name for name, cfg in self.sources.items() if cfg.time_semantics == "state"}
+
+    def discovery_sources(self) -> set[str]:
+        """发现型源名称（窗口过滤用 `first_seen_at`，v1.15）。"""
+        return {name for name, cfg in self.sources.items() if cfg.time_semantics == "discovery"}
 
 
 def interpolate_env(text: str) -> str:

@@ -8,11 +8,15 @@ from datetime import UTC, datetime, timedelta
 
 from sqlmodel import Session
 
-from aipulse.core.config import RunMode, load_settings
+from aipulse.core.config import RunMode, Settings, load_settings
 from aipulse.core.timeutil import today_local
+from aipulse.llm.base import NullLLM
 from aipulse.pipeline.daily import analyze_day, run_daily
+from aipulse.reasoning.brief import generate_brief
+from aipulse.schema.items import RawItem, SourceEnum
 from aipulse.store.db import engine_for, init_db
 from aipulse.store.models import Item, Prediction, Signal
+from aipulse.store.repo_items import list_items_in_window, upsert_items
 
 
 def _seed(db_path):
@@ -334,8 +338,8 @@ def test_run_daily_off_mode_does_not_call_predictor(monkeypatch, tmp_path):
 def _seed_windowed(db_path):
     """窗口内 1 条 + 窗口外 1 条。
 
-    窗口按 `collected_at` 过滤（不是 published_at）——窗口语义是"本次运行采集到的"，
-    所以这里必须差的是 collected_at。
+    窗口按源的时间语义过滤：trending 是状态型（`last_seen_at`），事件型看 `published_at`。
+    这里同时把 collected_at / published_at / last_seen_at 设为同一值，三种口径一致。
     """
     engine = init_db(db_path)
     now = datetime.now(tz=UTC)
@@ -355,6 +359,7 @@ def _seed_windowed(db_path):
                     summary=title,
                     collected_at=collected,
                     published_at=collected,
+                    last_seen_at=collected,
                     metrics={"stars_total": 10},
                     seen_in=["github_trending"],
                     content_hash=chash,
@@ -438,3 +443,78 @@ def test_meta_analysis_entities_key_is_explicit(monkeypatch, tmp_path):
     assert "entities" not in result.analysis
     assert result.meta["signals"]["min_window_hours"] == 6.0
     assert "insufficient" in result.meta["signals"]
+
+
+def test_brief_keeps_trending_item_for_three_consecutive_days(tmp_path):
+    """★ v1.14 日报级回归：连续三天采到同一个在榜项目，三天简报都必须包含它。
+
+    这是 REA 消失问题的核心防线：旧实现把 trending 当事件型源，第二天就被窗口滑掉。
+    """
+    db = tmp_path / "t.db"
+    engine = init_db(db)
+    base = datetime(2026, 10, 15, 9, 0, tzinfo=UTC)
+    repo = RawItem(
+        source=SourceEnum.GITHUB_TRENDING,
+        external_id="morluto/rea",
+        title="morluto/rea",
+        url="https://github.com/morluto/rea",
+        summary="REA agent",
+        published_at=base - timedelta(hours=2),
+        metrics={"stars_total": 1234},
+    )
+    settings = Settings(mode=RunMode.OFF, llm={"api_key": ""})
+
+    try:
+        for offset in range(3):
+            collect_at = base + timedelta(days=offset)
+            with Session(engine) as session:
+                upsert_items(session, [repo], now=collect_at)
+                window = (collect_at - timedelta(hours=24), collect_at + timedelta(hours=1))
+                items = list_items_in_window(
+                    session,
+                    since=window[0],
+                    until=window[1],
+                    state_sources={"github_trending"},
+                )
+                out = asyncio.run(
+                    generate_brief(
+                        client=NullLLM(),
+                        settings=settings,
+                        items=items,
+                        topics=[],
+                        entity_counts={},
+                        day=collect_at.date(),
+                        mode=RunMode.OFF,
+                    )
+                )
+            titles = {item.title for item in out.items.values()}
+            assert "morluto/rea" in titles, f"第 {offset + 1} 天简报丢了持续在榜项目"
+    finally:
+        engine.dispose()
+
+
+def test_analyze_day_includes_late_indexed_paper_on_first_seen_day(tmp_path):
+    """v1.15：4 天前发表、今天才被索引的论文必须进今天的日报（discovery）。"""
+    db = tmp_path / "t.db"
+    engine = init_db(db)
+    now = datetime.now(tz=UTC)
+    paper = RawItem(
+        source=SourceEnum.ARXIV,
+        external_id="2610.88888",
+        title="Late indexed paper",
+        url="arxiv:2610.88888",
+        published_at=now - timedelta(days=4),
+    )
+    try:
+        with Session(engine) as session:
+            upsert_items(session, [paper], now=now)
+            stats = analyze_day(
+                session,
+                day=today_local(),
+                window=(now - timedelta(hours=24), now + timedelta(minutes=5)),
+                state_sources=set(),
+                discovery_sources={"arxiv"},
+            )
+        assert stats["items"] == 1
+    finally:
+        engine.dispose()

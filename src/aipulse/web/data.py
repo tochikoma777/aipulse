@@ -47,6 +47,8 @@ def _item_dict(item: Item) -> dict[str, Any]:
         "seen_in": item.seen_in or [item.source],
         "topic_id": item.topic_id,
         "published_at": item.published_at.isoformat() if item.published_at else "",
+        "last_seen_at": item.last_seen_at.isoformat() if item.last_seen_at else "",
+        "streak_days": int((item.metrics or {}).get("streak_days") or 0),
     }
 
 

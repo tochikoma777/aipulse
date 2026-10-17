@@ -20,9 +20,9 @@ from sqlmodel import Session
 from aipulse.analysis.cluster import cluster_items
 from aipulse.analysis.entities import build_entity_rows, count_entities
 from aipulse.analysis.score import score_items
-from aipulse.analysis.signals import build_signals_summary
+from aipulse.analysis.signals import build_signals_summary, trending_streak_days
 from aipulse.analysis.stats import PredictionStats, compute_prediction_stats
-from aipulse.core.config import RunMode, Settings, load_settings
+from aipulse.core.config import RunMode, Settings, load_settings, load_sources
 from aipulse.core.logging import get_logger
 from aipulse.core.timeutil import day_window, today_local, utcnow, window_since
 from aipulse.llm.base import LLMClient, build_client
@@ -44,7 +44,7 @@ from aipulse.store.repo_items import (
     apply_hot_scores,
     apply_topic_ids,
     list_entities,
-    list_items_collected,
+    list_items_in_window,
     list_signals,
     list_topics,
     upsert_entities,
@@ -99,18 +99,34 @@ def analyze_day(
     *,
     day: date,
     window: tuple[datetime, datetime] | None = None,
+    state_sources: set[str] | None = None,
+    discovery_sources: set[str] | None = None,
 ) -> dict[str, Any]:
     """打分 + 聚类 + 实体统计，落库。返回本次运行的落库增量统计。
 
     `window` 为 None 时退回 `day_window(day)`（本地自然日，CLI `analyze --date` 用）；
     `daily` 必须显式传入与 collect 共用的滚动窗口。
 
+    窗口过滤按源的时间语义分流（v1.15 三态）：event 看 `published_at`，
+    state 看 `last_seen_at`，discovery 看 `first_seen_at`（arXiv/HF 索引滞后）。
+
     注意口径：`new_entity_mention_rows` 是**本次运行新增的实体提及行数**，不是当日实体总数——
     同一天内同一实体的重复提及会被 `upsert_entities` 去重（这是对的），
     所以同一天第二次运行时该值会显著变小。要看"当日实体总览"请查库（Web `/topics` 就是这么做的）。
     """
     start, end = window if window is not None else day_window(day)
-    items = list_items_collected(session, since=start, until=end)
+    sources_cfg = load_sources()
+    states = sources_cfg.state_sources() if state_sources is None else state_sources
+    discoveries = (
+        sources_cfg.discovery_sources() if discovery_sources is None else discovery_sources
+    )
+    items = list_items_in_window(
+        session,
+        since=start,
+        until=end,
+        state_sources=states,
+        discovery_sources=discoveries,
+    )
     if not items:
         log.warning("pipeline.analyze.empty", day=day.isoformat())
         return {"items": 0, "scored": 0, "topics": 0, "new_entity_mention_rows": 0}
@@ -125,18 +141,33 @@ def analyze_day(
     entity_rows = build_entity_rows(items, day=day)
     n_entities = upsert_entities(session, entity_rows)
 
+    # ★ 状态型源附带信号：连续在榜 N 天（比单日热度更能说明"真火"）。
+    #   写入 metrics 是为了让渲染层零额外查询即可展示，并随 daily.json 留档。
+    state_items = 0
+    for item in items:
+        if item.source not in states:
+            continue
+        streak = trending_streak_days(session, item, anchor=day)
+        if streak > 0:
+            item.metrics = {**(item.metrics or {}), "streak_days": streak}
+            state_items += 1
+    if state_items:
+        session.commit()
+
     log.info(
         "pipeline.analyze.done",
         items=len(items),
         scored=len(scores),
         topics=len(topics),
         new_entity_mention_rows=n_entities,
+        state_items=state_items,
     )
     return {
         "items": len(items),
         "scored": len(scores),
         "topics": len(topics),
         "new_entity_mention_rows": n_entities,
+        "state_items": state_items,
     }
 
 
@@ -245,10 +276,17 @@ async def run_daily(
     #   定时在北京 07:00 跑时窗口只重叠约 7 小时（实测当天 analysis.items=1），
     #   日报实际只覆盖 7 小时而不是"过去 24 小时"。
     window = window_since(since)
+    sources_cfg = load_sources()
+    state_sources = sources_cfg.state_sources()
+    discovery_sources = sources_cfg.discovery_sources()
 
     collected: CollectResult | None = None
     if not no_collect:
         collected = await run_collect(since=since, window=window, db_path=str(target_db))
+        # 状态型源的 `last_seen_at` 是"本次采集时刻"，必然晚于采集前算出的 window.until
+        # （采集耗时几十秒）。不把右界推到采集结束，trending 条目会被自己的窗口过滤掉。
+        # 事件型源不受影响（它们的 published_at 早已固定）。
+        window = (window[0], max(window[1], utcnow()))
 
     analysis: dict[str, Any] = {}
     brief_out: BriefOutput | None = None
@@ -258,11 +296,23 @@ async def run_daily(
     signals_summary: dict[str, Any] = {}
     # expire_on_commit=False：提交后实例属性不过期，session 关闭后仍可安全渲染 items
     with Session(engine, expire_on_commit=False) as session:
-        analysis = analyze_day(session, day=report_day, window=window)
+        analysis = analyze_day(
+            session,
+            day=report_day,
+            window=window,
+            state_sources=state_sources,
+            discovery_sources=discovery_sources,
+        )
 
         # 简报与预言的条目也取自同一个窗口，否则"分析过的"和"拿去生成预言的"不是一批
         start, end = window
-        items = list_items_collected(session, since=start, until=end)
+        items = list_items_in_window(
+            session,
+            since=start,
+            until=end,
+            state_sources=state_sources,
+            discovery_sources=discovery_sources,
+        )
         topics = list_topics(session, report_day)
         entity_rows = list_entities(session, report_day)
         entity_counts = count_entities(entity_rows)
@@ -340,6 +390,7 @@ async def run_daily(
     meta["verify"] = verify_summary
     meta["predictions"] = _stats_digest(pred_stats)
     meta["prediction_generation"] = predict_summary
+    meta["brief"] = {"max_items_per_section": settings.brief.max_items_per_section}
     meta["signals"] = {
         "entities": signals_summary.get("entity_count", 0),
         "points": signals_summary.get("point_count", 0),
@@ -356,7 +407,11 @@ async def run_daily(
         date=report_day.isoformat(),
         files={
             "brief.md": render_markdown(
-                brief_out.brief, brief_out.items, meta, generated_at=generated_at
+                brief_out.brief,
+                brief_out.items,
+                meta,
+                generated_at=generated_at,
+                max_items_per_section=settings.brief.max_items_per_section,
             ),
             "daily.json": render_json(
                 brief_out.brief, brief_out.items, meta, generated_at=generated_at

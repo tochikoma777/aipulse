@@ -97,10 +97,18 @@ def ensure_schema(db_path: str | Path) -> None:
     """确保库文件与表结构就绪（CLI 之外的入口，如 pipeline 直跑时用）。
 
     优先走 alembic（与 `aipulse init` 一致）；alembic.ini 缺失时退化为 create_all。
+
+    **已有库也必须升级**：Actions 会从 cache 恢复旧版 SQLite，若只判断"items 表存在"
+    就返回，新加的列（如 `first_seen_at`）永远补不上。带 `alembic_version` 的库执行
+    `upgrade head`（幂等）；由测试 `create_all` 建出的库没有版本表，跳过（模型已是最新）。
     """
     path = Path(db_path)
-    if path.exists() and "items" in table_names(path):
-        return
+    if path.exists():
+        names = table_names(path)
+        if "items" in names:
+            if "alembic_version" in names:
+                migrate_to_head(path)
+            return
     try:
         migrate_to_head(path)
     except StoreError:

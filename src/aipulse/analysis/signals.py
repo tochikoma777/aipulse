@@ -8,11 +8,12 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import date, datetime, timedelta
 from typing import Any
 
 from sqlmodel import Session
 
+from aipulse.core.timeutil import DEFAULT_TZ, to_local, today_local
 from aipulse.store.models import Item, Signal
 from aipulse.store.repo_items import signals_for_entity
 
@@ -60,6 +61,40 @@ def velocity_for_item(session: Session, item: Item) -> float | None:
         return None
     entity_type, entity_key, metric = key
     return velocity_per_hour(signals_for_entity(session, entity_type, entity_key, metric))
+
+
+def trending_streak_days(
+    session: Session,
+    item: Item,
+    *,
+    anchor: date | None = None,
+    tz_name: str = DEFAULT_TZ,
+) -> int:
+    """「连续在榜 N 天」：按 signals 快照的本地日期倒推连续天数。
+
+    只看状态型 repo 信号（`github_trending` → `repo/stars`）。`anchor` 默认今天；
+    最新快照必须正好落在 anchor，否则返回 0（说明今天已掉榜/未采到）。
+    同一自然日多次运行只算一天，符合"连续在榜"的直觉。
+    """
+    key = item_signal_key(item)
+    if key is None or key[0] != "repo":
+        return 0
+    rows = signals_for_entity(session, *key)
+    if not rows:
+        return 0
+    days = sorted({to_local(row.ts, tz_name).date() for row in rows})
+    end = anchor or today_local(tz_name)
+    if days[-1] < end:
+        return 0
+    streak = 0
+    expected = end
+    for day in reversed(days):
+        if day == expected:
+            streak += 1
+            expected -= timedelta(days=1)
+        elif day < expected:
+            break
+    return streak
 
 
 @dataclass
@@ -189,6 +224,7 @@ __all__ = [
     "SignalSeries",
     "build_signals_summary",
     "item_signal_key",
+    "trending_streak_days",
     "velocity_for_item",
     "velocity_per_hour",
 ]

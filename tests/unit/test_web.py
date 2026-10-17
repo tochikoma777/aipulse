@@ -268,6 +268,94 @@ def test_home_renders_latest_report(tmp_path):
     assert "built-in method" not in html
 
 
+def test_home_renders_unified_format(tmp_path):
+    """Web 与 brief.md 复用同一套结构：头条来源、分条总览、四节点评、五列表格。"""
+    reports = tmp_path / "reports"
+    day = today_local().isoformat()
+    target = reports.joinpath(*day.split("-"))
+    target.mkdir(parents=True, exist_ok=True)
+    (target / "daily.json").write_text(
+        json.dumps(
+            {
+                "date": day,
+                "headline": "推理框架进入工程化决战",
+                "headline_item_id": "a",
+                "overview_bullets": [
+                    {"icon": "🛠️", "topic": "开源", "text": "vLLM 连续霸榜"},
+                ],
+                "executive_summary": "工程编排成为新战场。",
+                "editor_note": {
+                    "core": "核心判断",
+                    "cross_signal": "交叉信号",
+                    "counterintuitive": "反直觉",
+                    "risk": "风险",
+                },
+                "sections": [
+                    {"name": "开源项目", "summary": "", "item_ids": ["a", "b"]},
+                    {"name": "产业与新闻", "summary": "", "item_ids": []},
+                ],
+                "comments": [],
+                "contradictions": [],
+                "underrated": [],
+                "stats": {},
+                "items": {
+                    "a": {
+                        "id": "a",
+                        "source": "github_trending",
+                        "title": "vLLM v1",
+                        "url": "https://example.com/a",
+                        "summary": "推理加速",
+                        "hot_score": 91.2,
+                        "streak_days": 3,
+                        "seen_in": ["github_trending"],
+                    },
+                    "b": {
+                        "id": "b",
+                        "source": "github_trending",
+                        "title": "LinkSwift",
+                        "url": "https://example.com/b",
+                        "summary": "网盘直链",
+                        "hot_score": 70.0,
+                        "seen_in": ["github_trending"],
+                    },
+                },
+                "meta": {
+                    "mode": "hybrid",
+                    "analysis": {"items": 2, "topics": 1},
+                    "brief": {"max_items_per_section": 1},
+                },
+            },
+            ensure_ascii=False,
+        ),
+        encoding="utf-8",
+    )
+    (target / "meta.json").write_text(
+        json.dumps(
+            {
+                "mode": "hybrid",
+                "analysis": {"items": 2, "topics": 1},
+                "brief": {"max_items_per_section": 1},
+            },
+            ensure_ascii=False,
+        ),
+        encoding="utf-8",
+    )
+
+    html = _client(tmp_path, reports=reports).get("/").text
+
+    assert "🔗 来源：github_trending · <a" in html or "🔗 来源" in html
+    assert "https://example.com/a" in html
+    assert "🛠️ <strong>开源</strong>：vLLM 连续霸榜" in html
+    for heading in ("🎯 核心判断", "🔍 交叉信号", "🔄 反直觉", "⚠️ 风险提醒"):
+        assert heading in html
+    assert "连续 3 天" in html
+    assert "另有 1 条未展示" in html
+    assert "LinkSwift" not in html  # 超出上限的条目不在首屏，但有数量提示
+    assert "产业与新闻" not in html  # 空板块不渲染
+    assert "为什么重要" in html and "立场" in html
+    assert "—" in html  # 未生成增强字段的占位
+
+
 def test_archive_lists_and_selects_days(tmp_path):
     reports = tmp_path / "reports"
     older = (today_local() - timedelta(days=3)).isoformat()

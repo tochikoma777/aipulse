@@ -2,16 +2,19 @@
 
 from __future__ import annotations
 
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, date, datetime, timedelta
 
 import pytest
+from sqlmodel import Session
 
 from aipulse.analysis.signals import (
     MIN_VELOCITY_WINDOW_HOURS,
     build_signals_summary,
     item_signal_key,
+    trending_streak_days,
     velocity_per_hour,
 )
+from aipulse.store.db import init_db
 from aipulse.store.models import Item, Signal
 
 
@@ -145,3 +148,59 @@ def test_cold_start_is_distinct_from_insufficient():
     single = build_signals_summary([_signal(100.0, 0.0)])["series"][0]
     assert single["status"] == "cold_start"
     assert build_signals_summary([_signal(100.0, 0.0)])["cold_start"] == 1
+
+
+def test_trending_streak_days_counts_consecutive_local_days(tmp_path):
+    """v1.14：连续在榜天数由 signals 快照的本地日期倒推（同日多次只算一天）。"""
+    engine = init_db(tmp_path / "a.db")
+    try:
+        with Session(engine) as session:
+            for day in (15, 16, 17):
+                session.add(
+                    Signal(
+                        entity_type="repo",
+                        entity_key="morluto/rea",
+                        metric="stars",
+                        value=1000.0 + day,
+                        ts=datetime(2026, 10, day, 2, 0, tzinfo=UTC),  # 北京 10:00，同一本地日
+                    )
+                )
+            # 同一天再跑一次不增加天数
+            session.add(
+                Signal(
+                    entity_type="repo",
+                    entity_key="morluto/rea",
+                    metric="stars",
+                    value=2000.0,
+                    ts=datetime(2026, 10, 17, 6, 0, tzinfo=UTC),
+                )
+            )
+            session.commit()
+
+            item = Item(id="i", source="github_trending", external_id="morluto/rea")
+            assert trending_streak_days(session, item, anchor=date(2026, 10, 17)) == 3
+            # 17 号没采到 → 不能把历史连续天数算成"仍在榜"
+            assert trending_streak_days(session, item, anchor=date(2026, 10, 18)) == 0
+    finally:
+        engine.dispose()
+
+
+def test_trending_streak_days_breaks_on_gap(tmp_path):
+    engine = init_db(tmp_path / "a.db")
+    try:
+        with Session(engine) as session:
+            for day in (15, 17):
+                session.add(
+                    Signal(
+                        entity_type="repo",
+                        entity_key="org/gap",
+                        metric="stars",
+                        value=1.0,
+                        ts=datetime(2026, 10, day, 2, 0, tzinfo=UTC),
+                    )
+                )
+            session.commit()
+            item = Item(id="i", source="github_trending", external_id="org/gap")
+            assert trending_streak_days(session, item, anchor=date(2026, 10, 17)) == 1
+    finally:
+        engine.dispose()

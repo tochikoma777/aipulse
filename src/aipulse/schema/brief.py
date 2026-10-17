@@ -1,8 +1,13 @@
-"""每日简报的结构化模型（设计方案 §10.1）。
+"""每日简报的结构化模型（设计方案 §10.1 / §11.1、v1.14 格式规范）。
 
 `DailyBrief` 既是 LLM 结构化输出的契约（structured.py 用它做 JSON Schema 校验），
 也是渲染层（render/markdown.py、render/json_out.py）的输入。
 `date` 与 `stats` 由代码填充（LLM 不生成），其余字段来自 LLM 或 off 档的数据版降级。
+
+v1.14 格式契约：
+- `headline_item_id`：头条对应的真实条目，渲染层据此输出来源/标题/链接/平台/热度；
+- `overview_bullets[]`：总览必须分条，每条一个图标 + 小标题 + 一句话；
+- `editor_note`：四个固定字段，渲染成 🎯 / 🔍 / 🔄 / ⚠️ 四节。
 """
 
 from __future__ import annotations
@@ -10,7 +15,24 @@ from __future__ import annotations
 from datetime import date as date_type
 from typing import Any
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
+
+
+class OverviewBullet(BaseModel):
+    """总览中的一条：一个主题图标 + 小标题 + 一句话。"""
+
+    icon: str = "📌"
+    topic: str = ""
+    text: str = ""
+
+
+class EditorNote(BaseModel):
+    """主编点评的四个固定小节（v1.14：从一整段改为结构化四节）。"""
+
+    core: str = ""  # 🎯 核心判断
+    cross_signal: str = ""  # 🔍 交叉信号
+    counterintuitive: str = ""  # 🔄 反直觉
+    risk: str = ""  # ⚠️ 风险提醒
 
 
 class ItemComment(BaseModel):
@@ -39,13 +61,26 @@ class DailyBrief(BaseModel):
 
     date: date_type | None = None
     headline: str = ""  # 今日一句话头条
-    executive_summary: str = ""  # 3-5 句总览
+    headline_item_id: str = ""  # 头条对应的真实条目 id（渲染来源块）
+    overview_bullets: list[OverviewBullet] = Field(default_factory=list)
+    executive_summary: str = ""  # 一句话总览（bullet 之外的收束句）
     sections: list[Section] = Field(default_factory=list)
-    editor_note: str = ""  # ★ 主编点评：整体判断、交叉信号、反直觉观察
+    editor_note: EditorNote = Field(default_factory=EditorNote)
     contradictions: list[str] = Field(default_factory=list)  # 今日信息中的矛盾之处
     underrated: list[str] = Field(default_factory=list)  # 被低估、热度不高但值得关注
     comments: list[ItemComment] = Field(default_factory=list)
     stats: dict[str, Any] = Field(default_factory=dict)
+
+    @model_validator(mode="before")
+    @classmethod
+    def _coerce_editor_note(cls, data: Any) -> Any:
+        """兼容 v1.13 及以前的字符串 `editor_note`（旧报告 / 旧测试）。"""
+        if not isinstance(data, dict):
+            return data
+        note = data.get("editor_note")
+        if isinstance(note, str):
+            return {**data, "editor_note": EditorNote(core=note)}
+        return data
 
     def item_ids(self) -> list[str]:
         """所有被纳入板块的条目 id（有序）。"""
@@ -68,4 +103,12 @@ def brief_from_dict(data: dict[str, Any], *, date: date_type | None = None) -> D
     return DailyBrief.model_validate({**data, "date": date})
 
 
-__all__ = ["DailyBrief", "ItemComment", "ItemComments", "Section", "brief_from_dict"]
+__all__ = [
+    "DailyBrief",
+    "EditorNote",
+    "ItemComment",
+    "ItemComments",
+    "OverviewBullet",
+    "Section",
+    "brief_from_dict",
+]

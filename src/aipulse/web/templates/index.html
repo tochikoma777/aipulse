@@ -3,7 +3,19 @@
 {% block content %}
 
 {% if daily %}
+  {% set items = daily.get('items') or {} %}
+  {% set comments = daily.get('comments') or [] %}
+  {% set section_icons = {'开源项目': '🛠️', '论文与研究': '📄', '社区舆论': '💬', '产业与新闻': '🏢'} %}
+  {% set max_per = (meta.get('brief') or {}).get('max_items_per_section', 10) %}
+  {% set headline = items.get(daily.headline_item_id) if daily.headline_item_id else none %}
+
   <h1>{{ daily.headline or (day ~ ' 日报') }}</h1>
+  {% if headline %}
+  <p class="headline-source">
+    🔗 来源：{{ headline.source }} · <a href="{{ headline.url }}" target="_blank" rel="noopener">{{ headline.title }}</a><br>
+    🏷️ <code>{{ headline.source }}</code> · 🔥 热度 {{ headline.hot_score }}
+  </p>
+  {% endif %}
   <p class="meta">
     {{ day }}
     {% if meta.mode %} · 模式 <code>{{ meta.mode }}</code>{% endif %}
@@ -13,11 +25,31 @@
     {% if meta.signals %} · 信号实体 {{ meta.signals['entities'] }}（可算增速 {{ meta.signals['with_velocity'] }}）{% endif %}
   </p>
 
-  {% if daily.executive_summary %}<p class="lede">{{ daily.executive_summary }}</p>{% endif %}
-
-  {% if daily.editor_note %}
+  {% if daily.overview_bullets %}
   <section class="card">
-    <h2>主编点评</h2>
+    <h2>📋 {{ '今日构成' if meta.mode == 'off' else '总览' }}</h2>
+    <ul class="overview">
+      {% for b in daily.overview_bullets %}
+        <li>{{ b.icon or '📌' }} <strong>{{ b.topic }}</strong>：{{ b.text }}</li>
+      {% endfor %}
+    </ul>
+    {% if daily.executive_summary %}<p class="lede">一句话：{{ daily.executive_summary }}</p>{% endif %}
+  </section>
+  {% elif daily.executive_summary %}
+  <p class="lede">{{ daily.executive_summary }}</p>
+  {% endif %}
+
+  {% if daily.editor_note is mapping %}
+  <section class="card editor-note">
+    <h2>✍️ 主编点评</h2>
+    {% for icon, title, field in [('🎯', '核心判断', 'core'), ('🔍', '交叉信号', 'cross_signal'), ('🔄', '反直觉', 'counterintuitive'), ('⚠️', '风险提醒', 'risk')] %}
+      <h3>{{ icon }} {{ title }}</h3>
+      <p>{{ daily.editor_note[field] or '—' }}</p>
+    {% endfor %}
+  </section>
+  {% elif daily.editor_note %}
+  <section class="card">
+    <h2>✍️ 主编点评</h2>
     <p>{{ daily.editor_note }}</p>
   </section>
   {% endif %}
@@ -33,36 +65,50 @@
   </section>
   {% endif %}
 
-  {% set items = daily.get('items') or {} %}
-  {% set comments = daily.get('comments') or [] %}
   {% for section in daily.get('sections') or [] %}
     {% if section.item_ids %}
+    {% set ns_sec = namespace(total=0) %}
+    {% for iid in section.item_ids %}{% if iid in items %}{% set ns_sec.total = ns_sec.total + 1 %}{% endif %}{% endfor %}
     <section class="card">
-      <h2>{{ section.name }}</h2>
+      <h2>{{ section_icons.get(section.name, '🧩') }} {{ section.name }}</h2>
       {% if section.summary %}<p class="section-summary">{{ section.summary }}</p>{% endif %}
-      <ol class="items">
-        {% for iid in section.item_ids %}
+      <table class="items-table">
+        <thead>
+          <tr>
+            <th>{{ '项目' if section.name == '开源项目' else '标题' }}</th>
+            <th class="num">热度</th>
+            <th>要点</th>
+            <th>为什么重要</th>
+            <th>立场</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for iid in section.item_ids[:max_per] %}
           {% set item = items.get(iid) %}
           {% if item %}
-          <li>
-            <a href="{{ item.url }}" target="_blank" rel="noopener">{{ item.title }}</a>
-            <span class="tag">{{ item.source }}</span>
-            <span class="hot">热度 {{ item.hot_score }}</span>
-            {% if item.seen_in and item.seen_in|length > 1 %}
-              <span class="tag">跨源 {{ item.seen_in|join(' / ') }}</span>
-            {% endif %}
-            {% if item.summary %}<p class="summary">{{ item.summary }}</p>{% endif %}
-            {% for c in comments %}{% if c.item_id == iid %}
-              <p class="comment">
-                {% if c.one_liner %}<strong>一句话</strong>：{{ c.one_liner }}{% endif %}
-                {% if c.why_it_matters %}<br><strong>为什么重要</strong>：{{ c.why_it_matters }}{% endif %}
-                {% if c.what_to_watch %}<br><strong>下一步关注</strong>：{{ c.what_to_watch }}{% endif %}
-              </p>
-            {% endif %}{% endfor %}
-          </li>
+          {% set ns = namespace(comment=none) %}
+          {% for c in comments if c.item_id == iid %}{% set ns.comment = c %}{% endfor %}
+          <tr>
+            <td>
+              <a href="{{ item.url }}" target="_blank" rel="noopener">{{ item.title }}</a>
+              {% if item.seen_in and item.seen_in|length > 1 %}
+                <span class="tag">跨源 {{ item.seen_in|join(' / ') }}</span>
+              {% endif %}
+            </td>
+            <td class="num">
+              {{ item.hot_score }}{% if item.streak_days and item.streak_days >= 2 %} · 连续 {{ item.streak_days }} 天{% endif %}
+            </td>
+            <td>{% if ns.comment and ns.comment.one_liner %}{{ ns.comment.one_liner }}{% elif item.summary %}{{ item.summary }}{% else %}{{ item.title|truncate(40, True, '…') }}{% endif %}</td>
+            <td>{% if ns.comment and ns.comment.why_it_matters %}{{ ns.comment.why_it_matters }}{% else %}—{% endif %}</td>
+            <td>{% if ns.comment and ns.comment.stance %}{{ ns.comment.stance }}{% else %}—{% endif %}</td>
+          </tr>
           {% endif %}
         {% endfor %}
-      </ol>
+        </tbody>
+      </table>
+      {% if ns_sec.total > max_per %}
+        <p class="muted">另有 {{ ns_sec.total - max_per }} 条未展示（完整列表见归档）</p>
+      {% endif %}
     </section>
     {% endif %}
   {% endfor %}
@@ -71,13 +117,13 @@
   <section class="card two-col">
     {% if daily.get('contradictions') %}
     <div>
-      <h2>今日矛盾</h2>
+      <h2>⚔️ 今日矛盾</h2>
       <ul>{% for line in daily.contradictions %}<li>{{ line }}</li>{% endfor %}</ul>
     </div>
     {% endif %}
     {% if daily.get('underrated') %}
     <div>
-      <h2>被低估</h2>
+      <h2>💎 被低估</h2>
       <ul>{% for line in daily.underrated %}<li>{{ line }}</li>{% endfor %}</ul>
     </div>
     {% endif %}

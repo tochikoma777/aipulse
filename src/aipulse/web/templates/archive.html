@@ -28,9 +28,22 @@
       {% if meta.llm %} · LLM 调用 {{ meta.llm['calls'] }}{% if meta.llm['degraded'] %}（已降级）{% endif %}{% endif %}
     </p>
     {% if daily.headline %}<p class="lede">{{ daily.headline }}</p>{% endif %}
-    {% if daily.executive_summary %}<p>{{ daily.executive_summary }}</p>{% endif %}
-    {% if daily.editor_note %}
-      <section class="card"><h2>主编点评</h2><p>{{ daily.editor_note }}</p></section>
+    {% if daily.overview_bullets %}
+      <ul class="overview">
+        {% for b in daily.overview_bullets %}<li>{{ b.icon or '📌' }} <strong>{{ b.topic }}</strong>：{{ b.text }}</li>{% endfor %}
+      </ul>
+    {% elif daily.executive_summary %}
+      <p>{{ daily.executive_summary }}</p>
+    {% endif %}
+    {% if daily.editor_note is mapping %}
+      <section class="card editor-note">
+        <h2>✍️ 主编点评</h2>
+        {% for icon, title, field in [('🎯', '核心判断', 'core'), ('🔍', '交叉信号', 'cross_signal'), ('🔄', '反直觉', 'counterintuitive'), ('⚠️', '风险提醒', 'risk')] %}
+          <h3>{{ icon }} {{ title }}</h3><p>{{ daily.editor_note[field] or '—' }}</p>
+        {% endfor %}
+      </section>
+    {% elif daily.editor_note %}
+      <section class="card"><h2>✍️ 主编点评</h2><p>{{ daily.editor_note }}</p></section>
     {% endif %}
 
     {% set items = daily.get('items') or {} %}

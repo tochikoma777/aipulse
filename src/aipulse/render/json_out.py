@@ -21,6 +21,9 @@ def _item_dict(item: Item) -> dict[str, Any]:
         "topic_id": item.topic_id,
         "seen_in": item.seen_in or [],
         "published_at": item.published_at.isoformat() if item.published_at else None,
+        "last_seen_at": item.last_seen_at.isoformat() if item.last_seen_at else None,
+        "metrics": item.metrics or {},
+        "streak_days": int((item.metrics or {}).get("streak_days") or 0),
         "language": item.language,
     }
 
@@ -36,8 +39,10 @@ def render_json(
     payload: dict[str, Any] = {
         "date": brief.date.isoformat() if brief.date else None,
         "headline": brief.headline,
+        "headline_item_id": brief.headline_item_id,
+        "overview_bullets": [b.model_dump() for b in brief.overview_bullets],
         "executive_summary": brief.executive_summary,
-        "editor_note": brief.editor_note,
+        "editor_note": brief.editor_note.model_dump(),
         "contradictions": brief.contradictions,
         "underrated": brief.underrated,
         "sections": [

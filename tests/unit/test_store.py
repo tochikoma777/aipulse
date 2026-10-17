@@ -125,3 +125,29 @@ def test_ensure_schema_creates_missing_parent_dir(tmp_path):
 
     assert db.exists()
     assert table_names(db) >= EXPECTED_TABLES
+
+
+def test_ensure_schema_upgrades_existing_alembic_db(tmp_path):
+    """Actions cache 恢复的旧库必须自动 upgrade，而不是"items 表存在"就跳过。
+
+    模拟 v1.14 的库：版本停在 c4e8b1a72f90，且没有 first_seen_at 列。
+    """
+    import sqlite3
+
+    db = tmp_path / "cached.db"
+    migrate_to_head(db)
+    con = sqlite3.connect(db)
+    con.execute("DROP INDEX ix_items_first_seen_at")
+    con.execute("ALTER TABLE items DROP COLUMN first_seen_at")
+    con.execute("UPDATE alembic_version SET version_num = 'c4e8b1a72f90'")
+    con.commit()
+    con.close()
+
+    ensure_schema(db)
+
+    con = sqlite3.connect(db)
+    columns = {row[1] for row in con.execute("PRAGMA table_info(items)")}
+    version = con.execute("SELECT version_num FROM alembic_version").fetchone()[0]
+    con.close()
+    assert "first_seen_at" in columns
+    assert version == "d5a2c9b81e34"

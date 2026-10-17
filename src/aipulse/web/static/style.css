@@ -80,6 +80,13 @@ tbody tr:hover { background: var(--wash); }
   color: #3c424a; font-size: 13.5px;
 }
 .section-summary { color: #3c424a; font-size: 14px; }
+.headline-source { margin: 2px 0 10px; color: #3c424a; font-size: 14px; }
+.overview { margin: 0 0 8px; padding-left: 20px; }
+.overview > li { margin: 4px 0; }
+.editor-note h3 { font-size: 14px; margin: 14px 0 4px; }
+.editor-note p { margin: 0 0 6px; color: #3c424a; }
+.items-table td:first-child { min-width: 180px; }
+.items-table td:nth-child(2) { white-space: nowrap; }
 
 .chips { display: flex; flex-wrap: wrap; gap: 8px; }
 .chip {

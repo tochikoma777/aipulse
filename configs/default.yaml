@@ -40,6 +40,10 @@ pipeline:
   auto_verify: true
   weekly_debate_enabled: true
 
+# 简报呈现（v1.15）：每板块最多 N 条，超出显示「另有 N 条」
+brief:
+  max_items_per_section: 10
+
 # 到期验证（M3b，设计方案 §10.2.2 / §10.2.3 v1.9）
 verify:
   grace_days: 7                    # 证据不足时的重试窗口（due_date 后再等 N 天）

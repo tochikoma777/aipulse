@@ -8,10 +8,11 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping, Sequence
+from collections.abc import Collection, Mapping, Sequence
 from datetime import date, datetime
-from typing import Any
+from typing import Any, cast
 
+from sqlalchemy import and_, or_
 from sqlmodel import Session, select
 
 from aipulse.core.hashing import content_hash, cross_source_key, short_hash, simhash64
@@ -50,6 +51,8 @@ def to_item_model(raw: RawItem, *, now: datetime | None = None) -> Item:
         author=raw.author,
         published_at=raw.normalized_published_at(),
         collected_at=collected,
+        first_seen_at=collected,
+        last_seen_at=collected,
         language=raw.language,
         tags=list(raw.tags),
         metrics=metrics,
@@ -77,6 +80,12 @@ def upsert_items(
         # 已存在：合并 seen_in / 指标 / 摘要，不覆盖发布时间（保留首次观测）
         seen = set(existing.seen_in or []) | set(model.seen_in or [])
         existing.seen_in = sorted(seen)
+        # ★ 状态型源的关键：只要本次仍被采到就刷新 last_seen_at（无条件，不做 max 比较）。
+        #   事件型源的 published_at 保持首次观测，不受影响。
+        existing.last_seen_at = model.last_seen_at
+        # ★ discovery 语义（arXiv/HF）：first_seen_at 绝不覆盖——同一篇论文即使连续多天
+        #   出现在回看结果里，也只在"首次发现那天"进入日报一次。
+        #   （新行由 to_item_model 设置，这里对已存在行不做任何操作。）
         for key, value in model.metrics.items():
             current = (existing.metrics or {}).get(key)
             if current is None or (isinstance(value, (int, float)) and value > current):
@@ -183,7 +192,7 @@ def list_items_collected(
     until: datetime | None = None,
     limit: int | None = None,
 ) -> list[Item]:
-    """按 `collected_at` 时间窗取条目（本日采集的条目，含 arXiv 回看窗口内的旧文）。"""
+    """按 `collected_at` 时间窗取条目（Web 兜底视图用，不用于日报窗口）。"""
     stmt = select(Item)
     if since is not None:
         stmt = stmt.where(Item.collected_at >= since)
@@ -192,6 +201,65 @@ def list_items_collected(
     stmt = stmt.order_by(Item.collected_at.desc())  # type: ignore[attr-defined]
     if limit is not None:
         stmt = stmt.limit(limit)
+    return list(session.exec(stmt).all())
+
+
+def list_items_in_window(
+    session: Session,
+    *,
+    since: datetime,
+    until: datetime,
+    state_sources: Collection[str] = (),
+    discovery_sources: Collection[str] = (),
+) -> list[Item]:
+    """按源的时间语义取窗口内条目（设计方案 §5.13 / v1.15 三态）。
+
+    - `event`：`published_at` 落在 `[since, until)`（HN / RSS，发布时间不滞后）；
+    - `state`：`last_seen_at` 落在 `[since, until)`（Trending，只要本次还在榜）；
+    - `discovery`：`first_seen_at` 落在 `[since, until)`（arXiv / HF，索引滞后 3-4 天，
+      关心"今天新发现了什么"；首次发现后即使再次采到也不会重复出现）。
+
+    `state_sources` / `discovery_sources` 来自 `configs/sources.yaml::time_semantics`；
+    其余源按 `event` 处理。
+    """
+    states = set(state_sources)
+    discoveries = set(discovery_sources)
+    excluded = states | discoveries
+    stmt = select(Item)
+    if not excluded:
+        stmt = stmt.where(Item.published_at >= since, Item.published_at < until)
+    else:
+        # SQLModel 的类属性在 mypy 眼里是 str/datetime，运行时才是列表达式（沿用仓库里的 cast 收口）
+        source_col = cast(Any, Item.source)
+        last_seen = cast(Any, Item.last_seen_at)
+        first_seen = cast(Any, Item.first_seen_at)
+        published = cast(Any, Item.published_at)
+        clauses = []
+        if states:
+            clauses.append(
+                and_(
+                    source_col.in_(states),
+                    last_seen >= since,
+                    last_seen < until,
+                )
+            )
+        if discoveries:
+            clauses.append(
+                and_(
+                    source_col.in_(discoveries),
+                    first_seen >= since,
+                    first_seen < until,
+                )
+            )
+        clauses.append(
+            and_(
+                source_col.notin_(excluded),
+                published >= since,
+                published < until,
+            )
+        )
+        stmt = stmt.where(or_(*clauses))
+    stmt = stmt.order_by(Item.published_at.desc())  # type: ignore[attr-defined]
     return list(session.exec(stmt).all())
 
 

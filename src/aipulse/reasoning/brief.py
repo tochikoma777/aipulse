@@ -19,7 +19,14 @@ from aipulse.core.logging import get_logger
 from aipulse.llm.base import ChatMessage, LLMClient
 from aipulse.llm.prompt import render_prompt
 from aipulse.llm.structured import generate_structured
-from aipulse.schema.brief import DailyBrief, ItemComment, ItemComments, Section
+from aipulse.schema.brief import (
+    DailyBrief,
+    EditorNote,
+    ItemComment,
+    ItemComments,
+    OverviewBullet,
+    Section,
+)
 from aipulse.store.models import Item, Topic
 from aipulse.utils.text import estimate_tokens, truncate_summary
 
@@ -34,6 +41,14 @@ _SOURCE_SECTION = {
     "reddit": "社区舆论",
     "rss": "产业与新闻",
     "inbox": "产业与新闻",
+}
+
+# 与 render/markdown.py 的图标体系保持一致（v1.14）
+_SECTION_ICONS = {
+    "开源项目": "🛠️",
+    "论文与研究": "📄",
+    "社区舆论": "💬",
+    "产业与新闻": "🏢",
 }
 
 _MAX_CONTEXT_TOKENS = 12000
@@ -94,6 +109,21 @@ def _data_brief(
         Section(name=s, item_ids=grouped.get(s, [])) for s in sections if grouped.get(s)
     ]
 
+    # v1.14：总览必须分条（每条一个主题图标 + 小标题 + 一句话），不再挤成一整段
+    bullets: list[OverviewBullet] = []
+    for section in section_models:
+        members = [it for it in items if it.id in set(section.item_ids)]
+        if not members:
+            continue
+        best = max(members, key=lambda it: float(it.hot_score or 0.0))
+        bullets.append(
+            OverviewBullet(
+                icon=_SECTION_ICONS.get(section.name, "🧩"),
+                topic=section.name,
+                text=f"{len(members)} 条；热度最高：{best.title}",
+            )
+        )
+
     top_entities = sorted(entity_counts.items(), key=lambda kv: -kv[1]["count"])[:10]
     source_counts: dict[str, int] = {}
     for it in items:
@@ -103,6 +133,8 @@ def _data_brief(
         f"今日共采集 {len(items)} 条，覆盖 {len(topics)} 个主题、{len(source_counts)} 个来源；"
         + (f"热度最高：{headline}。" if top else "")
     )
+    if not bullets:
+        bullets = [OverviewBullet(icon="📭", topic="今日无数据", text=summary)]
     stats: dict[str, Any] = {
         "total_items": len(items),
         "topics": len(topics),
@@ -114,9 +146,11 @@ def _data_brief(
     return DailyBrief(
         date=day,
         headline=headline,
+        headline_item_id=top.id if top else "",
+        overview_bullets=bullets,
         executive_summary=summary,
         sections=section_models,
-        editor_note="off 档：未启用 LLM，本简报为数据版（无点评）。",
+        editor_note=EditorNote(core="off 档：未启用 LLM，本简报为数据版（无点评）。"),
         contradictions=[],
         underrated=[],
         comments=[],

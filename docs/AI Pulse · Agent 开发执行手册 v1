@@ -1,6 +1,8 @@
-# AI Pulse · Agent 开发执行手册 v1.10
+# AI Pulse · Agent 开发执行手册 v1.15
 
-> 配套文档：`AI_Pulse_设计方案_v1.10.md`（设计 SSOT，v1.10）
+> **当前版本：v1.15**（窗口语义三态）。文内 `v1.x` 标注为该决策产生的版本，用于追溯。
+
+> 配套文档：`AI_Pulse_设计方案_v1.15.md`（设计 SSOT，v1.15）
 > **已确认决策清单（Agent 直接执行，无需再问）**
 >
 > v1.1：① 微信/X 彻底移除（改用 inbox 手动投喂）；② LLM 默认 DeepSeek；③ 命名 `aipulse`（AI 脉搏）+ 许可证 **MIT**；④ **里程碑重排：M4 = 发布与自动化，M5 = 周期长文与辩论**（任务卡顺序已对调）
@@ -71,7 +73,7 @@ uv add --dev ruff mypy pre-commit
 | 注释 | 复杂算法（打分、聚类、去重、Brier）必须写中文注释解释**为什么**这么算 |
 | 提交 | Conventional Commits；每个阶段结束打 tag（`m0`/`m1`/...） |
 
-### 0.3 二十二条红线（违反即返工）
+### 0.3 三十一条红线（违反即返工）
 
 1. ❌ 一次性生成整个项目——必须分阶段。
 2. ❌ 凭想象写字段解析——必须基于 `tests/fixtures/` 的真实响应。
@@ -95,6 +97,15 @@ uv add --dev ruff mypy pre-commit
 20. ❌ 凭印象写 `# type: ignore[...]` 错误码——mypy strict 下错误码猜错会报"未使用的 ignore"。用 `cast()` 或查准错误码。
 21. ❌ 实现 SMTP / Telegram / 飞书 / 桌面通知——v1.2/v1.10 明确只实现 `FileNotifier`，其余只登记为预留渠道。
 22. ❌ Web 页面产生任何写操作——只读，数据来自 SQLite 与 `daily.json`。
+23. ❌ 增强结果（为什么重要/中文概述）每次重算——**必须持久化**，同一条目不重复生成。不做持久化成本随天数线性增长。
+24. ❌ 对全量条目做 LLM 增强——只对 **Top N**（`brief.enhance_top_n`），尾部条目无人看。
+25. ❌ 中文概述对中文条目也生成——只对非中文条目，零成本省一半。
+26. ❌ collect 与 analyze 各自计算窗口——**必须共用同一个 window 对象**（v1.11 bug 的本质）。
+27. ❌ 把 GitHub Trending 当事件型源用 `published_at` 过滤——它是**状态型源**，必须用 `last_seen_at`，否则持续热门项目只出现一天就永久消失（v1.14）。
+28. ❌ 用 `published_at` 过滤 arXiv / HF——它们**索引滞后 3-4 天**，必须用 `discovery`（`first_seen_at`）。否则 `lookback_days:7` 采来的论文进不了日报，等于白采（v1.15）。
+29. ❌ 时间语义只写 event/state 两态——**必须是 event / state / discovery 三态**（v1.15）。
+30. ❌ 简报一个板块列 24 条——必须设 `brief.max_items_per_section`（默认 10），超出显示「另有 N 条」。
+31. ❌ 条目因字段缺失而省略整行——**表格列固定，空值显示 `—`**，这是"详略不一、排版混乱"的根源（v1.14）。
 
 ### 0.4 每个阶段结束 Agent 必须输出的验收报告格式
 
@@ -574,6 +585,14 @@ uv add --dev ruff mypy pre-commit
 | 34 | Actions 里不设 `AIPULSE_ENV=actions` | reddit/hf/importai 三个源永远不采集 | daily.yml env 必须带上 |
 | 35 | Actions 无持久化，signals 历史断档 | star 增速永远算不出来 | 报告 commit + cache 恢复 db + signals.json |
 | 36 | 记分板 0 样本时页面空白或报错 | 开源首日门面难看 | 空态："系统已运行 N 天，首批预言将于 X 日到期" |
+| 43 | 时间语义只分 event/state 两态 | arXiv 索引滞后，按 published_at 过滤会让采来的论文全部丢失 | 补第三态 discovery（用 first_seen_at） |
+| 44 | 一个板块列 24 条 | 让人无从下手，违背"帮你放弃大部分" | max_items_per_section（默认 10） |
+| 37 | yaml 里写死本该可覆盖的配置 | pydantic-settings 下 init kwargs 压过 env，AIPULSE_* 全线失效 | 环境开关用 ${ENV} 占位符，算法阈值留字面量 |
+| 38 | effective_mode 只查 api_key | 缺 base_url 时 daily 崩溃，违反红线 9 | api_key 与 base_url 缺任一即降级 off |
+| 39 | 主编点评走 strong 模型 | reasoner 不支持 json_schema/json_object → 每日降级 → 点评永远为空 | 轻任务走 fast（deepseek-chat） |
+| 40 | timeout 只在配置里写不透传 | llm.timeout_s:120 是死配置，实际吃 HttpClient 的 20s | 按 fast/strong 分档透传（strong 180s） |
+| 41 | Actions 报告用 pull --rebase | 同日重跑必然内容冲突 → 丢报告（报告即数据库） | git fetch + git reset --soft FETCH_HEAD |
+| 42 | 证据 id 只校验数量不校验存在 | 模型产出幻觉 id，污染记分板 | prompt 注入候选池 + 存在性校验（两层） |
 
 ---
 
@@ -597,8 +616,15 @@ uv add --dev ruff mypy pre-commit
 | 3 | M2 | ✅ tag `m2` | 打分/聚类 + 每日简报 | brief.md + 三档模式 | 180 |
 | 4 | M3a | ✅ tag `m3a` | 预言生成 + 拦截 + 手写预言 | openai 移除、覆盖率 94% | 229 |
 | 5 | M3b | ✅ tag `m3b` | 验证 + 统计 + 记分板 | **★ 预言系统闭环** | 272 |
-| 6 | **M4** | **← 当前** | **Actions 自动化 + Web + README** | **系统每天自动跑** | — |
-| 7 | M5 | 待做 | 周期长文 + 多角色辩论 | 2000+ 字长文 + 4 视角辩论 | — |
+| 6 | M4 | ✅ tag `m4`（已收口） | Actions + Web + README | hybrid 真实跑通、主编点评非空 | 319 |
+| 7 | **M6a** | **← 当前** | **格式规范化 + 修复快照型源 + 关注订阅** | brief.md 每日统一、REA 类项目不再消失 | — |
+| 8 | M6b | 待做 | 为什么重要 + 中文概述（LLM 增强） | 每条一句话判断 | — |
+| 9 | M6c | 待做 | 知识库（双库 + 读写 + 导出） | 沉淀成可消费的 Markdown | — |
+| 8 | M6b | 待做 | 知识库（双库 + 读写 + 导出） | 沉淀成可消费的 Markdown | — |
+| 10 | M5 | 待做（已让位 M6） | 周期长文 + 多角色辩论 | 2000+ 字长文 + 4 视角辩论 | — |
+
+> **★ v1.13 顺序调整**：M6（每日学习增强）插队到 M5 之前——它是项目负责人每天真在用的，
+> M5 是锦上添花且无等待期，任何时候做都能立刻见效。
 
 **v1.1 重排说明**：原 M4（长文/辩论）与原 M5（发布/自动化）对调。理由——预言记分板的价值只能靠时间沉淀，
 系统越早开始每天自动跑，30 天后那份"命中率 + 校准曲线"的成绩单越有说服力；而长文与辩论任何时候做都能立刻见效，晚做没有损失。

@@ -4,6 +4,8 @@ sources:
     availability: always          # v1.4：本地可采（不稳），Actions 亦可
     weight: 1.0
     rate_limit: "1/6h"
+    # v1.14：Trending 无发布时间，是"此刻是否在榜"的状态型源 → 按 last_seen_at 过滤
+    time_semantics: state
     windows: [daily, weekly]
     languages: [python, typescript, ""]
     fallback_search_api: true
@@ -11,6 +13,8 @@ sources:
 
   arxiv:
     enabled: true
+    # v1.15：索引滞后 3-4 天 → discovery（first_seen_at），否则 lookback_days 采了不用
+    time_semantics: discovery
     availability: always
     weight: 0.8
     rate_limit: "3/s"              # 硬限制，超限 503
@@ -22,6 +26,8 @@ sources:
 
   hf_papers:
     enabled: true
+    # v1.15：HF Daily Papers 同样有索引滞后 → discovery（first_seen_at）
+    time_semantics: discovery
     availability: actions_only    # v1.4：本地 DNS 被污染，仅 Actions 可采
     weight: 0.9
     rate_limit: "1/1s"
@@ -30,6 +36,7 @@ sources:
 
   hackernews:
     enabled: true
+    time_semantics: event
     availability: always
     weight: 0.85
     rate_limit: "10/1s"
@@ -40,6 +47,7 @@ sources:
 
   reddit:
     enabled: true
+    time_semantics: event
     availability: actions_only    # v1.4：本地不可达（DNS 污染 + TCP 不通），Actions 可采
     weight: 0.55                   # v1.2：RSS 模式无 score，降权
     mode: rss                      # rss（默认，免认证）| oauth（M1 仅留配置项，不实现）
@@ -48,6 +56,7 @@ sources:
 
   rss:
     enabled: true
+    time_semantics: event
     availability: always
     weight: 0.6
     rate_limit: "1/1s"
@@ -72,6 +81,7 @@ sources:
 
   inbox:
     enabled: true
+    time_semantics: event
     availability: always
     weight: 0.5
     rate_limit: "10/1s"

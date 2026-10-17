@@ -10,12 +10,12 @@ This file provides guidance to CodeBuddy Code when working with code in this rep
 
 `aipulse`（AI 脉搏）：每日采集 AI 领域热点，产出可回测的推演与预言。Python 3.11 + `uv`，SQLite 单文件存储，MIT。
 
-**里程碑状态（改动前先确认当前阶段）**：M0（骨架 + 数据源探测）、M1（6 采集器 + inbox + 三级去重）、M2（打分 / 聚类 / 实体 + LLM 抽象 + 简报）、**M3a / M3b（★ 预言生成 + 到期验证 + 命中率 / Brier / 校准度）**、**M4（Actions 自动化 + Web 看板 + README 发布）** 均已完成（tag `m0` / `m1` / `m2` / `m3a` / `m3b`）；**当前下一阶段是 M5**（周期长文 `trend` + 多角色辩论 `debate`）。M5 的入口已留好：`prompts/trend/` 与 `prompts/debate/` 是空目录，`cli/commands/{trend,debate}.py` 是占位（`reasoning/` 下目前**没有** trend / debate 模块，M5 才从零建）。不要跨阶段实现。
+**里程碑状态（改动前先确认当前阶段）**：M0（骨架 + 数据源探测）、M1（6 采集器 + inbox + 三级去重）、M2（打分 / 聚类 / 实体 + LLM 抽象 + 简报）、**M3a / M3b（★ 预言生成 + 到期验证 + 命中率 / Brier / 校准度）**、**M4（Actions 自动化 + Web 看板 + README 发布）** 均已完成（tag `m0` / `m1` / `m2` / `m3a` / `m3b`）；**M6a（快照型源修复 + 简报格式规范化）已于 2026-10-17 完成**。**当前下一阶段是 M6b（「为什么重要」等 LLM 增强，尚未开工）；M5（周期长文 + 多角色辩论）继续后置**。M5 的入口已留好：`prompts/trend/` 与 `prompts/debate/` 是空目录，`cli/commands/{trend,debate}.py` 是占位（`reasoning/` 下目前**没有** trend / debate 模块）。不要跨阶段实现。
 
 已实现的 CLI：`init` / `doctor` / `collect` / `analyze` / `brief` / `daily` / `predict`（`add` / `list` / `verify` / `review`）/ `stats`（`stats --predictions`）/ **`serve`（M4 只读看板）** / **`inbox`（`add` / `add-file` / `list`，v1.1 手动投喂通道）**。
 `src/aipulse/cli/commands/` 下其余子应用（`normalize`/`debate`/`trend`/`topics`/`search`/`sources`）仍是 `placeholder_app()` 生成的占位，调用时抛 `NotImplementedError`。它们出现在 `--help` 里是刻意的，不是漏实现。其中 `sources` 占位**不影响加源**：增删 RSS/Atom 源改 `configs/sources.yaml` 即可（见「采集器六条约定」末段）。
 
-**M4 已落地的东西（改之前先看这里，别重复造）**：`src/aipulse/web/` 是完整的只读看板（FastAPI + Jinja2 + HTMX，见模块表）；`cli/commands/serve.py` 是真实现；`.github/workflows/` 三个工作流——`ci.yml`（push/PR：ruff + format + mypy + pytest）、`probe.yml`（手动数据源探测）、**`daily.yml`（每天 23:00 UTC 跑 `aipulse daily` 并 commit `data/reports`）**。`scripts/cron_daily.sh` 是 WSL 本地 cron 备份入口。
+**M4 已落地的东西（改之前先看这里，别重复造）**：`src/aipulse/web/` 是完整的只读看板（FastAPI + Jinja2 + HTMX，见模块表）；`cli/commands/serve.py` 是真实现；`.github/workflows/` 三个工作流——`ci.yml`（push/PR：ruff + format + mypy + pytest）、`probe.yml`（手动数据源探测）、**`daily.yml`（每天 00:00 UTC = 北京 08:00 跑 `aipulse daily` 并 commit `data/reports`；提交前先 `fetch` + `soft reset`，同日重跑不会因历史分叉冲突）**。`scripts/cron_daily.sh` 是 WSL 本地 cron 备份入口。
 
 **看板代码的三条铁律**：① `web/data.py` 用 `mode=ro` URI 打开 SQLite，写操作会直接抛错（红线 22 已变成可执行断言）；② 模板里取 dict 一律用**下标** `meta.analysis['items']`——Jinja 的 `foo.bar` 先取属性，`.items` 会命中 `dict.items` 方法本身（踩过）；③ 数据只读 SQLite 与 `data/reports/*.json`，不额外持久化任何东西。
 
@@ -81,10 +81,10 @@ scripts/cron_daily.sh                                 # 本地 cron 备份（日
 CI（`.github/workflows/ci.yml`，无 secrets）实际只跑 4 步：`ruff check .` → `ruff format --check .` → `mypy src/aipulse` → `pytest`（**没有覆盖率门禁**，覆盖率是本地基线，不达标不会挂 CI）。`.github/workflows/probe.yml` 是手动触发的探测，不在 CI 链上。
 
 ```bash
-uv run pytest                             # 全量（当前 313 条，约 60s，无需网络、无需密钥）
+uv run pytest                             # 全量（当前 338 条，约 60s，无需网络、无需密钥）
 uv run pytest tests/unit/test_dedup.py                      # 单文件
 uv run pytest "tests/unit/test_dedup.py::test_l2_merges_arxiv_and_hf_same_paper" -q  # 单用例
-uv run pytest -q --cov=aipulse --cov-report=term            # 覆盖率：collectors/ ≥80%、openai_compat ≥80%、TOTAL 89%
+uv run pytest -q --cov=aipulse --cov-report=term            # 覆盖率：collectors/ ≥80%、openai_compat ≥80%、TOTAL 90%
 
 uv run ruff check .                       # lint（line-length=100，select=E,F,I,UP,B,SIM）
 uv run ruff format --check .              # 格式检查
@@ -117,7 +117,9 @@ uv run alembic upgrade head                            # 正式建表/演进走 
 
 `store/db.py::ensure_schema()` 会在库或 `items` 表缺失时自动 `upgrade head`（alembic.ini 缺失时退化为 `create_all`），pipeline 直跑入口已内置，不要绕过它手写建表。
 
-当前迁移链（3 个，head = `a3c1d9f2e07b`）：`85f7b6d0e84d` init_schema → `8db72036d522` add_items_skip_cluster → `a3c1d9f2e07b` add_llm_usage_error。
+当前迁移链（5 个，head = `d5a2c9b81e34`）：`85f7b6d0e84d` init_schema → `8db72036d522` add_items_skip_cluster → `a3c1d9f2e07b` add_llm_usage_error → `c4e8b1a72f90` add_items_last_seen_at → `d5a2c9b81e34` add_items_first_seen_at（存量均用 `collected_at` 回填）。
+
+窗口过滤按 `configs/sources.yaml::time_semantics` 三态分流：`event`=published_at（HN/RSS）、`state`=last_seen_at（Trending）、`discovery`=first_seen_at（arXiv/HF，索引滞后）。
 
 ---
 
@@ -363,7 +365,7 @@ hot_score = 100 * clamp( w_engagement*engagement_norm        # Σ coeff*log1p(me
 - M3a 预言单测：`test_prediction_schema.py`（Pydantic 校验 / 模糊措辞）、`test_predictor.py`（生成 + 一次重写 + 丢弃记账）、`test_predict_cli.py`（`predict add` 双模交互 + 幂等）。
 - M4 单测：`test_web.py`（`TestClient` 打 5 个页面 + **只读断言**：直接对看板 engine 发 DELETE 必须被 SQLite 拒绝；0 样本空态文案；报告 JSON 损坏时的降级；`serve` 用 monkeypatch 的假 `uvicorn.run` 验端口）、`test_signals.py`（`build_signals_summary` 的增速 / 冷启动 / 排序）、`test_verdicts_render.py`、`test_daily.py`（新增 `scoreboard.md`/`signals.json` 落盘与 meta 摘要）。
 - inbox CLI 单测（`test_inbox_cli.py`）：`add` 正常入库 / **抓不到标题也保留条目**（标题退化为 URL，断网契约）/ 重复投喂幂等 / `add-file` 批量导入 / `list` 空态与展示。
-- 覆盖率基线（M4 实测）：`web/app` 95% / `web/data` 92% / `web/charts` 100% / `render/verdicts`·`render/predictions` 100% / `pipeline/daily` 93% / `cli/commands/inbox` 98% / **TOTAL 89%**。
+- 覆盖率基线（M6a 实测）：`web/app` 95% / `web/data` 92% / `web/charts` 100% / `render/verdicts`·`render/predictions` 100% / `render/markdown` 91% / `pipeline/daily` 92% / `cli/commands/inbox` 98% / **TOTAL 90%**。
 
 ---
 
@@ -385,6 +387,8 @@ hot_score = 100 * clamp( w_engagement*engagement_norm        # Σ coeff*log1p(me
 | `docs/模型使用策略_保守版.md` | 开发期模型分档策略（简单任务用 Flash、关键节点用 strong）；核心约定是"减少轮次比降档位更省" |
 
 `configs/scoring.yaml` 的打分权重与 `cluster` 段已被 M2 实际读取（engagement / freshness / velocity / source_weight / cold_start / title_only_weight / cluster），调权重改配置即可，不要改代码。
+
+> `docs/简报格式规范.md` 与 `docs/REA消失诊断_快照型源设计修正.md` 目前是**未跟踪的 M6a 设计稿**（`git status` 可见），代码尚未实现；不要把它们当成当前 M5 的现状依据。
 
 ---
 
@@ -417,4 +421,4 @@ hot_score = 100 * clamp( w_engagement*engagement_norm        # Σ coeff*log1p(me
 | `AIPULSE_ROOT` 指向临时目录 | 找不到 `alembic.ini` → `ensure_schema()` 回落 `create_all`。做隔离演示库时要**先跑一次 `daily`/`ensure_schema` 建表再插数据**，否则 `no such table` |
 | **测试里改 `AIPULSE_ROOT` 会连带打断 prompts/configs** | `prompts_dir()` 与 `load_scoring` / `load_entities` 都按 `project_root()` 解析，root 一改就读不到 `prompts/**.j2` → `FileNotFoundError`。**要跑「会调 LLM」的用例，别改 root**，改成注入 `Settings(app={"data_dir": str(tmp_path / "data")}, ...)` 并 monkeypatch `daily.load_settings`（见 `test_run_daily_hybrid_generates_and_stores_predictions`）|
 | **`daily` 曾经完全不生成预言（M4 补齐）** | `mode: hybrid` 的定义是预言生成 + 主编点评，但 M2/M3a 只把 `brief` 接进了 daily → **配了 key 记分板样本也不会增长**。已补 `_generate_daily_predictions()` 与 `predictions.md`。改档位相关逻辑前先确认这条路径还在 |
-| **全新 clone 下建库失败（Actions 首跑实测）** | `data/` 目录在仓库里不存在（只被 .gitignore 覆盖）→ `migrate_to_head()` 把 `sqlite:///<abs>` 交给 alembic 时父目录缺失，报 `unable to open database file`。已修：该函数里先 `target.parent.mkdir(parents=True, exist_ok=True)`（`engine_for()` 早有这行）。**本地复用旧目录会掩盖这类问题——要验就删掉 `data/` 再跑** |
+| **干净目录下建库失败（Actions 首跑实测）** | 早期 `data/` 不在仓库里（只被 .gitignore 覆盖）→ `migrate_to_head()` 把 `sqlite:///<abs>` 交给 alembic 时父目录缺失，报 `unable to open database file`。已修：该函数里先 `target.parent.mkdir(parents=True, exist_ok=True)`（`engine_for()` 早有这行）。**`data/reports/**` 现在已入库，验证建库时不要直接删 `data/`（会丢掉历史日报）——改用临时 `AIPULSE_ROOT`，或只移走 `data/*.db`** |

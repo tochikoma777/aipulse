@@ -1,7 +1,11 @@
-"""每日简报 Markdown 渲染（设计方案 §11）。
+"""每日简报 Markdown 渲染（设计方案 §11 / v1.14 简报格式规范）。
 
-产物 `brief.md`：顶部元信息块 + 头条 + 总览 + 主编点评 + 分板块条目 + 矛盾/被低估 +
-末尾固定「本次运行模式」与数据声明。
+固定结构（每日一致，不因字段缺失漂移）：
+🔭 标题 → ⚡ 头条（含来源块）→ 📋 分条总览 → ✍️ 四节主编点评 →
+分板块表格（空值 `—`）→ ⚔️ 矛盾点 → 💎 被低估 → 页脚。
+
+**表格列固定**是"详略不一"的根治手段：没有增强字段的条目也保留整行，
+`为什么重要` / `立场` 显示 `—`，不允许省略行导致结构漂移。
 """
 
 from __future__ import annotations
@@ -9,10 +13,26 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Any
 
+from aipulse.core.timeutil import DEFAULT_TZ, ensure_utc, to_local
 from aipulse.schema.brief import DailyBrief, ItemComment
+from aipulse.schema.items import SourceEnum
 from aipulse.store.models import Item
+from aipulse.utils.text import truncate_summary
 
 _DATA_DISCLAIMER = "数据声明：仅存储标题、摘要与公开指标，均标注来源与原链接，不做全文转载。"
+
+_SECTION_ICONS = {
+    "开源项目": "🛠️",
+    "论文与研究": "📄",
+    "社区舆论": "💬",
+    "产业与新闻": "🏢",
+}
+_EDITOR_SECTIONS = (
+    ("🎯", "核心判断", "core"),
+    ("🔍", "交叉信号", "cross_signal"),
+    ("🔄", "反直觉", "counterintuitive"),
+    ("⚠️", "风险提醒", "risk"),
+)
 
 
 def _mode_label(mode: str) -> str:
@@ -23,28 +43,62 @@ def _mode_label(mode: str) -> str:
     }.get(mode, mode)
 
 
-def _comment_block(comment: ItemComment | None) -> str:
-    if comment is None:
-        return ""
-    lines = [f"- **一句话**：{comment.one_liner}"] if comment.one_liner else []
-    if comment.why_it_matters:
-        lines.append(f"- **为什么重要**：{comment.why_it_matters}")
-    if comment.who_cares:
-        lines.append(f"- **对谁重要**：{comment.who_cares}")
-    if comment.what_to_watch:
-        lines.append(f"- **下一步关注**：{comment.what_to_watch}")
-    if comment.stance:
-        lines.append(f"- **立场**：{comment.stance}")
-    return "\n".join(lines)
+def _source_label(source: str) -> str:
+    try:
+        return SourceEnum(source).display_name
+    except ValueError:
+        return source or "—"
 
 
-def _item_line(item: Item) -> str:
-    title = item.title or "(无标题)"
-    url = item.url or ""
+def _cell(text: str | None, default: str = "—") -> str:
+    """表格单元格：转义竖线、压平换行，空值固定用 `—`（保持列数不变）。"""
+    value = " ".join(str(text or "").split())
+    if not value:
+        return default
+    return value.replace("|", "\\|")
+
+
+def _short(text: str | None, limit: int = 60) -> str:
+    return _cell(truncate_summary(str(text or ""), limit))
+
+
+def _comment_for(comments: dict[str, ItemComment], item_id: str) -> ItemComment | None:
+    return comments.get(item_id)
+
+
+def _resolve_headline_item(brief: DailyBrief, items: dict[str, Item]) -> Item | None:
+    """头条必须落到一个真实条目上；LLM 没给 id 时用同标题/最高热度兜底。"""
+    if brief.headline_item_id and brief.headline_item_id in items:
+        return items[brief.headline_item_id]
+    for item in items.values():
+        if item.title and item.title == brief.headline:
+            return item
+    return max(items.values(), key=lambda it: float(it.hot_score or 0.0), default=None)
+
+
+def _heat_cell(item: Item) -> str:
     hot = round(float(item.hot_score or 0.0), 1)
-    link = f"[{title}]({url})" if url else title
-    seen = f" · 来源 {','.join(item.seen_in or [item.source])}" if item.seen_in else ""
-    return f"- {link} `[{item.source}]` 热度 {hot}{seen}"
+    text = f"{hot:.1f}"
+    if hot >= 85:
+        text += " 🔥"
+    streak = int((item.metrics or {}).get("streak_days") or 0)
+    if streak >= 2:
+        text += f" · 连续 {streak} 天"
+    return text
+
+
+def _time_label(generated_at: datetime | None, tz_name: str) -> str:
+    if generated_at is None:
+        return "—"
+    return to_local(ensure_utc(generated_at), tz_name).strftime("%Y-%m-%d %H:%M")
+
+
+def _counts(meta: dict[str, Any], brief: DailyBrief) -> tuple[Any, Any]:
+    analysis = meta.get("analysis")
+    if isinstance(analysis, dict) and analysis.get("items") is not None:
+        return analysis.get("items"), analysis.get("topics", 0)
+    stats = brief.stats or {}
+    return stats.get("total_items", "—"), stats.get("topics", "—")
 
 
 def render_markdown(
@@ -53,66 +107,127 @@ def render_markdown(
     meta: dict[str, Any],
     *,
     generated_at: datetime | None = None,
+    max_items_per_section: int = 10,
 ) -> str:
     mode = str(meta.get("mode", "off"))
     date_str = brief.date.isoformat() if brief.date else ""
-    out: list[str] = [f"# AI 脉搏日报 · {date_str}", ""]
+    raw_win = meta.get("window")
+    win: dict[str, Any] = raw_win if isinstance(raw_win, dict) else {}
+    tz_name = str(win.get("tz") or DEFAULT_TZ)
+    total_items, total_topics = _counts(meta, brief)
 
-    ts = generated_at.isoformat() if generated_at else ""
-    out.append(f"> 生成时间：{ts} · 运行模式：{_mode_label(mode)}")
-    # ★ 窗口是滚动 24h，跨两个自然日，不写清楚会让人以为漏采了半天
-    win = meta.get("window")
-    if isinstance(win, dict) and win.get("since_local"):
+    out: list[str] = [f"# 🔭 AI 脉搏日报 · {date_str}", ""]
+    out.append(
+        f"> 🕐 生成 {_time_label(generated_at, tz_name)}（{tz_name}）"
+        f" · 🤖 模式 {_mode_label(mode)}"
+        f" · 📊 {total_items} 条 / {total_topics} 主题"
+    )
+    if win.get("since_local"):
         out.append(
-            f"> 覆盖窗口：{win['since_local']} → {win['until_local']}"
-            f"（{win.get('tz', '')}，约 {win.get('hours', '?')} 小时）"
+            f"> ⏱ 覆盖窗口：{win['since_local']} → {win['until_local']}"
+            f"（约 {win.get('hours', '?')} 小时）"
         )
-    stats = brief.stats or {}
-    if stats.get("total_items") is not None:
-        out.append(f"> 条目 {stats['total_items']} · 主题 {stats.get('topics', 0)}")
     out.append("")
 
+    # ── ⚡ 今日头条：标题 + 来源 / 标题 / 链接 / 平台标签 / 热度 ──────────
+    out += ["## ⚡ 今日头条", ""]
     if brief.headline:
-        out += ["## 今日头条", "", f"**{brief.headline}**", ""]
+        out += [f"### {brief.headline}", ""]
+    headline_item = _resolve_headline_item(brief, items)
+    if headline_item is not None:
+        title = headline_item.title or "(无标题)"
+        url = headline_item.url or ""
+        linked = f"[{title}]({url})" if url else title
+        out.append(f"🔗 来源：{_source_label(headline_item.source)} · {linked}")
+        hot = round(float(headline_item.hot_score or 0.0), 1)
+        out.append(f"🏷️ `{headline_item.source or '—'}` · 🔥 热度 {hot:.1f}")
+    else:
+        out.append("🔗 来源：— · —")
+        out.append("🏷️ — · 🔥 热度 —")
+    out.append("")
 
-    if brief.executive_summary:
-        out += ["## 总览", "", brief.executive_summary, ""]
+    # ── 📋 总览：分条（图标 + 小标题 + 一句话）──────────────────────────
+    # off 档的 bullet 是"各板块条数/最高热度"的目录，不是判断 → 标题改为「今日构成」
+    overview_title = "今日构成" if mode == "off" else "总览"
+    out += [f"## 📋 {overview_title}", ""]
+    bullets = brief.overview_bullets
+    if bullets:
+        for bullet in bullets:
+            out.append(f"- {bullet.icon or '📌'} **{_cell(bullet.topic)}**：{_cell(bullet.text)}")
+    else:
+        out.append(f"- 📌 **今日概览**：{_cell(brief.executive_summary)}")
+    duplicate = (
+        bool(bullets)
+        and brief.executive_summary
+        and len(bullets) == 1
+        and bullets[0].text == brief.executive_summary
+    )
+    if brief.executive_summary and not duplicate:
+        out += ["", f"> **一句话**：{_cell(brief.executive_summary)}"]
+    out.append("")
 
-    if brief.editor_note:
-        out += ["## 主编点评", "", brief.editor_note, ""]
+    # ── ✍️ 主编点评：固定四节（缺字段也保留小节，显示 —）────────────────
+    out += ["## ✍️ 主编点评", ""]
+    note = brief.editor_note
+    for icon, title, field in _EDITOR_SECTIONS:
+        out += [f"### {icon} {title}", _cell(getattr(note, field)), ""]
 
     comments = {c.item_id: c for c in brief.comments}
+    # ── 分板块：固定五列表格 ─────────────────────────────────────────
     for section in brief.sections:
-        out += [f"## {section.name}", ""]
+        section_items = [items[iid] for iid in section.item_ids if iid in items]
+        if not section_items:
+            continue  # 空板块不渲染空标题（LLM 偶尔会返回空 item_ids）
+        out += [f"## {_SECTION_ICONS.get(section.name, '🧩')} {section.name}", ""]
         if section.summary:
-            out += [f"_{section.summary}_", ""]
-        for item_id in section.item_ids:
-            item = items.get(item_id)
-            if item is None:
-                continue
-            out.append(_item_line(item))
-            comment = comments.get(item_id)
-            if comment is not None:
-                block = _comment_block(comment)
-                if block:
-                    out.append(block)
+            out += [f"_{_cell(section.summary)}_", ""]
+        first_col = "项目" if section.name == "开源项目" else "标题"
+        limit = max(0, max_items_per_section)
+        out.append(f"| {first_col} | 热度 | 要点 | 为什么重要 | 立场 |")
+        out.append("|---|---|---|---|---|")
+        for item in section_items[:limit]:
+            comment = _comment_for(comments, item.id)
+            title = _cell(item.title or "(无标题)")
+            title_cell = f"[{title}]({item.url})" if item.url else title
+            if comment and comment.one_liner:
+                one_liner = comment.one_liner
+            elif item.summary:
+                one_liner = item.summary
+            else:
+                # 无摘要时回退标题前缀，避免「要点」列出现无信息量的 —
+                one_liner = item.title
+            out.append(
+                "| "
+                + " | ".join(
+                    [
+                        title_cell,
+                        _heat_cell(item),
+                        _short(one_liner),
+                        _cell(comment.why_it_matters if comment else ""),
+                        _cell(comment.stance if comment else ""),
+                    ]
+                )
+                + " |"
+            )
+        if len(section_items) > limit:
+            out += ["", f"_另有 {len(section_items) - limit} 条未展示（完整列表见 daily.json）_"]
         out.append("")
 
     if brief.contradictions:
-        out += ["## 矛盾点", ""]
-        out += [f"- {c}" for c in brief.contradictions]
+        out += ["## ⚔️ 矛盾点", ""]
+        out += [f"{idx}. {_cell(line)}" for idx, line in enumerate(brief.contradictions, 1)]
         out.append("")
 
     if brief.underrated:
-        out += ["## 被低估", ""]
-        out += [f"- {u}" for u in brief.underrated]
+        out += ["## 💎 被低估", ""]
+        out += [f"- {_cell(line)}" for line in brief.underrated]
         out.append("")
 
     out += ["---", ""]
-    out.append(f"本次运行模式：{_mode_label(mode)}")
     if meta.get("degraded"):
-        out.append(f"降级说明：{meta.get('degraded_reason', '部分 LLM 环节已降级')}")
-    out.append(_DATA_DISCLAIMER)
+        out.append(f"> 降级说明：{meta.get('degraded_reason', '部分 LLM 环节已降级')}")
+        out.append("")
+    out.append(f"<sub>🤖 运行模式 {_mode_label(mode)} · 📄 {_DATA_DISCLAIMER}</sub>")
     out.append("")
     return "\n".join(out)
 
