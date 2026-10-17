@@ -1,20 +1,21 @@
 {
   "mode": "hybrid",
   "day": "2026-10-17",
-  "generated_at": "2026-10-17T02:53:29.930121+00:00",
+  "generated_at": "2026-10-17T07:47:08.307060+00:00",
   "window": {
-    "since": "2026-10-16T02:52:44.625605+00:00",
-    "until": "2026-10-17T02:52:44.625605+00:00",
+    "since": "2026-10-16T07:46:22.187513+00:00",
+    "until": "2026-10-17T07:46:29.784720+00:00",
     "hours": 24.0,
-    "since_local": "2026-10-16T10:52+08:00",
-    "until_local": "2026-10-17T10:52+08:00",
+    "since_local": "2026-10-16T15:46+08:00",
+    "until_local": "2026-10-17T15:46+08:00",
     "tz": "Asia/Shanghai"
   },
   "analysis": {
-    "items": 165,
-    "scored": 165,
-    "topics": 4,
-    "new_entity_mention_rows": 3
+    "items": 174,
+    "scored": 174,
+    "topics": 5,
+    "new_entity_mention_rows": 20,
+    "state_items": 13
   },
   "llm": {
     "degraded": false,
@@ -22,10 +23,10 @@
     "calls": 1
   },
   "collect": {
-    "ok_sources": 6,
-    "failed_sources": 1,
+    "ok_sources": 7,
+    "failed_sources": 0,
     "skipped": 0,
-    "total_items": 67
+    "total_items": 128
   },
   "verify": {
     "verified": 0,
@@ -45,17 +46,20 @@
   },
   "prediction_generation": {
     "mode": "hybrid",
-    "generated": 5,
-    "inserted": 5,
+    "generated": 0,
+    "inserted": 0,
     "dropped": [],
     "llm_calls": 1
   },
+  "brief": {
+    "max_items_per_section": 10
+  },
   "signals": {
-    "entities": 141,
-    "points": 617,
+    "entities": 142,
+    "points": 639,
     "with_velocity": 19,
     "insufficient": 118,
-    "cold_start": 4,
+    "cold_start": 5,
     "min_window_hours": 6.0
   }
 }

@@ -1,124 +1,106 @@
-# AI 脉搏日报 · 2026-10-17
+# 🔭 AI 脉搏日报 · 2026-10-17
 
-> 生成时间：2026-10-17T02:53:29.930165+00:00 · 运行模式：hybrid（仅主编点评）
-> 覆盖窗口：2026-10-16T10:52+08:00 → 2026-10-17T10:52+08:00（Asia/Shanghai，约 24.0 小时）
+> 🕐 生成 2026-10-17 15:47（Asia/Shanghai） · 🤖 模式 hybrid（仅主编点评） · 📊 174 条 / 5 主题
+> ⏱ 覆盖窗口：2026-10-16T15:46+08:00 → 2026-10-17T15:46+08:00（约 24.0 小时）
 
-## 今日头条
+## ⚡ 今日头条
 
-**Claude 破解 ECDSA 曲线种子来源，密码学信任根基被 AI 撬动**
+### Claude 被用来反推 ECDSA 曲线种子来源，AI 从写代码工具变成密码学取证工具，这是今天最实质的能力跃迁
 
-## 总览
+🔗 来源：Hacker News · [Claude reveals ECDSA curve origins](https://www.anthropic.com/research/ecdsa-curve-origins)
+🏷️ `hackernews` · 🔥 热度 92.6
 
-今日最重的一击来自密码学：Claude 参与揭示 ECDSA 曲线参数的真实来源，这不是普通论文，而是对「可信参数」这一安全基石的直接冲击。研究侧则被智能体彻底占领——FDE-Gym、OpenGCUA、MAI-Gym、Terminal-RSI、Mosaic、MLExpert 集中出现，主题从「能不能做」转向「交付最后一公里」和「自我进化」。开源社区同样围绕 Claude Code 做工程化外溢：求职框架、代码评审方法论、CLI 原生化。整体信号是：模型能力叙事退潮，脚手架、评测与可信性成为新战场。
+## 📋 总览
 
-## 主编点评
+- 🔐 **密码学取证**：Claude 参与揭示 ECDSA 曲线参数来源（seeds solved），把大模型用于可验证的密码学推理，而非生成内容，这是能力边界的一次真实外扩。
+- 🤖 **智能体工程化**：FDE-Gym、MAI-Gym、OpenGCUA、Terminal-RSI、Mosaic 集中出现，说明研究重心已从“模型会不会做”转向“交付现场能不能跑通、能不能自我迭代”。
+- 🛠️ **Claude 生态**：Anthropic 官方插件目录、ECC、superpowers、scientific-agent-skills 同日上榜，Claude Code 正在从工具变成一个有官方与第三方分层的外挂生态。
+- 📄 **空间与视频**：RoTA-Bench、MJev-Spatial、OmniCompass、3DCodeVerse 扎堆，多模态评测正从“看懂视频”转向“能否支撑精确三维动作”。
+- 💬 **信任摩擦**：“我从未授权一个扫描我密钥的集成”登上热榜，与本地化 VoiceStudio、PS5 跑 llama.cpp 形成同一条暗线：用户对云端集成的授权边界越来越不信任。
 
-今天最该被记住的不是任何一篇智能体论文，而是 Claude 把 ECDSA 曲线种子的来源问题摆上台面——当 AI 开始参与密码学「考古」，安全社区必须重新审视那些被当作公理信任的参数。第二个判断：智能体研究已经明显内卷到「脚手架层」，FDE-Gym 讲交付、Self-Evolving Agent Harness 和 Terminal-RSI 讲自我改写、Mosaic 讲多会话，本质上都在承认模型权重不再是瓶颈，工程编排才是。反直觉的是，热榜第一的 ai-job-search 和 LinkSwift 这类「脏活工具」热度压过多数论文，说明开发者用脚投票：能立刻省时间的才叫 AI。另外，HN 一边热议「未经授权的集成扫描我的密钥」，一边把 Claude Code 评审流程奉为方法论，这种对同一厂商既依赖又警惕的撕裂感，是今年最真实的市场情绪。
+> **一句话**：今天的信号很一致：AI 的竞争焦点正从模型能力展示，转向交付现场、工具生态与可验证推理这三块“最后一公里”，而用户对权限与隐私的警觉正在同步升温。
 
-## 开源项目
+## ✍️ 主编点评
 
-_GitHub 热榜被「把 Claude Code 变成生产力工具」和「让软件对智能体原生」两类项目占据，工程化落地快于模型本身。_
+### 🎯 核心判断
+今天最该记住的是 Claude 参与解开 ECDSA 曲线种子来源：它证明大模型可以在有客观验证标准的硬问题上产出可核查的推理成果，而不是只会写通顺文字。这比任何 benchmark 分数都更能说明能力性质的变化。
 
-- [MadsLorentzen/ai-job-search](https://github.com/MadsLorentzen/ai-job-search) `[github_trending]` 热度 97.3 · 来源 github_trending
-- **一句话**：基于 Claude Code 的本地求职框架，评估岗位、改简历、写求职信一条龙。
-- **为什么重要**：热榜第一说明开发者对「立刻能用」的 AI 工具付费意愿远高于对新模型的兴奋。
-- **对谁重要**：求职者、独立开发者、想复制 Claude Code 工作流的人。
-- **下一步关注**：fork 后的数据隐私处理，本地运行是否真如宣称般隔离。
-- **立场**：工程价值大于技术创新，但热度说明真实需求。
-- [hmjz100/LinkSwift](https://github.com/hmjz100/LinkSwift) `[github_trending]` 热度 81.1 · 来源 github_trending
-- [HKUDS/CLI-Anything](https://github.com/HKUDS/CLI-Anything) `[github_trending]` 热度 64.8 · 来源 github_trending
+### 🔍 交叉信号
+论文侧的 FDE-Gym、MAI-Gym、Terminal-RSI 都在解决“真实环境里任务定义不清、需要多轮自我修正”，与社区侧“Claude Code 团队怎么做 code review”以及官方插件目录上线互相印证：智能体的瓶颈已经从模型智力转移到脚手架、评审流程与交付现场。
 
-## 论文与研究
+### 🔄 反直觉
+热榜第一是密码学溯源，而 GitHub 趋势榜被一堆 Claude Code 技能包占据——真正被大量使用的不是更强的模型，而是给现有模型套上的提示词与工作流外壳，模型层的边际价值正在被脚手架层吸走。
 
-_智能体研究集体转向真实交付、多会话、自我改写与 GUI/终端环境训练，评测基准密集补位。_
+### ⚠️ 风险提醒
+“未授权集成扫描密钥”与大量第三方 agent 技能包同时走热，说明生态扩张速度已经超过权限审计能力；用户为了几个好用的插件，可能把代码库、密钥与本地文件系统一并交出去，这类风险不会出现在任何 benchmark 里。
 
-- [FDE-Gym: The Last Mile of AI Delivery](arxiv:2610.22350) `[hf_papers]` 热度 84.7 · 来源 arxiv,hf_papers
-- **一句话**：FDE-Gym 把评测从「写好的工单」拉到真实客户交付的模糊现场。
-- **为什么重要**：它戳破了现有 agent benchmark 的温室设定，指出需求澄清与未言明约束才是落地瓶颈。
-- **对谁重要**：做企业交付的 AI 团队、agent 产品经理、评测基准设计者。
-- **下一步关注**：该基准是否被主流 agent 厂商采纳为交付能力标准。
-- **立场**：方向正确，比又一篇刷榜论文有价值得多。
-- [Waypoint-OPD: Transferring RL-Induced Policy Shifts via Gated On-Policy Distillation](arxiv:2610.21601) `[hf_papers]` 热度 82.3 · 来源 hf_papers
-- [OpenGCUA: Toward a Fully Open Stack for Generalist Computer Use](arxiv:2610.22200) `[hf_papers]` 热度 81.0 · 来源 hf_papers
-- [OmniCompass: A Holistic Benchmark for Omni-Modal Video Grounding and Understanding](arxiv:2610.18829) `[hf_papers]` 热度 79.9 · 来源 hf_papers
-- [MJev-Spatial: System One Spatial Intelligence via Native Attention Matching](arxiv:2610.22276) `[hf_papers]` 热度 79.2 · 来源 arxiv,hf_papers
-- [3DCodeVerse: Exploring 3D Worlds as Code](arxiv:2610.22341) `[hf_papers]` 热度 76.5 · 来源 arxiv,hf_papers
-- [VLA-Δ: Learning Physical State Transition for Vision-Language-Action Models](arxiv:2610.21306) `[hf_papers]` 热度 70.3 · 来源 hf_papers
-- [SCOPE: Semantic Bounded Credit Optimization for Prompt Engineering in Text-to-image Generation](arxiv:2610.22264) `[hf_papers]` 热度 65.9 · 来源 arxiv,hf_papers
-- [Speculative Forcing for Efficient Autoregressive Video Generation](arxiv:2610.22347) `[hf_papers]` 热度 65.0 · 来源 arxiv,hf_papers
-- [RoTA-Bench: Evaluating 3D Spatial Reasoning through Interactive Projection Alignment](arxiv:2610.17665) `[hf_papers]` 热度 64.7 · 来源 hf_papers
-- [Self-Evolving Agent Harness](arxiv:2610.18813) `[hf_papers]` 热度 62.5 · 来源 hf_papers
-- **一句话**：Self-Evolving Agent Harness 让智能体改写自己的提示、记忆与工作流。
-- **为什么重要**：把「脚手架」本身变成可进化对象，是权重冻结下提升能力的关键路径。
-- **对谁重要**：agent 框架作者、做长期运行智能体的团队。
-- **下一步关注**：接受的修订是否会累积成不可控漂移，有无回滚机制。
-- **立场**：概念漂亮，但稳定性风险被低估。
-- [InfiniSplat v2: Analyzing and Improving Feed-Forward 3DGS from Any Views](arxiv:2610.20341) `[hf_papers]` 热度 61.1 · 来源 hf_papers
-- [Learning Where to Split: Dynamic Band Splitting for Audio Source Separation](arxiv:2610.14993) `[hf_papers]` 热度 59.5 · 来源 hf_papers
-- [MAI-Gym: An Open All-in-One Platform for GUI Agent Evaluation and RL Training across Mobile and Computer Environments](arxiv:2610.20939) `[hf_papers]` 热度 59.3 · 来源 hf_papers
-- [Terminal-RSI: Recursive Self-Improving Terminal Agents via Recursive Self-Rewrite and Policy-Refine](arxiv:2610.22192) `[hf_papers]` 热度 58.4 · 来源 hf_papers
-- [Mosaic: Multi-Session Agentic Reinforcement Learning](arxiv:2610.22174) `[hf_papers]` 热度 58.2 · 来源 hf_papers
-- [MLExpert: Towards a Generalist Agentic Model for Autonomous Machine Learning Engineering](arxiv:2610.22344) `[hf_papers]` 热度 56.9 · 来源 arxiv,hf_papers
-- [AutoSFT: An Agentic System for Automated Data Research in Supervised Fine-Tuning](arxiv:2610.22194) `[hf_papers]` 热度 56.4 · 来源 hf_papers
-- [Each Reward to Its Relevant Tokens: Reward-Specific Token-Level Credit Assignment for Multi-Reward RL](arxiv:2610.21439) `[hf_papers]` 热度 55.6 · 来源 hf_papers
+## 🛠️ 开源项目
 
-## 社区舆论
+_Claude Code 插件与技能生态集体爆发，同时本地化语音、本地检索、游戏机跑模型等“去云端”项目同样强势。_
 
-_HN 今日在密码学溯源、隐私授权、从零推导 Transformer 与在 PS5 上跑 llama.cpp 之间摇摆，硬核与反叛并存。_
+| 项目 | 热度 | 要点 | 为什么重要 | 立场 |
+|---|---|---|---|---|
+| [debpalash/VoiceStudio](https://github.com/debpalash/VoiceStudio) | 87.6 🔥 · 连续 3 天 | VoiceStudio 以完全本地方式对标 ElevenLabs，覆盖 646 种语言。 | 语音克隆这类高敏感能力走向本地化，直接绕开云端授权与数据留存问题。 | 本地化路线在敏感模态上比云端更有长期说服力。 |
+| [anthropics/claude-plugins-official](https://github.com/anthropics/claude-plugins-official) | 78.4 · 连续 3 天 | Anthropic 上线官方 Claude Code 插件目录。 | 官方收编插件意味着 Claude Code 正从命令行工具变成平台，第三方技能包将被迫分层。 | 平台化的必要一步，但审查缺位会放大供应链风险。 |
+| [affaan-m/ECC](https://github.com/affaan-m/ECC) | 77.2 · 连续 3 天 | The agent harness performance optimization system. Skills,… | — | — |
+| [MadsLorentzen/ai-job-search](https://github.com/MadsLorentzen/ai-job-search) | 69.3 · 连续 2 天 | The job search that runs on your machine. AI job applicatio… | — | — |
+| [obra/superpowers](https://github.com/obra/superpowers) | 64.7 · 连续 3 天 | An agentic skills framework & software development methodol… | — | — |
+| [K-Dense-AI/scientific-agent-skills](https://github.com/K-Dense-AI/scientific-agent-skills) | 64.2 · 连续 3 天 | Turn any AI agent into an AI Scientist. The #1 Agent Skills… | — | — |
+| [xerj-org/xerj](https://github.com/xerj-org/xerj) | 63.8 · 连续 3 天 | XERJ is the new way for AI to search data. Its autoindex ca… | — | — |
+| [Llama.cpp on a jailbroken PS5: run any GGUF model natively on the console](https://github.com/cobanov/PS5LM) | 73.6 | 在破解的 PS5 上原生跑 llama.cpp 与任意 GGUF 模型。 | 它证明消费级硬件被闲置的算力足以承载可用模型，端侧推理的边界比想象中宽。 | 象征意义大于实用价值，但方向值得记录。 |
 
-- [Claude reveals ECDSA curve origins](https://www.anthropic.com/research/ecdsa-curve-origins) `[hackernews]` 热度 95.2 · 来源 hackernews
-- **一句话**：Claude 参与还原 ECDSA 曲线种子的来源，密码学信任根基被重新审视。
-- **为什么重要**：曲线参数长期被视为「无可置疑」，若来源可被追溯甚至可被解释，整个参数生成流程的可信度假设都要重估。
-- **对谁重要**：密码学研究者、安全合规团队、所有依赖 ECDSA 的 TLS/签名系统维护者。
-- **下一步关注**：原始文章的方法论是否可复现，以及标准组织是否回应参数生成透明度问题。
-- **立场**：今日最重要的一条，别被智能体论文淹没。
-- [How the Claude Code team does code review](https://claude.dev/blog/solving-code-review-at-anthropic) `[hackernews]` 热度 85.6 · 来源 hackernews
-- [I never authorized an integration that scans my secrets](https://github.com/home-assistant/home-assistant.io/issues/49314) `[hackernews]` 热度 78.0 · 来源 hackernews
-- **一句话**：HN 控诉未经授权的集成在扫描用户密钥。
-- **为什么重要**：AI 工具默认高权限接入正在制造系统性隐私风险，这条是行业警钟。
-- **对谁重要**：所有接入第三方 AI 集成的开发者与运维。
-- **下一步关注**：涉事集成方是否回应，以及平台是否收紧 OAuth 权限范围。
-- **立场**：与 Claude Code 被追捧形成刺眼对照，值得每个团队自查。
-- [You could have invented transformers from memory](https://alexwang.ai/posts/associative-memory) `[hackernews]` 热度 76.0 · 来源 hackernews
-- [Llama.cpp on a jailbroken PS5: run any GGUF model natively on the console](https://github.com/cobanov/PS5LM) `[hackernews]` 热度 74.6 · 来源 hackernews
-- **一句话**：在越狱 PS5 上原生跑 llama.cpp 与任意 GGUF 模型。
-- **为什么重要**：端侧推理的边界被推到消费级游戏主机，硬件复用想象力被打开。
-- **对谁重要**：端侧推理爱好者、边缘部署工程师、主机改装社区。
-- **下一步关注**：实际吞吐与散热表现，是否出现可复用的移植方案。
-- **立场**：极客趣味浓，但端侧算力民主化信号真实。
+## 📄 论文与研究
 
-## 产业与新闻
+_智能体训练框架与三维/视频理解评测是两条主线，强化学习与蒸馏仍是提升智能体的主要手段。_
 
-_Apple 用 MLX 在 Mac Studio 上开源 Muse Spark、FLUX 3 与 Gemini 4 打星际，端侧与模型竞技场同步升温。_
+| 标题 | 热度 | 要点 | 为什么重要 | 立场 |
+|---|---|---|---|---|
+| [FDE-Gym: The Last Mile of AI Delivery](arxiv:2610.22350) | 84.1 | FDE-Gym 把评测搬到真实客户交付现场，直指现有 agent 基准的失真。 | 它承认了需求模糊与隐性约束才是落地难点，等于给整个 agent 评测体系提出质疑。 | 方向正确，但真实交付难以标准化，需警惕评测再次被简化。 |
+| [Waypoint-OPD: Transferring RL-Induced Policy Shifts via Gated On-Policy Distillation](arxiv:2610.21601) | 81.7 | Policy-shift distillation reuses the difference between a t… | — | — |
+| [OpenGCUA: Toward a Fully Open Stack for Generalist Computer Use](arxiv:2610.22200) | 80.4 | Computer use has reached a turning point: the focus is expa… | — | — |
+| [OmniCompass: A Holistic Benchmark for Omni-Modal Video Grounding and Understanding](arxiv:2610.18829) | 79.7 | With the rapid development of multimodal large language mod… | — | — |
+| [MJev-Spatial: System One Spatial Intelligence via Native Attention Matching](arxiv:2610.22276) | 78.5 | Spatial intelligence lets an agent perceive and act in the… | — | — |
+| [3DCodeVerse: Exploring 3D Worlds as Code](arxiv:2610.22341) | 75.8 | We introduce 3DCodeVerse, a research ecosystem that enables… | — | — |
+| [VLA-Δ: Learning Physical State Transition for Vision-Language-Action Models](arxiv:2610.21306) | 69.7 | Vision-language-action (VLA) models transfer semantic knowl… | — | — |
+| [SCOPE: Semantic Bounded Credit Optimization for Prompt Engineering in Text-to-image Generation](arxiv:2610.22264) | 65.2 | Reinforcement learning (RL) enables language models to impr… | — | — |
+| [RoTA-Bench: Evaluating 3D Spatial Reasoning through Interactive Projection Alignment](arxiv:2610.17665) | 64.3 | Can vision-language models turn 2D observations into 3D und… | — | — |
+| [Speculative Forcing for Efficient Autoregressive Video Generation](arxiv:2610.22347) | 64.3 | Few-step autoregressive video generators enable streaming g… | — | — |
 
-- [Apple ML Research: Muse Spark Open with MLX on Mac Studio](https://machinelearning.apple.com/research/mlx-distributed-inference) `[hackernews]` 热度 84.1 · 来源 hackernews
-- **一句话**：Apple 用 MLX 在 Mac Studio 上开放 Muse Spark。
-- **为什么重要**：苹果在自有芯片上推进开源模型栈，端侧 AI 生态话语权争夺加剧。
-- **对谁重要**：Mac 开发者、端侧模型部署团队、MLX 生态参与者。
-- **下一步关注**：模型规模与推理速度指标，以及是否进入生产级工具链。
-- **立场**：苹果终于把 MLX 从演示推向可用。
-- [Show HN: Gemini 4 Argon plays StarCraft](https://starskirmish.com/bench/v0-2) `[hackernews]` 热度 74.4 · 来源 hackernews
-- **一句话**：StarSkirmish Bench 刷新，Gemini 4 Argon 等旗舰模型写代码打星际。
-- **为什么重要**：用游戏作为长程规划与代码执行的复合评测，比静态题库更接近真实智能体任务。
-- **对谁重要**：模型评测研究者、游戏 AI 社区。
-- **下一步关注**：各模型在长局中的策略退化情况，以及基准是否被过拟合。
-- **立场**：有趣且信息量足，但要警惕排行榜娱乐化。
-- [FLUX 3 Image Klein](https://bfl.ai/blog/flux-3-image-klein) `[hackernews]` 热度 62.2 · 来源 hackernews
+_另有 6 条未展示（完整列表见 daily.json）_
 
-## 矛盾点
+## 💬 社区舆论
 
-- 社区一边把「Claude Code 团队如何做代码评审」当作最佳实践追捧，一边在 HN 头条控诉未经授权的集成扫描用户密钥，对同一类 AI 编码工具的信任态度自相矛盾。
-- 多篇论文宣称智能体可通过自我改写/自我进化持续提升（Terminal-RSI、Self-Evolving Agent Harness、MLExpert），但 FDE-Gym 指出真实交付的瓶颈是模糊需求与未言明约束，二者对「能力上限来自哪里」的判断并不一致。
+_热榜一半是密码学与工程硬核内容，一半是对集成越权扫描密钥的愤怒，技术乐观与信任焦虑并存。_
 
-## 被低估
+| 标题 | 热度 | 要点 | 为什么重要 | 立场 |
+|---|---|---|---|---|
+| [Claude reveals ECDSA curve origins](https://www.anthropic.com/research/ecdsa-curve-origins) | 92.6 🔥 | Claude 参与破解 ECDSA 曲线种子来源，AI 进入可验证的密码学推理领域。 | 密码学结论可被独立验证，这让“模型是否真的在推理”第一次有了难以造假的检验场。 | 这是今日最具实质意义的一条，价值远超热度排名所示。 |
+| [How the Claude Code team does code review](https://claude.dev/blog/solving-code-review-at-anthropic) | 85.9 🔥 | How the Claude Code team does code review | — | — |
+| [Apple ML Research: Muse Spark Open with MLX on Mac Studio](https://machinelearning.apple.com/research/mlx-distributed-inference) | 81.8 | Apple ML Research: Muse Spark Open with MLX on Mac Studio | — | — |
+| [I never authorized an integration that scans my secrets](https://github.com/home-assistant/home-assistant.io/issues/49314) | 74.7 | 用户控诉未授权的集成扫描其密钥，权限边界问题浮上台面。 | 集成生态扩张的速度已经超过用户对权限的理解速度，这是信任赤字的早期信号。 | 被低估的警报，比任何模型发布都更影响生态长期健康。 |
+| [You could have invented transformers from memory](https://alexwang.ai/posts/associative-memory) | 73.6 | You could have invented transformers from memory | — | — |
+| [Show HN: Gemini 4 Argon plays StarCraft](https://starskirmish.com/bench/v0-2) | 66.7 | I've refreshed StarSkirmish Bench, a benchmark where LLMs p… | — | — |
 
-- FDE-Gym: The Last Mile of AI Delivery
-- Mosaic: Multi-Session Agentic Reinforcement Learning
-- Each Reward to Its Relevant Tokens: Reward-Specific Token-Level Credit Assignment for Multi-Reward RL
-- Learning Where to Split: Dynamic Band Splitting for Audio Source Separation
-- Speculative Forcing for Efficient Autoregressive Video Generation
+## 🏢 产业与新闻
+
+_Apple 在 Mac Studio 上用 MLX 开放 Muse Spark，是端侧本地推理阵营少见的厂商级动作。_
+
+| 标题 | 热度 | 要点 | 为什么重要 | 立场 |
+|---|---|---|---|---|
+| [Apple ML Research: Muse Spark Open with MLX on Mac Studio](https://machinelearning.apple.com/research/mlx-distributed-inference) | 81.8 | Apple ML Research: Muse Spark Open with MLX on Mac Studio | — | — |
+
+## ⚔️ 矛盾点
+
+1. 一边是 VoiceStudio、PS5 跑 llama.cpp、xerj 等强调完全本地、少 token 消耗的项目走热，一边是 Claude Code 插件与云端集成生态高速扩张，社区对“本地还是云端”的取向明显分裂。
+2. 论文普遍宣称智能体在基准上表现强劲，但 FDE-Gym 直接指出真实交付中需求模糊、约束未言明，现有基准无法代表落地能力。
+
+## 💎 被低估
+
+- xerj-org/xerj：用自动索引替代 grep/sed，宣称省 40 倍 token，直击智能体上下文成本痛点，热度却只有 63.8。
+- Mosaic: Multi-Session Agentic Reinforcement Learning：指出上下文压缩与子智能体分叉会产生跨会话轨迹，这是当前 agentic RL 被普遍忽略的假设漏洞。
+- Learning Where to Split: Dynamic Band Splitting for Audio Source Separation：动态频带划分替代手工边界，是音频分离里少见的架构层改进。
+- Speculative Forcing for Efficient Autoregressive Video Generation：指出并非所有 token 都需要完整去噪步数，对流式视频生成的成本结构有直接影响。
 
 ---
 
-本次运行模式：hybrid（仅主编点评）
-数据声明：仅存储标题、摘要与公开指标，均标注来源与原链接，不做全文转载。
+<sub>🤖 运行模式 hybrid（仅主编点评） · 📄 数据声明：仅存储标题、摘要与公开指标，均标注来源与原链接，不做全文转载。</sub>
