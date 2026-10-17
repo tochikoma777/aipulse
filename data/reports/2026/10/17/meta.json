@@ -1,20 +1,20 @@
 {
   "mode": "hybrid",
   "day": "2026-10-17",
-  "generated_at": "2026-10-17T07:47:08.307060+00:00",
+  "generated_at": "2026-10-17T08:10:39.216686+00:00",
   "window": {
-    "since": "2026-10-16T07:46:22.187513+00:00",
-    "until": "2026-10-17T07:46:29.784720+00:00",
+    "since": "2026-10-16T08:09:52.326815+00:00",
+    "until": "2026-10-17T08:10:00.207136+00:00",
     "hours": 24.0,
-    "since_local": "2026-10-16T15:46+08:00",
-    "until_local": "2026-10-17T15:46+08:00",
+    "since_local": "2026-10-16T16:09+08:00",
+    "until_local": "2026-10-17T16:10+08:00",
     "tz": "Asia/Shanghai"
   },
   "analysis": {
-    "items": 174,
-    "scored": 174,
+    "items": 173,
+    "scored": 173,
     "topics": 5,
-    "new_entity_mention_rows": 20,
+    "new_entity_mention_rows": 36,
     "state_items": 13
   },
   "llm": {
@@ -26,7 +26,7 @@
     "ok_sources": 7,
     "failed_sources": 0,
     "skipped": 0,
-    "total_items": 128
+    "total_items": 127
   },
   "verify": {
     "verified": 0,
@@ -56,10 +56,10 @@
   },
   "signals": {
     "entities": 142,
-    "points": 639,
-    "with_velocity": 19,
-    "insufficient": 118,
-    "cold_start": 5,
+    "points": 661,
+    "with_velocity": 25,
+    "insufficient": 113,
+    "cold_start": 4,
     "min_window_hours": 6.0
   }
 }
