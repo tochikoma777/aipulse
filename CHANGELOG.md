@@ -14,6 +14,11 @@
 
 #### Fixed
 
+- **★ predict_generate 降级为 0 条**：reasoner 输出撞 `max_tokens=4000` 被截断
+  （实测 first_len=3442、retry_len=0）→ `llm.max_tokens_fast/strong` 分档（strong 8000），
+  并把候选证据池收窄到 Top 20、只给 `id + 标题`（不再注入摘要）
+- **同一 item 跨板块重复**：按源归一到主板块，Apple 不再同时出现在社区/产业
+- **「要点」无摘要时重复标题**：改回 `—`，避免与第一列重复
 - **★ 持续热门项目只出现一天就永久消失**：GitHub Trending 是**状态型源**（无发布时间，只有"此刻是否在榜"），
   却被当成事件型处理 → Item 增加 `last_seen_at`，`time_semantics` 按源类型选择过滤字段
 - **★ 时间语义补第三态 `discovery`**：arXiv/HF 索引滞后 3-4 天，
@@ -34,7 +39,7 @@
 
 #### 统计
 
-- 319 → 338 passed，TOTAL 90%
+- 319 → 342 passed，TOTAL 90%
 
 ---
 

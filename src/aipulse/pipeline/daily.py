@@ -237,6 +237,9 @@ async def _generate_daily_predictions(
         "inserted": inserted,
         "dropped": output.meta.get("dropped", []),
         "llm_calls": output.meta.get("llm_calls", 0),
+        "candidate_pool": output.meta.get("candidate_pool"),
+        "degraded": output.meta.get("degraded", False),
+        "degraded_reason": output.meta.get("degraded_reason", ""),
     }
     log.info("pipeline.predict.done", **{k: v for k, v in summary.items() if k != "dropped"})
     return output, summary
