@@ -44,7 +44,7 @@ CI（`.github/workflows/ci.yml`）在**无密钥环境**运行同样的检查—
 7. **prompt 不写进 `.py`**：一律 `prompts/**.j2`，头部带 YAML front-matter（`model_tier` / `temperature` / `purpose`）。
 8. **阈值不硬编码**：权重、阈值、源配置全部走 `configs/*.yaml`。
 9. **`mode: off` 下不得发出任何模型请求**（单测用 `respx` 断言零调用）；未配置 key 时自动降级，不报错退出。
-10. **SSOT 文档只读**：`docs/AI Pulse 设计方案 v1` 与 `docs/AI Pulse · Agent 开发执行手册 v1` 由项目负责人
+10. **SSOT 文档只读**：`docs/AI_Pulse_设计方案.md` 与 `docs/AI_Pulse_Agent开发执行手册.md` 由项目负责人
     维护并覆盖，请**不要**直接修改；你的结论请写进 `docs/开发日志.md` / `docs/数据源手册.md` / `docs/新增数据源指南.md`。
 
 ## 提交信息
@@ -61,8 +61,8 @@ docs: 补 signals.json 的字段说明
 
 | 想做什么 | 先读 |
 |---|---|
-| 了解整体架构与决策 | [`docs/AI Pulse 设计方案 v1`](docs/AI%20Pulse%20设计方案%20v1) |
-| 按阶段任务卡执行 | [`docs/AI Pulse · Agent 开发执行手册 v1`](docs/AI%20Pulse%20·%20Agent%20开发执行手册%20v1) |
+| 了解整体架构与决策 | [`docs/AI_Pulse_设计方案.md`](docs/AI_Pulse_设计方案.md) |
+| 按阶段任务卡执行 | [`docs/AI_Pulse_Agent开发执行手册.md`](docs/AI_Pulse_Agent开发执行手册.md) |
 | 新增 / 修复数据源 | [`docs/新增数据源指南.md`](docs/新增数据源指南.md)、[`docs/数据源手册.md`](docs/数据源手册.md) |
 | 理解某段代码为什么这么写 | [`CODEBUDDY.md`](CODEBUDDY.md)（模块职责 + 已归档的坑） |
 | 看每阶段实测结论 | [`docs/开发日志.md`](docs/开发日志.md) |

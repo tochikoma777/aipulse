@@ -55,7 +55,7 @@ packages = ["src/aipulse"]
 line-length = 100
 target-version = "py311"
 src = ["src", "tests", "scripts"]
-extend-exclude = [".venv", "data", "src/aipulse/store/migrations"]
+extend-exclude = [".venv", "data", "docs", "src/aipulse/store/migrations"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM"]

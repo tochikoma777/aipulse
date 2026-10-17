@@ -1,8 +1,11 @@
-# AI Pulse · Agent 开发执行手册 v1.16
+# AI Pulse · Agent 开发执行手册
 
-> **当前版本：v1.16**（窗口修复后的连锁问题）。文内 `v1.x` 标注为该决策产生的版本，用于追溯。
+> ★ **当前版本：v1.20** · 对应基线 `star-tracking` / `cdcab79` · 详见 `docs/文档维护日志.md`
+> 文件名**固定不带版本号**。文内 `v1.x` 标注为该决策产生的版本，用于追溯。
 
-> 配套文档：`AI_Pulse_设计方案_v1.16.md`（设计 SSOT，v1.16）
+> **当前版本：v1.19**（REA 结案 + star 追踪立项）。文内 `v1.x` 标注为该决策产生的版本，用于追溯。
+
+> 配套文档：`AI_Pulse_设计方案.md`（设计 SSOT，v1.20）
 > **已确认决策清单（Agent 直接执行，无需再问）**
 >
 > v1.1：① 微信/X 彻底移除（改用 inbox 手动投喂）；② LLM 默认 DeepSeek；③ 命名 `aipulse`（AI 脉搏）+ 许可证 **MIT**；④ **里程碑重排：M4 = 发布与自动化，M5 = 周期长文与辩论**（任务卡顺序已对调）
@@ -73,7 +76,7 @@ uv add --dev ruff mypy pre-commit
 | 注释 | 复杂算法（打分、聚类、去重、Brier）必须写中文注释解释**为什么**这么算 |
 | 提交 | Conventional Commits；每个阶段结束打 tag（`m0`/`m1`/...） |
 
-### 0.3 三十三条红线（违反即返工）
+### 0.3 四十三条红线（违反即返工）
 
 1. ❌ 一次性生成整个项目——必须分阶段。
 2. ❌ 凭想象写字段解析——必须基于 `tests/fixtures/` 的真实响应。
@@ -108,6 +111,16 @@ uv add --dev ruff mypy pre-commit
 31. ❌ 预言生成的候选池给 30-50 条且带摘要——**必须 Top 20 且只给 id + 标题**。窗口修成 24h 后输入会膨胀 10 倍，撞 max_tokens 导致生成 0 条。
 32. ❌ 改窗口/数据规模后不回头检查依赖上下文长度的环节——**修改数据规模相关参数，必须回归 predict 生成**。
 33. ❌ 同一个 item 出现在多个简报板块——应只保留主板块，否则日报显得重复。
+34. ❌ LLM 输出回显标题/摘要/完整条目——**只返回必要字段**（如 `id + why + stance`）。回显会让输出翻倍撞 max_tokens（v1.17）。
+35. ❌ why/stance 同时由 brief 与增强调用两处产出——**必须从 daily_brief.j2 剥离**，只由专门的增强调用负责。
+36. ❌ 增强失败就拖垮日报——degraded 时日报照常产出，why/stance 显示 `—`。
+37. ❌ Actions 用 `ubuntu-latest`——**固定 `ubuntu-24.04`**，避开 2026-10-19 起的 Ubuntu 26 迁移。
+38. ❌ 遇到"某项目没出现在日报"就立即改代码——**先分清"仍在榜但没进日报（bug）"与"已掉榜（正确行为）"**。
+39. ❌ 修改 `docs/文档维护日志.md`——与 SSOT 同样只读，由项目负责人维护。
+40. ❌ 先刷新文档再提交代码——**必须先提交打 tag，再刷新文档**，否则日志的 tag 栏对不上。
+41. ❌ star 增量显示"每小时速率"——**只显示绝对增量**。`insufficient` 时给绝对增量但不给速率，绝不显示被短窗口放大的离谱数字。
+42. ❌ 为让掉榜项目出现而改动 trending 的 `state` 语义——**会破坏快照模型**。用 star 序列在独立区块呈现。
+43. ❌ 增速榜 0 条时仍显示标题——不显示整个区块。
 31. ❌ 条目因字段缺失而省略整行——**表格列固定，空值显示 `—`**，这是"详略不一、排版混乱"的根源（v1.14）。
 
 ### 0.4 每个阶段结束 Agent 必须输出的验收报告格式
@@ -140,7 +153,7 @@ uv add --dev ruff mypy pre-commit
 
 ```
 你是资深 Python 工程师。项目根目录 ~/projects/aipulse（WSL2）。
-请先完整阅读 AI_Pulse_设计方案_v1.md 与本执行手册，然后执行 M0 阶段。
+请先完整阅读 docs/AI_Pulse_设计方案.md 与本执行手册，然后执行 M0 阶段。
 
 【目标】搭好可运行的项目骨架，并用真实请求探测全部数据源，产出 fixtures 与《数据源手册》。
 
@@ -487,7 +500,7 @@ uv add --dev ruff mypy pre-commit
 **不要只说"继续"**——新会话没有任何上下文。标准开法是三段式：
 
 ```
-1. 读文档：先读 docs/AI_Pulse_设计方案_v1.6.md 与 docs/AI_Pulse_Agent开发执行手册_v1.6.md
+1. 读文档：先读 docs/AI_Pulse_设计方案.md 与 docs/AI_Pulse_Agent开发执行手册.md
 2. 补背景：把上一阶段的验收报告贴进去（已完成什么、当前状态、有哪些坑已归档）
 3. 下指令：只做 M{X}，DoD 满足后停下输出验收报告，不要开始 M{X+1}
 ```
@@ -593,6 +606,14 @@ uv add --dev ruff mypy pre-commit
 | 45 | 窗口修好后 predict 反降为 0 条 | items 从 1 涨到 174，上下文膨胀 10 倍撞 max_tokens | 池收窄 Top 20 只给标题 + max_tokens 分档 |
 | 46 | degraded 时不打印原始输出 | 无法区分"截断"与"格式错误"，只能猜 | 打印前 500 字符 + 长度 |
 | 47 | 同 item 进多个板块 | 日报显重复 | 只保留主板块 |
+| 48 | LLM 输出回显完整条目 | 输出翻倍撞 max_tokens（predict 曾因此生成 0 条） | 只返回 id + 必要字段 |
+| 49 | 改数据规模后不回归上下文相关环节 | 窗口 7h→24h 后 predict 从 5 条变 0 条 | 改规模必须回归 predict |
+| 50 | ubuntu-latest 不固定 | 2026-10-19 起迁移 Ubuntu 26，定时流水线可能突然失败 | 固定 ubuntu-24.04 |
+| 51 | 掉榜项目消失被当成 bug 修 | 强行让掉榜项目进 Trending 会破坏快照语义 | 用 signals 的 star 序列做"持续追踪"，不硬改快照 |
+| 52 | 文档与代码版本对不上 | 回溯时无从查证 | 维护日志 + 先提交后刷新 |
+| 53 | 显示 star 每小时速率 | 短窗口会放大成"日增 29951"这类离谱值 | 只显示绝对增量 |
+| 54 | 本地库当 Actions 库用 | 本地库停在 10-13，无法代表真实状态 | 诊断时用 data/reports 里的 daily.json / signals.json |
+| 55 | source_runs 不落盘 | "某项目怎么没了"只能靠猜 | 导出 source_runs.json 到日报目录 |
 | 37 | yaml 里写死本该可覆盖的配置 | pydantic-settings 下 init kwargs 压过 env，AIPULSE_* 全线失效 | 环境开关用 ${ENV} 占位符，算法阈值留字面量 |
 | 38 | effective_mode 只查 api_key | 缺 base_url 时 daily 崩溃，违反红线 9 | api_key 与 base_url 缺任一即降级 off |
 | 39 | 主编点评走 strong 模型 | reasoner 不支持 json_schema/json_object → 每日降级 → 点评永远为空 | 轻任务走 fast（deepseek-chat） |

@@ -136,7 +136,7 @@ flowchart LR
     GH -.->|"commit data/reports"| OUT
 ```
 
-设计要点（完整版见 [`docs/AI Pulse 设计方案 v1`](docs/AI%20Pulse%20设计方案%20v1)）：
+设计要点（完整版见 [`docs/AI_Pulse_设计方案.md`](docs/AI_Pulse_设计方案.md)）：
 - **所有网络请求**只走 `utils/http.py::HttpClient`（限速 / 重试 / 缓存 / UA / 代理）；**所有 LLM 调用**只走 `llm/base.py::LLMClient`；**所有时间**走 `core/timeutil.py`（UTC 入库，展示转 `Asia/Shanghai`）。
 - **单源失败隔离**：一个源挂掉不影响流水线，`aipulse collect` 退出码恒为 0。
 - **`actions_only` 源分级**：本地 WSL 因 DNS 污染访问不到的源（`reddit` / `hf_papers`）在本地跳过且**不计失败**，在 Actions 中正常采集。
