@@ -7,8 +7,8 @@
 
 > **每日自动采集 AI 领域热点，不只整理，还给出可回测的推演与预言。**
 
-> ✅ **状态**：M0–M4 已完成——**系统每天自动跑**（Actions 定时流水线），产出日报 + **预言记分板**。
-> M5（周期趋势长文 + 多角色辩论）待做。历史报告见 [`data/reports/`](data/reports/)。
+> ✅ **状态**：M0–M4 已完成，**M6a（简报格式 + 快照源修复 + predict 截断修复）与 P0 star 追踪已落地**——**系统每天自动跑**（Actions 定时流水线），产出日报 + **预言记分板**。
+> M6b（LLM 增强）暂缓；M5（周期趋势长文 + 多角色辩论）待做。历史报告见 [`data/reports/`](data/reports/)。
 >
 > 完整变更见 [CHANGELOG](CHANGELOG.md) · 开发踩坑见 [踩坑实录](docs/踩坑实录.md)
 
@@ -29,7 +29,7 @@ aipulse 多做了一件难得多的事：**每天给出 3-5 条可证伪的预�
 
 | 能力 | 说明 |
 |---|---|
-| 多源采集 | GitHub Trending / arXiv / HF Daily Papers / Hacker News / Reddit r/LocalLLaMA / RSS（英文主干 + 中文补充）+ `inbox` 手动投喂 |
+| 多源采集 | GitHub Trending / arXiv / HF Daily Papers / Hacker News / Reddit（r/LocalLLaMA + r/MachineLearning）/ RSS（英文主干 + 中文补充）+ `inbox` 手动投喂 |
 | 归一化与去重 | URL 规范化（`arxiv.org` 与 `hf.co/papers` 归一到同一篇论文）+ 三级去重（URL / 跨源键 / SimHash） |
 | 热度打分 | 多维度对数加权 + 跨源加成 + 增速（`signals` 表算 Δmetric/Δhour），权重全在 `configs/scoring.yaml` |
 | 主题聚类 | jieba + TF-IDF + 余弦连通分量；仅标题源不参与聚类（避免 22 字摘要污染相似度矩阵） |
@@ -45,7 +45,7 @@ aipulse 多做了一件难得多的事：**每天给出 3-5 条可证伪的预�
 |---|---|---|
 | `off` | **零次** | 采集 / 打分 / 聚类 / **手写预言** / **自动验证量化判据** / **命中率与校准统计** |
 | `hybrid` | 2-3 次/日 | off 全部 + 自动生成预言 + 主编点评 |
-| `full`（默认） | 全部 | 追加多角色辩论与周期长文（M5） |
+| `full`（默认） | 全部 | off + hybrid 全部 + **逐条点评（Top N）**；多角色辩论与周期长文属 M5，尚未实现 |
 
 **没有 API key 也能用**：未配置时自动降级到 `off` 档，只提示一次，不报错退出。
 手写预言与模型生成的预言在记分板上**完全同权**——都进命中率、都进 Brier、都进校准曲线，因此还能对比"人 vs 机器"的校准度。
@@ -64,8 +64,12 @@ uv run aipulse doctor                   # 环境体检：Python / key / 代理 /
 uv run aipulse daily --skip-llm         # 采一整天：collect → analyze → brief → render（零花费）
 ```
 
-产出在 `data/reports/YYYY/MM/DD/`：`brief.md`（人读）、`daily.json`（机器读）、`meta.json`、
-`scoreboard.md`（★ 记分板）、`verdicts.md`（当日验证结果）、`signals.json`（指标快照 + 增速）。
+产出在 `data/reports/YYYY/MM/DD/`，共 **8 个文件**：
+
+- `brief.md`（人读）/ `daily.json`（机器读）/ `meta.json`（运行元数据）
+- `scoreboard.md`（★ 记分板）/ `verdicts.md`（当日到期验证结果）
+- `predictions.md`（当日新生成的预言 + 证据对照）
+- `signals.json`（指标快照 + 增速）/ `source_runs.json`（各源运行状态）
 
 看板：
 
@@ -81,32 +85,40 @@ cp .env.example .env
 uv run aipulse daily                    # hybrid/full 档：自动生成预言 + 主编点评
 ```
 
+## 看板预览
+
+`aipulse serve` 打开的就是这份只读看板：今日简报、主编点评、到期验证与分板块条目（截图取自 2026-10-17 的真实日报）。
+
+![AI 脉搏看板 · 今日简报](docs/images/dashboard.png)
+
 ## ★ 预言记分板
 
-记分板由 `aipulse stats --predictions --markdown` 自动生成并贴到这里（**请勿手改数字**），
-`daily` 每天也会把 `scoreboard.md` 写进当日报告目录。
+记分板由 `aipulse stats --predictions --markdown` 生成后手工贴入本节（**请勿手改数字**），
+`daily` 每天也会把 `scoreboard.md` 写进当日报告目录。最新数据见
+[`data/reports/2026/10/17/scoreboard.md`](data/reports/2026/10/17/scoreboard.md)。
 
-> 系统已累计 **0** 条预言，尚无到期判定结果。具体成绩将在首批预言到期并验证后展示——**让时间说话**。
+> 截至 **2026-10-17**，系统已累计 **29** 条预言，全部处于待验证状态（**0** 条已到期）。具体成绩将在首批预言到期并验证后展示——**让时间说话**。
 
-下面是有样本后的**完整结构**（当前为空，数据会自动填充）：
+下表是完整结构（当前尚无已验证样本，数据会自动填充）：
 
 | 指标 | 值 |
 |---|---|
-| 命中率（hit 占比） | — |
+| 命中率（hit 占比） | —（0/0） |
 | 加权分（verdict_score 均值，`hit=1 / partial=0.5 / miss=0`） | — |
 | Brier Score（`mean((confidence − outcome)²)`，越低越好，<0.20 优秀，0.25 ≈ 随机） | — |
-| 命中 / 部分 / 落空 | — / — / — |
+| 命中 / 部分 / 落空 | 0 / 0 / 0 |
+| 待验证（pending） | 29 |
 | 分母 | 已验证的预言；`pending` 与 `unverifiable` **不计入** |
 
 **置信度校准**（声称置信度 vs 实际命中率——最有说服力的部分）：
 
 | 置信度区间 | 样本 | 平均置信度 | 实际命中率 |
 |---|---|---|---|
-| [0.05, 0.5) | — | — | — |
-| [0.5, 0.6) | — | — | — |
-| [0.6, 0.7) | — | — | — |
-| [0.7, 0.8) | — | — | — |
-| [0.8, 0.95] | — | — | — |
+| [0.05, 0.5) | 0 | — | — |
+| [0.5, 0.6) | 0 | — | — |
+| [0.6, 0.7) | 0 | — | — |
+| [0.7, 0.8) | 0 | — | — |
+| [0.8, 0.95] | 0 | — | — |
 
 还有按 `category` / `horizon_days` / `origin`（human / llm）/ `model` / `prompt_version` 的分组命中率。
 `serve` 起来的 `/predictions` 页面会把这些画成一张**校准曲线**（点越贴近对角线，系统越清楚自己不知道什么）。
@@ -126,7 +138,7 @@ flowchart LR
     N --> DB[("SQLite 单文件<br/>items / signals / topics / entities / predictions")]
     DB --> AN["分析层 L3（零成本）<br/>热度打分 · 聚类 · 实体 · 增速"]
     AN --> R["推演层 L4<br/>brief · predictor · verifier"]
-    R --> OUT["渲染 L5<br/>brief.md · daily.json · scoreboard.md · signals.json"]
+    R --> OUT["渲染 L5<br/>brief.md · daily.json · scoreboard.md · signals.json 等 8 个文件"]
     OUT --> NO["notify/file（唯一渠道）"]
     OUT --> WEB["Web 看板（只读）"]
     R -.->|"到期后"| V["verifier：量化判据查表（零 LLM）<br/>或证据门槛 → LLM 三值判定"] -.-> DB
@@ -155,7 +167,7 @@ gh workflow run daily.yml          # 手动跑一次
 gh run list --workflow=daily.yml   # 看历史运行
 ```
 
-档位用仓库变量显式声明：`AIPULSE_MODE: hybrid`（每天 2-3 次调用：预言生成 + 主编点评；`full` 档多出的单条点评对记分板说服力没有帮助）。
+档位在 `daily.yml` 的 workflow 环境变量里显式声明：`AIPULSE_MODE: hybrid`（每天 2-3 次调用：预言生成 + 主编点评；`full` 档多出的逐条点评对记分板说服力没有帮助）。
 需要配置 secret `AIPULSE_LLM__API_KEY` 才会生效，未配置时自动降级 `off` 档（**不配 key 记分板就只有手写预言**）：
 
 ```bash
@@ -226,6 +238,10 @@ uv run aipulse doctor --no-network --json
 | **M2** | 热度打分 / 聚类 / 实体 + LLM 抽象 + 每日简报 | ✅ |
 | **M3** | ★ 预言系统：可证伪生成 + 手写 + 到期验证 + 命中率 / Brier / 校准度 | ✅ |
 | **M4** | **Actions 自动化 + Web 看板 + 开源发布包装** | ✅ |
+| **M6a** | 简报格式规范化 + 快照型源修复 + predict 截断修复 | ✅ |
+| **P0** | star 追踪：★ 总数 / 增量 + 增速榜 + `source_runs.json` | ✅（代码，待 Actions 实跑） |
+| **M6b** | 「为什么重要 / 立场」全量 LLM 增强 | ⏸ 暂缓 |
+| **M6c** | 知识库 | ⬜ 待做 |
 | **M5** | 周期趋势长文 + 多角色辩论 | ⬜ 待做 |
 
 ## 开发

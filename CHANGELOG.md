@@ -1,14 +1,14 @@
 # 变更日志
 
 本项目采用 [Keep a Changelog](https://keepachangelog.com/) 风格，按里程碑组织。
-每个里程碑对应一个 git tag（`m0` … `m4`），并在 GitHub Releases 上发布。
+代码 tag：`m0`–`m4` 为里程碑，`m6a` 为 M6a 收尾，`star-tracking` 为 P0 功能 tag；M6a 之后的追加工作使用功能名 tag，不占用里程碑编号。
 
-**版本与 tag 的对应**：`m0`–`m4` 已发布；M4 之后的修复归入 `Unreleased`（随 M6a 一起发 `m5`）。
+**版本与 tag 的对应**：`m0`–`m4`、`m6a`、`star-tracking` 已发布；M5 尚未实现，因此不占 `m5` 编号。
 **设计文档版本**（见 `docs/AI_Pulse_设计方案.md` 头部的 `v1.x`）与代码版本**独立编号**，不要混淆。
 
 ---
 
-## [Unreleased] — M4 之后的修复与 M6a
+## [star-tracking] — M6a 收尾 + P0 star 追踪
 
 ### [§5.14] star 追踪（今日 Trending vs 持续追踪）
 
@@ -38,7 +38,7 @@
 
 - 342 → 358 passed；新增 `repo_star_snapshots` / `velocity_board` 三态与 REA 用例
 
-### [M6a] 格式规范化 + 快照型源修复 + 关注订阅
+### [M6a] 格式规范化 + 快照型源修复
 
 #### Fixed
 
@@ -238,5 +238,5 @@
 
 ## 附：设计文档版本
 
-`docs/AI_Pulse_设计方案_vN.md` 与 `docs/AI_Pulse_Agent开发执行手册_vN.md` 是**设计 SSOT**，
-编号独立于代码 tag（当前 v1.14）。它们由项目负责人出全量版本并覆盖，Agent 只读不改。
+`docs/AI_Pulse_设计方案.md` 与 `docs/AI_Pulse_Agent开发执行手册.md` 是**设计 SSOT**（当前 **v1.20**），
+文件名固定，版本号写在文档头；编号独立于代码 tag。它们由项目负责人出全量版本并覆盖，Agent 只读不改。
