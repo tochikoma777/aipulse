@@ -1,14 +1,24 @@
 {
   "date": "2026-10-17",
-  "headline": "Apple ML Research: Muse Spark Open with MLX on Mac Studio",
-  "executive_summary": "今日共采集 30 条，覆盖 5 个主题、3 个来源；热度最高：Apple ML Research: Muse Spark Open with MLX on Mac Studio。",
-  "editor_note": "off 档：未启用 LLM，本简报为数据版（无点评）。",
-  "contradictions": [],
-  "underrated": [],
+  "headline": "智能体工程化全面爆发：从 FDE 交付最后一公里到终端智能体递归自我改写，Agent 正从演示走向可部署系统",
+  "executive_summary": "今日 30 条数据中，智能体相关研究占据绝对主导（实体频次 35 次），但焦点已从「能不能做」转向「怎么可靠交付」——FDE-Gym 直指真实客户交付中模糊需求与未言明约束的痛点，MAI-Gym 和 JevAgentHarness 则试图解决评估与部署成本问题。强化学习（27 次）与蒸馏（9 次）构成方法论主线，Waypoint-OPD 和 Terminal-RSI 分别从策略迁移和自我改进两个方向推进。开源侧，MadsLorentzen/ai-job-search 以 97.7 热度登顶，反映开发者对「可拥有、可 fork」的 AI 工具链有强烈需求。值得注意的是，Apple ML Research 的 Muse Spark 在 HN 获得 94.5 高分，但摘要为空，信息完整度存疑。",
+  "editor_note": "今天的信号非常清晰：智能体的「演示红利」正在耗尽，真正的战场转移到了交付与评估。FDE-Gym 提出的问题——真实客户交付中需求模糊、系统在线、约束未言明——是所有做企业级 Agent 的团队都会撞上的墙，而现有 benchmark 几乎全部回避了这一点。与此同时，Terminal-RSI、Self-Evolving Agent Harness、MLExpert 三条线都在讲同一件事：让智能体改自己的脚手架而非模型权重，这是成本最低的自我进化路径，但也埋下了「评估失真」的隐患——当智能体自己改写自己的 harness，谁来保证 benchmark 没被过拟合？另一个反直觉观察：热度最高的 MadsLorentzen/ai-job-search（97.7）本质是一个 Claude Code 上的求职工作流，技术含量远低于任何一篇论文，但它精准击中了「我想拥有自己的 AI 工具」这一情绪，说明开源社区的注意力正在从「模型能力」转向「个人可控性」。最后，Apple Muse Spark 条目摘要为空却拿到 94.5 分，这种信息缺口在简报中必须标注，不能假装它信息完整。",
+  "contradictions": [
+    "Apple ML Research 的 Muse Spark 条目在 HN 获得 94.5 高热，但摘要字段为空，热度与信息完整度严重不匹配，无法核实其实际内容与宣称。",
+    "多条论文强调「智能体自我进化/自我改写」是效率捷径（Terminal-RSI、Self-Evolving Agent Harness），但 FDE-Gym 同时指出真实交付中未言明约束才是核心难点——自我进化能否覆盖「未言明」的部分，数据中未给出答案，存在方法论张力。",
+    "EdgeWise 主张长程任务选择性委托云端以省成本，而 JevAgentHarness 主张用小决策模型替代每步大 LLM 调用，两者都在降本，但一个靠路由、一个靠替换，路径互斥却都被视为「解法」，缺乏直接对比。"
+  ],
+  "underrated": [
+    "EdgeWise: Bringing Long-Horizon Agents to the Edge via Selective Cloud Delegation",
+    "DeltaStreamer: Towards Human-Like Agentic Streaming Video Understanding",
+    "Learning Where to Split: Dynamic Band Splitting for Audio Source Separation",
+    "Orbia: Do Generated Videos Form a Consistent 3D World?",
+    "Each Reward to Its Relevant Tokens: Reward-Specific Token-Level Credit Assignment for Multi-Reward RL"
+  ],
   "sections": [
     {
       "name": "开源项目",
-      "summary": "",
+      "summary": "GitHub 趋势榜被「让软件对智能体原生」和「个人可拥有的 AI 工作流」两类项目占据，工具链平民化趋势明显。",
       "item_ids": [
         "it_752e25023358d2db",
         "it_c181e3f6bd83b0eb",
@@ -17,13 +27,13 @@
     },
     {
       "name": "论文与研究",
-      "summary": "",
+      "summary": "智能体评估基准（FDE-Gym、MAI-Gym、RoTA-Bench、OmniCompass）与自我进化方法（Terminal-RSI、Self-Evolving Agent Harness、MLExpert）形成两大集群，强化学习贯穿始终。",
       "item_ids": [
         "it_dc19a790056bc2d8",
         "it_e98523e4fe63c0fa",
         "it_ac9d0bbaa3525b0a",
-        "it_ac6142098afbc9c6",
         "it_38b4bdab67fe92d1",
+        "it_ac6142098afbc9c6",
         "it_35258c5db9a3ff1f",
         "it_155228d3cbd8627c",
         "it_900b72d3b187e8e1",
@@ -31,114 +41,146 @@
         "it_5ad7c46a32ced559",
         "it_56b180964d659d0b",
         "it_93de749ae7d258a1",
+        "it_38b042c011d5abde",
         "it_3fdde7c257bf92e1",
         "it_e0013168d05fc73f",
         "it_d729d4595639862e",
-        "it_38b042c011d5abde",
         "it_24c9b02428fc2488",
         "it_b2c109ebc3b41626",
         "it_c928f60b6c1e0422",
         "it_72f326c8411bebd1",
         "it_30220babbf1e5771",
+        "it_b7fd533ef158759e",
         "it_49117cbd829d9728",
-        "it_3f47652b30d7ef4a"
+        "it_3f47652b30d7ef4a",
+        "it_246430b1d12f6516"
       ]
     },
     {
       "name": "社区舆论",
-      "summary": "",
+      "summary": "HN 上 Apple MLX 本地推理与 Gemini 4 Argon 打星际两个话题热度最高，社区对「本地可跑」和「模型实战能力」的讨论热情远超纯论文。",
       "item_ids": [
         "it_98e6a11f87f3c75f",
-        "it_3d3011b3b2f663f4",
-        "it_ba649422ea9b7584",
-        "it_364974e02f6a5c5b"
+        "it_3d3011b3b2f663f4"
       ]
+    },
+    {
+      "name": "产业与新闻",
+      "summary": "今日无明确产业新闻条目，相关信号散见于开源与社区板块。",
+      "item_ids": []
     }
   ],
-  "comments": [],
-  "stats": {
-    "total_items": 30,
-    "topics": 5,
-    "sources": {
-      "hackernews": 4,
-      "github_trending": 3,
-      "hf_papers": 23
+  "comments": [
+    {
+      "item_id": "it_dc19a790056bc2d8",
+      "one_liner": "FDE-Gym 把评估靶心从「任务明确」移到「需求模糊」，直击企业交付真实痛点。",
+      "why_it_matters": "现有 agent benchmark 几乎都假设任务已被清晰定义，而真实 FDE 场景中澄清模糊需求、在活系统中作业、发现未言明约束才是主要工作量。这个基准若被采纳，会改变企业级 Agent 的评估标准。",
+      "who_cares": "做企业级 Agent 交付的团队、FDE 岗位、Agent 产品经理。",
+      "what_to_watch": "后续是否公开任务集与评分细则，以及是否有厂商将其纳入模型选型流程。",
+      "novelty": 8,
+      "impact": 8,
+      "stance": "强烈看好，这是今天最该被讨论的论文。"
     },
-    "top_entities": [
-      {
-        "name": "智能体",
-        "type": "concept",
-        "count": 35
-      },
-      {
-        "name": "强化学习",
-        "type": "concept",
-        "count": 27
-      },
-      {
-        "name": "推理",
-        "type": "concept",
-        "count": 24
-      },
-      {
-        "name": "Qwen",
-        "type": "model",
-        "count": 24
-      },
-      {
-        "name": "GPT",
-        "type": "model",
-        "count": 12
-      },
-      {
-        "name": "对齐",
-        "type": "concept",
-        "count": 11
-      },
-      {
-        "name": "NVIDIA",
-        "type": "company",
-        "count": 11
-      },
-      {
-        "name": "多模态",
-        "type": "concept",
-        "count": 10
-      },
-      {
-        "name": "蒸馏",
-        "type": "concept",
-        "count": 9
-      },
-      {
-        "name": "Claude",
-        "type": "model",
-        "count": 9
-      }
-    ]
-  },
+    {
+      "item_id": "it_e0013168d05fc73f",
+      "one_liner": "Terminal-RSI 用递归自我改写加策略精炼，把终端智能体的失败轨迹转化为可用更新。",
+      "why_it_matters": "终端场景验证信号稀疏，把部分进展转成完整任务解决是关键瓶颈；RSR+RPR 交替的框架提供了一条可复现的工程路径。",
+      "who_cares": "终端/CLI 智能体开发者、RL 训练工程师。",
+      "what_to_watch": "自我改写后的 harness 是否在留出任务上仍有效，还是只对训练分布过拟合。",
+      "novelty": 7,
+      "impact": 7,
+      "stance": "方向对，但需警惕自我改写带来的评估污染。"
+    },
+    {
+      "item_id": "it_752e25023358d2db",
+      "one_liner": "求职 AI 框架登顶 GitHub 趋势，靠的不是技术深度而是「fork 即拥有」的所有权叙事。",
+      "why_it_matters": "它证明开发者对本地运行、可完全掌控的 AI 工作流有强烈付费意愿之外的参与意愿，Claude Code 生态正在长出应用层。",
+      "who_cares": "独立开发者、求职者、Claude Code 生态参与者。",
+      "what_to_watch": "fork 后的实际留存率，以及是否出现同类框架的模板化竞争。",
+      "novelty": 5,
+      "impact": 6,
+      "stance": "热度合理但技术护城河极浅，象征意义大于技术意义。"
+    },
+    {
+      "item_id": "it_98e6a11f87f3c75f",
+      "one_liner": "Apple MLX 上的 Muse Spark 本地推理获 HN 高分，但条目信息缺失，无法验证实质。",
+      "why_it_matters": "若属实，意味着 Mac Studio 上的本地大模型推理体验再进一步；但摘要为空使这条热度的可信度打折。",
+      "who_cares": "本地推理爱好者、Apple 生态开发者。",
+      "what_to_watch": "原始链接与实测数据，以及 MLX 社区是否复现。",
+      "novelty": 6,
+      "impact": 6,
+      "stance": "存疑，热度与信息量不匹配，需核实后再下判断。"
+    },
+    {
+      "item_id": "it_3fdde7c257bf92e1",
+      "one_liner": "MAI-Gym 把移动端与桌面 GUI 智能体的评估和 RL 训练塞进一个开放平台。",
+      "why_it_matters": "GUI 智能体训练的最大障碍是交互环境成本高、真实任务稀缺，一体化平台若可用会显著降低门槛。",
+      "who_cares": "GUI Agent 研究者、移动端自动化团队。",
+      "what_to_watch": "环境覆盖的真实应用数量与任务多样性，避免又一个玩具级 benchmark。",
+      "novelty": 7,
+      "impact": 7,
+      "stance": "基础设施型工作，价值取决于生态采用而非论文本身。"
+    },
+    {
+      "item_id": "it_30220babbf1e5771",
+      "one_liner": "EdgeWise 让长程智能体只在关键步骤委托云端，其余在边缘完成，直指推理成本。",
+      "why_it_matters": "长程任务每步都调前沿模型成本不可持续，选择性委托是务实解法，但路由判断本身的准确性是命门。",
+      "who_cares": "边缘部署团队、成本敏感的 Agent 产品方。",
+      "what_to_watch": "路由错误导致的失败率，以及端云切换的延迟开销。",
+      "novelty": 7,
+      "impact": 6,
+      "stance": "务实但被低估，路由质量决定成败。"
+    },
+    {
+      "item_id": "it_3d3011b3b2f663f4",
+      "one_liner": "Gemini 4 Argon 写代码打星际，StarSkirmish Bench 横向对比四大旗舰模型。",
+      "why_it_matters": "用游戏作为长程规划与代码生成的综合测试场，比静态 benchmark 更接近真实智能体能力。",
+      "who_cares": "模型评测关注者、游戏 AI 研究者。",
+      "what_to_watch": "各模型在长局中的稳定性与失败模式，而非单局胜负。",
+      "novelty": 6,
+      "impact": 5,
+      "stance": "有趣的横向对比，但游戏能力到通用能力的迁移仍需论证。"
+    },
+    {
+      "item_id": "it_49117cbd829d9728",
+      "one_liner": "JevAgentHarness 用小决策模型接管 LLM 每步的多选题调用，直接砍长任务成本。",
+      "why_it_matters": "大多数 harness 每步都调大模型，而多数调用只是选工具，用小模型替换是明显的成本优化空间。",
+      "who_cares": "Agent 框架开发者、推理成本负责人。",
+      "what_to_watch": "决策模型在分布外任务上的准确率下降幅度。",
+      "novelty": 7,
+      "impact": 6,
+      "stance": "工程价值被低估，值得框架层跟进。"
+    },
+    {
+      "item_id": "it_246430b1d12f6516",
+      "one_liner": "Orbia 追问生成视频是否构成一致 3D 世界，戳破「好看不等于一致」的幻觉。",
+      "why_it_matters": "视频生成被当作可交互世界的前提是 3D 一致性，现有 benchmark 只测局部几何或用 VLM 主观判断，Orbia 试图系统化这一评估。",
+      "who_cares": "视频生成研究者、世界模型团队。",
+      "what_to_watch": "评估指标与人类判断的相关性验证。",
+      "novelty": 7,
+      "impact": 6,
+      "stance": "问题问得比答案好，是今天最被低估的论文之一。"
+    },
+    {
+      "item_id": "it_1f28a16c9fe19cbe",
+      "one_liner": "CLI-Anything 试图让所有软件对智能体原生，口号大但落地待验证。",
+      "why_it_matters": "若真能把 CLI 作为智能体与软件之间的通用接口层，会大幅降低工具集成成本。",
+      "who_cares": "工具链开发者、Agent 平台方。",
+      "what_to_watch": "CLI-Hub 上实际接入的软件数量与质量。",
+      "novelty": 6,
+      "impact": 5,
+      "stance": "愿景清晰，但「ALL Software」是营销话术，先看首批接入清单。"
+    }
+  ],
+  "stats": {},
   "items": {
-    "it_98e6a11f87f3c75f": {
-      "id": "it_98e6a11f87f3c75f",
-      "source": "hackernews",
-      "title": "Apple ML Research: Muse Spark Open with MLX on Mac Studio",
-      "url": "https://machinelearning.apple.com/research/mlx-distributed-inference",
-      "summary": "",
-      "hot_score": 97.75,
-      "topic_id": "tp_3b04bb5765a7",
-      "seen_in": [
-        "hackernews"
-      ],
-      "published_at": "2026-10-16T13:43:48+00:00",
-      "language": "en"
-    },
     "it_752e25023358d2db": {
       "id": "it_752e25023358d2db",
       "source": "github_trending",
       "title": "MadsLorentzen/ai-job-search",
       "url": "https://github.com/MadsLorentzen/ai-job-search",
       "summary": "The job search that runs on your machine. AI job application framework built on Claude Code: evaluate postings, tailor CVs, write cover letters, prep interviews. Fork it and own it.",
-      "hot_score": 95.0,
+      "hot_score": 97.7172,
       "topic_id": null,
       "seen_in": [
         "github_trending"
@@ -146,19 +188,19 @@
       "published_at": "2026-10-16T15:44:39.424248+00:00",
       "language": "Python"
     },
-    "it_c181e3f6bd83b0eb": {
-      "id": "it_c181e3f6bd83b0eb",
-      "source": "github_trending",
-      "title": "hmjz100/LinkSwift",
-      "url": "https://github.com/hmjz100/LinkSwift",
-      "summary": "一个基于 JavaScript 的网盘文件下载地址获取工具。基于【网盘直链下载助手】修改 ，支持 百度网盘 / 阿里云盘 / 中国移动云盘 / 天翼云盘 / 迅雷云盘 / 夸克网盘 / UC网盘 / 123云盘 八大网盘",
-      "hot_score": 88.75,
-      "topic_id": null,
+    "it_98e6a11f87f3c75f": {
+      "id": "it_98e6a11f87f3c75f",
+      "source": "hackernews",
+      "title": "Apple ML Research: Muse Spark Open with MLX on Mac Studio",
+      "url": "https://machinelearning.apple.com/research/mlx-distributed-inference",
+      "summary": "",
+      "hot_score": 94.5031,
+      "topic_id": "tp_3b04bb5765a7",
       "seen_in": [
-        "github_trending"
+        "hackernews"
       ],
-      "published_at": "2026-10-16T15:44:39.424253+00:00",
-      "language": "JavaScript"
+      "published_at": "2026-10-16T13:43:48+00:00",
+      "language": "en"
     },
     "it_dc19a790056bc2d8": {
       "id": "it_dc19a790056bc2d8",
@@ -166,7 +208,7 @@
       "title": "FDE-Gym: The Last Mile of AI Delivery",
       "url": "arxiv:2610.22350",
       "summary": "Existing agent benchmarks typically evaluate agents on well-specified tasks defined by issue reports, specifications, or task tickets. Real-world customer delivery is different: forward-deployed engineers (FDEs) must clarify ambiguous requirements, work in live systems, and uncover unstated constraints. We introduce FDE-Gym, a benchmark of 95 end-to-end delivery tasks from 20 customer scenarios across 18 sectors, each adapted by industry experts from real-world delivery projects. In simulated customer environments with scripted stakeholders and modifiable customer systems, agents interact with stakeholders and operate on production-like systems to deliver working solutions. FDE-Gym scores a delivery by how much it improves the customer's own success metric, normalized between 0 (unchanged system) and 1 (reference solution), with penalties for stakeholder interactions (messages, trial runs, and waiting time). An online platform lets humans practice FDE skills under the same grading criteria. We evaluate 13 model configurations from seven providers. In the realistic setting, where unstated constraints must be discovered, the best configuration achieves a mean FDE-Gym score of 0.56 and resolves only 14 of the 95 tasks (a score of at least 0.8 with no incident). Discovering unstated constraints is the primary bottleneck: performance drops sharply when models must uncover them without explicit guidance. Yet information discovery alone does not account for the gap: even on the 23 tasks where the best configuration obtains every key fact from stakeholders, it reaches a normalized business uplift of 0.8 or above on only 10. These results reveal a substantial gap between solving well-specified tasks and delivering effective AI systems for real customers.",
-      "hot_score": 86.2986,
+      "hot_score": 84.8318,
       "topic_id": null,
       "seen_in": [
         "arxiv",
@@ -181,13 +223,27 @@
       "title": "Waypoint-OPD: Transferring RL-Induced Policy Shifts via Gated On-Policy Distillation",
       "url": "arxiv:2610.21601",
       "summary": "Policy-shift distillation reuses the difference between a teacher's log probabilities before and after reinforcement learning (RL) as supervision on student-generated trajectories. However, this endpoint policy shift cannot reveal whether local action preferences evolved consistently during teacher training. The same endpoint shift can result from early and late shifts that reinforce or partially cancel each other. We investigate whether agreement between early and late teacher policy shifts can guide selective transfer. We introduce Waypoint-guided On-Policy Distillation (Waypoint-OPD), which uses an intermediate teacher checkpoint from the same RL run to compare early and late shifts in relative action preferences at student-visited prefixes. We gate the endpoint shift according to the directional agreement between the early and late shifts, suppressing it when they point in opposing directions. Compared with endpoint-only transfer, our method requires only one additional frozen-teacher scoring pass. Using RL-trained Qwen3-4B teachers, we evaluate our method with Qwen3-8B, Qwen3-14B, and Qwen3-30B-A3B as student models in mathematical and code reasoning. In all six domain--student settings, Waypoint-OPD achieves the highest domain-average score among the compared distillation methods. Ablations with the Qwen3-8B student show that removing or shuffling gates reduces mathematical reasoning performance. These results support the use of directional agreement between early and late teacher policy shifts to weight the endpoint shift during student training.",
-      "hot_score": 83.9516,
+      "hot_score": 82.4481,
       "topic_id": null,
       "seen_in": [
         "hf_papers"
       ],
       "published_at": "2026-10-14T20:00:00+00:00",
       "language": "en"
+    },
+    "it_c181e3f6bd83b0eb": {
+      "id": "it_c181e3f6bd83b0eb",
+      "source": "github_trending",
+      "title": "hmjz100/LinkSwift",
+      "url": "https://github.com/hmjz100/LinkSwift",
+      "summary": "一个基于 JavaScript 的网盘文件下载地址获取工具。基于【网盘直链下载助手】修改 ，支持 百度网盘 / 阿里云盘 / 中国移动云盘 / 天翼云盘 / 迅雷云盘 / 夸克网盘 / UC网盘 / 123云盘 八大网盘",
+      "hot_score": 81.4672,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-16T15:44:39.424253+00:00",
+      "language": "JavaScript"
     },
     "it_ac9d0bbaa3525b0a": {
       "id": "it_ac9d0bbaa3525b0a",
@@ -195,24 +251,9 @@
       "title": "OpenGCUA: Toward a Fully Open Stack for Generalist Computer Use",
       "url": "arxiv:2610.22200",
       "summary": "Computer use has reached a turning point: the focus is expanding from GUI-only interaction to systems that complete tasks on users' computers through visual and programmatic interfaces. We define a generalist computer-use agent (GCUA) as a system in which the model chooses how to observe, act, and organize its work across visual and programmatic interfaces. Yet frontier implementations, such as GPT-6 Astra's computer-use system, remain largely closed, limiting systematic study of their design. We introduce Open Generalist CUA (OpenGCUA), an ongoing project to develop and open the full stack for GCUAs with the community. This report presents the first release of OpenGCUA. Code execution is a key feature of our agent design: it lets intermediate results determine subsequent operations and enables models to apply their existing programming capabilities directly to computer interaction. We also propose harness-to-model decision transfer, moving selected observations and task-state decisions from fixed harness rules to the model. On OSWorld-v2, our full configuration improves task scores across all eight evaluated models, including GPT-6 Astra and Claude Opus 5, raising mean partial score by +19.6 points and reducing reported steps per task by an average of 53.0% relative to batched GUI-only execution. We release our implementation and prompts, evaluation trajectories from all eight models, and preliminary versions of a real-device harness and a cross-device SDK. The harness addresses real-device challenges not fully captured by benchmarks, while the SDK provides a common programming interface across computers, mobiles and browsers. Across four real macOS tasks under our real-device harness, selected Qwen3.8-Max runs use 19.4 times as many reported reasoning tokens as GPT-6 Astra, highlighting substantial differences between models in real-device execution efficiency.",
-      "hot_score": 82.6251,
+      "hot_score": 81.1399,
       "topic_id": null,
       "seen_in": [
-        "hf_papers"
-      ],
-      "published_at": "2026-10-14T20:00:00+00:00",
-      "language": "en"
-    },
-    "it_ac6142098afbc9c6": {
-      "id": "it_ac6142098afbc9c6",
-      "source": "hf_papers",
-      "title": "MJev-Spatial: System One Spatial Intelligence via Native Attention Matching",
-      "url": "arxiv:2610.22276",
-      "summary": "Spatial intelligence lets an agent perceive and act in the physical world, and many of its judgments must be made at interaction rates: which spatial relation holds, how far an object is, or where to place it. Vision-language models (VLMs) produce these answers by free-form text generation, paying for autoregressive decoding and answer parsing even though the output space is compact: one of a few options, a scalar, or a 2D point. In light of this, we introduce MJev-Spatial, a System 1 multimodal decision model that tackles all three types of spatial understanding tasks within a unified classification framework. Specifically, MJev-Spatial treats each candidate as a class and scores it using the backbone's pretrained query and key projections, without adding parameters. The candidates are the given options for choice tasks, or value bins and image regions refined through coarse-to-fine classification for numerical and point prediction, respectively. At inference, each classification decision takes a single forward pass and generates no answer tokens. To train on heterogeneous spatial data efficiently, we supervise all coarse-to-fine stages jointly with teacher forcing in one forward pass, and combine this with length-aware global batching and cross-GPU load balancing, raising training throughput by 30.8% over the original batching strategy. Built on Qwen3.5-4B and trained on 12.3M question-answer pairs converted from existing spatial datasets, MJev-Spatial achieves the highest overall score (65.64%) among eight tested models, ranks first on seven of twelve benchmarks, and outperforms its unmodified autoregressive base model on all twelve, while running 2.5 times faster than the fastest autoregressive baseline and 5.6 times faster than the base model.",
-      "hot_score": 80.6863,
-      "topic_id": null,
-      "seen_in": [
-        "arxiv",
         "hf_papers"
       ],
       "published_at": "2026-10-14T20:00:00+00:00",
@@ -224,12 +265,27 @@
       "title": "OmniCompass: A Holistic Benchmark for Omni-Modal Video Grounding and Understanding",
       "url": "arxiv:2610.18829",
       "summary": "With the rapid development of multimodal large language models (MLLMs), evaluating their video understanding capabilities has become increasingly important. Existing video understanding benchmarks cover only part of the evaluation dimensions, limiting systematic diagnosis of omni-modal video understanding. We introduce OmniCompass, a holistic benchmark for omni-modal video grounding and understanding. OmniCompass defines two evaluation tracks: OmniCompass-VL assesses vision-language models on tasks requiring visual evidence, while OmniCompass-AV assesses omni-modal models on tasks requiring joint audio-visual evidence. Each track includes three complementary tasks: temporal grounding (TG), spatial grounding (SG), and question answering (QA), assessing when a referenced target appears, where it is, and what happens. QA covers five perception and three reasoning categories in OmniCompass-VL, and three perception and two reasoning categories in OmniCompass-AV. OmniCompass-VL contains 820 videos and 2,460 instances across domains and three duration types: short, medium, and long. A narrative- and audio-rich subset forms OmniCompass-AV with 240 videos and 720 instances. Each instance is evaluated under two paired settings: text-only and text+image, specifying the same target through text and visual-language guidance. All instances are manually annotated with multi-round quality verification. Evaluations of 50 MLLMs show that open-source models still lag behind proprietary counterparts, particularly in audio-visual understanding. Precise temporal and spatial grounding remains challenging even for leading models, and their predictions still exhibit inconsistencies across the paired target specifications.",
-      "hot_score": 80.2867,
+      "hot_score": 79.8855,
       "topic_id": null,
       "seen_in": [
         "hf_papers"
       ],
       "published_at": "2026-10-12T20:00:00+00:00",
+      "language": "en"
+    },
+    "it_ac6142098afbc9c6": {
+      "id": "it_ac6142098afbc9c6",
+      "source": "hf_papers",
+      "title": "MJev-Spatial: System One Spatial Intelligence via Native Attention Matching",
+      "url": "arxiv:2610.22276",
+      "summary": "Spatial intelligence lets an agent perceive and act in the physical world, and many of its judgments must be made at interaction rates: which spatial relation holds, how far an object is, or where to place it. Vision-language models (VLMs) produce these answers by free-form text generation, paying for autoregressive decoding and answer parsing even though the output space is compact: one of a few options, a scalar, or a 2D point. In light of this, we introduce MJev-Spatial, a System 1 multimodal decision model that tackles all three types of spatial understanding tasks within a unified classification framework. Specifically, MJev-Spatial treats each candidate as a class and scores it using the backbone's pretrained query and key projections, without adding parameters. The candidates are the given options for choice tasks, or value bins and image regions refined through coarse-to-fine classification for numerical and point prediction, respectively. At inference, each classification decision takes a single forward pass and generates no answer tokens. To train on heterogeneous spatial data efficiently, we supervise all coarse-to-fine stages jointly with teacher forcing in one forward pass, and combine this with length-aware global batching and cross-GPU load balancing, raising training throughput by 30.8% over the original batching strategy. Built on Qwen3.5-4B and trained on 12.3M question-answer pairs converted from existing spatial datasets, MJev-Spatial achieves the highest overall score (65.64%) among eight tested models, ranks first on seven of twelve benchmarks, and outperforms its unmodified autoregressive base model on all twelve, while running 2.5 times faster than the fastest autoregressive baseline and 5.6 times faster than the base model.",
+      "hot_score": 79.2746,
+      "topic_id": null,
+      "seen_in": [
+        "arxiv",
+        "hf_papers"
+      ],
+      "published_at": "2026-10-14T20:00:00+00:00",
       "language": "en"
     },
     "it_35258c5db9a3ff1f": {
@@ -238,7 +294,7 @@
       "title": "3DCodeVerse: Exploring 3D Worlds as Code",
       "url": "arxiv:2610.22341",
       "summary": "We introduce 3DCodeVerse, a research ecosystem that enables coding agents to create editable and verifiable 3D content at scale. 3DCodeVerse comprises large-scale, high-quality datasets of executable 3D code, a coding harness for spatial reasoning and automated verification, and practical guidance for 3D coding. First, we construct 3DCodeVerse-2M, a large-scale curated dataset of standalone 3D executable code. We build this corpus by collecting open-source data, converting specialized representations, and generating new programs with coding agents. Each program is packaged with the source files and associated assets required for execution in its declared environment, along with available descriptions and verification records. Second, we develop the 3DCodeVerse Harness, a multi-agent directed acyclic graph framework for generating and refining 3D content. It uses execution checks, spatial measurements, and visual feedback to automatically evaluate and revise generated programs without human feedback during generation. Third, we conduct systematic empirical studies of 3D coding, establishing baselines with fine-tuned open models and deriving practical guidance through component-level analyses of our harness. Extensive experiments demonstrate that fine-tuning on our dataset significantly improves the 3D coding capabilities of open-source models. Notably, our 3DCodeVerse harness achieves a 90% win rate against Claude Design (3D Object) in pairwise human evaluations, when both are utilized by Claude Opus 5.5.",
-      "hot_score": 77.9312,
+      "hot_score": 76.5746,
       "topic_id": null,
       "seen_in": [
         "arxiv",
@@ -253,7 +309,7 @@
       "title": "Show HN: Gemini 4 Argon plays StarCraft",
       "url": "https://starskirmish.com/bench/v0-2",
       "summary": "I've refreshed StarSkirmish Bench, a benchmark where LLMs play StarCraft BW by writing code, with results from the flagship models of OpenAI, Anthropic, Google, and Muse",
-      "hot_score": 73.0833,
+      "hot_score": 73.1096,
       "topic_id": null,
       "seen_in": [
         "hackernews"
@@ -267,9 +323,24 @@
       "title": "VLA-Δ: Learning Physical State Transition for Vision-Language-Action Models",
       "url": "arxiv:2610.21306",
       "summary": "Vision-language-action (VLA) models transfer semantic knowledge acquired through vision-language pretraining to robot control, achieving strong performance across various benchmarks. However, most VLAs directly map observations to demonstrated actions without explicit supervision of intermediate physical state changes, making them prone to overfitting observation-action correspondences. Some methods introduce intermediate reasoning or future-state prediction in language, visual, or latent spaces to guide action generation, but do not explicitly supervise the physical state transition itself. We therefore propose VLA-Δ, a general framework that uses physical changes between current and future states as explicit learning targets. To support this objective, we construct a large-scale pretraining dataset and derive physical state-transition annotations covering task-relevant semantics and visual motion changes, providing more direct supervision for continuous action generation. During inference, the model generates actions directly from current observations without additional inference overhead. VLA-Δ achieves performance competitive with the state of the art on LIBERO and RoboTwin, and outperforms π_{0.5} in real-robot experiments. Our code is available at https://github.com/ZJU-OmniAI/VLA-Delta",
-      "hot_score": 71.7067,
+      "hot_score": 70.4236,
       "topic_id": null,
       "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-14T20:00:00+00:00",
+      "language": "en"
+    },
+    "it_900b72d3b187e8e1": {
+      "id": "it_900b72d3b187e8e1",
+      "source": "hf_papers",
+      "title": "SCOPE: Semantic Bounded Credit Optimization for Prompt Engineering in Text-to-image Generation",
+      "url": "arxiv:2610.22264",
+      "summary": "Reinforcement learning (RL) enables language models to improve text-to-image (T2I) generation by rewriting prompts for a frozen image generator. Existing methods typically apply a single signal derived from the image to individual subword tokens, although objects, counts, attributes, and relations form coherent semantic spans. We propose SCOPE, an objective based on Group Relative Policy Optimization (GRPO) that aligns update weighting with this structure. The rewriter jointly generates an enhanced prompt and its semantic partition. SCOPE pools shifts in policy log probabilities within each span to derive a shared coefficient for its token losses while retaining a single advantage for each completion. It requires neither separate span rewards nor additional image renders. Across Qwen-Image, SD3, and FLUX.1-dev, SCOPE achieves average relative gains over vanilla GRPO of 9.48% on GeneVal and 7.62% on T2I-CompBench. Ablation studies show that both semantic boundaries and pooling within spans contribute to these gains, supporting semantic structure as a practical inductive bias for prompt engineering with RL.",
+      "hot_score": 65.9991,
+      "topic_id": null,
+      "seen_in": [
+        "arxiv",
         "hf_papers"
       ],
       "published_at": "2026-10-14T20:00:00+00:00",
@@ -281,7 +352,7 @@
       "title": "HKUDS/CLI-Anything",
       "url": "https://github.com/HKUDS/CLI-Anything",
       "summary": "\"CLI-Anything: Making ALL Software Agent-Native\" -- CLI-Hub: https://clianything.cc/",
-      "hot_score": 67.5,
+      "hot_score": 65.2172,
       "topic_id": null,
       "seen_in": [
         "github_trending"
@@ -289,48 +360,19 @@
       "published_at": "2026-10-16T15:44:39.424204+00:00",
       "language": "Python"
     },
-    "it_900b72d3b187e8e1": {
-      "id": "it_900b72d3b187e8e1",
-      "source": "hf_papers",
-      "title": "SCOPE: Semantic Bounded Credit Optimization for Prompt Engineering in Text-to-image Generation",
-      "url": "arxiv:2610.22264",
-      "summary": "Reinforcement learning (RL) enables language models to improve text-to-image (T2I) generation by rewriting prompts for a frozen image generator. Existing methods typically apply a single signal derived from the image to individual subword tokens, although objects, counts, attributes, and relations form coherent semantic spans. We propose SCOPE, an objective based on Group Relative Policy Optimization (GRPO) that aligns update weighting with this structure. The rewriter jointly generates an enhanced prompt and its semantic partition. SCOPE pools shifts in policy log probabilities within each span to derive a shared coefficient for its token losses while retaining a single advantage for each completion. It requires neither separate span rewards nor additional image renders. Across Qwen-Image, SD3, and FLUX.1-dev, SCOPE achieves average relative gains over vanilla GRPO of 9.48% on GeneVal and 7.62% on T2I-CompBench. Ablation studies show that both semantic boundaries and pooling within spans contribute to these gains, supporting semantic structure as a practical inductive bias for prompt engineering with RL.",
-      "hot_score": 67.319,
-      "topic_id": null,
-      "seen_in": [
-        "arxiv",
-        "hf_papers"
-      ],
-      "published_at": "2026-10-14T20:00:00+00:00",
-      "language": "en"
-    },
     "it_a6461dd3d4808b7f": {
       "id": "it_a6461dd3d4808b7f",
       "source": "hf_papers",
       "title": "Speculative Forcing for Efficient Autoregressive Video Generation",
       "url": "arxiv:2610.22347",
       "summary": "Few-step autoregressive video generators enable streaming generation, yet they run every token through the final denoising step, regardless of how much refinement it needs. We find this uniform computation is often unnecessary: many tokens already closely match their eventual full-step outputs in the initial steps, while others require refinement until the end. We introduce Speculative Forcing, a framework that treats intermediate clean estimates as drafts and predicts when individual tokens can be safely accepted early. Once accepted, a token is frozen as its final output and undergoes no further denoising, while its cached keys and values remain available as context for the remaining tokens. We explore two alternative verifier designs: a training-free one based on similarity to clean content and stability across steps, and a learned one that reads the frozen generator's intermediate features to estimate each token's remaining gap to its full-step output. Across short-video, long-video, and world generation, Speculative Forcing preserves the quality of full-step sampling while substantially reducing computation. On LongLive, it matches the four-step generator with ~1.7 denoising steps per token, running over 1.5x faster at 41.7 and 37.8 fps. On Lingbot-World 2.0, where camera motion continually changes the visible content, it maintains quality with ~2.5 denoising steps per token and runs 1.35x faster at 24.5 fps.",
-      "hot_score": 66.4006,
+      "hot_score": 65.0991,
       "topic_id": null,
       "seen_in": [
         "arxiv",
         "hf_papers"
       ],
       "published_at": "2026-10-14T20:00:00+00:00",
-      "language": "en"
-    },
-    "it_ba649422ea9b7584": {
-      "id": "it_ba649422ea9b7584",
-      "source": "hackernews",
-      "title": "Last rites for Gentoo's Chromium package",
-      "url": "https://lwn.net/Articles/1097760",
-      "summary": "",
-      "hot_score": 65.8175,
-      "topic_id": null,
-      "seen_in": [
-        "hackernews"
-      ],
-      "published_at": "2026-10-16T05:14:42+00:00",
       "language": "en"
     },
     "it_5ad7c46a32ced559": {
@@ -339,7 +381,7 @@
       "title": "RoTA-Bench: Evaluating 3D Spatial Reasoning through Interactive Projection Alignment",
       "url": "arxiv:2610.17665",
       "summary": "Can vision-language models turn 2D observations into 3D understanding that supports precise action? This requires inferring object geometry, anticipating the effects of rotation, and refining actions through visual feedback. We introduce RoTA-Bench to evaluate these abilities through interactive 3D-to-2D projection alignment. Given a target silhouette, a model observes a rotated object and chooses successive rotations to recover the target projection within a limited action budget. Our automated pipeline constructs silhouette-preserving 3D objects from 2D icons and uses reversible initialization to guarantee solvability, yielding 674 tasks and a stratified 100-task test set. Empirically, we find that (i) a substantial human-model gap persists: GPT-5.6-Sol succeeds on only 17% of tasks, whereas 20 undergraduate participants collectively complete the test set four times with a 100% success rate; (ii) image-space and pose-space progress can diverge: at matched states, the model more often improves silhouette overlap while worsening pose alignment than humans (19.4% vs. 10.9%); and (iii) fine-grained control is sensitive to interaction history: removing it leaves 96.8% of the model's actions at a coarse 30-degree step size and sharply reduces observed task success. These findings highlight the challenge of converting visual evidence into precise 3D control, beyond recognizing or matching individual images.",
-      "hot_score": 65.4494,
+      "hot_score": 64.7415,
       "topic_id": null,
       "seen_in": [
         "hf_papers"
@@ -353,7 +395,7 @@
       "title": "Self-Evolving Agent Harness",
       "url": "arxiv:2610.18813",
       "summary": "Harness self-evolution revises an agent's software scaffolding, including prompts, memory, workflows, and executable components, while keeping model weights fixed. We formalize a feedback-driven process in which accepted revisions persist across runs. The framework separates update targets from proposal and admission mechanisms. It distinguishes changes to interpreted state from revisions to tools and code, repository-level control logic, and plugin composition. We characterize search through evolutionary optimization and examine its reliability through continual PAC-learning. Under explicit assumptions, the analysis yields an expected generalization bound, a retention bound conditional on historical regression budgets, and a high-probability admission rule using fresh, independent validation data. We examine how persistent harness revisions affect knowledge sharing and organizational workflows, with implications for scientific reliability, physical safety, and institutional accountability. Cases from prior work illustrate model--harness co-design, distributed execution, and plugin reuse. Reliable deployment requires continual validation as task distributions and evaluators change, with independent safeguards for learning, runtime privileges, and consequential actions. We provide a comprehensive 66-page discussion of related work, theory, algorithms, evaluation, applications, and the broader impact of Harness RSI, together with continuously updated code and supplementary materials, at https://github.com/zgcagi/Harness-RSI.",
-      "hot_score": 62.8377,
+      "hot_score": 62.5284,
       "topic_id": null,
       "seen_in": [
         "hf_papers"
@@ -367,12 +409,26 @@
       "title": "InfiniSplat v2: Analyzing and Improving Feed-Forward 3DGS from Any Views",
       "url": "arxiv:2610.20341",
       "summary": "Feed-forward Gaussian reconstruction builds 3D scenes directly from input images for novel view rendering, but learning Gaussian attributes from predicted geometry for high-quality rendering under large viewpoint changes remains challenging. We analyze limitations in Gaussian attribute learning and introduce InfiniSplat v2, which improves rendering quality through architectural and training changes. Our method decouples geometry and attribute prediction with a frozen geometry branch, aligns predicted Gaussians using ground-truth camera poses during training, and adopts large-angle target view supervision. Across six datasets, the feed-forward outputs of the same trained model achieve state-of-the-art mean LPIPS and DISTS among the evaluated methods in both pose-conditioned and pose-free settings. In the pose-conditioned setting, mean LPIPS and DISTS decrease by 25.8% and 32.9%, respectively, compared with the strongest evaluated baselines. We further find that opacity learned with only image reconstruction supervision suppresses geometrically inconsistent points. Project page: https://zju3dv.github.io/InfiniSplat2/",
-      "hot_score": 61.7759,
+      "hot_score": 61.1415,
       "topic_id": null,
       "seen_in": [
         "hf_papers"
       ],
       "published_at": "2026-10-13T20:00:00+00:00",
+      "language": "en"
+    },
+    "it_38b042c011d5abde": {
+      "id": "it_38b042c011d5abde",
+      "source": "hf_papers",
+      "title": "Learning Where to Split: Dynamic Band Splitting for Audio Source Separation",
+      "url": "arxiv:2610.14993",
+      "summary": "Audio source separation models must preserve fine spectral structure while keeping the cost of the separator tractable. Band-split architectures reduce this cost by manually partitioning the spectrum into predefined frequency bands and encoding each band as a token, but the same boundaries are used for every mixture. Because informative spectral structure varies with source content, fixed boundaries can merge discriminative components or spend tokens where little resolution is needed. We introduce Dynamic Band Splitting (DBS), an end-to-end framework that adapts boundary locations and band widths to each mixture under a fixed band-token budget. DBS predicts content-conditioned boundary scores within frequency blocks, selects a prescribed number of boundaries using hard Top-K, and applies content-dependent pooling to obtain compact band tokens. After separation, it smooths and expands these tokens to the original STFT grid, refines them along frequency, and decodes complex masks with a frequency-shared head. DBS improved separation over the corresponding static models on DnR v2, MUSDB18-HQ, and EchoSet, with DBS-BSRNN achieving relative gain of 29.0% in average SI-SDR on DnR v2. These results and boundary analyses on DnR v2 show that content-adaptive frequency partitioning benefits multiple separator backbones under a fixed band-token budget. Code and audio demos are available at https://cslikai.cn/Dynamic-Band-Splitting",
+      "hot_score": 59.5304,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-09T20:00:00+00:00",
       "language": "en"
     },
     "it_3fdde7c257bf92e1": {
@@ -381,7 +437,7 @@
       "title": "MAI-Gym: An Open All-in-One Platform for GUI Agent Evaluation and RL Training across Mobile and Computer Environments",
       "url": "arxiv:2610.20939",
       "summary": "Online reinforcement learning (RL) with verifiable rewards has driven rapid progress in mathematics, coding, and tool use, but scaling this success to GUI agents remains challenging due to the high cost of interactive environments and the scarcity of realistic training tasks. We introduce MAI-Gym, an open all-in-one platform that unifies GUI agent evaluation, data collection, and online RL training across mobile, computer, and web environments. Through a shared rollout pipeline, MAI-Gym ensures consistent agent behavior across evaluation and training, supports ten established benchmarks, and scales to 20,000 parallel environment instances. Beyond scalable infrastructure, MAI-Gym enables automated synthesis of diverse GUI applications and challenging tasks, including resettable mocked apps and coherent cross-app worlds with execution-validated task verifiers. Using MAI-Gym, we train MAI-Gym-9B, a unified 9B agent for mobile and computer use, achieving state-of-the-art performance among open GUI agents under 10B parameters: 78.4% on MobileWorld and 76.2% on OSWorld-Verified. Importantly, RL in a mocked train-ticketing app transfers to its real-world counterpart, improving task success on a phys- ical phone from 28.8% to 48.1%. We release the framework, synthesis skills, mocked apps, 2,000 verified tasks, and the model checkpoint to support repro- ducible research and further advances in scalable GUI agent training.",
-      "hot_score": 59.9392,
+      "hot_score": 59.3415,
       "topic_id": null,
       "seen_in": [
         "hf_papers"
@@ -395,7 +451,7 @@
       "title": "Terminal-RSI: Recursive Self-Improving Terminal Agents via Recursive Self-Rewrite and Policy-Refine",
       "url": "arxiv:2610.22192",
       "summary": "Converting verifier outcomes into useful policy updates and partial progress into complete task resolution is crucial for terminal agents. We present Terminal-RSI, which alternates Recursive Self-Rewrite (RSR) of verified trajectories with critic-inheriting Recursive Policy-Refine (RPR). We formulate Turn-Boundary Skip-Observation GAE (TB-GAE) to retain token-specific baselines while applying decay across interaction turns. Family Dense Reward (FDR) calibrates semantic progress across task families; Success-Prioritized Reward (SPR) separates strict success from bounded partial credit. A Warm-up Critic Model, recursive critic handoff, and stage-specific learning rates coordinate the two refinement phases. The five-stage sequence from Qwen3.8-27B base model through RSR-1, RPR-1, RSR-2, and RPR-2 yields Terminal-RSI-27B: 19.84% on Terminal-Bench 4.0, 86.52% on Terminal-Bench 2.1, 16.95% on Terminal-Bench 3.0, and 79.00% on Terminal-Bench Hard. On LHTB, process reward rises from 0.21 to 0.37 and strict completion from 0/46 to 5/46; SWR100 success doubles from 3.00% to 6.00%. By recursively coupling verified trajectory rewriting with critic-inheriting policy refinement, each retained stage consolidates discovered behaviors and progressively advances the agent from partial local repairs to strict terminal verification.",
-      "hot_score": 59.6149,
+      "hot_score": 58.5246,
       "topic_id": null,
       "seen_in": [
         "hf_papers"
@@ -409,26 +465,12 @@
       "title": "Mosaic: Multi-Session Agentic Reinforcement Learning",
       "url": "arxiv:2610.22174",
       "summary": "Most existing agentic reinforcement learning methods assume single-session trajectories, where interaction proceeds within one continuously accumulated context. However, agentic techniques such as context compaction and subagent forking may produce trajectories spanning multiple sessions, creating a mismatch between the single-session training assumption and inference-time execution. Therefore, we introduce Multi-Session Agentic Reinforcement Learning, a more general setting that supports an arbitrary number of sessions within a trajectory. Under this setting, a widely adopted method is to broadcast trajectory-level advantages to all sessions, but this does not distinguish contributions from various sessions or guide session allocation within trajectories. To address this issue, we propose Mosaic, a multi-session agentic RL method with critic-free hierarchical optimization. At the trajectory level, it incorporates session-usage signals into advantage estimation. At the session level, it shapes each session's advantage according to the estimated marginal contribution. Experiments on BrowseComp with Qwen3.5-4B show that Mosaic outperforms broadcasting in both context compaction and subagent forking scenarios while using fewer sessions on average. Further analyses show that our method achieves improvements in session utility and allocation, which we suggested is a promising target for future advances in multi-session agentic RL.",
-      "hot_score": 59.5639,
+      "hot_score": 58.2991,
       "topic_id": null,
       "seen_in": [
         "hf_papers"
       ],
       "published_at": "2026-10-14T20:00:00+00:00",
-      "language": "en"
-    },
-    "it_38b042c011d5abde": {
-      "id": "it_38b042c011d5abde",
-      "source": "hf_papers",
-      "title": "Learning Where to Split: Dynamic Band Splitting for Audio Source Separation",
-      "url": "arxiv:2610.14993",
-      "summary": "Audio source separation models must preserve fine spectral structure while keeping the cost of the separator tractable. Band-split architectures reduce this cost by manually partitioning the spectrum into predefined frequency bands and encoding each band as a token, but the same boundaries are used for every mixture. Because informative spectral structure varies with source content, fixed boundaries can merge discriminative components or spend tokens where little resolution is needed. We introduce Dynamic Band Splitting (DBS), an end-to-end framework that adapts boundary locations and band widths to each mixture under a fixed band-token budget. DBS predicts content-conditioned boundary scores within frequency blocks, selects a prescribed number of boundaries using hard Top-K, and applies content-dependent pooling to obtain compact band tokens. After separation, it smooths and expands these tokens to the original STFT grid, refines them along frequency, and decodes complex masks with a frequency-shared head. DBS improved separation over the corresponding static models on DnR v2, MUSDB18-HQ, and EchoSet, with DBS-BSRNN achieving relative gain of 29.0% in average SI-SDR on DnR v2. These results and boundary analyses on DnR v2 show that content-adaptive frequency partitioning benefits multiple separator backbones under a fixed band-token budget. Code and audio demos are available at https://cslikai.cn/Dynamic-Band-Splitting",
-      "hot_score": 59.4561,
-      "topic_id": null,
-      "seen_in": [
-        "hf_papers"
-      ],
-      "published_at": "2026-10-09T20:00:00+00:00",
       "language": "en"
     },
     "it_24c9b02428fc2488": {
@@ -437,7 +479,7 @@
       "title": "MLExpert: Towards a Generalist Agentic Model for Autonomous Machine Learning Engineering",
       "url": "arxiv:2610.22344",
       "summary": "Large language models (LLMs) are expanding from assisting scientific research and engineering to autonomously developing and improving AI systems, advancing AI for AI (AI4AI) as a pathway toward recursive self-improvement (RSI). Workflow-driven machine learning engineering (MLE) systems provide a practical path toward this pursuit through complex orchestration that manages long-horizon experimentation, while recent MLE systems adopt model-directed interaction, allowing models to autonomously organize experiments and adapt optimization strategies based on execution feedback. However, feedback from each experiment reflects several preceding decisions, and a long MLE run contains many such costly experiments. Training must therefore select useful supervision from long interaction trajectories and learn from intermediate outcomes. We propose a post-training method for autonomous long-horizon MLE optimization and apply it to train MLExpert, a 35B Mixture-of-Experts agentic model. We design the Kaggle-MLE Factory to construct executable tasks and an interaction harness for model-directed experimentation. Hierarchical agentic SFT transfers general tool-use and coding capabilities to MLE through outcome-guided supervision. Windowed Interaction RL (WIRL) treats the multi-turn decisions between successive experiment results as an execution window and assigns it a shared outcome-based reward. Asynchronous collection and policy correction support policy updates before the trajectory ends. On MLE-Bench Lite, MLExpert improves the average medal rate of the base model from 37.9% to 72.7%, achieving performance comparable to larger frontier models such as Kimi-K3 and GLM-5.3. Further experiments show that MLExpert improves performance on NatureBench Lite, agent scaffold optimization, and algorithm optimization, suggesting that the learned optimization capability generalizes to other tasks.",
-      "hot_score": 58.1353,
+      "hot_score": 56.9991,
       "topic_id": null,
       "seen_in": [
         "arxiv",
@@ -452,7 +494,7 @@
       "title": "AutoSFT: An Agentic System for Automated Data Research in Supervised Fine-Tuning",
       "url": "arxiv:2610.22194",
       "summary": "Language model agents increasingly automate post-training, but when given the full training stack they converge on supervised fine-tuning and spend most effort revising training data. Existing systems give the agent one kind of control, selecting rows from a fixed pool or calling a generator, whereas a human data engineer adjusts proportions, prunes, repairs, replaces and synthesizes the data. We design a data action space for these changes and ask whether an automated system can make the full range rather than one of them, and what structure that requires. We first run this loop with a single agent, and it reaches only one action, adjusting category proportions, while its context fills with execution output and is discarded mid-search. We therefore introduce AutoSFT, a multi-agent system where a meta agent separates execution from analysis, gathers proposals from independent angles, and calls a synthesis subagent for capabilities the pool cannot cover, with the model, the trainer, and the budget fixed within each comparison. Adding each component in turn helps: the executor halves context loss, the analysis subagents lift the best IFEval by +6.5, and synthesis adds +3.4 IFEval and +2.9 IFBench. The same loop transfers to code, where analysis adds +3.7 MBPP+ over a single agent that does not improve. Every result comes from runs that retrain from the base model each round, so each component's effect is individually attributable. Our findings suggest that automating SFT data research depends more on covering diverse data actions than on a stronger single action.",
-      "hot_score": 57.7271,
+      "hot_score": 56.4991,
       "topic_id": null,
       "seen_in": [
         "hf_papers"
@@ -466,26 +508,12 @@
       "title": "Each Reward to Its Relevant Tokens: Reward-Specific Token-Level Credit Assignment for Multi-Reward RL",
       "url": "arxiv:2610.21439",
       "summary": "Language models are increasingly trained against several verifiable rewards at once, such as the correctness and the format of a tool call, or the individual constraints of a complex instruction. Reward-decoupled normalization (GDPO) normalizes each reward separately so that different reward combinations keep distinct advantages, but it still spreads every reward's advantage evenly over the whole response, although each verifier checks only a few positions. We propose MRTPO, which assigns the advantage of each reward to the tokens relevant to it, using the information its verifier checks, without auxiliary models or token-level annotations. For each reward, the policy replays its own response with and without that reward's verifier information, and the per-token Jensen-Shannon distance between the two next-token distributions measures each token's relevance and reassigns the advantage. On text-to-SQL, multi-constraint instruction following and tool calling, MRTPO converges faster and achieves better performance than the compared methods.",
-      "hot_score": 57.1184,
+      "hot_score": 55.7802,
       "topic_id": null,
       "seen_in": [
         "hf_papers"
       ],
       "published_at": "2026-10-15T03:47:04+00:00",
-      "language": "en"
-    },
-    "it_364974e02f6a5c5b": {
-      "id": "it_364974e02f6a5c5b",
-      "source": "hackernews",
-      "title": "Japanese people still aren't having sex. And nobody knows why",
-      "url": "https://www.sciencefocus.com/news/japanese-people-sex-inactivity-inexperience",
-      "summary": "",
-      "hot_score": 56.8484,
-      "topic_id": null,
-      "seen_in": [
-        "hackernews"
-      ],
-      "published_at": "2026-10-16T09:54:55+00:00",
       "language": "en"
     },
     "it_72f326c8411bebd1": {
@@ -494,7 +522,7 @@
       "title": "Intern Lumina U2: A Multi-Codebook Diffusion Large Language Model for Omni-Visual Understanding and Image Generation",
       "url": "arxiv:2610.20818",
       "summary": "Unified multimodal generation covers discrete, continuous, and hybrid paradigms. Discrete approaches with single-codebook visual tokenizers align naturally with text modeling but have limited representational capacity. Continuous and hybrid approaches retain richer visual representations, but they model text and images in heterogeneous spaces with different training objectives, potentially introducing optimization conflicts between modalities with misaligned representation spaces. These choices expose a central question: how to efficiently model high-capacity visual representations alongside textual content in a shared optimization space within a single backbone. We present Intern Lumina U2, to our knowledge the first diffusion language model to represent multi-codebook visual tokens in a fully discrete space. Each visual position is represented by a group of codes from complementary codebooks, increasing its representational capacity while preserving compatibility with discrete text modeling. At the input, the embeddings are concatenated at each position; at the output, a lightweight multi-codebook autoregressive head predicts the codes within each position sequentially, while the diffusion backbone processes all positions in parallel. Built on the unified 4D representation of AToken, Intern Lumina U2 supports image, video, and 3D inputs within a single backbone and achieves leading performance among unified models in visual understanding, image generation, and image editing. We further build a full-stack training, inference, and evaluation system on both Ascend and NVIDIA platforms to verify the cross-platform effectiveness of our model. We also improve the inference efficiency through a stability-aware sampling strategy, which combines confidence-plateau-guided unmasking approach with drift-triggered cache refreshing mechanisms, accelerating image generation by 4.45x.",
-      "hot_score": 55.3474,
+      "hot_score": 54.8415,
       "topic_id": null,
       "seen_in": [
         "hf_papers"
@@ -508,12 +536,26 @@
       "title": "EdgeWise: Bringing Long-Horizon Agents to the Edge via Selective Cloud Delegation",
       "url": "arxiv:2610.17560",
       "summary": "Complex and long-horizon agent tasks often rely on frontier models deployed in the cloud to achieve strong performance. However, using these models for every step of a long-horizon trajectory incurs substantial inference cost, even though not all steps may require the same level of model capability. In this paper, we find that allocating the LLM to only a small subset of key steps can achieve performance comparable to full LLM execution while significantly reducing inference cost. Motivated by this observation, we propose EdgeWise, an edge-cloud collaboration framework that deploys an SLM on the local device as the primary solver and selectively delegates critical steps to a cloud LLM when stronger model capacity is needed. To enable autonomous delegation without additional models at inference time, we introduce a step-level RL method that jointly optimizes task solving and delegation, with fine-grained credit assignment for individual delegation decisions. We also introduce an external judge-based delegation strategy and use it to systematically investigate key design choices in edge-cloud collaboration, including when to delegate, how delegation decisions should be made, what context should be shared, and how frequently the cloud LLM should be invoked. Experiments show that EdgeWise matches or outperforms pure-LLM execution while reducing inference cost up to 62% on SWE-Rebench and 34% on Terminal-Bench 2.1. We further deploy EdgeWise on a local workstation, demonstrating comparable cost savings in a practical edge-cloud setting.",
-      "hot_score": 54.6234,
+      "hot_score": 54.6539,
       "topic_id": null,
       "seen_in": [
         "hf_papers"
       ],
       "published_at": "2026-10-12T20:00:00+00:00",
+      "language": "en"
+    },
+    "it_b7fd533ef158759e": {
+      "id": "it_b7fd533ef158759e",
+      "source": "hf_papers",
+      "title": "DeltaStreamer: Towards Human-Like Agentic Streaming Video Understanding",
+      "url": "arxiv:2610.19849",
+      "summary": "We propose DeltaStreamer, a novel agentic framework for streaming video understanding inspired by how humans observe, remember, and investigate. Streaming video understanding requires a system to retain evidence before knowing which details future queries will need. Existing approaches often obscure event transitions and omit relevant details when compressing video history, and cannot recover missing visual evidence. DeltaStreamer addresses these limitations by combining change-aware memory with query-driven planning and targeted evidence gathering with replay. Before a query arrives, it continuously observes the stream and explicitly records visual changes in structured memory, preserving how events unfold rather than only what is present. When a query arrives, a query-driven planner identifies the required evidence and guides memory retrieval and targeted replay. By revisiting historical frames, the agent can recover visual details omitted during observation and ground its answer in evidence beyond the retained descriptions. This connects continuous observation with active investigation tailored to each question. Experiments on OVO-Bench and StreamingBench demonstrate improvements over representative streaming video understanding methods, with overall scores of 66.07% and 59.53%, respectively.\nProject page: https://bbbbchan.github.io/DeltaStreamer/",
+      "hot_score": 53.0415,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-13T20:00:00+00:00",
       "language": "en"
     },
     "it_49117cbd829d9728": {
@@ -522,7 +564,7 @@
       "title": "JevAgentHarness: Benchmarking, Deploying and Training Decision Models That Share Control with LLMs",
       "url": "arxiv:2610.21412",
       "summary": "Large language model (LLM) agents now fix software, operate computers and serve customers, but their harnesses, the programs that run them, call a large LLM at every step, which makes long tasks slow and costly. Most of these calls end in a multiple-choice decision, such as which tool to call next. Decision models such as Jev answer these questions directly, at a fraction of an LLM call's time and price. We ask how a harness can delegate these decisions to a decision model with little loss of success. To evaluate decision models in agentic tasks, we build AgentDecisionBench, which tests them from isolated questions up to control of a running agent, on public benchmarks and our DecisionGym environment. The decision model most accurate on isolated questions solved only 69.5% of agent tasks, and without a fitted confidence threshold, delegating tool choices lowered success by 19.0 points. Building on these findings, we then design JevAgentHarness, which fits this threshold for each choice on the agent's own trajectories and lets the LLM decide below it. Because existing decision models never see the states an agent reaches after its own mistakes, we train AgentDecision-4B, an open 4B model, on such states with Jev's answers as labels. On tasks unlike its training data, the agent solved 91.5% of them with AgentDecision-4B and 82.0% with Jev. On tasks like their training data, 4B models trained this way made agents 81.1-89.0% cheaper and up to 2.5 times faster, without losing 3 or more points of task success. The models, data, and harness will be released at https://github.com/JevAgentHarness/JevAgentHarness.",
-      "hot_score": 53.6455,
+      "hot_score": 52.6746,
       "topic_id": null,
       "seen_in": [
         "hf_papers"
@@ -536,7 +578,7 @@
       "title": "Routing Policy Optimization for Online Diffusion Reinforcement Learning",
       "url": "arxiv:2610.22282",
       "summary": "Reinforcement learning can align visual generators with reward signals beyond their pretraining objectives, but existing score-function methods typically introduce stochasticity by perturbing the reverse denoising trajectory, leading to costly rollout-based optimization. We instead ask whether stochastic exploration can be introduced inside the generator while preserving its original sampler. Routing Policy Optimization (RPO) answers this question by turning attention routing into a stochastic exploration action. At a few selected denoising levels, each query block keeps its own block and samples further key blocks in proportion to the generator's native attention mass, or keeps dense attention. The sampled route perturbs the velocity of that transition, and a Gaussian likelihood around the dense velocity scores the perturbation with a score-function objective. RPO further uses a controlled two-rollout estimator: two rollouts share the same prompt, initial latent, routed denoising levels, and dense anchor layers, differing only in their sampled attention routes. Their reward difference provides an advantage signal for the routed transitions. Because the likelihood differentiates the dense velocity itself, the learned updates remain effective after routing is removed. At inference, RPO restores dense attention and retains the original deterministic sampler. Experiments on text-to-image and text-to-video generation show that RPO improves generation quality while achieving nearly 4x higher training efficiency than Flow-GRPO-style methods. Please see our project page at https://velox-world.com/rpo for visual results.",
-      "hot_score": 53.5435,
+      "hot_score": 52.4991,
       "topic_id": null,
       "seen_in": [
         "arxiv",
@@ -544,36 +586,50 @@
       ],
       "published_at": "2026-10-14T20:00:00+00:00",
       "language": "en"
+    },
+    "it_246430b1d12f6516": {
+      "id": "it_246430b1d12f6516",
+      "source": "hf_papers",
+      "title": "Orbia: Do Generated Videos Form a Consistent 3D World?",
+      "url": "arxiv:2610.20693",
+      "summary": "Video generators serve as interactive worlds for exploration and simulation, yet realistic and visually appealing frames do not necessarily depict a consistent 3D world. Existing benchmarks assess selected geometric properties or use vision-language models to judge memory and consistency, leaving systematic 3D evaluation underexplored. We introduce Orbia, the first benchmark dedicated to a systematic and comprehensive evaluation of 3D consistency in interactive world models. Through controlled exploration and revisit, we organize the evaluation into three dimensions: input preservation, generated-content persistence, and 3D self-consistency. For input preservation, registered RGB-D references and annotated anchors support appearance, geometry, and spatial stability measurements. For generated-content persistence, we compare revisits to regions absent from the input image with their first generated observations to test whether models preserve what they create. For 3D self-consistency, cross-view depth and feature correspondence, regional scale agreement, and held-out Gaussian rendering test whether generated views describe the same 3D scene. Minute-long exploration and revisits further test long-term consistency. Our construction and annotation pipeline brings together public datasets, self-captured scenes, and simulation, yielding 720 instances across indoor and outdoor environments and six exploration-and-revisit protocols. Evaluation spans 27 text-, action-, and camera-conditioned models through native-interface adapters. Our Orbia benchmark provides a systematic basis for diagnosing 3D inconsistency and developing more persistent video world models.",
+      "hot_score": 52.1415,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-13T20:00:00+00:00",
+      "language": "en"
     }
   },
   "meta": {
     "mode": "hybrid",
     "day": "2026-10-17",
-    "generated_at": "2026-10-16T16:58:16.052669+00:00",
+    "generated_at": "2026-10-17T02:07:17.854992+00:00",
     "window": {
-      "since": "2026-10-15T16:56:23.608147+00:00",
-      "until": "2026-10-16T16:56:23.608147+00:00",
+      "since": "2026-10-16T02:06:07.150215+00:00",
+      "until": "2026-10-17T02:06:07.150215+00:00",
       "hours": 24.0,
-      "since_local": "2026-10-16T00:56+08:00",
-      "until_local": "2026-10-17T00:56+08:00",
+      "since_local": "2026-10-16T10:06+08:00",
+      "until_local": "2026-10-17T10:06+08:00",
       "tz": "Asia/Shanghai"
     },
     "analysis": {
-      "items": 167,
-      "scored": 167,
-      "topics": 5,
-      "new_entity_mention_rows": 4
+      "items": 136,
+      "scored": 136,
+      "topics": 2,
+      "new_entity_mention_rows": 1
     },
     "llm": {
-      "degraded": true,
-      "degraded_reason": "LLM 结构化输出失败，已降级为数据版",
+      "degraded": false,
+      "degraded_reason": "",
       "calls": 1
     },
     "collect": {
       "ok_sources": 6,
       "failed_sources": 1,
       "skipped": 0,
-      "total_items": 117
+      "total_items": 68
     },
     "verify": {
       "verified": 0,
@@ -593,17 +649,17 @@
     },
     "prediction_generation": {
       "mode": "hybrid",
-      "generated": 5,
-      "inserted": 5,
+      "generated": 0,
+      "inserted": 0,
       "dropped": [],
       "llm_calls": 1
     },
     "signals": {
-      "entities": 131,
-      "points": 543,
-      "with_velocity": 12,
-      "insufficient": 115,
-      "cold_start": 4,
+      "entities": 141,
+      "points": 568,
+      "with_velocity": 19,
+      "insufficient": 108,
+      "cold_start": 14,
       "min_window_hours": 6.0
     }
   }

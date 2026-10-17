@@ -1,31 +1,31 @@
 {
   "mode": "hybrid",
   "day": "2026-10-17",
-  "generated_at": "2026-10-16T16:58:16.052617+00:00",
+  "generated_at": "2026-10-17T02:07:17.854939+00:00",
   "window": {
-    "since": "2026-10-15T16:56:23.608147+00:00",
-    "until": "2026-10-16T16:56:23.608147+00:00",
+    "since": "2026-10-16T02:06:07.150215+00:00",
+    "until": "2026-10-17T02:06:07.150215+00:00",
     "hours": 24.0,
-    "since_local": "2026-10-16T00:56+08:00",
-    "until_local": "2026-10-17T00:56+08:00",
+    "since_local": "2026-10-16T10:06+08:00",
+    "until_local": "2026-10-17T10:06+08:00",
     "tz": "Asia/Shanghai"
   },
   "analysis": {
-    "items": 167,
-    "scored": 167,
-    "topics": 5,
-    "new_entity_mention_rows": 4
+    "items": 136,
+    "scored": 136,
+    "topics": 2,
+    "new_entity_mention_rows": 1
   },
   "llm": {
-    "degraded": true,
-    "degraded_reason": "LLM 结构化输出失败，已降级为数据版",
+    "degraded": false,
+    "degraded_reason": "",
     "calls": 1
   },
   "collect": {
     "ok_sources": 6,
     "failed_sources": 1,
     "skipped": 0,
-    "total_items": 117
+    "total_items": 68
   },
   "verify": {
     "verified": 0,
@@ -45,17 +45,17 @@
   },
   "prediction_generation": {
     "mode": "hybrid",
-    "generated": 5,
-    "inserted": 5,
+    "generated": 0,
+    "inserted": 0,
     "dropped": [],
     "llm_calls": 1
   },
   "signals": {
-    "entities": 131,
-    "points": 543,
-    "with_velocity": 12,
-    "insufficient": 115,
-    "cold_start": 4,
+    "entities": 141,
+    "points": 568,
+    "with_velocity": 19,
+    "insufficient": 108,
+    "cold_start": 14,
     "min_window_hours": 6.0
   }
 }
