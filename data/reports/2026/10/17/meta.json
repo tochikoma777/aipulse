@@ -1,20 +1,20 @@
 {
   "mode": "hybrid",
   "day": "2026-10-17",
-  "generated_at": "2026-10-17T02:12:33.871189+00:00",
+  "generated_at": "2026-10-17T02:53:29.930121+00:00",
   "window": {
-    "since": "2026-10-16T02:11:18.209708+00:00",
-    "until": "2026-10-17T02:11:18.209708+00:00",
+    "since": "2026-10-16T02:52:44.625605+00:00",
+    "until": "2026-10-17T02:52:44.625605+00:00",
     "hours": 24.0,
-    "since_local": "2026-10-16T10:11+08:00",
-    "until_local": "2026-10-17T10:11+08:00",
+    "since_local": "2026-10-16T10:52+08:00",
+    "until_local": "2026-10-17T10:52+08:00",
     "tz": "Asia/Shanghai"
   },
   "analysis": {
-    "items": 164,
-    "scored": 164,
+    "items": 165,
+    "scored": 165,
     "topics": 4,
-    "new_entity_mention_rows": 34
+    "new_entity_mention_rows": 3
   },
   "llm": {
     "degraded": false,
@@ -22,10 +22,10 @@
     "calls": 1
   },
   "collect": {
-    "ok_sources": 7,
-    "failed_sources": 0,
+    "ok_sources": 6,
+    "failed_sources": 1,
     "skipped": 0,
-    "total_items": 128
+    "total_items": 67
   },
   "verify": {
     "verified": 0,
@@ -35,9 +35,9 @@
     "llm_calls": 0
   },
   "predictions": {
-    "total": 19,
+    "total": 24,
     "verified": 0,
-    "pending": 19,
+    "pending": 24,
     "unverifiable": 0,
     "hit_rate": null,
     "weighted_score": null,
@@ -52,7 +52,7 @@
   },
   "signals": {
     "entities": 141,
-    "points": 593,
+    "points": 617,
     "with_velocity": 19,
     "insufficient": 118,
     "cold_start": 4,
