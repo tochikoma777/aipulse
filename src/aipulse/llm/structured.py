@@ -7,6 +7,8 @@
 
 from __future__ import annotations
 
+import re
+
 from pydantic import BaseModel, ValidationError
 
 from aipulse.core.logging import get_logger
@@ -15,14 +17,48 @@ from aipulse.llm.base import ChatMessage, LLMClient, LLMResult
 log = get_logger(__name__)
 
 
+def _extract_json(text: str) -> str | None:
+    """从一段文本里抠出 JSON。
+
+    plain 级降级（模型不支持任何 `response_format`）全靠它：
+    1. 先找 ```json ... ``` 代码块（多数模型会给围栏）
+    2. 再退化为「首个 `{` 到末个 `}`」（object）或「首个 `[` 到末个 `]`」（array）
+    找不到就返回 None，由调用方降级。
+    """
+    if not text:
+        return None
+
+    fenced = re.search(r"```(?:json)?\s*(.+?)```", text, re.DOTALL)
+    if fenced is not None:
+        return fenced.group(1).strip()
+
+    starts = [i for i, ch in enumerate(text) if ch in "{["]
+    for start in starts:
+        open_ch = text[start]
+        close_ch = "}" if open_ch == "{" else "]"
+        end = text.rfind(close_ch)
+        if end > start:
+            return text[start : end + 1].strip()
+    return None
+
+
 def _validate(model: type[BaseModel], content: str) -> BaseModel | None:
     """把原始输出解析成模型；任何失败都返回 None，不抛异常。"""
     if not content or not content.strip():
         return None
+    # 先按原样解析（json_schema / json_object 档的正常路径）
     try:
         return model.model_validate_json(content)
     except (ValidationError, ValueError) as exc:
         log.debug("llm.structured.validate_fail", model=model.__name__, error=repr(exc))
+    # 再抠一次：plain 档的模型可能带 ```json 围栏或前后废话
+    extracted = _extract_json(content)
+    if extracted is None or extracted == content.strip():
+        return None
+    try:
+        return model.model_validate_json(extracted)
+    except (ValidationError, ValueError) as exc:
+        log.debug("llm.structured.extract_fail", model=model.__name__, error=repr(exc))
         return None
 
 

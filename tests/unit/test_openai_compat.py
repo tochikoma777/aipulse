@@ -6,6 +6,8 @@ json_schema 运行时自动降级、缓存命中、预算护栏。
 
 from __future__ import annotations
 
+import json
+
 import httpx
 import pytest
 import respx
@@ -178,6 +180,81 @@ async def test_json_schema_auto_degrades_to_json_object():
     assert b"JSON Schema" in second
     # 进程内记住"不支持"
     assert json_schema_support("deepseek-chat") is False
+
+
+@respx.mock
+async def test_degrades_to_plain_when_both_structured_params_rejected():
+    """★ 回归防线：json_schema 与 json_object 双双报 400 时，第三级 plain 必须能救回来。
+
+    `deepseek-reasoner`（R1 系列）两个结构化参数都不支持——之前阶梯只到 json_object，
+    于是这种模型每次都一路降到 degraded，主编点评永远为空。
+    """
+    route = respx.post(ENDPOINT).mock(
+        side_effect=[
+            httpx.Response(
+                400, json={"error": {"message": "response_format json_schema is not supported"}}
+            ),
+            httpx.Response(
+                400, json={"error": {"message": "response_format json_object is not supported"}}
+            ),
+            _ok_json('{"a": 3}'),
+        ]
+    )
+    client = _client(_settings(json_schema="auto"))
+    result = await client.chat(_messages(), json_schema=_SCHEMA)
+    assert result.content == '{"a": 3}'
+    assert route.call_count == 3
+
+    formats = [json.loads(c.request.content).get("response_format") for c in route.calls]
+    assert formats[0]["type"] == "json_schema"
+    assert formats[1]["type"] == "json_object"
+    assert formats[2] is None  # plain 级不带任何 response_format
+
+    assert json_schema_support("deepseek-chat") is False
+
+
+@respx.mock
+async def test_format_memory_is_per_model_not_global():
+    """★ 回归防线：降级记忆按 (model, format) 存，不是全局布尔。
+
+    同一进程里 reasoner 与 chat 混用：若记忆是全局的，先跑的 reasoner 会把
+    chat 也拖下水，chat 本可用的 json_object 被白白跳过。
+    """
+    seen: list[tuple[str, str | None]] = []
+
+    def _respond(request: httpx.Request) -> httpx.Response:
+        body = json.loads(request.content)
+        fmt = (body.get("response_format") or {}).get("type")
+        seen.append((body["model"], fmt))
+        if body["model"] == "deepseek-reasoner":
+            # R1 系列：任何 response_format 都拒绝
+            if fmt is not None:
+                return httpx.Response(
+                    400, json={"error": {"message": "response_format is not supported"}}
+                )
+            return _ok_json('{"a": 1}')
+        # deepseek-chat：不支持 json_schema，但支持 json_object
+        if fmt == "json_schema":
+            return httpx.Response(
+                400, json={"error": {"message": "response_format is not supported"}}
+            )
+        return _ok_json('{"a": 2}')
+
+    respx.post(ENDPOINT).mock(side_effect=_respond)
+    settings = _settings(json_schema="auto")
+    client = OpenAICompatClient(settings, http=HttpClient(cache_enabled=False))
+
+    await client.chat(_messages(), model_tier="strong", json_schema=_SCHEMA)
+    await client.chat(_messages(), model_tier="fast", json_schema=_SCHEMA)
+
+    # reasoner 走满三级；chat 只降到 json_object 就成功，没被 reasoner 的记忆连坐
+    assert seen == [
+        ("deepseek-reasoner", "json_schema"),
+        ("deepseek-reasoner", "json_object"),
+        ("deepseek-reasoner", None),
+        ("deepseek-chat", "json_schema"),
+        ("deepseek-chat", "json_object"),
+    ]
 
 
 @respx.mock

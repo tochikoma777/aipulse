@@ -34,26 +34,50 @@ from aipulse.utils.http import HttpClient
 
 log = get_logger(__name__)
 
-# 进程内"该模型是否支持 json_schema"的记忆（auto 模式用，避免每次重启重探/每次白试一次）
-_JSON_SCHEMA_SUPPORT: dict[str, bool] = {}
+# 结构化输出的降级阶梯（§8.3）。DeepSeek 实况：
+#   deepseek-chat      支持 json_object，不支持 json_schema
+#   deepseek-reasoner  两个结构化参数都不支持（R1 系列），只能走 plain
+# 所以阶梯必须到三级：json_schema → json_object → plain（纯文本 + prompt 内嵌 schema）。
+# plain 是万能兜底——任何模型都能输出一段文本，我们只要能从中抠出 JSON。
+_FORMAT_LADDER = ("json_schema", "json_object", "plain")
 
-# json_schema 不支持时的错误体关键词（§8.3 判定依据）
+# 进程内"模型 + 格式 → 是否支持"的记忆。**key 必须是 (model, format) 而不是全局布尔**：
+# 同一进程里 chat 与 reasoner 混用，若用全局标记，先跑的 reasoner 会把 chat 也拖下水，
+# 白白丢掉 chat 本可用的 json_object。
+_JSON_FORMAT_SUPPORT: dict[tuple[str, str], bool] = {}
+
+# 结构化格式不支持时的错误体关键词（§8.3 判定依据）
 _JSON_SCHEMA_UNSUPPORTED_KEYWORDS = ("json_schema", "response_format", "unsupported", "not support")
 
 
+def json_format_support(model: str, fmt: str) -> bool | None:
+    """某模型对某结构化格式是否支持（None 表示尚无记忆，应尝试）。"""
+    return _JSON_FORMAT_SUPPORT.get((model, fmt))
+
+
+def _next_format(fmt: str) -> str:
+    """降级阶梯的下一级（到底即为 `plain`，不再降级）。"""
+    idx = _FORMAT_LADDER.index(fmt)
+    return _FORMAT_LADDER[min(idx + 1, len(_FORMAT_LADDER) - 1)]
+
+
+def remember_json_format_support(model: str, fmt: str, supported: bool) -> None:
+    """进程内记住探测结果。"""
+    _JSON_FORMAT_SUPPORT[(model, fmt)] = supported
+
+
 def json_schema_support(model: str) -> bool | None:
-    """模型是否支持 json_schema（None 表示尚无记忆，应尝试）。"""
-    return _JSON_SCHEMA_SUPPORT.get(model)
+    """便捷访问：该模型是否支持 json_schema。"""
+    return json_format_support(model, "json_schema")
 
 
 def remember_json_schema_support(model: str, supported: bool) -> None:
-    """进程内记住探测结果。"""
-    _JSON_SCHEMA_SUPPORT[model] = supported
+    remember_json_format_support(model, "json_schema", supported)
 
 
 def reset_json_schema_memory() -> None:
     """清空进程内记忆（测试用）。"""
-    _JSON_SCHEMA_SUPPORT.clear()
+    _JSON_FORMAT_SUPPORT.clear()
 
 
 def _json_schema_name(schema: dict[str, Any] | None) -> str:
@@ -121,17 +145,25 @@ class OpenAICompatClient:
     def _endpoint(self) -> str:
         return f"{self._base_url}/chat/completions"
 
-    def _decide_use_schema(self, model: str, wants_schema: bool) -> bool:
-        if not wants_schema:
-            return False
-        if self.json_schema_mode == "true":
-            return True
-        if self.json_schema_mode == "false":
-            return False
-        # auto：按进程内记忆决定，无记忆时默认先试 json_schema
-        return _JSON_SCHEMA_SUPPORT.get(model, True)
+    def _initial_format(self, model: str, wants_schema: bool) -> str:
+        """本次调用的起始结构化格式。
 
-    def _build_body(
+        auto 模式下从阶梯里挑**第一个没被记住"不支持"**的格式——这样第二次运行
+        就不用再白试一遍已被证伪的档位（首次运行仍会从最强的 json_schema 开始探）。
+        """
+        if not wants_schema:
+            return "plain"
+        if self.json_schema_mode == "true":
+            return "json_schema"
+        if self.json_schema_mode == "false":
+            return "json_object"
+        for fmt in _FORMAT_LADDER:
+            if json_format_support(model, fmt) is False:
+                continue
+            return fmt
+        return "plain"
+
+    def _body_for_format(
         self,
         payload: list[dict[str, str]],
         *,
@@ -139,8 +171,15 @@ class OpenAICompatClient:
         temperature: float,
         max_tokens: int,
         json_schema: dict[str, Any] | None,
-        use_schema: bool,
+        fmt: str,
     ) -> dict[str, Any]:
+        """按结构化格式构造请求体。
+
+        - `json_schema`：最强，模型被强制按 schema 输出
+        - `json_object`：只保证输出是合法 JSON，schema 内嵌进 system prompt
+        - `plain`：**不带任何 response_format**，schema 只写在 prompt 里，
+          靠 `_extract_json` 从文本中抠出来——任何模型都支持，是万能兜底
+        """
         messages = [dict(m) for m in payload]
         body: dict[str, Any] = {
             "model": model,
@@ -148,23 +187,35 @@ class OpenAICompatClient:
             "temperature": temperature,
             "max_tokens": max_tokens,
         }
-        if json_schema is not None:
-            if use_schema:
-                body["response_format"] = {
-                    "type": "json_schema",
-                    "json_schema": {"name": _json_schema_name(json_schema), "schema": json_schema},
-                }
-            else:
-                # json_object 降级：schema 内嵌进 system prompt，模型自约束输出纯 JSON
-                body["response_format"] = {"type": "json_object"}
-                schema_text = json.dumps(json_schema, ensure_ascii=False)
-                body["messages"] = [
-                    *messages,
-                    {
-                        "role": "system",
-                        "content": f"你必须只输出符合以下 JSON Schema 的 JSON：{schema_text}",
-                    },
-                ]
+        if json_schema is None:
+            return body
+
+        schema_text = json.dumps(json_schema, ensure_ascii=False)
+        if fmt == "json_schema":
+            body["response_format"] = {
+                "type": "json_schema",
+                "json_schema": {"name": _json_schema_name(json_schema), "schema": json_schema},
+            }
+        elif fmt == "json_object":
+            body["response_format"] = {"type": "json_object"}
+            body["messages"] = [
+                *messages,
+                {
+                    "role": "system",
+                    "content": f"你必须只输出符合以下 JSON Schema 的 JSON：{schema_text}",
+                },
+            ]
+        else:  # plain
+            body["messages"] = [
+                *messages,
+                {
+                    "role": "system",
+                    "content": (
+                        "只输出一个 JSON 对象（不要解释、不要多余文字），"
+                        f"其结构必须严格符合以下 JSON Schema：{schema_text}"
+                    ),
+                },
+            ]
         return body
 
     def _headers(self) -> dict[str, str]:
@@ -198,7 +249,8 @@ class OpenAICompatClient:
         model = self._model(model_tier)
         payload = [{"role": m.role, "content": m.content} for m in messages]
         wants_schema = json_schema is not None
-        use_schema = self._decide_use_schema(model, wants_schema)
+        # 起始格式：auto 时从阶梯里挑第一个没被证伪的档位
+        fmt = self._initial_format(model, wants_schema)
         error_note: str | None = None
         # ★ 读超时必须显式传：不传就会吃 HttpClient 的默认 20s（那是给采集请求定的），
         #   `llm.timeout_s` / `llm.timeout_strong_s` 会变成死配置。strong 档（思维链）
@@ -208,13 +260,10 @@ class OpenAICompatClient:
         )
         timeout = httpx.Timeout(None, read=read_timeout_s)
 
-        for _attempt in range(2):  # 最多一次 json_schema → json_object 降级
-            if json_schema is not None:
-                # 把 json_schema / json_object 两种格式纳入缓存键，避免互相串缓存
-                cache_mode = "js" if use_schema else "jo"
-                rm_name = f"{_json_schema_name(json_schema)}:{cache_mode}"
-            else:
-                rm_name = ""
+        # 降级阶梯：json_schema → json_object → plain，最多三级
+        for _step in range(len(_FORMAT_LADDER)):
+            # 把结构化格式纳入缓存键，避免不同档位互相串缓存
+            rm_name = f"{_json_schema_name(json_schema)}:{fmt}" if json_schema is not None else ""
             key = cache_key(
                 model,
                 messages,
@@ -234,13 +283,13 @@ class OpenAICompatClient:
             if self.budget is not None and not self.budget.can_afford(purpose):
                 raise LLMError(f"超出每日预算（{purpose}），已降级")
 
-            body = self._build_body(
+            body = self._body_for_format(
                 payload,
                 model=model,
                 temperature=temperature,
                 max_tokens=max_tokens,
                 json_schema=json_schema,
-                use_schema=use_schema,
+                fmt=fmt,
             )
             response = await self._http.request(
                 "POST",
@@ -257,7 +306,7 @@ class OpenAICompatClient:
                     data = response.json()
                 except Exception as exc:  # noqa: BLE001
                     raise LLMError(f"LLM 响应不是合法 JSON（{purpose}）: {exc}") from exc
-                if use_schema and json_schema is not None:
+                if fmt == "json_schema" and json_schema is not None:
                     remember_json_schema_support(model, True)  # 记住"支持"，后续沿用
                 content, prompt_tokens, completion_tokens = self._parse_success(data)
                 if json_schema is not None and self.cache is not None and content:
@@ -288,22 +337,23 @@ class OpenAICompatClient:
                     f"LLM 认证失败（HTTP {response.status_code}），请检查 AIPULSE_LLM__API_KEY"
                 )
 
-            # ── json_schema 运行时自动降级（§8.3）──────────────────
+            # ── 结构化格式运行时自动降级（§8.3）──────────────────
             if (
                 response.status_code == 400
-                and use_schema
+                and fmt != "plain"
                 and self.json_schema_mode == "auto"
                 and _is_json_schema_unsupported(response)
             ):
                 log.warning(
-                    "llm.json_schema_unsupported",
+                    "llm.structured_format_unsupported",
                     model=model,
                     purpose=purpose,
-                    msg="降级为 json_object + prompt 内嵌 schema",
+                    fmt=fmt,
+                    next=_next_format(fmt),
                 )
-                remember_json_schema_support(model, False)
-                error_note = "json_schema unsupported → json_object"
-                use_schema = False
+                remember_json_format_support(model, fmt, False)
+                error_note = f"{fmt} unsupported → {_next_format(fmt)}"
+                fmt = _next_format(fmt)
                 continue
 
             # ── 其余失败：记录并降级（抛给上层，不中断流水线）──────
@@ -316,10 +366,8 @@ class OpenAICompatClient:
             )
             raise LLMError(f"LLM 调用失败（{purpose}）：HTTP {response.status_code}")
 
-        # 理论上不会走到（第二次已走 json_object，不再触发降级）
-        raise LLMError(
-            f"LLM 调用失败（{purpose}）：json_schema 降级重试后仍失败"
-        )  # pragma: no cover
+        # 三级（json_schema / json_object / plain）都走完仍失败才算降级
+        raise LLMError(f"LLM 调用失败（{purpose}）：三级结构化降级后仍失败")  # pragma: no cover
 
     def _record_usage(
         self,

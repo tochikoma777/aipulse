@@ -1,6 +1,9 @@
 ---
-version: 1
-model_tier: strong
+version: 2
+# ★ 主编点评是轻任务，按 SSOT §8.2 走 fast（deepseek-chat）。
+#   之前错挂 strong（deepseek-reasoner），而 R1 系列两个结构化参数都不支持，
+#   于是每次都 json_schema → json_object → 一路降级到底，点评从来没有过内容。
+model_tier: fast
 temperature: 0.4
 purpose: brief_daily
 ---
