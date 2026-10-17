@@ -10,9 +10,11 @@
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from datetime import datetime
 from typing import Any
 
+from aipulse.analysis.signals import RepoStar, item_signal_key, velocity_board
 from aipulse.core.timeutil import DEFAULT_TZ, ensure_utc, to_local
 from aipulse.schema.brief import DailyBrief, ItemComment
 from aipulse.schema.items import SourceEnum
@@ -87,6 +89,46 @@ def _heat_cell(item: Item) -> str:
     return text
 
 
+def _repo_key(item: Item) -> str | None:
+    key = item_signal_key(item)
+    return key[1] if key is not None and key[0] == "repo" else None
+
+
+def _stars_total(star: RepoStar | None) -> str:
+    """★ 总数：整数、不加千分位（与增量列宽度一致）。无快照 → `—`。"""
+    if star is None or star.total is None:
+        return "—"
+    return str(int(round(star.total)))
+
+
+def _window_label(star: RepoStar | None) -> str:
+    """窗口长度（首末快照时间差）：`10.3h → 10h`、`41.9h → 42h`、`2.5h → 2.5h`。"""
+    if star is None or star.hours is None or star.hours <= 0:
+        return ""
+    hours = star.hours
+    text = f"{round(hours)}" if hours >= 10 else f"{hours:.1f}".rstrip("0").rstrip(".")
+    return f"{text}h"
+
+
+def _stars_delta(star: RepoStar | None) -> str:
+    """增量：**绝对增量 + 窗口**（如 `+8617 / 10h`），永远不换算成每小时速率。
+
+    `insufficient`（间隔 < 6h）照样显示绝对增量；`cold_start` / 无数据 → `—`。
+    窗口必须可见，否则读者无法判断"7 天涨 5000"和"1 天涨 3000"哪个快。
+    """
+    if star is None or star.delta is None:
+        return "—"
+    text = f"{int(round(star.delta)):+d}"
+    window = _window_label(star)
+    return f"{text} / {window}" if window else text
+
+
+def _last_seen(star: RepoStar, tz_name: str) -> str:
+    if star.last_ts is None:
+        return ""
+    return to_local(ensure_utc(star.last_ts), tz_name).strftime("%m-%d")
+
+
 def _time_label(generated_at: datetime | None, tz_name: str) -> str:
     if generated_at is None:
         return "—"
@@ -108,8 +150,16 @@ def render_markdown(
     *,
     generated_at: datetime | None = None,
     max_items_per_section: int = 10,
+    repo_stars: Mapping[str, RepoStar] | None = None,
+    velocity_board_enabled: bool = True,
+    velocity_board_top_n: int = 5,
 ) -> str:
+    """渲染日报。`repo_stars` 为 `{owner/repo: RepoStar}`（来自 signals 表）。
+
+    不传 `repo_stars` 时表格两列固定显示 `—`——**列数不随数据缺失漂移**（v1.14 格式契约）。
+    """
     mode = str(meta.get("mode", "off"))
+    stars = repo_stars or {}
     date_str = brief.date.isoformat() if brief.date else ""
     raw_win = meta.get("window")
     win: dict[str, Any] = raw_win if isinstance(raw_win, dict) else {}
@@ -173,44 +223,71 @@ def render_markdown(
         out += [f"### {icon} {title}", _cell(getattr(note, field)), ""]
 
     comments = {c.item_id: c for c in brief.comments}
-    # ── 分板块：固定五列表格 ─────────────────────────────────────────
+    # ── 分板块：固定列表格（开源项目额外两列：★ 总数 / 增量）─────────────
     for section in brief.sections:
         section_items = [items[iid] for iid in section.item_ids if iid in items]
-        if not section_items:
+        is_repo_section = section.name == "开源项目"
+        limit = max(0, max_items_per_section)
+        displayed = section_items[:limit]
+        board: list[RepoStar] = []
+        if is_repo_section and velocity_board_enabled and stars:
+            # 排除"今日已展示"的项目，避免同一项目在表格与增速榜各出现一次
+            shown = {key for key in (_repo_key(item) for item in displayed) if key}
+            board = velocity_board(stars, exclude=shown, top_n=velocity_board_top_n)
+        if not section_items and not board:
             continue  # 空板块不渲染空标题（LLM 偶尔会返回空 item_ids）
         out += [f"## {_SECTION_ICONS.get(section.name, '🧩')} {section.name}", ""]
         if section.summary:
             out += [f"_{_cell(section.summary)}_", ""]
-        first_col = "项目" if section.name == "开源项目" else "标题"
-        limit = max(0, max_items_per_section)
-        out.append(f"| {first_col} | 热度 | 要点 | 为什么重要 | 立场 |")
-        out.append("|---|---|---|---|---|")
-        for item in section_items[:limit]:
-            comment = _comment_for(comments, item.id)
-            title = _cell(item.title or "(无标题)")
-            title_cell = f"[{title}]({item.url})" if item.url else title
-            if comment and comment.one_liner:
-                one_liner = comment.one_liner
-            elif item.summary:
-                one_liner = item.summary
+        if section_items:
+            if is_repo_section:
+                # ★ 总数 / 增量紧跟热度：判断项目价值最直接的两个指标（§5.14）
+                out.append("| 项目 | 热度 | ★ 总数 | 增量 | 要点 | 为什么重要 | 立场 |")
+                out.append("|---|---|---|---|---|---|---|")
             else:
-                # 无摘要时不回退标题（会与第一列重复），保持 — 让"未生成"显式可见
-                one_liner = ""
+                out.append("| 标题 | 热度 | 要点 | 为什么重要 | 立场 |")
+                out.append("|---|---|---|---|---|")
+            for item in displayed:
+                comment = _comment_for(comments, item.id)
+                title = _cell(item.title or "(无标题)")
+                title_cell = f"[{title}]({item.url})" if item.url else title
+                if comment and comment.one_liner:
+                    one_liner = comment.one_liner
+                elif item.summary:
+                    one_liner = item.summary
+                else:
+                    # 无摘要时不回退标题（会与第一列重复），保持 — 让"未生成"显式可见
+                    one_liner = ""
+                star = stars.get(_repo_key(item) or "") if is_repo_section else None
+                cells = [title_cell, _heat_cell(item)]
+                if is_repo_section:
+                    cells += [_stars_total(star), _stars_delta(star)]
+                cells += [
+                    _short(one_liner),
+                    _cell(comment.why_it_matters if comment else ""),
+                    _cell(comment.stance if comment else ""),
+                ]
+                out.append("| " + " | ".join(cells) + " |")
+            if len(section_items) > limit:
+                out += [
+                    "",
+                    f"_另有 {len(section_items) - limit} 条未展示（完整列表见 daily.json）_",
+                ]
+        if board:
+            out += ["", "### 📈 增速榜（追踪中）", ""]
             out.append(
-                "| "
-                + " | ".join(
-                    [
-                        title_cell,
-                        _heat_cell(item),
-                        _short(one_liner),
-                        _cell(comment.why_it_matters if comment else ""),
-                        _cell(comment.stance if comment else ""),
-                    ]
-                )
-                + " |"
+                "_今日未上榜、但 star 仍在快速增长的项目"
+                "（仅取有合规增速窗口的快照；完整序列见 signals.json）_"
             )
-        if len(section_items) > limit:
-            out += ["", f"_另有 {len(section_items) - limit} 条未展示（完整列表见 daily.json）_"]
+            out.append("")
+            for star in board:
+                line = (
+                    f"- **{_cell(star.entity_key)}** · ★{_stars_total(star)} · {_stars_delta(star)}"
+                )
+                last_seen = _last_seen(star, tz_name)
+                if last_seen:
+                    line += f" · 上次在榜 {last_seen}"
+                out.append(line)
         out.append("")
 
     if brief.contradictions:

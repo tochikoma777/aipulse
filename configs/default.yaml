@@ -45,8 +45,11 @@ pipeline:
   weekly_debate_enabled: true
 
 # 简报呈现（v1.15）：每板块最多 N 条，超出显示「另有 N 条」
+# v1.19：增速榜——让掉榜但 star 仍在快速增长的 repo 不消失
 brief:
   max_items_per_section: 10
+  velocity_board_enabled: true
+  velocity_board_top_n: 5
 
 # 到期验证（M3b，设计方案 §10.2.2 / §10.2.3 v1.9）
 verify:
@@ -63,6 +66,8 @@ verify:
 # 避免调试连跑时把"几分钟涨 3 star"误报成"日增 3000"
 signals:
   min_velocity_window_hours: 6.0
+  # star 总数 / 增量只看最近 N 天的快照，避免把多天前的数据算成"今天涨的"
+  repo_lookback_days: 7.0
 
 output:
   formats: [md, json]

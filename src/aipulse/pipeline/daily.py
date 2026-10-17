@@ -20,7 +20,11 @@ from sqlmodel import Session
 from aipulse.analysis.cluster import cluster_items
 from aipulse.analysis.entities import build_entity_rows, count_entities
 from aipulse.analysis.score import score_items
-from aipulse.analysis.signals import build_signals_summary, trending_streak_days
+from aipulse.analysis.signals import (
+    build_signals_summary,
+    repo_star_snapshots,
+    trending_streak_days,
+)
 from aipulse.analysis.stats import PredictionStats, compute_prediction_stats
 from aipulse.core.config import RunMode, Settings, load_settings, load_sources
 from aipulse.core.logging import get_logger
@@ -258,6 +262,35 @@ def _stats_digest(stats: PredictionStats) -> dict[str, Any]:
     }
 
 
+def _source_runs_payload(
+    collected: CollectResult | None, *, day: date, generated_at: datetime
+) -> dict[str, Any]:
+    """本次采集的源级结果落盘（v1.19：关键状态显式暴露）。
+
+    为什么不从 `source_runs` 表读：`skipped_offline` 的源压根不写库，
+    而"本地为什么少一个源"恰好是这份文件要回答的问题之一。
+    `--no-collect` 运行时 `collected=false` + `sources=[]`，不伪造数据。
+    """
+    results = collected.results if collected is not None else []
+    sources = [
+        {
+            "source": result.source,
+            "status": result.status,
+            "item_count": result.item_count,
+            "started_at": result.started_at.isoformat() if result.started_at else None,
+            "finished_at": result.finished_at.isoformat() if result.finished_at else None,
+            "error": result.error,
+        }
+        for result in results
+    ]
+    return {
+        "date": day.isoformat(),
+        "generated_at": generated_at.isoformat(),
+        "collected": collected is not None,
+        "sources": sources,
+    }
+
+
 async def run_daily(
     *,
     since: str = "24h",
@@ -355,9 +388,16 @@ async def run_daily(
         # ★ v1.10：记分板由 daily 自动产出，因此 Actions 每天 commit 的报告天然含记分板
         pred_stats = compute_prediction_stats(list_predictions(session))
         # ★ M4：signals 快照 + 增速随报告落盘（Actions 无持久化时的跨天佐证）
+        signal_rows = list_signals(session)
         signals_summary = build_signals_summary(
-            list_signals(session),
+            signal_rows,
             min_window_hours=settings.signals.min_velocity_window_hours,
+        )
+        # ★ v1.19：star 总数 / 增量 / 增速榜（纯展示，零 LLM）
+        repo_stars = repo_star_snapshots(
+            signal_rows,
+            min_window_hours=settings.signals.min_velocity_window_hours,
+            lookback_days=settings.signals.repo_lookback_days,
         )
         record_pipeline_run(
             session,
@@ -393,7 +433,11 @@ async def run_daily(
     meta["verify"] = verify_summary
     meta["predictions"] = _stats_digest(pred_stats)
     meta["prediction_generation"] = predict_summary
-    meta["brief"] = {"max_items_per_section": settings.brief.max_items_per_section}
+    meta["brief"] = {
+        "max_items_per_section": settings.brief.max_items_per_section,
+        "velocity_board_enabled": settings.brief.velocity_board_enabled,
+        "velocity_board_top_n": settings.brief.velocity_board_top_n,
+    }
     meta["signals"] = {
         "entities": signals_summary.get("entity_count", 0),
         "points": signals_summary.get("point_count", 0),
@@ -415,6 +459,9 @@ async def run_daily(
                 meta,
                 generated_at=generated_at,
                 max_items_per_section=settings.brief.max_items_per_section,
+                repo_stars=repo_stars,
+                velocity_board_enabled=settings.brief.velocity_board_enabled,
+                velocity_board_top_n=settings.brief.velocity_board_top_n,
             ),
             "daily.json": render_json(
                 brief_out.brief, brief_out.items, meta, generated_at=generated_at
@@ -435,6 +482,11 @@ async def run_daily(
                     "generated_at": generated_at.isoformat(),
                     **signals_summary,
                 },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            "source_runs.json": json.dumps(
+                _source_runs_payload(collected, day=report_day, generated_at=generated_at),
                 ensure_ascii=False,
                 indent=2,
             ),

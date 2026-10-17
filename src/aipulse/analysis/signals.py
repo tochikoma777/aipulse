@@ -6,7 +6,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Sequence
+from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass
 from datetime import date, datetime, timedelta
 from typing import Any
@@ -21,6 +21,10 @@ from aipulse.store.repo_items import signals_for_entity
 # 真实阈值走 `configs/default.yaml::signals.min_velocity_window_hours`，
 # 这里只是直接调用本模块时的兜底默认值（保持纯函数可测）。
 MIN_VELOCITY_WINDOW_HOURS = 6.0
+
+# 只看最近 N 天的快照。用全表首末会把"多天前的老快照"混进来，
+# 让"今天的增量"变成"近一周的增量"（§5.14 任务 1 的明确要求）。
+REPO_LOOKBACK_DAYS = 7.0
 
 # 各源可算增速的 (entity_type, metric) 映射；不在表内的源（arxiv/rss/inbox）无信号。
 _SOURCE_SIGNAL = {
@@ -220,11 +224,123 @@ def build_signals_summary(
     }
 
 
+@dataclass(frozen=True)
+class RepoStar:
+    """单个 repo 的 star 快照摘要：最新总数 + 窗口内的**绝对增量**与窗口长度。
+
+    `delta` 是绝对增量（主显示值）；`delta_per_day` 只用于**排序**，不对外显示——
+    不同项目的窗口长度不同（REA 10h、ghidra 7 天），按绝对增量排名不可比。
+    """
+
+    entity_key: str
+    total: float | None
+    delta: float | None
+    status: str  # ok / insufficient / cold_start / missing
+    last_ts: datetime | None = None
+    first_ts: datetime | None = None
+    hours: float | None = None
+
+    @property
+    def delta_per_day(self) -> float | None:
+        """日均增量 = `delta / hours * 24`，仅用于排序。"""
+        if self.delta is None or self.hours is None or self.hours <= 0:
+            return None
+        return self.delta / self.hours * 24.0
+
+
+def repo_star_snapshots(
+    rows: Sequence[Signal],
+    *,
+    min_window_hours: float = MIN_VELOCITY_WINDOW_HOURS,
+    lookback_days: float = REPO_LOOKBACK_DAYS,
+) -> dict[str, RepoStar]:
+    """按 repo 聚合 star 快照：`{owner/repo: RepoStar}`。
+
+    取值规则（§5.14）：
+    - 先把序列裁到 `lookback_days` 内（**不用全表首末**，否则多天前的老数据会混进来），
+      再取该窗口的**首末两个快照**算绝对增量；锚点用数据里最新的快照时刻而不是
+      `utcnow()`，历史报告与测试因此可复现，掉榜项目也仍能出现；
+    - 只有 1 个快照 → `cold_start`（总数有、增量 `—`）；
+    - 间隔 < `min_window_hours` → `insufficient`：**仍给绝对增量**，只是不参与增速榜。
+
+    **为什么不用"最近两次"**：一轮开发/重跑会在 2 小时内留下多个快照，
+    拿最近两次会把"2 小时涨 132 star"当成日报增量；而且 `signals.json` 用的是
+    窗口首末，两处口径不一致会让读者对不上数。窗口首末 = 该项目被持续追踪以来的增长。
+    """
+    repo_rows = [row for row in rows if row.entity_type == "repo" and row.metric == "stars"]
+    if not repo_rows:
+        return {}
+    anchor = max(row.ts for row in repo_rows)
+    cutoff = anchor - timedelta(days=lookback_days)
+
+    grouped: dict[str, list[Signal]] = {}
+    for row in repo_rows:
+        if row.ts < cutoff:
+            continue
+        grouped.setdefault(row.entity_key, []).append(row)
+
+    result: dict[str, RepoStar] = {}
+    for key, points in grouped.items():
+        points.sort(key=lambda row: row.ts)
+        first, last = points[0], points[-1]
+        total = float(last.value)
+        if len(points) < 2:
+            result[key] = RepoStar(key, total, None, "cold_start", last.ts)
+            continue
+        hours = (last.ts - first.ts).total_seconds() / 3600.0
+        delta = float(last.value) - float(first.value)
+        # hours <= 0 说明时间戳相同（调试/并发写入），同样不给"合规窗口"
+        status = "ok" if hours >= min_window_hours else "insufficient"
+        result[key] = RepoStar(key, total, delta, status, last.ts, first.ts, hours)
+    return result
+
+
+def velocity_board(
+    snapshots: Mapping[str, RepoStar],
+    *,
+    exclude: Iterable[str] = (),
+    top_n: int = 5,
+) -> list[RepoStar]:
+    """增速榜：按**日均增量**降序取 Top N。
+
+    为什么不是绝对增量：各项目的窗口长度不同（REA 10h、ghidra 可能 7 天），
+    "7 天涨 5000" 会排在 "1 天涨 3000" 前面，但后者快 7 倍。
+    日均只用于排序；对外仍显示绝对增量 + 窗口（如 `+8617 / 10h`）。
+
+    只纳入 `status == "ok"`（有合规速率窗口）且增量 > 0 的项目——
+    `insufficient` 是"几分钟内涨了几个 star"，放进榜会制造假热点。
+    调用方负责把"今日 trending 已展示"的项目放进 `exclude`，避免重复。
+    """
+    excluded = set(exclude)
+    ranked = [
+        star
+        for star in snapshots.values()
+        if star.status == "ok"
+        and star.delta is not None
+        and star.delta > 0
+        and star.entity_key not in excluded
+    ]
+    # 日均降序；日均相同再按绝对增量、最后按 key，保证输出稳定
+    ranked.sort(
+        key=lambda star: (
+            -(star.delta_per_day or 0.0),
+            -(star.delta or 0.0),
+            star.entity_key,
+        )
+    )
+    return ranked[: max(0, top_n)]
+
+
 __all__ = [
+    "MIN_VELOCITY_WINDOW_HOURS",
+    "REPO_LOOKBACK_DAYS",
+    "RepoStar",
     "SignalSeries",
     "build_signals_summary",
     "item_signal_key",
+    "repo_star_snapshots",
     "trending_streak_days",
+    "velocity_board",
     "velocity_for_item",
     "velocity_per_hour",
 ]

@@ -172,6 +172,13 @@ def test_run_daily_writes_scoreboard_and_signals(monkeypatch, tmp_path):
     assert "🎯 预言记分板" in (result.report_dir / "scoreboard.md").read_text(encoding="utf-8")
     assert "命中" in (result.report_dir / "verdicts.md").read_text(encoding="utf-8")
 
+    # ★ v1.19：开源项目表格带 ★ 总数 / 增量（最近两次快照，绝对增量）
+    brief_md = (result.report_dir / "brief.md").read_text(encoding="utf-8")
+    assert "| 项目 | 热度 | ★ 总数 | 增量 | 要点 | 为什么重要 | 立场 |" in brief_md
+    assert "| 1200 | +200 / 23h |" in brief_md
+    # 唯一可上榜的 org/a 已在表格展示 → 增速榜 0 条，整个区块不出现
+    assert "增速榜" not in brief_md
+
 
 def test_run_daily_auto_verify_off_mode(monkeypatch, tmp_path):
     """`daily` 在 off 档自动验证量化判据预言（零 LLM），并写进 meta。"""
@@ -518,3 +525,60 @@ def test_analyze_day_includes_late_indexed_paper_on_first_seen_day(tmp_path):
         assert stats["items"] == 1
     finally:
         engine.dispose()
+
+
+def test_run_daily_exports_source_runs_json(monkeypatch, tmp_path):
+    """v1.19：源级结果落盘（含 skipped_offline），诊断"某源为什么没数据"不用连库。"""
+    monkeypatch.setenv("AIPULSE_ROOT", str(tmp_path))
+    load_settings.cache_clear()
+    db = tmp_path / "t.db"
+    _seed(db)
+
+    import aipulse.pipeline.daily as daily_mod
+    from aipulse.pipeline.collect import CollectResult, SourceResult
+
+    now = datetime.now(tz=UTC)
+
+    async def _fake_collect(**_kwargs):  # noqa: ANN003
+        return CollectResult(
+            since=now - timedelta(hours=24),
+            until=now,
+            results=[
+                SourceResult(
+                    source="github_trending",
+                    display_name="GitHub Trending",
+                    status="ok",
+                    item_count=7,
+                    started_at=now - timedelta(minutes=2),
+                    finished_at=now,
+                ),
+                SourceResult(
+                    source="reddit", display_name="Reddit", status="skipped_offline", item_count=0
+                ),
+                SourceResult(
+                    source="rss",
+                    display_name="RSS",
+                    status="failed",
+                    item_count=0,
+                    error="boom",
+                    started_at=now - timedelta(minutes=2),
+                    finished_at=now,
+                ),
+            ],
+        )
+
+    monkeypatch.setattr(daily_mod, "run_collect", _fake_collect)
+
+    result = asyncio.run(run_daily(since="24h", skip_llm=True, db_path=str(db)))
+
+    assert "source_runs.json" in result.files
+    payload = _json.loads((result.report_dir / "source_runs.json").read_text(encoding="utf-8"))
+    assert payload["collected"] is True
+    assert payload["date"] == result.day.isoformat()
+    by_source = {row["source"]: row for row in payload["sources"]}
+    assert set(by_source) == {"github_trending", "reddit", "rss"}
+    assert by_source["github_trending"]["item_count"] == 7
+    # 本地跳过的源没有起止时间，不能伪造成 0 或空串
+    assert by_source["reddit"]["started_at"] is None
+    assert by_source["rss"]["status"] == "failed"
+    assert by_source["rss"]["error"] == "boom"

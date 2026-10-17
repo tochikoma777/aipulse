@@ -11,7 +11,9 @@ from aipulse.analysis.signals import (
     MIN_VELOCITY_WINDOW_HOURS,
     build_signals_summary,
     item_signal_key,
+    repo_star_snapshots,
     trending_streak_days,
+    velocity_board,
     velocity_per_hour,
 )
 from aipulse.store.db import init_db
@@ -204,3 +206,169 @@ def test_trending_streak_days_breaks_on_gap(tmp_path):
             assert trending_streak_days(session, item, anchor=date(2026, 10, 17)) == 1
     finally:
         engine.dispose()
+
+
+# ── §5.14 star 总数 / 增量 / 增速榜 ─────────────────────────────────────
+
+
+def _repo_signal(key: str, value: float, ts: datetime) -> Signal:
+    return Signal(entity_type="repo", entity_key=key, metric="stars", value=value, ts=ts)
+
+
+# REA 的真实快照（2026-10-17 诊断数据）：10.3 小时涨 8617
+_REA = [
+    _repo_signal("morluto/rea", 261752.0, datetime(2026, 10, 15, 14, 47, 30, tzinfo=UTC)),
+    _repo_signal("morluto/rea", 270369.0, datetime(2026, 10, 16, 1, 3, 59, tzinfo=UTC)),
+]
+
+
+def test_repo_star_snapshots_ok_uses_window_endpoints():
+    stars = repo_star_snapshots(_REA)
+    rea = stars["morluto/rea"]
+    assert rea.status == "ok"
+    assert rea.total == 270369.0
+    assert rea.delta == 8617.0
+    assert rea.last_ts == _REA[-1].ts
+
+
+def test_repo_star_snapshots_ignores_older_history():
+    """lookback 窗口内的首末：7 天前的 100 不能混进增量。"""
+    rows = [
+        _repo_signal("org/a", 100.0, datetime(2026, 10, 9, 2, 0, tzinfo=UTC)),
+        _repo_signal("org/a", 900.0, datetime(2026, 10, 16, 2, 0, tzinfo=UTC)),
+        _repo_signal("org/a", 1000.0, datetime(2026, 10, 17, 2, 0, tzinfo=UTC)),
+    ]
+    star = repo_star_snapshots(rows)["org/a"]
+    assert star.delta == 100.0  # 窗口首末之差，而不是含 10-09 的 900
+    assert star.total == 1000.0
+
+
+def test_repo_star_snapshots_dense_runs_still_report_series_delta():
+    """★ 真实数据形态：REA 有 5 个快照（多次手动运行），增量仍是首末 +8617。
+
+    如果只取"最近两次"，2 小时的间隔会把 DoD 要求的 +8617 打成 +几百/insufficient。
+    """
+    rows = [
+        *_REA[:1],
+        _repo_signal("morluto/rea", 264000.0, datetime(2026, 10, 15, 17, 20, tzinfo=UTC)),
+        _repo_signal("morluto/rea", 267500.0, datetime(2026, 10, 15, 22, 20, tzinfo=UTC)),
+        _repo_signal("morluto/rea", 269000.0, datetime(2026, 10, 16, 0, 10, tzinfo=UTC)),
+        *_REA[1:],
+    ]
+    star = repo_star_snapshots(rows)["morluto/rea"]
+    assert star.status == "ok"
+    assert star.total == 270369.0
+    assert star.delta == 8617.0
+    assert star.first_ts == rows[0].ts
+
+
+def test_repo_star_snapshots_insufficient_keeps_absolute_delta():
+    """间隔 < 6h：仍给绝对增量，但状态标 insufficient（不参与增速榜）。"""
+    rows = [
+        _repo_signal("org/a", 100.0, datetime(2026, 10, 17, 1, 0, tzinfo=UTC)),
+        _repo_signal("org/a", 103.0, datetime(2026, 10, 17, 1, 30, tzinfo=UTC)),
+    ]
+    star = repo_star_snapshots(rows, min_window_hours=MIN_VELOCITY_WINDOW_HOURS)["org/a"]
+    assert star.status == "insufficient"
+    assert star.delta == 3.0
+    assert star.total == 103.0
+
+
+def test_repo_star_snapshots_cold_start_has_no_delta():
+    rows = [_repo_signal("org/a", 500.0, datetime(2026, 10, 17, 1, 0, tzinfo=UTC))]
+    star = repo_star_snapshots(rows)["org/a"]
+    assert star.status == "cold_start"
+    assert star.total == 500.0
+    assert star.delta is None
+
+
+def test_repo_star_snapshots_no_data():
+    assert repo_star_snapshots([]) == {}
+    # 非 repo / 非 stars 的信号不参与
+    rows = [
+        Signal(
+            entity_type="hn_story",
+            entity_key="1",
+            metric="points",
+            value=10.0,
+            ts=datetime(2026, 10, 17, 1, 0, tzinfo=UTC),
+        )
+    ]
+    assert repo_star_snapshots(rows) == {}
+
+
+def test_repo_star_snapshots_drops_stale_outside_lookback():
+    """lookback 之外的老快照不进序列：只有今天 1 个 → cold_start（增量 —）。"""
+    rows = [
+        _repo_signal("org/a", 100.0, datetime(2026, 9, 1, 2, 0, tzinfo=UTC)),
+        _repo_signal("org/a", 200.0, datetime(2026, 10, 17, 2, 0, tzinfo=UTC)),
+    ]
+    star = repo_star_snapshots(rows, lookback_days=7.0)["org/a"]
+    assert star.status == "cold_start"
+    assert star.delta is None
+
+
+def test_velocity_board_keeps_dropped_repo():
+    """★ 核心用例：REA 今天掉榜，但仍应在增速榜出现（不能被 exclusion 误伤）。"""
+    rows = [
+        *_REA,
+        _repo_signal("org/displayed", 1000.0, datetime(2026, 10, 16, 1, 0, tzinfo=UTC)),
+        _repo_signal("org/displayed", 1100.0, datetime(2026, 10, 16, 12, 0, tzinfo=UTC)),
+    ]
+    stars = repo_star_snapshots(rows)
+    board = velocity_board(stars, exclude={"org/displayed"}, top_n=5)
+    assert [star.entity_key for star in board] == ["morluto/rea"]
+    assert board[0].delta == 8617.0
+
+
+def test_velocity_board_only_ok_and_positive():
+    rows = [
+        # 间隔不足 → 不上榜
+        _repo_signal("org/fast", 10.0, datetime(2026, 10, 17, 1, 0, tzinfo=UTC)),
+        _repo_signal("org/fast", 900.0, datetime(2026, 10, 17, 1, 10, tzinfo=UTC)),
+        # 掉了 star → 不上榜
+        _repo_signal("org/down", 900.0, datetime(2026, 10, 16, 1, 0, tzinfo=UTC)),
+        _repo_signal("org/down", 800.0, datetime(2026, 10, 16, 12, 0, tzinfo=UTC)),
+        # 合规且上涨 → 上榜
+        _repo_signal("org/up", 100.0, datetime(2026, 10, 16, 1, 0, tzinfo=UTC)),
+        _repo_signal("org/up", 150.0, datetime(2026, 10, 16, 12, 0, tzinfo=UTC)),
+    ]
+    board = velocity_board(repo_star_snapshots(rows), top_n=5)
+    assert [star.entity_key for star in board] == ["org/up"]
+
+
+def test_velocity_board_top_n_and_empty():
+    rows = []
+    for idx in range(7):
+        rows += [
+            _repo_signal(f"org/r{idx}", 100.0, datetime(2026, 10, 16, 1, 0, tzinfo=UTC)),
+            _repo_signal(f"org/r{idx}", 100.0 + idx, datetime(2026, 10, 16, 12, 0, tzinfo=UTC)),
+        ]
+    board = velocity_board(repo_star_snapshots(rows), top_n=5)
+    assert len(board) == 5
+    assert [star.entity_key for star in board[:3]] == ["org/r6", "org/r5", "org/r4"]
+    assert velocity_board({}, top_n=5) == []
+
+
+def test_velocity_board_ranks_by_daily_average_not_absolute_delta():
+    """★ 核心回归：短窗口高日均必须排在长窗口高绝对值前面。
+
+    长窗口 160h 涨 5000（≈750/天） vs 短窗口 10h 涨 3000（7200/天）。
+    按绝对增量排会把前者放前面——那正是本次要修正的错误。
+    """
+    anchor = datetime(2026, 10, 17, 8, 0, tzinfo=UTC)
+    rows = [
+        _repo_signal("org/long", 10000.0, anchor - timedelta(hours=160)),
+        _repo_signal("org/long", 15000.0, anchor),
+        _repo_signal("org/short", 1000.0, anchor - timedelta(hours=10)),
+        _repo_signal("org/short", 4000.0, anchor),
+    ]
+    stars = repo_star_snapshots(rows)
+
+    assert stars["org/long"].delta == 5000.0
+    assert stars["org/long"].delta_per_day == pytest.approx(750.0)
+    assert stars["org/short"].delta == 3000.0
+    assert stars["org/short"].delta_per_day == pytest.approx(7200.0)
+
+    board = velocity_board(stars, top_n=5)
+    assert [star.entity_key for star in board] == ["org/short", "org/long"]

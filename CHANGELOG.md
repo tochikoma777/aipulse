@@ -10,6 +10,34 @@
 
 ## [Unreleased] — M4 之后的修复与 M6a
 
+### [§5.14] star 追踪（今日 Trending vs 持续追踪）
+
+> REA 掉榜诊断结案：**真掉榜，不是 bug**。但 `signals` 表一直在记 star 快照却从不展示，
+> 导致"27 万 star、10 小时涨 8617"的项目因为掉榜就在日报里彻底消失。
+
+#### Added
+
+- **开源项目表格增加「★ 总数」「增量」两列**（紧跟「热度」）：数据来自 `signals` 表，
+  **只显示绝对增量、不显示每小时速率**；`cold_start` / 无数据显示 `—`
+- **「📈 增速榜（追踪中）」区块**：Top 5（`brief.velocity_board_top_n`），
+  只纳入合规增速窗口（`status=ok`）且增量 > 0 的项目，排除今日已展示的；
+  **0 条时整块不渲染**（`brief.velocity_board_enabled`，默认开）
+- **`source_runs.json` 随日报落盘**：`source` / `status` / `item_count` / `started_at` /
+  `finished_at` / `error`。下次"某项目怎么没了"不用连库，直接看报告
+- `signals.repo_lookback_days`（默认 7）：star 增量只看最近 N 天，不混入更早的老快照
+
+#### Changed
+
+- star 增量取 **lookback 窗口内的首末快照**（与 `signals.json` 同口径），
+  不是全表首末、也不是"最近两次"——同日多次运行会把最近两次压到 2 小时内，失去日报意义
+- **增速榜改按日均增量排序**（`delta / hours × 24`）：窗口长度不同的绝对增量不可比
+  （7 天涨 5000 会排在 1 天涨 3000 前面，但后者快 7 倍）。**显示仍是绝对增量 + 窗口**
+  （`+8617 / 10h`），表格「增量」列同步带窗口标记
+
+#### 统计
+
+- 342 → 358 passed；新增 `repo_star_snapshots` / `velocity_board` 三态与 REA 用例
+
 ### [M6a] 格式规范化 + 快照型源修复 + 关注订阅
 
 #### Fixed

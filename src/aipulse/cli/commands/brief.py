@@ -12,6 +12,7 @@ from rich.console import Console
 from sqlmodel import Session
 
 from aipulse.analysis.entities import count_entities
+from aipulse.analysis.signals import repo_star_snapshots
 from aipulse.core.config import RunMode, Settings, load_settings
 from aipulse.core.logging import configure_logging
 from aipulse.core.timeutil import day_window, today_local
@@ -21,7 +22,12 @@ from aipulse.reasoning.brief import generate_brief
 from aipulse.render.json_out import render_json
 from aipulse.render.markdown import render_markdown
 from aipulse.store.db import engine_for, ensure_schema
-from aipulse.store.repo_items import list_entities, list_items_collected, list_topics
+from aipulse.store.repo_items import (
+    list_entities,
+    list_items_collected,
+    list_signals,
+    list_topics,
+)
 
 app = typer.Typer(name="brief", help="生成每日简报", invoke_without_command=True)
 
@@ -57,6 +63,11 @@ def run(
         items = list_items_collected(session, since=start, until=end)
         topics = list_topics(session, day)
         entity_counts = count_entities(list_entities(session, day))
+        repo_stars = repo_star_snapshots(
+            list_signals(session),
+            min_window_hours=settings.signals.min_velocity_window_hours,
+            lookback_days=settings.signals.repo_lookback_days,
+        )
         client = build_client(settings, engine=engine)
         output = asyncio.run(
             generate_brief(
@@ -76,9 +87,16 @@ def run(
     meta = {"mode": mode.value, "day": day.isoformat(), **output.meta}
     report_dir = report_dir_for(settings, day)
     report_dir.mkdir(parents=True, exist_ok=True)
-    (report_dir / "brief.md").write_text(
-        render_markdown(output.brief, output.items, meta), encoding="utf-8"
+    brief_md = render_markdown(
+        output.brief,
+        output.items,
+        meta,
+        max_items_per_section=settings.brief.max_items_per_section,
+        repo_stars=repo_stars,
+        velocity_board_enabled=settings.brief.velocity_board_enabled,
+        velocity_board_top_n=settings.brief.velocity_board_top_n,
     )
+    (report_dir / "brief.md").write_text(brief_md, encoding="utf-8")
     (report_dir / "daily.json").write_text(
         render_json(output.brief, output.items, meta), encoding="utf-8"
     )
@@ -91,5 +109,5 @@ def run(
         console.print_json(render_json(output.brief, output.items, meta))
         raise typer.Exit(code=0)
     console.print(f"[bold]简报已生成[/bold] {day.isoformat()} → {report_dir}")
-    console.print(render_markdown(output.brief, output.items, meta))
+    console.print(brief_md)
     raise typer.Exit(code=0)

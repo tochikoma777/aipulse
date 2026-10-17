@@ -7,6 +7,7 @@ from datetime import UTC, date, datetime
 import httpx
 import respx
 
+from aipulse.analysis.signals import RepoStar
 from aipulse.core.config import RunMode, Settings
 from aipulse.llm.base import NullLLM, build_client
 from aipulse.reasoning.brief import generate_brief
@@ -128,16 +129,17 @@ def test_markdown_unified_format_contract():
     # 主编点评四个固定小节
     for heading in ("🎯 核心判断", "🔍 交叉信号", "🔄 反直觉", "⚠️ 风险提醒"):
         assert f"### {heading}" in md
-    # 空板块不渲染；表格五列结构恒定（每行 6 个竖线）
+    # 空板块不渲染；列数恒定：开源项目 7 列（含 ★ 总数 / 增量），其余 5 列
     assert "## 🏢 产业与新闻" not in md
     table_rows = [
         line for line in md.splitlines() if line.startswith("|") and set(line) != {"|", "-"}
     ]
     assert len(table_rows) == 1 + 2 + 1 + 1  # 两张表头 + 两个板块各 2/1 行
-    assert all(line.count("|") == 6 for line in table_rows)
+    assert all(line.count("|") == 8 for line in table_rows[:3])  # 开源项目：7 列
+    assert all(line.count("|") == 6 for line in table_rows[3:])  # 其余板块：5 列
     # 未生成增强的条目保留整行，`为什么重要` / `立场` 用 — 占位
     assert "| [LinkSwift](https://example.com/b) | 70.0 |" in md
-    assert "| [LinkSwift](https://example.com/b) | 70.0 | summary | — | — |" in md
+    assert "| [LinkSwift](https://example.com/b) | 70.0 | — | — | summary | — | — |" in md
     # 连续在榜信号进入热度列
     assert "91.2 🔥 · 连续 3 天" in md
 
@@ -222,3 +224,118 @@ def test_sections_dedupe_to_source_primary_section():
     assert by_name["社区舆论"] == []
     assert by_name["产业与新闻"] == ["rss1"]
     assert by_name["开源项目"] == ["gh1"]
+
+
+def _rea_star() -> RepoStar:
+    return RepoStar(
+        entity_key="morluto/rea",
+        total=270369.0,
+        delta=8617.0,
+        status="ok",
+        last_ts=datetime(2026, 10, 16, 1, 3, 59, tzinfo=UTC),
+        hours=10.3,
+    )
+
+
+def test_markdown_shows_star_total_and_delta_after_heat():
+    """§5.14 任务 1：「热度」之后紧跟 ★ 总数 / 增量（绝对增量，不是速率）。"""
+    item = _item("a", "github_trending", "vLLM v1", 91.2)
+    brief = DailyBrief(date=date.today(), sections=[Section(name="开源项目", item_ids=["a"])])
+    stars = {
+        "ext-a": RepoStar(
+            entity_key="ext-a",
+            total=1200.0,
+            delta=200.0,
+            status="ok",
+            last_ts=datetime(2026, 10, 17, 1, 0, tzinfo=UTC),
+            hours=24.0,
+        )
+    }
+    md = render_markdown(brief, {"a": item}, {"mode": "hybrid"}, repo_stars=stars)
+    header = next(line for line in md.splitlines() if line.startswith("| 项目 |"))
+    assert header == "| 项目 | 热度 | ★ 总数 | 增量 | 要点 | 为什么重要 | 立场 |"
+    row = next(line for line in md.splitlines() if line.startswith("| [vLLM v1]"))
+    assert "| 91.2 🔥 | 1200 | +200 / 24h |" in row
+
+
+def test_markdown_velocity_board_keeps_dropped_repo():
+    """§5.14 任务 2：掉榜的 REA 仍出现在增速榜，已展示项目不重复出现。"""
+    items = {
+        "a": _item("a", "github_trending", "vLLM v1", 91.2),
+        "b": _item("b", "github_trending", "LinkSwift", 70.0),
+    }
+    brief = DailyBrief(date=date.today(), sections=[Section(name="开源项目", item_ids=["a", "b"])])
+    stars = {
+        "ext-a": RepoStar(
+            entity_key="ext-a",
+            total=1200.0,
+            delta=200.0,
+            status="ok",
+            last_ts=datetime(2026, 10, 17, 1, 0, tzinfo=UTC),
+            hours=24.0,
+        ),
+        "morluto/rea": _rea_star(),
+    }
+    md = render_markdown(brief, items, {"mode": "hybrid"}, repo_stars=stars)
+
+    assert "### 📈 增速榜（追踪中）" in md
+    assert "- **morluto/rea** · ★270369 · +8617 / 10h · 上次在榜 10-16" in md
+    # 今日已展示 → 不进榜（避免同一项目出现两次）
+    assert "- **ext-a**" not in md
+
+
+def test_markdown_hides_velocity_board_when_empty_or_disabled():
+    """红线 43：0 条时整个区块都不显示（不能只剩空标题）。"""
+    item = _item("a", "github_trending", "vLLM v1", 91.2)
+    brief = DailyBrief(date=date.today(), sections=[Section(name="开源项目", item_ids=["a"])])
+    only_cold = {
+        "morluto/rea": RepoStar(
+            entity_key="morluto/rea",
+            total=270369.0,
+            delta=None,
+            status="cold_start",
+            last_ts=datetime(2026, 10, 16, 1, 3, 59, tzinfo=UTC),
+        )
+    }
+    md = render_markdown(brief, {"a": item}, {"mode": "hybrid"}, repo_stars=only_cold)
+    assert "增速榜" not in md
+
+    md_disabled = render_markdown(
+        brief,
+        {"a": item},
+        {"mode": "hybrid"},
+        repo_stars={"morluto/rea": _rea_star()},
+        velocity_board_enabled=False,
+    )
+    assert "增速榜" not in md_disabled
+
+
+def test_markdown_velocity_board_sorts_by_daily_average_and_shows_window():
+    """★ 增速榜按日均排序，但显示给读者的是绝对增量 + 窗口。"""
+    anchor = datetime(2026, 10, 17, 8, 0, tzinfo=UTC)
+    stars = {
+        "org/long": RepoStar(
+            entity_key="org/long",
+            total=15000.0,
+            delta=5000.0,
+            status="ok",
+            last_ts=anchor,
+            hours=160.0,
+        ),
+        "org/short": RepoStar(
+            entity_key="org/short",
+            total=4000.0,
+            delta=3000.0,
+            status="ok",
+            last_ts=anchor,
+            hours=10.0,
+        ),
+    }
+    brief = DailyBrief(date=date.today(), sections=[Section(name="开源项目", item_ids=[])])
+    md = render_markdown(brief, {}, {"mode": "hybrid"}, repo_stars=stars)
+
+    rows = [line for line in md.splitlines() if line.startswith("- **org/")]
+    assert rows[0].startswith("- **org/short**")
+    assert "+3000 / 10h" in rows[0]
+    assert rows[1].startswith("- **org/long**")
+    assert "+5000 / 160h" in rows[1]

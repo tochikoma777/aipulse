@@ -129,10 +129,14 @@ class PipelineSettings(BaseModel):
 
 
 class BriefSettings(BaseModel):
-    """简报呈现参数（v1.15）。"""
+    """简报呈现参数（v1.15 / v1.19）。"""
 
     # 每个板块最多列 N 条；超出显示「另有 N 条」。24 条论文全列出来会让人无从下手。
     max_items_per_section: int = 10
+    # 增速榜（§5.14）：让"掉榜但依然很火"的项目不会彻底消失。
+    # 0 条时不渲染整个区块（不显示空标题）。
+    velocity_board_enabled: bool = True
+    velocity_board_top_n: int = 5
 
 
 class VerifySettings(BaseModel):
@@ -158,6 +162,8 @@ class SignalSettings(BaseModel):
     """
 
     min_velocity_window_hours: float = 6.0
+    # repo star 只回看最近 N 天：避免"最近两次快照"里混入多天前的老数据
+    repo_lookback_days: float = 7.0
 
 
 class OutputSettings(BaseModel):
