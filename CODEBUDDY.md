@@ -81,7 +81,7 @@ scripts/cron_daily.sh                                 # 本地 cron 备份（日
 CI（`.github/workflows/ci.yml`，无 secrets）实际只跑 4 步：`ruff check .` → `ruff format --check .` → `mypy src/aipulse` → `pytest`（**没有覆盖率门禁**，覆盖率是本地基线，不达标不会挂 CI）。`.github/workflows/probe.yml` 是手动触发的探测，不在 CI 链上。
 
 ```bash
-uv run pytest                             # 全量（当前 338 条，约 60s，无需网络、无需密钥）
+uv run pytest                             # 全量（当前 342 条，约 60s，无需网络、无需密钥）
 uv run pytest tests/unit/test_dedup.py                      # 单文件
 uv run pytest "tests/unit/test_dedup.py::test_l2_merges_arxiv_and_hf_same_paper" -q  # 单用例
 uv run pytest -q --cov=aipulse --cov-report=term            # 覆盖率：collectors/ ≥80%、openai_compat ≥80%、TOTAL 90%
