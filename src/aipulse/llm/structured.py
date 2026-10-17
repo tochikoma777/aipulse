@@ -92,7 +92,14 @@ async def generate_structured(
         return parsed, result
 
     # ── 一次修复重试：把原始输出 + 错误回传，要求只输出修正后的 JSON ──
-    log.warning("llm.structured.retry", purpose=purpose, model=response_model.__name__)
+    log.warning(
+        "llm.structured.retry",
+        purpose=purpose,
+        model=response_model.__name__,
+        max_tokens=max_tokens,
+        first_len=len(result.content or ""),
+        first_head=(result.content or "")[:500],
+    )
     repair_messages = [
         *messages,
         ChatMessage(role="assistant", content=result.content),
@@ -116,7 +123,14 @@ async def generate_structured(
     if parsed is not None:
         return parsed, retried
 
-    log.error("llm.structured.degraded", purpose=purpose, model=response_model.__name__)
+    log.error(
+        "llm.structured.degraded",
+        purpose=purpose,
+        model=response_model.__name__,
+        max_tokens=max_tokens,
+        retry_len=len(retried.content or ""),
+        retry_head=(retried.content or "")[:500],
+    )
     return None, retried
 
 
