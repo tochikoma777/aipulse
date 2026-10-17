@@ -22,6 +22,9 @@ llm:
   # 读超时：strong 档走思维链，比 fast 慢得多，故分开设（见 config.py 的注释）
   timeout_s: ${AIPULSE_LLM__TIMEOUT_S:-120}
   timeout_strong_s: ${AIPULSE_LLM__TIMEOUT_STRONG_S:-180}
+  # v1.16：输出预算分档（reasoner 思维链会吃掉 max_tokens）
+  max_tokens_fast: ${AIPULSE_LLM__MAX_TOKENS_FAST:-4000}
+  max_tokens_strong: ${AIPULSE_LLM__MAX_TOKENS_STRONG:-8000}
   max_retries: 3
   cache_enabled: true
   json_schema: auto                # auto=运行时自动降级；true/false=强制指定（§8.3）
@@ -37,6 +40,7 @@ pipeline:
   brief_sections: [开源项目, 论文与研究, 社区舆论, 产业与新闻]
   predictions_per_day: 5
   prediction_horizons: [7, 30, 90]
+  predict_candidate_top_n: 20      # v1.16：候选证据池只给 id+标题，减少上下文
   auto_verify: true
   weekly_debate_enabled: true
 

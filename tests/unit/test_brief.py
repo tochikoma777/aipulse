@@ -188,3 +188,37 @@ def test_markdown_caps_items_per_section_and_reports_overflow():
     rows = [line for line in md.splitlines() if line.startswith("| [repo-")]
     assert len(rows) == 10
     assert "另有 2 条未展示" in md
+
+
+def test_markdown_no_summary_shows_dash_not_duplicate_title():
+    """v1.16：无摘要时「要点」保持 —，不回退整标题（避免第一列重复）。"""
+    item = _item("x", "hackernews", "How the Claude Code team does code review", 80.0)
+    item.summary = ""
+    brief = DailyBrief(
+        date=date.today(),
+        sections=[Section(name="社区舆论", item_ids=["x"])],
+    )
+    md = render_markdown(brief, {"x": item}, {"mode": "hybrid"})
+    row = next(line for line in md.splitlines() if line.startswith("| ["))
+    assert row.count("How the Claude Code team does code review") == 1
+    assert row.endswith("| — | — | — |")
+
+
+def test_sections_dedupe_to_source_primary_section():
+    """v1.16：同一条目跨板块出现时，只保留源对应的主板块。"""
+    from aipulse.reasoning.brief import _ensure_single_section
+
+    items = {
+        "rss1": _item("rss1", "rss", "Apple ML Research", 80.0),
+        "gh1": _item("gh1", "github_trending", "vLLM", 90.0),
+    }
+    sections = [
+        Section(name="社区舆论", item_ids=["rss1"]),
+        Section(name="开源项目", item_ids=["gh1"]),
+        Section(name="产业与新闻", item_ids=["rss1"]),
+    ]
+    _ensure_single_section(sections, items)
+    by_name = {section.name: section.item_ids for section in sections}
+    assert by_name["社区舆论"] == []
+    assert by_name["产业与新闻"] == ["rss1"]
+    assert by_name["开源项目"] == ["gh1"]

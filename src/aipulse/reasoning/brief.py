@@ -90,6 +90,32 @@ def _topic_name_map(topics: list[Topic]) -> dict[str, str]:
     return {t.id: t.name for t in topics}
 
 
+def _ensure_single_section(sections: list[Section], items: dict[str, Item]) -> None:
+    """同一 item 只保留主板块（v1.16）。
+
+    主板块由源决定（`_SOURCE_SECTION`），而不是"LLM 先写到哪个板块"——
+    Apple 的 RSS 条目同时被放进社区舆论/产业与新闻时，应保留产业与新闻。
+    源映射不存在或不在本次板块清单里时，退回它第一次出现的板块。
+    """
+    names = {section.name for section in sections}
+    owners: dict[str, str] = {}
+    order: list[str] = []
+    for section in sections:
+        for item_id in section.item_ids:
+            if item_id in owners:
+                continue
+            item = items.get(item_id)
+            primary = _SOURCE_SECTION.get(item.source) if item is not None else None
+            owners[item_id] = primary if primary in names else section.name
+            order.append(item_id)
+
+    buckets: dict[str, list[str]] = {name: [] for name in names}
+    for item_id in order:
+        buckets[owners[item_id]].append(item_id)
+    for section in sections:
+        section.item_ids = buckets[section.name]
+
+
 def _data_brief(
     items: list[Item],
     topics: list[Topic],
@@ -209,7 +235,7 @@ async def generate_brief(
             [ChatMessage(role="system", content=rendered)],
             response_model=DailyBrief,
             temperature=template.temperature,
-            max_tokens=4000,
+            max_tokens=settings.llm.max_tokens_for(template.model_tier),
             purpose="brief_daily",
             model_tier=template.model_tier,
         )
@@ -217,6 +243,8 @@ async def generate_brief(
         if parsed is not None:
             daily = cast(DailyBrief, parsed)
             daily.date = day
+            # v1.16：LLM 可能把同一条同时放进多个板块 → 按源归一到主板块
+            _ensure_single_section(daily.sections, chosen_items)
             brief = daily
     except Exception as exc:  # 网络/预算等异常：降级不中断
         log.error("brief.llm_failed", error=repr(exc))

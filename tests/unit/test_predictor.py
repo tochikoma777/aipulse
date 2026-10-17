@@ -272,3 +272,64 @@ async def test_missing_falsifiable_criteria_dropped():
     )
     assert out.predictions == []
     assert len(out.meta["dropped"]) == 1
+
+
+async def test_candidate_pool_is_capped_and_title_only():
+    """v1.16：候选池 Top 20，且只给 id+标题（不注入摘要）。"""
+    items = []
+    for i in range(30):
+        item = _item(f"it_{i}", f"title {i}", 100.0 - i)
+        item.summary = "SECRET_SUMMARY_SHOULD_NOT_BE_IN_PROMPT"
+        items.append(item)
+
+    class _Capture(_StubClient):
+        def __init__(self) -> None:
+            super().__init__(
+                [_batch("推理框架将在 30 天内全面超越闭源", evidence=["it_0", "it_1"])]
+            )
+            self.rendered = ""
+
+        async def chat(self, messages, **kwargs):  # noqa: ANN001, ANN003
+            self.rendered = messages[0].content
+            return await super().chat(messages, **kwargs)
+
+    client = _Capture()
+    out = await generate_predictions(
+        client=client,
+        settings=Settings(),
+        items=items,
+        topics=_topics(),
+        entity_counts={},
+        day=date(2026, 10, 14),
+        mode=RunMode.HYBRID,
+    )
+    assert out.meta["candidate_pool"] == 20
+    assert "it_19" in client.rendered
+    assert "it_20" not in client.rendered
+    assert "SECRET_SUMMARY_SHOULD_NOT_BE_IN_PROMPT" not in client.rendered
+
+
+async def test_predict_passes_tiered_max_tokens_to_client():
+    """v1.16：配置的 strong max_tokens 必须真的透传（不能变成死配置）。"""
+    settings = Settings(llm={"max_tokens_strong": 9999})
+
+    class _Capture(_StubClient):
+        def __init__(self) -> None:
+            super().__init__([_batch("推理框架将在 30 天内全面超越闭源")])
+            self.max_tokens: int | None = None
+
+        async def chat(self, messages, **kwargs):  # noqa: ANN001, ANN003
+            self.max_tokens = kwargs.get("max_tokens")
+            return await super().chat(messages, **kwargs)
+
+    client = _Capture()
+    await generate_predictions(
+        client=client,
+        settings=settings,
+        items=_items(),
+        topics=_topics(),
+        entity_counts={},
+        day=date(2026, 10, 14),
+        mode=RunMode.HYBRID,
+    )
+    assert client.max_tokens == 9999

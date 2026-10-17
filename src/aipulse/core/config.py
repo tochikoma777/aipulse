@@ -74,6 +74,10 @@ class LLMSettings(BaseModel):
     # strong 档（deepseek-reasoner）会先吐思维链再出结论，同样的活儿比 fast 慢得多：
     # 共用 120s 时预言生成会被读超时打断（Actions 首跑 hybrid 就是这样 0 条的）。
     timeout_strong_s: int = 180
+    # v1.16：输出预算分档。reasoner 先输出思维链，4k 在 174 条输入的 predict 场景会截断；
+    # strong 给 2 倍。注意必须真的透传（沿用 timeout 的教训）。
+    max_tokens_fast: int = 4000
+    max_tokens_strong: int = 8000
     max_retries: int = 3
     cache_enabled: bool = True
     # v1.7：json_schema 兼容性。auto=首次带 json_schema，报 400 且错误体含
@@ -95,6 +99,10 @@ class LLMSettings(BaseModel):
             return "true" if value else "false"
         return value
 
+    def max_tokens_for(self, model_tier: str) -> int:
+        """按模型档位取输出预算（strong 含思维链，给更大额度）。"""
+        return self.max_tokens_strong if model_tier == "strong" else self.max_tokens_fast
+
 
 class BudgetSettings(BaseModel):
     daily_limit_cny: float = 2.0
@@ -114,6 +122,8 @@ class PipelineSettings(BaseModel):
     )
     predictions_per_day: int = 5
     prediction_horizons: list[int] = Field(default_factory=lambda: [7, 30, 90])
+    # v1.16：候选证据池收窄到 20 条，且只给 id + 标题（不给摘要），降低上下文与幻觉
+    predict_candidate_top_n: int = 20
     auto_verify: bool = True
     weekly_debate_enabled: bool = True
 

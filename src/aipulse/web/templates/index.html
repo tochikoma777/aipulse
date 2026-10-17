@@ -98,7 +98,7 @@
             <td class="num">
               {{ item.hot_score }}{% if item.streak_days and item.streak_days >= 2 %} · 连续 {{ item.streak_days }} 天{% endif %}
             </td>
-            <td>{% if ns.comment and ns.comment.one_liner %}{{ ns.comment.one_liner }}{% elif item.summary %}{{ item.summary }}{% else %}{{ item.title|truncate(40, True, '…') }}{% endif %}</td>
+            <td>{% if ns.comment and ns.comment.one_liner %}{{ ns.comment.one_liner }}{% elif item.summary %}{{ item.summary }}{% else %}—{% endif %}</td>
             <td>{% if ns.comment and ns.comment.why_it_matters %}{{ ns.comment.why_it_matters }}{% else %}—{% endif %}</td>
             <td>{% if ns.comment and ns.comment.stance %}{{ ns.comment.stance }}{% else %}—{% endif %}</td>
           </tr>

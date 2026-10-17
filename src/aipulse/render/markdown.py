@@ -194,8 +194,8 @@ def render_markdown(
             elif item.summary:
                 one_liner = item.summary
             else:
-                # 无摘要时回退标题前缀，避免「要点」列出现无信息量的 —
-                one_liner = item.title
+                # 无摘要时不回退标题（会与第一列重复），保持 — 让"未生成"显式可见
+                one_liner = ""
             out.append(
                 "| "
                 + " | ".join(

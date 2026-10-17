@@ -26,7 +26,7 @@ from aipulse.schema.prediction import Prediction, PredictionBatch, validate_pred
 from aipulse.store.models import Item, Topic
 from aipulse.store.models import Prediction as PredictionRow
 from aipulse.store.repo_predictions import prediction_id
-from aipulse.utils.text import estimate_tokens, truncate_summary
+from aipulse.utils.text import estimate_tokens
 
 log = get_logger(__name__)
 
@@ -39,19 +39,13 @@ class PredictOutput:
     meta: dict[str, Any] = field(default_factory=dict)
 
 
-def _topic_name_map(topics: list[Topic]) -> dict[str, str]:
-    return {t.id: t.name for t in topics}
+def _item_context(item: Item) -> dict[str, Any]:
+    """候选证据池条目：只给 id + 标题。
 
-
-def _item_context(item: Item, topic_name: str | None) -> dict[str, Any]:
-    return {
-        "id": item.id,
-        "title": item.title,
-        "source": item.source,
-        "hot_score": round(float(item.hot_score or 0.0), 1),
-        "topic": topic_name or "",
-        "summary": truncate_summary(item.summary or "", 300),
-    }
+    v1.16：不再注入摘要——174 条窗口下摘要会把输入放大 10 倍，且长上下文更容易
+    跑偏/引用池外 id。模型只需要判断"引用哪条"，正文留到验证阶段单条检索。
+    """
+    return {"id": item.id, "title": item.title}
 
 
 def _trim_to_budget(
@@ -136,13 +130,10 @@ async def generate_predictions(
     if mode == RunMode.OFF or skip_llm:
         return PredictOutput(meta={"mode": "off", "generated": 0})
 
-    topic_names = _topic_name_map(topics)
     ranked = sorted(items, key=lambda it: -(float(it.hot_score or 0.0)))[
-        : settings.pipeline.daily_top_n
+        : settings.pipeline.predict_candidate_top_n
     ]
-    contexts = _trim_to_budget(
-        [_item_context(it, topic_names.get(it.topic_id or "")) for it in ranked]
-    )
+    contexts = _trim_to_budget([_item_context(it) for it in ranked])
     # ★ 候选证据池 == 注入 prompt 的那批条目。注入什么就只允许引用什么，
     #   事后校验才有可判定的依据（否则"证据真实存在"这句话无从核实）。
     known_item_ids = {c["id"] for c in contexts}
@@ -180,14 +171,20 @@ async def generate_predictions(
         horizons=list(settings.pipeline.prediction_horizons),
     )
 
-    meta: dict[str, Any] = {"mode": mode.value, "generated": 0, "llm_calls": 0, "dropped": []}
+    meta: dict[str, Any] = {
+        "mode": mode.value,
+        "generated": 0,
+        "llm_calls": 0,
+        "dropped": [],
+        "candidate_pool": len(known_item_ids),
+    }
     try:
         parsed, result = await generate_structured(
             client,
             [ChatMessage(role="system", content=rendered)],
             response_model=PredictionBatch,
             temperature=template.temperature,
-            max_tokens=4000,
+            max_tokens=settings.llm.max_tokens_for(template.model_tier),
             purpose="predict_generate",
             model_tier=template.model_tier,
         )
@@ -230,7 +227,7 @@ async def generate_predictions(
                 repair,
                 response_model=PredictionBatch,
                 temperature=template.temperature,
-                max_tokens=4000,
+                max_tokens=settings.llm.max_tokens_for(template.model_tier),
                 purpose="predict_generate",
                 model_tier=template.model_tier,
             )
