@@ -19,7 +19,7 @@ concurrency:
 
 jobs:
   daily:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     env:
       # ★ 打开 actions_only 的源（reddit / hf_papers）。本地 WSL 因 DNS 污染跳过，
