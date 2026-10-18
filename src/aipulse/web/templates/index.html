@@ -99,7 +99,8 @@
               {{ item.hot_score }}{% if item.streak_days and item.streak_days >= 2 %} · 连续 {{ item.streak_days }} 天{% endif %}
             </td>
             <td>{% if ns.comment and ns.comment.one_liner %}{{ ns.comment.one_liner }}{% elif item.summary %}{{ item.summary }}{% else %}—{% endif %}</td>
-            <td>{% if ns.comment and ns.comment.why_it_matters %}{{ ns.comment.why_it_matters }}{% else %}—{% endif %}</td>
+            {# v1.21：新报告写 why；≤2026-10-17 的归档只有 why_it_matters，做一次回退 #}
+            <td>{% if ns.comment and (ns.comment.why or ns.comment.why_it_matters) %}{{ ns.comment.why or ns.comment.why_it_matters }}{% else %}—{% endif %}</td>
             <td>{% if ns.comment and ns.comment.stance %}{{ ns.comment.stance }}{% else %}—{% endif %}</td>
           </tr>
           {% endif %}

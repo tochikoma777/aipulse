@@ -131,6 +131,7 @@ def test_ensure_schema_upgrades_existing_alembic_db(tmp_path):
     """Actions cache 恢复的旧库必须自动 upgrade，而不是"items 表存在"就跳过。
 
     模拟 v1.14 的库：版本停在 c4e8b1a72f90，且没有 first_seen_at 列。
+    回退版本时也要删掉更晚迁移建出的表（item_enhance），否则不是真正的旧库。
     """
     import sqlite3
 
@@ -139,6 +140,7 @@ def test_ensure_schema_upgrades_existing_alembic_db(tmp_path):
     con = sqlite3.connect(db)
     con.execute("DROP INDEX ix_items_first_seen_at")
     con.execute("ALTER TABLE items DROP COLUMN first_seen_at")
+    con.execute("DROP TABLE item_enhance")
     con.execute("UPDATE alembic_version SET version_num = 'c4e8b1a72f90'")
     con.commit()
     con.close()
@@ -150,4 +152,4 @@ def test_ensure_schema_upgrades_existing_alembic_db(tmp_path):
     version = con.execute("SELECT version_num FROM alembic_version").fetchone()[0]
     con.close()
     assert "first_seen_at" in columns
-    assert version == "d5a2c9b81e34"
+    assert version == "e6b2f7c1a9d4"

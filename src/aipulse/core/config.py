@@ -129,7 +129,7 @@ class PipelineSettings(BaseModel):
 
 
 class BriefSettings(BaseModel):
-    """简报呈现参数（v1.15 / v1.19）。"""
+    """简报呈现参数（v1.15 / v1.19 / v1.21 M6b）。"""
 
     # 每个板块最多列 N 条；超出显示「另有 N 条」。24 条论文全列出来会让人无从下手。
     max_items_per_section: int = 10
@@ -137,6 +137,19 @@ class BriefSettings(BaseModel):
     # 0 条时不渲染整个区块（不显示空标题）。
     velocity_board_enabled: bool = True
     velocity_board_top_n: int = 5
+    # ── M6b 条目增强（红线 23/24/25）────────────────────────────────
+    # 只对渲染集的前 N 条增强（成本闸门）：渲染集本身已按板块截断。
+    enhance_top_n: int = 30
+    # 每批条数：批次是"失败隔离"的最小单位，单批失败只丢该批。
+    enhance_batch_size: int = 10
+    # 增强的独立预算（元/次运行），与 budget.daily_limit_cny（2.0）互不占用。
+    enhance_budget_cny: float = 0.15
+    # 缓存有效期：超过 N 天强制重算，避免 prompt 之外的语义漂移长期不更新。
+    enhance_ttl_days: int = 30
+    # 热度变化超过该值才刷新（绝对值比较，跨天热度天然会漂移）。
+    enhance_refresh_hot_delta: float = 10.0
+    # 是否把"新增信号快照"也作为刷新条件；默认关，省钱且信号数不直接决定文本质量。
+    enhance_refresh_on_new_signals: bool = False
 
 
 class VerifySettings(BaseModel):

@@ -80,6 +80,8 @@ def run(
                 mode=mode,
                 skip_llm=skip,
                 top_n=top_n,
+                # M6b：增强缓存读写复用本次会话
+                session=session,
             )
         )
     engine.dispose()

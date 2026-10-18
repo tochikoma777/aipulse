@@ -264,7 +264,7 @@ def render_markdown(
                     cells += [_stars_total(star), _stars_delta(star)]
                 cells += [
                     _short(one_liner),
-                    _cell(comment.why_it_matters if comment else ""),
+                    _cell(comment.why if comment else ""),
                     _cell(comment.stance if comment else ""),
                 ]
                 out.append("| " + " | ".join(cells) + " |")

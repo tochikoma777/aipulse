@@ -10,24 +10,32 @@
 from __future__ import annotations
 
 import json
+from collections.abc import Sequence
 from dataclasses import dataclass, field
-from datetime import date
+from datetime import date, datetime, timedelta
 from typing import Any, cast
 
+from sqlalchemy import func
+from sqlmodel import Session, select
+
+from aipulse.analysis.signals import item_signal_key
 from aipulse.core.config import RunMode, Settings
 from aipulse.core.logging import get_logger
-from aipulse.llm.base import ChatMessage, LLMClient
-from aipulse.llm.prompt import render_prompt
+from aipulse.core.timeutil import ensure_utc, utcnow
+from aipulse.llm.base import ChatMessage, LLMClient, LLMResult
+from aipulse.llm.prompt import load_prompt, render_prompt
 from aipulse.llm.structured import generate_structured
 from aipulse.schema.brief import (
     DailyBrief,
     EditorNote,
+    EnhancesOut,
     ItemComment,
     ItemComments,
+    OneLinersOut,
     OverviewBullet,
     Section,
 )
-from aipulse.store.models import Item, Topic
+from aipulse.store.models import Item, ItemEnhance, Signal, Topic
 from aipulse.utils.text import estimate_tokens, truncate_summary
 
 log = get_logger(__name__)
@@ -184,6 +192,361 @@ def _data_brief(
     )
 
 
+# ── M6b：条目增强（one_liner / why / stance）─────────────────────────
+#
+# 两个独立批量调用 + 条目级缓存 + 独立预算：
+# - one_liner：要点（一律中文），由 `brief/item_comment.j2` 产出；
+# - why / stance：为什么重要 / 立场，由 `brief/item_enhance.j2` 产出。
+# 缓存键是**单条目**（item_id），不是批次——批次只是失败隔离与预算的控制单位。
+
+
+def _render_ids(brief: DailyBrief, max_per_section: int) -> list[str]:
+    """渲染层实际会展示的条目 id（板块顺序 → 板块内顺序，每板块截断）。
+
+    必须与 `render/markdown.py` 的 `section.item_ids[:limit]` 严格一致：
+    多算会为看不见的条目付费，少算会让表格出现 `—`。
+    """
+    limit = max(0, max_per_section)
+    ordered: list[str] = []
+    for section in brief.sections:
+        for item_id in section.item_ids[:limit]:
+            if item_id not in ordered:
+                ordered.append(item_id)
+    return ordered
+
+
+def _signals_count(session: Session | None, item: Item) -> int:
+    """该条目在 `signals` 表中的快照条数（无可追踪实体的条目恒为 0）。"""
+    if session is None:
+        return 0
+    key = item_signal_key(item)
+    if key is None:
+        return 0
+    entity_type, entity_key, _metric = key
+    total = session.exec(
+        select(func.count())
+        .select_from(Signal)
+        .where(Signal.entity_type == entity_type, Signal.entity_key == entity_key)
+    ).one()
+    return int(total or 0)
+
+
+def _load_enhance_rows(session: Session | None, item_ids: Sequence[str]) -> dict[str, ItemEnhance]:
+    if session is None or not item_ids:
+        return {}
+    rows = session.exec(
+        select(ItemEnhance).where(ItemEnhance.item_id.in_(item_ids))  # type: ignore[attr-defined]
+    ).all()
+    return {row.item_id: row for row in rows}
+
+
+def _cache_fresh(
+    row: ItemEnhance,
+    item: Item,
+    *,
+    settings: Settings,
+    one_liner_ver: str,
+    enhance_ver: str,
+    signals_count: int,
+    now: datetime,
+    require_fields: bool = False,
+) -> bool:
+    """条目级缓存判定（红线 23）：四条全满足才算命中。
+
+    `require_fields=True`（hybrid 档）额外要求三个文本字段都非空——
+    否则"版本号对得上但 why 为空"会被误判为命中，缺口永远补不上。
+    """
+    if require_fields and not (row.one_liner.strip() and row.why.strip() and row.stance.strip()):
+        return False
+    if row.content_hash != (item.content_hash or ""):
+        return False
+    if row.one_liner_ver != one_liner_ver or row.enhance_ver != enhance_ver:
+        return False
+    if row.updated_at is None:
+        return False
+    if now - ensure_utc(row.updated_at) > timedelta(days=settings.brief.enhance_ttl_days):
+        return False
+    if (
+        abs(float(item.hot_score or 0.0) - float(row.last_hot_score or 0.0))
+        >= settings.brief.enhance_refresh_hot_delta
+    ):
+        return False
+    return not (
+        settings.brief.enhance_refresh_on_new_signals and row.signals_count != signals_count
+    )
+
+
+def _call_cost(settings: Settings, *, model_tier: str, result: LLMResult | None) -> float:
+    """本地估算单次调用成本（与 BudgetTracker 同一单价口径）。"""
+    if result is None or result.cached:
+        return 0.0
+    price = (
+        settings.budget.price_strong_cny_per_1m
+        if model_tier == "strong"
+        else settings.budget.price_fast_cny_per_1m
+    )
+    return (result.prompt_tokens + result.completion_tokens) * price / 1_000_000
+
+
+async def _enhance_one_batch(
+    client: LLMClient,
+    items: Sequence[Item],
+    settings: Settings,
+) -> tuple[dict[str, str], dict[str, tuple[str, str]], float, str, list[str]]:
+    """单批两次调用。返回 (one_liners, why/stance, cost, model, failures)。
+
+    任何一次调用失败只记入 `failures`，**不抛异常**——批次是失败隔离的最小单位。
+    """
+    contexts = [
+        {
+            "id": it.id,
+            "title": it.title,
+            "source": it.source,
+            "summary": truncate_summary(it.summary or "", 300),
+        }
+        for it in items
+    ]
+    payload = json.dumps(contexts, ensure_ascii=False)
+    item_count = len(contexts)
+    # 输出预算按批大小给：老版本硬编码 3000 会让 30 条的批注定截断。
+    max_tokens = max(1200, item_count * 150)
+    valid_ids = {it.id for it in items}
+
+    one_liners: dict[str, str] = {}
+    whys: dict[str, tuple[str, str]] = {}
+    failures: list[str] = []
+    cost = 0.0
+    model = ""
+
+    rendered, template = render_prompt(
+        "brief/item_comment", items_json=payload, item_count=item_count
+    )
+    parsed, result = await generate_structured(
+        client,
+        [ChatMessage(role="system", content=rendered)],
+        response_model=OneLinersOut,
+        temperature=template.temperature,
+        max_tokens=max_tokens,
+        purpose="brief_item_comment",
+        model_tier=template.model_tier,
+    )
+    cost += _call_cost(settings, model_tier=template.model_tier, result=result)
+    if result is not None and result.model:
+        model = result.model
+    if isinstance(parsed, OneLinersOut):
+        for liner in parsed.one_liners:
+            if liner.item_id in valid_ids:
+                one_liners[liner.item_id] = liner.one_liner
+    else:
+        failures.append("one_liner")
+
+    rendered, template = render_prompt(
+        "brief/item_enhance", items_json=payload, item_count=item_count
+    )
+    parsed, result = await generate_structured(
+        client,
+        [ChatMessage(role="system", content=rendered)],
+        response_model=EnhancesOut,
+        temperature=template.temperature,
+        max_tokens=max_tokens,
+        purpose="brief_item_enhance",
+        model_tier=template.model_tier,
+    )
+    cost += _call_cost(settings, model_tier=template.model_tier, result=result)
+    if result is not None and result.model:
+        model = result.model
+    if isinstance(parsed, EnhancesOut):
+        for enh in parsed.comments:
+            if enh.item_id in valid_ids:
+                whys[enh.item_id] = (enh.why, enh.stance)
+    else:
+        failures.append("why_stance")
+
+    return one_liners, whys, cost, model, failures
+
+
+def _write_enhance(
+    session: Session,
+    item: Item,
+    *,
+    one_liner: str | None,
+    why: str | None,
+    stance: str | None,
+    one_liner_ver: str,
+    enhance_ver: str,
+    signals_count: int,
+    model: str,
+    now: datetime,
+) -> None:
+    """写一行 item_enhance：只有拿到的字段才更新，另一路保留旧值。"""
+    row = session.get(ItemEnhance, item.id)
+    if row is None:
+        row = ItemEnhance(item_id=item.id, created_at=now)
+    if one_liner is not None:
+        row.one_liner = one_liner
+        row.one_liner_ver = one_liner_ver
+    if why is not None:
+        row.why = why
+        row.stance = stance or ""
+        row.enhance_ver = enhance_ver
+    row.content_hash = item.content_hash or ""
+    row.last_hot_score = float(item.hot_score or 0.0)
+    row.signals_count = signals_count
+    if model:
+        row.model = model
+    row.updated_at = now
+    session.add(row)
+
+
+async def _enhance_comments(
+    *,
+    client: LLMClient,
+    session: Session | None,
+    settings: Settings,
+    brief: DailyBrief,
+    items: dict[str, Item],
+    mode: RunMode,
+    meta: dict[str, Any],
+) -> list[ItemComment]:
+    """为**渲染集**产出 comments。三档语义（S4.0，挂既有 mode，无新开关）：
+
+    - **off**：不调用 LLM，只读 `item_enhance` 表；读不到就留空（零花费）。
+    - **hybrid（生产默认）**：只补缺失——渲染集中**尚无 one_liner / why / stance**
+      的条目才调用；已有完整值的条目走缓存，允许跨日收敛到全覆盖。
+    - **full**：强制全刷——**忽略缓存**，渲染集全部重算（换 prompt / 改模型后的一致性重跑）。
+
+    hybrid 与 full 的差异是「认不认缓存」，不是「做不做增强」；两档都以全覆盖为目标。
+    另外：单批失败只丢该批并标 degraded，其余批照常产出；
+    超 `brief.enhance_budget_cny` 立即停止后续批次，已完成的保留。
+    """
+    render_ids = _render_ids(brief, settings.brief.max_items_per_section)
+    # 成本闸门：enhance_top_n 只决定"增强多少条"，不参与"渲染哪些条"。
+    render_ids = render_ids[: max(0, settings.brief.enhance_top_n)]
+    if not render_ids or session is None:
+        return []
+
+    rows = _load_enhance_rows(session, render_ids)
+    # off 档且库里一条可复用值都没有 → 不必读 prompt。
+    # （测试里改 AIPULSE_ROOT 后 prompts/ 不在该 root 下，off 档不该因此崩。）
+    if mode == RunMode.OFF and not rows:
+        return []
+
+    one_liner_ver = load_prompt("brief/item_comment").version_hash
+    enhance_ver = load_prompt("brief/item_enhance").version_hash
+    now = utcnow()
+
+    cached: dict[str, ItemComment] = {}
+    missing: list[Item] = []
+    signals_counts: dict[str, int] = {}
+    # full：忽略缓存，渲染集全部重算；hybrid / off：按条目级缓存判定。
+    for item_id in render_ids:
+        item = items.get(item_id)
+        if item is None:
+            continue
+        signals_count = (
+            _signals_count(session, item) if settings.brief.enhance_refresh_on_new_signals else 0
+        )
+        signals_counts[item_id] = signals_count
+        if mode == RunMode.FULL:
+            missing.append(item)
+            continue
+        row = rows.get(item_id)
+        if row is not None and _cache_fresh(
+            row,
+            item,
+            settings=settings,
+            one_liner_ver=one_liner_ver,
+            enhance_ver=enhance_ver,
+            signals_count=signals_count,
+            now=now,
+            require_fields=(mode == RunMode.HYBRID),
+        ):
+            cached[item_id] = ItemComment(
+                item_id=item_id,
+                one_liner=row.one_liner,
+                why=row.why,
+                stance=row.stance,
+            )
+        else:
+            missing.append(item)
+
+    one_liners: dict[str, str] = {}
+    whys: dict[str, tuple[str, str]] = {}
+    spent = 0.0
+    if missing and mode != RunMode.OFF and session is not None:
+        batch_size = max(1, settings.brief.enhance_batch_size)
+        for start in range(0, len(missing), batch_size):
+            if spent >= settings.brief.enhance_budget_cny:
+                log.warning(
+                    "brief.enhance_budget_exhausted",
+                    spent=round(spent, 4),
+                    limit=settings.brief.enhance_budget_cny,
+                )
+                break
+            batch = missing[start : start + batch_size]
+            try:
+                got_liners, got_whys, cost, model, failures = await _enhance_one_batch(
+                    client, batch, settings
+                )
+            except Exception as exc:  # 网络/预算异常：丢该批，不拖垮日报
+                log.warning("brief.enhance_batch_failed", error=repr(exc))
+                meta["degraded"] = True
+                meta.setdefault("degraded_reason", f"增强批次失败：{type(exc).__name__}")
+                continue
+            spent += cost
+            one_liners.update(got_liners)
+            whys.update(got_whys)
+            if failures:
+                meta["degraded"] = True
+                meta.setdefault("degraded_reason", "增强调用失败：" + "、".join(failures))
+            if session is not None:
+                for item in batch:
+                    pair = got_whys.get(item.id)
+                    _write_enhance(
+                        session,
+                        item,
+                        one_liner=got_liners.get(item.id),
+                        why=pair[0] if pair else None,
+                        stance=pair[1] if pair else None,
+                        one_liner_ver=one_liner_ver,
+                        enhance_ver=enhance_ver,
+                        signals_count=signals_counts.get(item.id, 0),
+                        model=model,
+                        now=now,
+                    )
+                session.commit()
+
+    merged: list[ItemComment] = []
+    for item_id in render_ids:
+        if item_id in cached:
+            merged.append(cached[item_id])
+            continue
+        if item_id not in items:
+            continue
+        pair = whys.get(item_id)
+        merged.append(
+            ItemComment(
+                item_id=item_id,
+                one_liner=one_liners.get(item_id, ""),
+                why=pair[0] if pair else "",
+                stance=pair[1] if pair else "",
+            )
+        )
+
+    total = sum(1 for item_id in render_ids if item_id in items)
+    enhanced = sum(1 for comment in merged if comment.why.strip() and comment.stance.strip())
+    meta.update(
+        {
+            "enhance_total": total,
+            "enhanced": enhanced,
+            "enhance_skipped_count": total - enhanced,
+            "enhance_cache_hit": len(cached),
+            "enhance_cost_cny": round(spent, 6),
+        }
+    )
+    return merged
+
+
 async def generate_brief(
     *,
     client: LLMClient,
@@ -195,6 +558,7 @@ async def generate_brief(
     mode: RunMode,
     skip_llm: bool = False,
     top_n: int | None = None,
+    session: Session | None = None,
 ) -> BriefOutput:
     """生成每日简报。返回 BriefOutput（brief + 渲染用的 items + meta）。"""
     top_n = int(top_n) if top_n is not None else int(settings.pipeline.daily_top_n)
@@ -212,6 +576,16 @@ async def generate_brief(
 
     if mode == RunMode.OFF or skip_llm:
         off_brief = _data_brief(ordered_items, topics, entity_counts, day, sections)
+        # S3.6：off 档不发任何请求，只回读 item_enhance 里已有的值（读不到就留空）。
+        off_brief.comments = await _enhance_comments(
+            client=client,
+            session=session,
+            settings=settings,
+            brief=off_brief,
+            items=chosen_items,
+            mode=RunMode.OFF,
+            meta={"mode": "off"},
+        )
         return BriefOutput(brief=off_brief, items=chosen_items, meta={"mode": "off"})
 
     # ── hybrid / full：调 LLM ──────────────────────────────────────
@@ -256,12 +630,18 @@ async def generate_brief(
         meta["degraded"] = True
         meta.setdefault("degraded_reason", "LLM 结构化输出失败，已降级为数据版")
 
-    # ── full：单条点评 ─────────────────────────────────────────────
-    if mode == RunMode.FULL and not meta.get("degraded"):
-        try:
-            brief.comments = await _item_comments(client, ordered_items, meta)
-        except Exception as exc:
-            log.warning("brief.item_comments_failed", error=repr(exc))
+    # ── M6b：条目增强（hybrid / full）──────────────────────────────
+    # 只覆盖渲染集（sections 截断后），两次调用分字段产出，条目级缓存复用。
+    if session is not None:
+        brief.comments = await _enhance_comments(
+            client=client,
+            session=session,
+            settings=settings,
+            brief=brief,
+            items=chosen_items,
+            mode=mode,
+            meta=meta,
+        )
 
     return BriefOutput(brief=brief, items=chosen_items, meta=meta)
 

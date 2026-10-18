@@ -363,6 +363,8 @@ async def run_daily(
             day=report_day,
             mode=mode,
             skip_llm=skip_llm,
+            # M6b：增强缓存读写复用本次会话，避免另开连接与事务分裂
+            session=session,
         )
         # ★ hybrid/full：生成当日预言（off 档直接返回 None，零网络）
         predict_output, predict_summary = await _generate_daily_predictions(
@@ -446,6 +448,16 @@ async def run_daily(
         "cold_start": signals_summary.get("cold_start", 0),
         "min_window_hours": signals_summary.get("min_window_hours"),
     }
+    # M6b（S4.2）：增强计数与实测成本随日报落盘，便于跨天核对覆盖率与花费
+    for _key in (
+        "enhance_total",
+        "enhanced",
+        "enhance_skipped_count",
+        "enhance_cache_hit",
+        "enhance_cost_cny",
+    ):
+        if _key in brief_out.meta:
+            meta[_key] = brief_out.meta[_key]
 
     # ── 渲染 + 落盘（走 FileNotifier，符合 §11.2 的 Notifier 抽象）──
     generated_at = utcnow()

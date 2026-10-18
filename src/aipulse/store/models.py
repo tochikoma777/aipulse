@@ -191,3 +191,36 @@ class LLMCache(SQLModel, table=True):
     response: str = ""
     model: str = ""
     created_at: datetime = Field(default_factory=utcnow)
+
+
+class ItemEnhance(SQLModel, table=True):
+    """条目 LLM 增强结果的持久化落点（M6b，S1）。
+
+    一行一条目，两个调用各写各的字段（互不覆盖）：
+    - `one_liner`：要点，**一律中文**（中文概述的责任已并入这里），
+      由 `prompts/brief/item_comment.j2` 产出；
+    - `why` / `stance`：为什么重要 / 立场，由 `prompts/brief/item_enhance.j2` 产出。
+
+    为什么必须持久化（红线 23）：增强结果每次重算会让成本随天数线性增长；
+    同一条目命中同一 `content_hash` 时直接复用。`one_liner` 也必须落盘——
+    否则 off 档永远只能显示英文摘要截断。
+
+    `item_id` 语义上引用 `items.id`（本项目不用 DB 级外键：SQLite 下
+    PRAGMA foreign_keys 默认关闭，写约束只会在迁移与删行时制造意外）。
+    """
+
+    __tablename__ = "item_enhance"
+    __table_args__ = (Index("ix_item_enhance_updated_at", "updated_at"),)
+
+    item_id: str = Field(primary_key=True)
+    one_liner: str = ""
+    why: str = ""
+    stance: str = ""
+    content_hash: str = ""  # 生成时 items.content_hash 的快照
+    last_hot_score: float = 0.0  # refresh_on_hot_delta 的基线
+    signals_count: int = 0  # refresh_on_new_signals 的基线
+    model: str = ""
+    one_liner_ver: str = ""  # item_comment.j2 的 version_hash
+    enhance_ver: str = ""  # item_enhance.j2 的 version_hash
+    created_at: datetime = Field(default_factory=utcnow)
+    updated_at: datetime = Field(default_factory=utcnow)

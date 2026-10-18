@@ -50,6 +50,19 @@ brief:
   max_items_per_section: 10
   velocity_board_enabled: true
   velocity_board_top_n: 5
+  # ── M6b 条目增强（红线 23/24/25）──────────────────────────────────
+  # 只对渲染集的前 N 条做增强（成本闸门）
+  enhance_top_n: 30
+  # 每批条数：批次是失败隔离的最小单位
+  enhance_batch_size: 10
+  # 增强独立预算（元/次运行），与 budget.daily_limit_cny（2.0）分开
+  enhance_budget_cny: 0.15
+  # 缓存有效期（天）：超过则强制重算
+  enhance_ttl_days: 30
+  # 热度变化超过该值才刷新
+  enhance_refresh_hot_delta: 10.0
+  # 是否把新增信号快照也作为刷新条件
+  enhance_refresh_on_new_signals: false
 
 # 到期验证（M3b，设计方案 §10.2.2 / §10.2.3 v1.9）
 verify:

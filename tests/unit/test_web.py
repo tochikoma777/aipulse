@@ -93,11 +93,7 @@ def _write_report(reports_dir, day: str, *, headline: str) -> None:
                     {
                         "item_id": "a",
                         "one_liner": "一句话",
-                        "why_it_matters": "因为重要",
-                        "who_cares": "工程师",
-                        "what_to_watch": "看 star 增速",
-                        "novelty": 5,
-                        "impact": 7,
+                        "why": "因为重要",
                         "stance": "",
                     }
                 ],

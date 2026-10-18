@@ -36,15 +36,15 @@ class EditorNote(BaseModel):
 
 
 class ItemComment(BaseModel):
-    """单条点评：为什么重要 / 对谁重要 / 下一步关注什么。"""
+    """单条点评（v2，M6b）：要点 + 为什么重要 + 立场。
+
+    v2 变更：中文概述的责任并入 `one_liner`（一律中文），不再单独出字段；
+    旧版的对谁重要 / 关注信号 / 新颖度 / 影响力四个字段已移除（从未被渲染）。
+    """
 
     item_id: str
-    one_liner: str = ""  # 一句话说清是什么
-    why_it_matters: str = ""  # 为什么重要（因果链，不说套话）
-    who_cares: str = ""  # 对谁重要（具体人群/角色）
-    what_to_watch: str = ""  # 下一步关注什么（可观测信号）
-    novelty: int = Field(default=0, ge=0, le=10)  # 0-10 新颖度
-    impact: int = Field(default=0, ge=0, le=10)  # 0-10 影响力
+    one_liner: str = ""  # 要点，一律中文
+    why: str = ""  # 为什么重要（因果链，不说套话）
     stance: str = ""  # 系统的立场/判断（可以有态度）
 
 
@@ -93,9 +93,40 @@ class DailyBrief(BaseModel):
 
 
 class ItemComments(BaseModel):
-    """单条点评的批量包装（full 档 item_comment.j2 的结构化输出契约）。"""
+    """单条点评的批量包装（v1 遗留契约，保留以免打断既有引用）。"""
 
     comments: list[ItemComment] = Field(default_factory=list)
+
+
+class OneLinerOut(BaseModel):
+    """one_liner 单条输出（`brief/item_comment.j2` v2 的结构化契约）。
+
+    v2 只产要点，why/stance 由 `brief/item_enhance.j2` 负责——
+    两个任务分开调用，输出更短，避免挤在一次调用里撞 max_tokens。
+    """
+
+    item_id: str
+    one_liner: str = ""
+
+
+class OneLinersOut(BaseModel):
+    """one_liner 批量包装（v2 输出的顶层键是 `one_liners`）。"""
+
+    one_liners: list[OneLinerOut] = Field(default_factory=list)
+
+
+class EnhanceOut(BaseModel):
+    """why / stance 单条输出（`brief/item_enhance.j2` 的结构化契约）。"""
+
+    item_id: str
+    why: str = ""
+    stance: str = ""
+
+
+class EnhancesOut(BaseModel):
+    """why / stance 批量包装（顶层键沿用 `comments`）。"""
+
+    comments: list[EnhanceOut] = Field(default_factory=list)
 
 
 def brief_from_dict(data: dict[str, Any], *, date: date_type | None = None) -> DailyBrief:
@@ -106,8 +137,12 @@ def brief_from_dict(data: dict[str, Any], *, date: date_type | None = None) -> D
 __all__ = [
     "DailyBrief",
     "EditorNote",
+    "EnhanceOut",
+    "EnhancesOut",
     "ItemComment",
     "ItemComments",
+    "OneLinerOut",
+    "OneLinersOut",
     "OverviewBullet",
     "Section",
     "brief_from_dict",

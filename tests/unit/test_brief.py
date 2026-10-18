@@ -107,7 +107,7 @@ def test_markdown_unified_format_contract():
             ItemComment(
                 item_id="a",
                 one_liner="一句话",
-                why_it_matters="因为重要",
+                why="因为重要",
                 stance="看好",
             )
         ],
