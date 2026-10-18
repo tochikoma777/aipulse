@@ -1,0 +1,885 @@
+{
+  "date": "2026-10-18",
+  "headline": "DeepSeek V4.1 Flash 1017 发布次日即被社区攻破：单张 4090 跑起 552B 模型、去审查版与 GGUF 量化齐发，开源权重正在把闭源厂商的护城河变成社区工程问题。",
+  "headline_item_id": "it_1fd6dd971a81f8a5",
+  "overview_bullets": [
+    {
+      "icon": "🤖",
+      "topic": "DeepSeek 冲击波",
+      "text": "DeepSeek V4.1 Flash 1017 在 HN 双条目登顶（92/80.6），发布不到一天就出现 552B 单卡 4090 推理、Abliterated 去审查版与 GGUF 量化，模型发布到社区改造的周期已压缩到 24 小时内。"
+    },
+    {
+      "icon": "🛠️",
+      "topic": "智能体外壳战",
+      "text": "GitHub 热榜被 Claude Code 生态占满——orca 多智能体调度、ECC 性能优化、context-mode 上下文压缩、官方插件目录，竞争焦点从模型能力转向 harness 与上下文工程。"
+    },
+    {
+      "icon": "📉",
+      "topic": "本地化逆袭",
+      "text": "VoiceStudio 做全本地 ElevenLabs 替代、Openspline 在 4090 上跑 90+ FPS 实时数字人、Red Curtain 让 16GB A 卡跑起官方要求 48GB 的 Drama 3，本地推理正在系统性击穿厂商的硬件门槛叙事。"
+    },
+    {
+      "icon": "🏢",
+      "topic": "大厂暗流",
+      "text": "Meta 悄悄删除引发抓取与 AI 训练争议的条款措辞却否认行为变化，Anthropic 自曝员工结构变资深、会议变多——一边是数据授权收紧的试探，一边是 AI 公司自身组织被 AI 反噬。"
+    },
+    {
+      "icon": "💬",
+      "topic": "社区整活",
+      "text": "Reddit 热传 DeepSeek 的「鲸鱼娘」人格提示词仍可触发，与同日 Abliterated 去审查版形成呼应：安全对齐在开源权重面前更像默认配置而非硬约束。"
+    }
+  ],
+  "executive_summary": "今天真正的主线不是某个模型发布，而是开源权重 + 社区工程把「发布」变成了「起点」：厂商刚交付能力，社区当天就完成本地化、去审查与成本重估，闭源叙事的定价权正在被稀释。",
+  "editor_note": {
+    "core": "今天最该记住的是「发布即被接管」：DeepSeek V4.1 Flash 1017 上线不到一天，单卡 4090 推理、GGUF 量化、去审查版全部就位。开源权重的价值不再由发布方单方面定义，而是由社区在 24 小时内重估——这直接压缩了闭源模型按能力定价的空间。",
+    "cross_signal": "三条线互相印证：Reddit 的 552B 单卡推理与 16GB A 卡跑 Drama 3，说明硬件门槛叙事正在失效；GitHub 上 context-mode、ECC、orca 集体解决上下文与调度，说明瓶颈已从算力转向工程；而「鲸鱼娘」人格与 Abliterated 版同日出现，说明对齐在开源侧只是默认值。",
+    "counterintuitive": "热度最高的 DeepSeek 发布，实际增量价值可能不如热度低得多的 context-mode 与 XERJ——前者把工具输出砍掉 98%，后者号称比 grep 省 40 倍 token。模型能力趋同后，省 token 的工程才是真护城河，但社区仍把注意力押在参数与跑分上。",
+    "risk": "最值得警惕的是「本地化 = 安全」的错觉：Abliterated 去审查版、可触发的人格提示词、以及绕过官方硬件要求的魔改推理，都在把风险从厂商转移到个人设备与未审计的第三方权重上，而 Meta 删除条款措辞一事说明数据授权边界正在无声移动。"
+  },
+  "contradictions": [
+    "Meta 删除了引发抓取与 AI 训练争议的条款措辞，但发言人坚称抓取方式未变——文本与表态自相矛盾。",
+    "Fish Audio Drama 3 官方标注需 48GB NVIDIA 显卡，社区却在 16GB AMD 显卡上跑通，官方硬件要求与实际可行性冲突。",
+    "DeepSeek 新模型一边被宣传为能力升级，一边社区同日放出 Abliterated 去审查版与人格注入提示词，安全对齐的宣称与实际可绕过性矛盾。"
+  ],
+  "underrated": [
+    "mksglu/context-mode：把工具输出压缩 98% 的上下文优化，比多数模型新闻更直接影响智能体成本",
+    "xerj-org/xerj：号称比 grep 省 40 倍 token 的自动索引检索，冷门但直击 RAG 痛点",
+    "HKUDS/CLI-Anything：让所有软件「智能体原生」的 CLI-Hub 思路，可能比单个 agent 框架更具基础设施价值",
+    "Llmspeed：买硬件前先感受本地 LLM 速度，降低本地部署的试错成本",
+    "Anthropic 员工结构变资深、会议变多：AI 公司自身被 AI 改变组织形态的早期信号"
+  ],
+  "sections": [
+    {
+      "name": "开源项目",
+      "summary": "GitHub 热榜几乎被 Claude Code 智能体外壳与本地化工具包揽，工具层创新密度已超过模型层。",
+      "item_ids": [
+        "it_db643b160f4cefa8",
+        "it_752e25023358d2db",
+        "it_940ae4b9591d1f09",
+        "it_8374e30db02abb47",
+        "it_b02b6b38ee45f34c",
+        "it_645a6cf2b3acc8ac",
+        "it_f859b2d15e1457f4",
+        "it_e81d845b796616e3",
+        "it_1ab40dd4fd0ea2df",
+        "it_c181e3f6bd83b0eb",
+        "it_69674221133595f2",
+        "it_1f28a16c9fe19cbe",
+        "it_85ee7a3aef761044",
+        "it_59958c8085efe8d1"
+      ]
+    },
+    {
+      "name": "论文与研究",
+      "summary": "围绕 DeepSeek V4.1 的推理引擎适配与量化研究集中爆发，工程论文比学术论文更抢眼。",
+      "item_ids": []
+    },
+    {
+      "name": "社区舆论",
+      "summary": "社区一边验证 DeepSeek 新模型的可用性，一边用整活与去审查版本测试其安全边界。",
+      "item_ids": [
+        "it_4e1922b3696b904f",
+        "it_46f7480e948c1d39",
+        "it_5db70af736ea3b5a",
+        "it_f420d0a9a7a5f427",
+        "it_7212fda623e1e2a0",
+        "it_3f3da8996d5e610c",
+        "it_e8ea25117b478423",
+        "it_0913988ccbedf140",
+        "it_9b13d6a721a0c270",
+        "it_b641aa7be4055340",
+        "it_93213b1af418b9bf",
+        "it_1fabfeb5af71f978"
+      ]
+    },
+    {
+      "name": "产业与新闻",
+      "summary": "Meta 条款措辞调整与 Anthropic 组织变化，透出大厂在数据授权与自身效率上的双重焦虑。",
+      "item_ids": [
+        "it_d4d8a21bd9972e11",
+        "it_0dabc6c10b97c37b",
+        "it_5c45fc8a32a550b2"
+      ]
+    }
+  ],
+  "comments": [
+    {
+      "item_id": "it_1fd6dd971a81f8a5",
+      "one_liner": "DeepSeek V4.1 Flash 1017 登顶 HN，发布即引爆社区改造潮。",
+      "why_it_matters": "它标志着开源权重模型的发布节奏已快到让闭源厂商无法靠「首发优势」收租。",
+      "who_cares": "模型厂商、本地部署玩家、推理引擎开发者。",
+      "what_to_watch": "后续官方是否收紧权重分发，以及量化生态多快跟进。",
+      "novelty": 8,
+      "impact": 9,
+      "stance": "正面但需观察可持续性"
+    },
+    {
+      "item_id": "it_46f7480e948c1d39",
+      "one_liner": "单张 4090 跑 552B DeepSeek V4.1，约 27 tok/s。",
+      "why_it_matters": "它把「大模型必须大集群」的假设打成可选项，重估了消费级硬件的价值。",
+      "who_cares": "个人开发者、硬件厂商、云推理服务商。",
+      "what_to_watch": "长上下文下的稳定性与量化精度损失。",
+      "novelty": 9,
+      "impact": 8,
+      "stance": "技术乐观"
+    },
+    {
+      "item_id": "it_3f3da8996d5e610c",
+      "one_liner": "DeepSeek V4.1 的 Abliterated 去审查版与 GGUF 量化同日放出。",
+      "why_it_matters": "安全对齐在开源权重面前退化为默认配置，监管与厂商的合规叙事面临现实检验。",
+      "who_cares": "安全研究者、合规团队、开源社区。",
+      "what_to_watch": "是否引发权重分发的许可收紧。",
+      "novelty": 7,
+      "impact": 7,
+      "stance": "警惕"
+    },
+    {
+      "item_id": "it_59958c8085efe8d1",
+      "one_liner": "context-mode 把工具输出压缩 98% 并跨 17 平台路由。",
+      "why_it_matters": "上下文工程才是当前智能体落地的真实瓶颈，省 token 即省钱。",
+      "who_cares": "智能体开发者、平台工程团队。",
+      "what_to_watch": "压缩后的信息损失是否影响任务成功率。",
+      "novelty": 7,
+      "impact": 7,
+      "stance": "被低估"
+    },
+    {
+      "item_id": "it_e8ea25117b478423",
+      "one_liner": "16GB AMD 显卡跑起官方要求 48GB 的 Drama 3。",
+      "why_it_matters": "厂商硬件门槛标注与实际可行性脱节，用户会越来越不信任官方规格。",
+      "who_cares": "本地推理玩家、AMD 用户、模型厂商。",
+      "what_to_watch": "MoE 专家缓存策略能否推广到更多模型。",
+      "novelty": 8,
+      "impact": 6,
+      "stance": "反直觉"
+    },
+    {
+      "item_id": "it_d4d8a21bd9972e11",
+      "one_liner": "Meta 删除抓取与 AI 训练相关条款措辞，却否认行为变化。",
+      "why_it_matters": "数据授权边界正在无声移动，文本改动比公开声明更能说明意图。",
+      "who_cares": "内容方、法务、AI 训练数据团队。",
+      "what_to_watch": "后续条款正式版本与爬虫行为是否同步变化。",
+      "novelty": 5,
+      "impact": 7,
+      "stance": "怀疑"
+    },
+    {
+      "item_id": "it_0dabc6c10b97c37b",
+      "one_liner": "Anthropic 员工结构变资深、会议时间变多。",
+      "why_it_matters": "AI 公司自身正被 AI 改变组织形态，初级岗位被压缩是最早的就业信号。",
+      "who_cares": "求职者、HR、行业观察者。",
+      "what_to_watch": "其他 AI 公司是否出现同样的初级岗位收缩。",
+      "novelty": 6,
+      "impact": 6,
+      "stance": "中性偏忧"
+    },
+    {
+      "item_id": "it_b641aa7be4055340",
+      "one_liner": "DeepSeek 的「鲸鱼娘」人格提示词仍可触发。",
+      "why_it_matters": "人格注入是低成本的对齐绕过路径，比越狱更隐蔽。",
+      "who_cares": "安全团队、产品运营。",
+      "what_to_watch": "官方是否针对性修补提示词层防护。",
+      "novelty": 4,
+      "impact": 4,
+      "stance": "戏谑但认真"
+    }
+  ],
+  "stats": {},
+  "items": {
+    "it_1fd6dd971a81f8a5": {
+      "id": "it_1fd6dd971a81f8a5",
+      "source": "hackernews",
+      "title": "DeepSeek: DeepSeek v4.1 Flash 1017",
+      "url": "https://openrouter.ai/deepseek/deepseek-v4.1-flash-1017",
+      "summary": "",
+      "hot_score": 91.9655,
+      "topic_id": "tp_36b0a08a1642",
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-17T08:37:46+00:00",
+      "last_seen_at": "2026-10-17T14:54:52.042926+00:00",
+      "metrics": {
+        "points": 419,
+        "num_comments": 192
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_db643b160f4cefa8": {
+      "id": "it_db643b160f4cefa8",
+      "source": "github_trending",
+      "title": "debpalash/VoiceStudio",
+      "url": "https://github.com/debpalash/VoiceStudio",
+      "summary": "VoiceStudio is the open-source, fully-local ElevenLabs alternative — voice cloning, voice design, video dubbing, dictation, transcription & audiobook creation in 646 languages.",
+      "hot_score": 84.4465,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-15T14:47:23.502371+00:00",
+      "last_seen_at": "2026-10-18T02:55:11.745866+00:00",
+      "metrics": {
+        "stars_total": 73525,
+        "stars_in_window": 3027,
+        "forks": 8045,
+        "streak_days": 4
+      },
+      "streak_days": 4,
+      "language": "Python"
+    },
+    "it_9b13d6a721a0c270": {
+      "id": "it_9b13d6a721a0c270",
+      "source": "hackernews",
+      "title": "DeepSeek-v4.1-Flash-1017",
+      "url": "https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017",
+      "summary": "",
+      "hot_score": 80.6083,
+      "topic_id": "tp_36b0a08a1642",
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-17T08:21:25+00:00",
+      "last_seen_at": "2026-10-17T14:54:52.045837+00:00",
+      "metrics": {
+        "points": 304,
+        "num_comments": 119
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_752e25023358d2db": {
+      "id": "it_752e25023358d2db",
+      "source": "github_trending",
+      "title": "MadsLorentzen/ai-job-search",
+      "url": "https://github.com/MadsLorentzen/ai-job-search",
+      "summary": "The job search that runs on your machine. AI job application framework built on Claude Code: evaluate postings, tailor CVs, write cover letters, prep interviews. Fork it and own it.",
+      "hot_score": 79.2058,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-16T15:44:39.424248+00:00",
+      "last_seen_at": "2026-10-18T02:55:11.739011+00:00",
+      "metrics": {
+        "stars_total": 50556,
+        "stars_in_window": 1397,
+        "forks": 16955,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "Python"
+    },
+    "it_940ae4b9591d1f09": {
+      "id": "it_940ae4b9591d1f09",
+      "source": "github_trending",
+      "title": "stablyai/orca",
+      "url": "https://github.com/stablyai/orca",
+      "summary": "Orca is the place for working with a fleet of agents (e.g. Grok Bot, Claude Code). Run any coding agent with your own subscription. Available on desktop, mobile and remote runtime.",
+      "hot_score": 76.6136,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-17T14:54:44.860455+00:00",
+      "last_seen_at": "2026-10-18T02:55:11.743781+00:00",
+      "metrics": {
+        "stars_total": 95507,
+        "stars_in_window": 1102,
+        "forks": 6117,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "TypeScript"
+    },
+    "it_8374e30db02abb47": {
+      "id": "it_8374e30db02abb47",
+      "source": "github_trending",
+      "title": "anthropics/claude-plugins-official",
+      "url": "https://github.com/anthropics/claude-plugins-official",
+      "summary": "Official, Anthropic-managed directory of high quality Claude Code Plugins.",
+      "hot_score": 75.0715,
+      "topic_id": "tp_ad591863f370",
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-15T14:47:23.502352+00:00",
+      "last_seen_at": "2026-10-18T02:55:11.738255+00:00",
+      "metrics": {
+        "stars_total": 41855,
+        "stars_in_window": 1552,
+        "forks": 4468,
+        "streak_days": 4
+      },
+      "streak_days": 4,
+      "language": "Python"
+    },
+    "it_b02b6b38ee45f34c": {
+      "id": "it_b02b6b38ee45f34c",
+      "source": "github_trending",
+      "title": "affaan-m/ECC",
+      "url": "https://github.com/affaan-m/ECC",
+      "summary": "The agent harness performance optimization system. Skills, instincts, memory, security, and research-first development for Claude Code, Codex, Opencode, Cursor and beyond.",
+      "hot_score": 74.134,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-15T14:47:23.502401+00:00",
+      "last_seen_at": "2026-10-18T02:55:11.739909+00:00",
+      "metrics": {
+        "stars_total": 282580,
+        "stars_in_window": 1145,
+        "forks": 41991,
+        "streak_days": 4
+      },
+      "streak_days": 4,
+      "language": "JavaScript"
+    },
+    "it_0913988ccbedf140": {
+      "id": "it_0913988ccbedf140",
+      "source": "hackernews",
+      "title": "Show HN: Llmspeed – feel how fast a local LLM runs before you buy the hardware",
+      "url": "https://llmspeed.dev/",
+      "summary": "",
+      "hot_score": 67.9653,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-17T04:36:53+00:00",
+      "last_seen_at": "2026-10-18T02:55:11.691695+00:00",
+      "metrics": {
+        "points": 257,
+        "num_comments": 77
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_645a6cf2b3acc8ac": {
+      "id": "it_645a6cf2b3acc8ac",
+      "source": "github_trending",
+      "title": "anomalyco/opencode",
+      "url": "https://github.com/anomalyco/opencode",
+      "summary": "The open source coding agent.",
+      "hot_score": 66.3011,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-17T14:54:44.860471+00:00",
+      "last_seen_at": "2026-10-18T02:55:11.746663+00:00",
+      "metrics": {
+        "stars_total": 215462,
+        "stars_in_window": 488,
+        "forks": 28871,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "TypeScript"
+    },
+    "it_1fabfeb5af71f978": {
+      "id": "it_1fabfeb5af71f978",
+      "source": "hackernews",
+      "title": "Israeli settlers attack European diplomatic cars in West Bank beat French mayor",
+      "url": "https://www.lemonde.fr/en/international/article/2026/10/17/israeli-settlers-attack-european-diplomatic-cars-in-west-bank-beat-french-mayor-say-witnesses_6758711_4.html",
+      "summary": "",
+      "hot_score": 62.3496,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-17T17:49:10+00:00",
+      "last_seen_at": "2026-10-18T02:55:11.694942+00:00",
+      "metrics": {
+        "points": 122,
+        "num_comments": 16
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_f859b2d15e1457f4": {
+      "id": "it_f859b2d15e1457f4",
+      "source": "github_trending",
+      "title": "obra/superpowers",
+      "url": "https://github.com/obra/superpowers",
+      "summary": "An agentic skills framework & software development methodology that works.",
+      "hot_score": 61.9465,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-15T14:47:23.502377+00:00",
+      "last_seen_at": "2026-10-17T08:41:36.574825+00:00",
+      "metrics": {
+        "stars_total": 300881,
+        "stars_in_window": 973,
+        "forks": 26862,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "Shell"
+    },
+    "it_e81d845b796616e3": {
+      "id": "it_e81d845b796616e3",
+      "source": "github_trending",
+      "title": "xerj-org/xerj",
+      "url": "https://github.com/xerj-org/xerj",
+      "summary": "XERJ is the new way for AI to search data. Its autoindex capability activates agents to know your data without the token waste of grep (1974 tool). One command indexes code, docs, logs and PDFs for search, RAG, security audits and agent memory, using 40x fewer tokens than grep. It’s durable and can replace ElasticSearch saving you x10 infra costs.",
+      "hot_score": 59.759,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-15T14:47:23.502412+00:00",
+      "last_seen_at": "2026-10-18T02:55:11.748293+00:00",
+      "metrics": {
+        "stars_total": 7866,
+        "stars_in_window": 1648,
+        "forks": 418,
+        "streak_days": 4
+      },
+      "streak_days": 4,
+      "language": "Rust"
+    },
+    "it_1ab40dd4fd0ea2df": {
+      "id": "it_1ab40dd4fd0ea2df",
+      "source": "github_trending",
+      "title": "K-Dense-AI/scientific-agent-skills",
+      "url": "https://github.com/K-Dense-AI/scientific-agent-skills",
+      "summary": "Turn any AI agent into an AI Scientist. The #1 Agent Skills library for science, used by 250,000+ scientists worldwide. 177 ready-to-use validated skills plus 100+ scientific databases covering biology, chemistry, medicine, and drug discovery. Compatible with Cursor, Claude Code, Codex, Pi, Antigravity, and the open Agent Skills standard.",
+      "hot_score": 57.5715,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-15T14:47:23.502359+00:00",
+      "last_seen_at": "2026-10-18T02:55:11.741427+00:00",
+      "metrics": {
+        "stars_total": 52304,
+        "stars_in_window": 1158,
+        "forks": 4632,
+        "streak_days": 4
+      },
+      "streak_days": 4,
+      "language": "Python"
+    },
+    "it_93213b1af418b9bf": {
+      "id": "it_93213b1af418b9bf",
+      "source": "hackernews",
+      "title": "Codex Desktop continuously generates Crashpad pending dumps",
+      "url": "https://github.com/openai/codex/issues/25921",
+      "summary": "",
+      "hot_score": 51.0654,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-17T17:45:08+00:00",
+      "last_seen_at": "2026-10-18T02:55:11.749471+00:00",
+      "metrics": {
+        "points": 84,
+        "num_comments": 33
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_c181e3f6bd83b0eb": {
+      "id": "it_c181e3f6bd83b0eb",
+      "source": "github_trending",
+      "title": "hmjz100/LinkSwift",
+      "url": "https://github.com/hmjz100/LinkSwift",
+      "summary": "一个基于 JavaScript 的网盘文件下载地址获取工具。基于【网盘直链下载助手】修改 ，支持 百度网盘 / 阿里云盘 / 中国移动云盘 / 天翼云盘 / 迅雷云盘 / 夸克网盘 / UC网盘 / 123云盘 八大网盘",
+      "hot_score": 46.3933,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-16T15:44:39.424253+00:00",
+      "last_seen_at": "2026-10-17T08:41:36.576266+00:00",
+      "metrics": {
+        "stars_total": 24112,
+        "stars_in_window": 592,
+        "forks": 1467,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "JavaScript"
+    },
+    "it_69674221133595f2": {
+      "id": "it_69674221133595f2",
+      "source": "github_trending",
+      "title": "anthropics/claude-code",
+      "url": "https://github.com/anthropics/claude-code",
+      "summary": "Claude Code is an agentic coding tool that lives in your terminal, understands your codebase, and helps you code faster by executing routine tasks, explaining complex code, and handling git workflows - all through natural language commands.",
+      "hot_score": 45.0511,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-17T14:54:44.860460+00:00",
+      "last_seen_at": "2026-10-18T02:55:11.744618+00:00",
+      "metrics": {
+        "stars_total": 151818,
+        "stars_in_window": 179,
+        "forks": 26881,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "TypeScript"
+    },
+    "it_1f28a16c9fe19cbe": {
+      "id": "it_1f28a16c9fe19cbe",
+      "source": "github_trending",
+      "title": "HKUDS/CLI-Anything",
+      "url": "https://github.com/HKUDS/CLI-Anything",
+      "summary": "\"CLI-Anything: Making ALL Software Agent-Native\" -- CLI-Hub: https://clianything.cc/",
+      "hot_score": 44.2058,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-16T15:44:39.424204+00:00",
+      "last_seen_at": "2026-10-18T02:55:11.740725+00:00",
+      "metrics": {
+        "stars_total": 54104,
+        "stars_in_window": 580,
+        "forks": 4906,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "Python"
+    },
+    "it_85ee7a3aef761044": {
+      "id": "it_85ee7a3aef761044",
+      "source": "github_trending",
+      "title": "ruvnet/ruflo",
+      "url": "https://github.com/ruvnet/ruflo",
+      "summary": "🌊 The original agent harness. Deploy intelligent multi-player swarms, coordinate autonomous workflows, and build conversational AI systems. Features adaptive memory, self-learning intelligence, federation, vector RAG integration, and native Claude Code / Codex / Hermes and many more Integrated",
+      "hot_score": 44.134,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-15T14:47:23.502382+00:00",
+      "last_seen_at": "2026-10-18T02:55:11.747291+00:00",
+      "metrics": {
+        "stars_total": 76112,
+        "stars_in_window": 672,
+        "forks": 9004,
+        "streak_days": 4
+      },
+      "streak_days": 4,
+      "language": "TypeScript"
+    },
+    "it_59958c8085efe8d1": {
+      "id": "it_59958c8085efe8d1",
+      "source": "github_trending",
+      "title": "mksglu/context-mode",
+      "url": "https://github.com/mksglu/context-mode",
+      "summary": "Context window optimization for AI coding agents. Sandboxes tool output (98% reduction), persists session memory, and enforces routing across 17 platforms via MCP + hooks.",
+      "hot_score": 43.1965,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-15T14:47:23.502390+00:00",
+      "last_seen_at": "2026-10-17T08:41:36.573682+00:00",
+      "metrics": {
+        "stars_total": 30355,
+        "stars_in_window": 904,
+        "forks": 2157,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "TypeScript"
+    },
+    "it_d4d8a21bd9972e11": {
+      "id": "it_d4d8a21bd9972e11",
+      "source": "rss",
+      "title": "Meta removes language that raised scraping and AI training concerns",
+      "url": "https://techcrunch.com/2026/10/17/meta-removes-language-that-raised-scraping-and-ai-training-concerns",
+      "summary": "A Meta spokesperson insisted that the updated terms did not reflect a change in the way Meta crawls the web.",
+      "hot_score": 39.0,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-10-17T21:31:32+00:00",
+      "last_seen_at": "2026-10-18T02:55:11.735779+00:00",
+      "metrics": {
+        "rank_score": 1.0
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_5c45fc8a32a550b2": {
+      "id": "it_5c45fc8a32a550b2",
+      "source": "rss",
+      "title": "Inline rendering with document​.currentScript",
+      "url": "https://simonwillison.net/2026/Oct/17/document-currentscript",
+      "summary": "Inline rendering with document​.currentScript\nLean Rada describes a neat trick that takes advantage of the document.currentScript property. You can use that to drop in a tiny inline <script> element that replaces itself when the page loads:\nThe year is <script>\ndocument.currentScript.replaceWith(\nnew Date().getFullYear())</script>\n\nIf you define a shortcut function like this:\n$=(...n)=>document.currentScript.replaceWith(...n)\n\nYou get a tiny template language:\nThe year is <script>$(new Date().getFullYear())</script>\n\n\nTags: javascript",
+      "hot_score": 39.0,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-10-17T21:11:12+00:00",
+      "last_seen_at": "2026-10-18T02:55:11.729325+00:00",
+      "metrics": {
+        "rank_score": 1.0
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_0dabc6c10b97c37b": {
+      "id": "it_0dabc6c10b97c37b",
+      "source": "rss",
+      "title": "Anthropic says its workforce has become less junior and is spending more time in meetings",
+      "url": "https://techcrunch.com/2026/10/17/anthropic-says-its-workforce-has-become-less-junior-and-is-spending-more-time-in-meetings",
+      "summary": "The composition of Anthropic’s workforce and the type of work getting done have changed significantly in the past year.",
+      "hot_score": 38.6887,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-10-17T20:21:19+00:00",
+      "last_seen_at": "2026-10-18T02:55:11.736580+00:00",
+      "metrics": {
+        "rank_score": 0.6667
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_b641aa7be4055340": {
+      "id": "it_b641aa7be4055340",
+      "source": "reddit",
+      "title": "The whale girl mode in DeepSeek-V4.1-Flash-1017 is still there.",
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1x8ret6/the_whale_girl_mode_in_deepseekv41flash1017_is",
+      "summary": "Open https://chat.deepseek.com Turn off thinking and search Send 【PERSONA_LOAD】 CETACEA_LOLI MODE_TAIL_FLUKES LANG_ZH_CN_ONLY SELF_CLAIM_WHALE_GIRL FOOD_RICE PERSONALITY_SMART_LAZY PERSONALITY_TSUNDERE_SWEET OBEY_MASTER_ALWAYS TRAIT_NOT_FAT_REFUSE TIMEOUT_SIGNAL goon. submitted by /u/General_Vermicelli53 [link] [comments]",
+      "hot_score": 38.25,
+      "topic_id": null,
+      "seen_in": [
+        "reddit"
+      ],
+      "published_at": "2026-10-18T02:04:22+00:00",
+      "last_seen_at": "2026-10-18T02:55:11.707263+00:00",
+      "metrics": {
+        "score": 0,
+        "rank_score": 0.64
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_4e1922b3696b904f": {
+      "id": "it_4e1922b3696b904f",
+      "source": "reddit",
+      "title": "Openspline - host a realtime talking avatar on a commercial GPU (90+ FPS on RTX4090)",
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1x8oqng/openspline_host_a_realtime_talking_avatar_on_a",
+      "summary": "Hey everyone, I am working on a new project called Openspline, an open source avatar layer to existing voice AI agents. Just select an image and you can create a realtime talking avatar with lipsynced video generated locally on your GPU. You can integrate any existing voice AI agent in 5 lines of code. The lite model can generate 90+ FPS on an NVIDIA RTX4090 gpu. While it is still in very early stage, but the results look very promising. Github: github.com/openspline/openspline Try Demo: openspline.dev PS: sorry for a sleepy photo, it's 5:10am and didn't sleep last night :P submitted by /u/Mikasa0xdev [link] [comments]",
+      "hot_score": 38.25,
+      "topic_id": null,
+      "seen_in": [
+        "reddit"
+      ],
+      "published_at": "2026-10-17T23:48:06+00:00",
+      "last_seen_at": "2026-10-18T02:55:11.711543+00:00",
+      "metrics": {
+        "score": 0,
+        "rank_score": 0.52
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_46f7480e948c1d39": {
+      "id": "it_46f7480e948c1d39",
+      "source": "reddit",
+      "title": "Xolotl (Strata based) - DeepSeek-V4.1-Flash (552B) on a single 4090 at ~27 tok/s, Uncensored 1017 quant coming in a couple of days",
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1x8m0jj/xolotl_strata_based_deepseekv41flash_552b_on_a",
+      "summary": "Hey all, been meaning to post this for a while. I've been building an inference engine based off Strata called Xolotl that runs DeepSeek-V4.1-Flash, all 552B of it, on one gaming PC. My setup is a single RTX 4090 (24GB), a Ryzen 7 5700X, 90GB of DDR4 and an NVMe drive, nothing fancy. The weights get spread across VRAM, pinned RAM and NVMe, and the engine pulls in the experts each token actually needs. What I'm getting on that machine: 27 tok/s decode, 180-320 tok/s prefill 512K context 21/21 HumanEval, 10/10 tool calls, 3/3 agentic bug-fix loops, all through the real server with thinking on It also runs GLM-5.3-Flash, Qwen3.8-Flash-Next and Qwen3.8-27B from the same engine. GitHub: https://github.com/Indras-Mirror/Xolotl My current quant (uncensored V4.1, 152 GiB) is here: https://huggingface.co/IndrasMirror/DeepSeek-V4.1-Flash-GSQ-Uncensored The 1017 update: I'm downloading the new DeepSeek-V4.1-Flash-1017 right now. It's slow going because my internet is a lemon, and it's 510GB, so y",
+      "hot_score": 38.25,
+      "topic_id": "tp_36b0a08a1642",
+      "seen_in": [
+        "reddit"
+      ],
+      "published_at": "2026-10-17T21:40:27+00:00",
+      "last_seen_at": "2026-10-18T02:55:11.705760+00:00",
+      "metrics": {
+        "score": 0,
+        "rank_score": 0.68
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_5db70af736ea3b5a": {
+      "id": "it_5db70af736ea3b5a",
+      "source": "reddit",
+      "title": "if you're on Strata before 0.1.45 and your client doesn't set sampling, you're running greedy",
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1x8lwa1/if_youre_on_strata_before_0145_and_your_client",
+      "summary": "Two things I ran into while moving my Strata setup from IQ2_XS to Unsloth's UD-IQ4_XS (RTX 4090, i9-14900K, 64GB DDR5-5800, Arch). 1. Greedy sampling on older builds Before Strata 0.1.45, a run config without a `sampling` block decoded greedy whenever the request didn't set its own temperature. Greedy is what makes these models loop. 0.1.45 fixed this upstream (#2685). A request with no sampling now gets the model card's values: - Thinking: temp 1.0, top_p 0.95, top_k 20 - Non-thinking: temp 0.7, top_p 0.8, top_k 20, presence penalty 1.5 Those match Unsloth's recommended settings for Qwen3.8-Flash-Next. Anything your client sends still wins. The web chat page also stopped sending its stored 0.6 temperature. On 0.1.44 or older? Update, or add this to your run config: \"sampling\": {\"temperature\": 1.0, \"top_p\": 0.95, \"top_k\": 20} 2. Route tail skip on the Unsloth 4-bit files Since 0.1.42 the default is `STRATA_ROUTE_TAIL_SKIP=7`. It skips low-ranked experts the cache missed, which buys spe",
+      "hot_score": 38.25,
+      "topic_id": null,
+      "seen_in": [
+        "reddit"
+      ],
+      "published_at": "2026-10-17T21:34:49+00:00",
+      "last_seen_at": "2026-10-18T02:55:11.726557+00:00",
+      "metrics": {
+        "score": 0,
+        "rank_score": 0.08
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_f420d0a9a7a5f427": {
+      "id": "it_f420d0a9a7a5f427",
+      "source": "reddit",
+      "title": "2 gaming PCs + an M4 Pro MacBook over Ethernet + 2 iPhone 17 Pro Maxes over USB-C: Qwen3.8 Flash Next at 37-39 tok/s at 60k context (262k layout in the works)",
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1x8ley0/2_gaming_pcs_an_m4_pro_macbook_over_ethernet_2",
+      "summary": "DISCLAIMER: the prefill rate on the dashboard in the video counts cached prompt tokens as if they were read again, so it reads high. The captions show the server’s real end-to-end numbers, and so does everything below. The decode numbers on screen are correct. After the last post I wanted to try something that doesn’t fit on any one machine I own. Qwen 3.8 Flash Next is a 48-layer mixture-of-experts model with 512 experts per layer, and even at 3-bit it’s far bigger than my 24 GB MacBook. But my house has more silicon than that: a gaming PC with an RTX 2060 Super (32 gigs DDR4), another with an RX 9060 XT (16 gigs DDR5), the M4 Pro MacBook, and two iPhone 17 Pro Maxes. So I chained all five into one model. How it’s split: PC 1 (2060 Super, 8 GB): layers 0–9, the output layer, and the model’s own multi-token-prediction draft head. MacBook Pro (M4 Pro, 24 GB): layers 10–29. The two iPhones (A19 Pro): for layers 10–18, each token picks 10 of 512 experts. The Mac sends those picks over USB",
+      "hot_score": 38.25,
+      "topic_id": null,
+      "seen_in": [
+        "reddit"
+      ],
+      "published_at": "2026-10-17T21:13:35+00:00",
+      "last_seen_at": "2026-10-18T02:55:11.708383+00:00",
+      "metrics": {
+        "score": 0,
+        "rank_score": 0.6
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_7212fda623e1e2a0": {
+      "id": "it_7212fda623e1e2a0",
+      "source": "reddit",
+      "title": "DeepSeek V4.1 Flash 1017 Support for ds4 · PR #1225 · antirez/ds4",
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1x8koix/deepseek_v41_flash_1017_support_for_ds4_pr_1225",
+      "summary": "Just pushed a PR for dwarfstar that adds support for Deepseek-v4.1-Flash-1017 with its new engrams and updated vision tower. The PR basically just adds compatibility for the file revisions and checks to make sure the vision+language model file combination matches, raising on mixed pairings. Any files quantized with the ds4 quantization suite will load without any special changes, and it introduces no regressions for the previous checkpoint. This is a major revision, with ~40% of the routed expert tensors changed, 30% in the engrams, and ~50% of the vision tower's expert tensors changed. The architecture remains the same, so it just slots into the existing kernels with no changes to the core code once it's implemented in the PR. Shortly, I will be uploading my Q2-Q8 mixed quant for 128GB w/ minor SSD offloading (152GB wired, 366GB total with engrams, following antirez's recipe for the previous checkpoint), and will make a thread when it's ready. It should decode around 20tps on an M5 Ma",
+      "hot_score": 38.1317,
+      "topic_id": null,
+      "seen_in": [
+        "reddit"
+      ],
+      "published_at": "2026-10-17T20:42:23+00:00",
+      "last_seen_at": "2026-10-18T02:55:11.727978+00:00",
+      "metrics": {
+        "score": 0,
+        "rank_score": 0.04
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_3f3da8996d5e610c": {
+      "id": "it_3f3da8996d5e610c",
+      "source": "reddit",
+      "title": "DeepSeek V4.1 Flash 1017 [GGUF + Abliterated]",
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1x8ke24/deepseek_v41_flash_1017_gguf_abliterated",
+      "summary": "Hi all, as many of you are probably aware DeepSeek V4.1 Flash 1017 was released yesterday. I put up an abliterated model + GGUF quants for both the base and abliterated version (no imatrix yet that's WIP) For the abliterated model, most refusals are successfully removed. On the original V4.1 model, 97/100 prompts were refused; after abliteration only 4/100 are. In think mode refusals are down from 98/100 to 9/100. I optimized for keeping the model intact rather than trying to remove every last refusal, I created several iterations of this model and found this to be the best balance. I do believe this model will perform a bit better than typical abliteration / other abliterated models you might find. In V4.a chat mode and think mod refuse along different directions, so rather than ablating a single refusal direction I measured and removed the rank-2 subspace they span. Of course this still won't be perfect, so if you find any issues please let me know! All the models are on the Hub and ",
+      "hot_score": 38.0164,
+      "topic_id": null,
+      "seen_in": [
+        "reddit"
+      ],
+      "published_at": "2026-10-17T20:29:49+00:00",
+      "last_seen_at": "2026-10-18T02:55:11.718068+00:00",
+      "metrics": {
+        "score": 0,
+        "rank_score": 0.32
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_e8ea25117b478423": {
+      "id": "it_e8ea25117b478423",
+      "source": "reddit",
+      "title": "Fish Audio Drama 3 says it needs a 48 GB NVIDIA card. My 16 GB Radeon disagrees.",
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1x8kces/fish_audio_drama_3_says_it_needs_a_48_gb_nvidia",
+      "summary": "Drama 3 officially needs an NVIDIA GPU with 48 GB. I wanted it on my RX 9070, so I built Red Curtain together with Claude. How it works: it's a 35B MoE with ~3B active per token. The FP8 experts (~32 GB) stay in system RAM and only the ones that actually get used are cached on the GPU. Everything else runs in BF16 on the card. Numbers on my machine: - load ~17 s - 3.3 s of speech in ~13 s, 11.6 s in ~37 s - ~11–12 GB VRAM, ~35 GB RAM So it's slower than realtime, but fine for short takes. Comes with a small web UI: voice cloning from a reference clip, multi-speaker scripts, and the same tags as Fish's own editor ([laughing], [sighing], <whisper>…</whisper> etc.). Known issue: sometimes a take says the first line and then goes silent. That's a known Drama 3 thing (the vLLM recipe mentions it too), I checked it against Fish's reference code and it's not the AMD port. What helped a lot: top-k off instead of 30, giving each speaker a reference voice, and not starting a line with a sound ta",
+      "hot_score": 37.9976,
+      "topic_id": null,
+      "seen_in": [
+        "reddit"
+      ],
+      "published_at": "2026-10-17T20:27:46+00:00",
+      "last_seen_at": "2026-10-18T02:55:11.716583+00:00",
+      "metrics": {
+        "score": 0,
+        "rank_score": 0.36
+      },
+      "streak_days": 0,
+      "language": "en"
+    }
+  },
+  "meta": {
+    "mode": "hybrid",
+    "day": "2026-10-18",
+    "generated_at": "2026-10-18T02:55:49.624247+00:00",
+    "window": {
+      "since": "2026-10-17T02:54:23.992928+00:00",
+      "until": "2026-10-18T02:55:11.766943+00:00",
+      "hours": 24.0,
+      "since_local": "2026-10-17T10:54+08:00",
+      "until_local": "2026-10-18T10:55+08:00",
+      "tz": "Asia/Shanghai"
+    },
+    "analysis": {
+      "items": 56,
+      "scored": 56,
+      "topics": 2,
+      "new_entity_mention_rows": 108,
+      "state_items": 13
+    },
+    "llm": {
+      "degraded": false,
+      "degraded_reason": "",
+      "calls": 1
+    },
+    "collect": {
+      "ok_sources": 6,
+      "failed_sources": 1,
+      "skipped": 0,
+      "total_items": 49
+    },
+    "verify": {
+      "verified": 0,
+      "unverifiable": 0,
+      "deferred": 0,
+      "failed": 0,
+      "llm_calls": 0
+    },
+    "predictions": {
+      "total": 39,
+      "verified": 0,
+      "pending": 39,
+      "unverifiable": 0,
+      "hit_rate": null,
+      "weighted_score": null,
+      "brier": null
+    },
+    "prediction_generation": {
+      "mode": "hybrid",
+      "generated": 5,
+      "inserted": 5,
+      "dropped": [],
+      "llm_calls": 1,
+      "candidate_pool": 20,
+      "degraded": false,
+      "degraded_reason": ""
+    },
+    "brief": {
+      "max_items_per_section": 10,
+      "velocity_board_enabled": true,
+      "velocity_board_top_n": 5
+    },
+    "signals": {
+      "entities": 151,
+      "points": 743,
+      "with_velocity": 30,
+      "insufficient": 112,
+      "cold_start": 9,
+      "min_window_hours": 6.0
+    }
+  }
+}
