@@ -1,6 +1,6 @@
 # AI Pulse 设计方案
 
-> ★ **当前版本：v1.20** · 对应基线 `star-tracking` / `cdcab79` · 详见 `docs/文档维护日志.md`
+> ★ **当前版本：v1.21** · 对应基线 `m6b` / `11fb09a` · 详见 `docs/文档维护日志.md`
 > 文件名**固定不带版本号**——版本由文档头与维护日志标识，历史由 git 管理。
 
 > 一句话定位：**每日自动采集 AI 领域热点，不只整理，还给出可回测的推演与预言。**
@@ -22,6 +22,23 @@ v1.2（第二轮确认）：
 6. **Reddit 先用免认证 RSS**，M1 验收后再评估是否升级 OAuth（§5.6 / §19.1-6）
 7. **M0 即建公开仓库**，README 顶部标注 `WIP / 开发中`（§19.1-14、§14.2）
 8. **日报触达 = 文件 + Web 看板为主**，但**架构上必须预留统一 Notifier 抽象**，后续可加邮件/TG/飞书（§11.2）
+
+v1.21（★ M6b：日报条目 why/stance 全覆盖 + 中文要点）：
+84. **★ M6b：why/stance 全覆盖**，覆盖对象 = **最终渲染集**（§11.1）
+    —— 把"模型自主挑选"改成"输入 N 条必输出 N 条"的契约。
+    覆盖不稳定是缺**契约与校验**，不是缺更好的措辞（§18.8 实证：每板块前 1-2 条有）
+85. **中文概述由 `one_liner` 承担，不新增字段**（§11.1）
+    —— 新增 `zh_summary` 会与 `one_liner` 职责重叠，同一行出现两句"这是什么"；
+    改为约束 `one_liner` 一律输出中文（M6a 改名的理由正是 off 档填的是英文摘要截断）
+86. **新增 `item_enhance` 表（第 10 张），条目级缓存四条件**（§11.1）
+    —— ★ 缓存键**按条目不按批次**：批次哈希会因排序一变就天天全失效
+87. **增强挂既有 `mode` 档（off / hybrid / full），零新增顶层开关**（§11.1）
+    —— 不为省成本另造一套开关体系，避免配置分散混乱
+88. **实测成本：稳态 1.01 元/年、全刷 4.33 元/年；全天 7 次调用**（§11.1）
+    —— 用实测取代估算；预算闸门定位为**防失控**而非省日常，故 0.15 不随之下调
+89. **订正红线 35 落点**：why/stance 在 `item_comment.j2`，非 `daily_brief.j2`
+90. **`Actions runs-on` 固定 `ubuntu-24.04`** —— v1.17 #68 早已要求但从未落实
+    （实测三个 workflow 全是 `ubuntu-latest`）；ubuntu-latest 于 2026-10-19 迁移 Ubuntu 26
 
 v1.20（★ 增速榜可比性修正）：
 80. **★ 增速榜按「日均增量」排序，不按绝对增量**（§5.14）——
@@ -203,18 +220,18 @@ v1.3（第三轮：无 API 可用性，★ 重要架构变更）：
 > 至此 §19 的确认项已全部收敛，**无阻塞开工的待定项**。
 > **v1.3 的设计原则：让 aipulse 在零 API 花费下依然是一个有价值的工具，API 只用来把它变得更好，而不是让它能用。**
 
-| 项目 | 内容 |
-|---|---|
-| 项目代号 | `aipulse`，中文名「AI 脉搏」 |
-| 命名由来 | **脉搏（Pulse）的三层隐喻，正好对应本项目的三段主线**：<br>① **把脉**＝每日采样信号（采集层：GitHub/arXiv/HF/HN/Reddit/RSS 的脉搏跳动）<br>② **诊断**＝从信号中读出含义（分析层：打分、聚类、实体频次变化）<br>③ **预后**＝判断病情走向（推演层：预言 + 到期回测）<br>且"脉搏"天然带周期节律，与日报/周报节奏契合；英文名短、好念、可作 CLI 名（`aipulse`） |
-| 交付形态 | **CLI 核心 + 可选 Web UI**（CLI 是一等公民，Web 只是只读看板，M4 阶段再叠加） |
-| 运行环境 | Windows 11 + WSL2(Ubuntu 22.04/24.04) + VSCode Remote-WSL + CodeBuddy |
-| 语言版本 | Python 3.11+ |
-| 存储 | SQLite（单文件，`data/aipulse.db`），后期可平滑迁移 Postgres |
-| 许可证 | **MIT** |
-| LLM 接入 | 云端 API，OpenAI 兼容协议，**默认 DeepSeek**（`deepseek-chat` 快模型 / `deepseek-reasoner` 强模型）；换厂商只改环境变量 |
+| 项目       | 内容                                                         |
+| ---------- | ------------------------------------------------------------ |
+| 项目代号   | `aipulse`，中文名「AI 脉搏」                                 |
+| 命名由来   | **脉搏（Pulse）的三层隐喻，正好对应本项目的三段主线**：<br>① **把脉**＝每日采样信号（采集层：GitHub/arXiv/HF/HN/Reddit/RSS 的脉搏跳动）<br>② **诊断**＝从信号中读出含义（分析层：打分、聚类、实体频次变化）<br>③ **预后**＝判断病情走向（推演层：预言 + 到期回测）<br>且"脉搏"天然带周期节律，与日报/周报节奏契合；英文名短、好念、可作 CLI 名（`aipulse`） |
+| 交付形态   | **CLI 核心 + 可选 Web UI**（CLI 是一等公民，Web 只是只读看板，M4 阶段再叠加） |
+| 运行环境   | Windows 11 + WSL2(Ubuntu 22.04/24.04) + VSCode Remote-WSL + CodeBuddy |
+| 语言版本   | Python 3.11+                                                 |
+| 存储       | SQLite（单文件，`data/aipulse.db`），后期可平滑迁移 Postgres |
+| 许可证     | **MIT**                                                      |
+| LLM 接入   | 云端 API，OpenAI 兼容协议，**默认 DeepSeek**（`deepseek-chat` 快模型 / `deepseek-reasoner` 强模型）；换厂商只改环境变量 |
 | 目标数据源 | GitHub Trending、arXiv、HuggingFace Daily Papers、Hacker News、Reddit r/LocalLLaMA、RSS，外加手动投喂 inbox |
-| 明确不做 | **微信公众号 / X（Twitter）自动抓取**——见 §1.2 与 §5.8 |
+| 明确不做   | **微信公众号 / X（Twitter）自动抓取**——见 §1.2 与 §5.8       |
 | 差异化亮点 | **可回测预言系统**（带置信度 + 到期自动验证 + 命中率/校准度公开统计） |
 
 ---
@@ -242,13 +259,13 @@ v1.3（第三轮：无 API 可用性，★ 重要架构变更）：
 
 ### 1.2 明确不做（V1 边界，防止范围蔓延）
 
-| 不做 | 原因 |
-|---|---|
-| 用户系统 / 登录 / 多租户 | 单机个人工具，无必要 |
-| 实时推送（WebSocket、秒级刷新） | 日报/周报节奏足够，实时性无价值 |
-| 全自动发布到社交平台 | 合规与风控风险，V1 只产出文件，人工决定发布 |
-| 训练自己的模型 / 微调 | 与主线无关 |
-| 全量网页正文抓取与全文索引 | 成本高收益低，V1 只用标题+摘要+少量正文 |
+| 不做                                             | 原因                                                         |
+| ------------------------------------------------ | ------------------------------------------------------------ |
+| 用户系统 / 登录 / 多租户                         | 单机个人工具，无必要                                         |
+| 实时推送（WebSocket、秒级刷新）                  | 日报/周报节奏足够，实时性无价值                              |
+| 全自动发布到社交平台                             | 合规与风控风险，V1 只产出文件，人工决定发布                  |
+| 训练自己的模型 / 微调                            | 与主线无关                                                   |
+| 全量网页正文抓取与全文索引                       | 成本高收益低，V1 只用标题+摘要+少量正文                      |
 | **微信公众号 / X（Twitter）的抓取（含 RSS 桥）** | **v1.1 明确移除**。X 官方 API 已收费且额度极低、Nitter 大量关停；公众号无公开 API，第三方接口不稳定且有合规与版权风险。**替代方案 = 手动投喂 `inbox`**（§5.8），一条命令把看到的任意 URL 塞进系统参与分析与预言，完全合规且零维护成本 |
 
 ---
@@ -296,37 +313,37 @@ v1.3（第三轮：无 API 可用性，★ 重要架构变更）：
 
 ### 2.2 关键设计决策与理由
 
-| 决策 | 理由 |
-|---|---|
-| **SQLite 单文件** | 零运维、可 git 携带、备份就是拷文件；本项目数据量（约 500 条/日，一年 18 万条）远未触及 SQLite 上限 |
-| **算法层与 LLM 层严格分离** | 打分/聚类不烧钱、可复现、可单测；LLM 只做"它擅长的判断与写作"，职责清晰，成本可控 |
-| **Prompt 外置为模板文件** | 改 prompt 不改代码，可版本化、可 A/B、可人工审阅 |
-| **统一 Item 抽象** | 所有源归一到同一 schema，新增源只需实现 `BaseCollector`，下游零改动 |
-| **预言必须是结构化、可证伪的** | 这是项目灵魂，也是同类工具没有的东西；不可证伪的"预言"一律拒绝入库 |
-| **全链路可离线跑通（Mock 模式）** | 便于开发、测试、CI，也让贡献者零成本上手 |
+| 决策                              | 理由                                                         |
+| --------------------------------- | ------------------------------------------------------------ |
+| **SQLite 单文件**                 | 零运维、可 git 携带、备份就是拷文件；本项目数据量（约 500 条/日，一年 18 万条）远未触及 SQLite 上限 |
+| **算法层与 LLM 层严格分离**       | 打分/聚类不烧钱、可复现、可单测；LLM 只做"它擅长的判断与写作"，职责清晰，成本可控 |
+| **Prompt 外置为模板文件**         | 改 prompt 不改代码，可版本化、可 A/B、可人工审阅             |
+| **统一 Item 抽象**                | 所有源归一到同一 schema，新增源只需实现 `BaseCollector`，下游零改动 |
+| **预言必须是结构化、可证伪的**    | 这是项目灵魂，也是同类工具没有的东西；不可证伪的"预言"一律拒绝入库 |
+| **全链路可离线跑通（Mock 模式）** | 便于开发、测试、CI，也让贡献者零成本上手                     |
 
 ---
 
 ## 3. 技术选型
 
-| 领域 | 选型 | 理由 / 备注 |
-|---|---|---|
-| 包管理 | **uv** | 比 pip 快 10-100 倍，锁文件可靠，WSL 下体验极好 |
-| CLI 框架 | **typer** + **rich** | 类型注解即 CLI，输出美观，学习成本低 |
-| HTTP | **httpx**（异步）+ 自研 `HttpClient` 包装 | 统一超时/重试/限速/缓存/UA；`respx` 可完美 mock |
-| 数据校验 | **pydantic v2** | 同时用于 Item schema、配置、LLM 结构化输出校验与 JSON Schema 生成 |
-| ORM | **SQLModel** + **alembic** | Pydantic + SQLAlchemy 二合一，模型只写一次 |
-| 限流重试 | **tenacity** + 自研令牌桶 | 各源限速差异大，需按源配置 |
-| 文本聚类 | **scikit-learn** TfidfVectorizer + 余弦相似度 | 无 API 成本、无模型下载，V1 足够；M5 后可选换 embedding |
-| 中文分词 | **jieba** | 中文标题聚类前置处理 |
-| Prompt | **Jinja2** 模板文件 | 见 §8 |
-| 渲染 | Jinja2 → Markdown / HTML | 同一套数据多格式输出 |
-| 日志 | **structlog** → JSON Lines | 便于事后分析与排查 |
-| 测试 | **pytest** + **respx** + **pytest-asyncio** | 目标：核心模块覆盖率 ≥70% |
-| 质量 | **ruff**（lint+format）+ **mypy** + **pre-commit** | 提交即检查 |
-| 调度 | **GitHub Actions**（主）+ WSL cron（备） | Actions 免费且天然适合开源展示 |
-| Web（M4） | **FastAPI** + Jinja2 模板 + **HTMX** | 无前端构建链，纯 Python，只读看板 |
-| 向量（M5+可选） | **sqlite-vec** 或本地 bge-small（CPU） | 默认关闭，配置开启 |
+| 领域            | 选型                                               | 理由 / 备注                                                  |
+| --------------- | -------------------------------------------------- | ------------------------------------------------------------ |
+| 包管理          | **uv**                                             | 比 pip 快 10-100 倍，锁文件可靠，WSL 下体验极好              |
+| CLI 框架        | **typer** + **rich**                               | 类型注解即 CLI，输出美观，学习成本低                         |
+| HTTP            | **httpx**（异步）+ 自研 `HttpClient` 包装          | 统一超时/重试/限速/缓存/UA；`respx` 可完美 mock              |
+| 数据校验        | **pydantic v2**                                    | 同时用于 Item schema、配置、LLM 结构化输出校验与 JSON Schema 生成 |
+| ORM             | **SQLModel** + **alembic**                         | Pydantic + SQLAlchemy 二合一，模型只写一次                   |
+| 限流重试        | **tenacity** + 自研令牌桶                          | 各源限速差异大，需按源配置                                   |
+| 文本聚类        | **scikit-learn** TfidfVectorizer + 余弦相似度      | 无 API 成本、无模型下载，V1 足够；M5 后可选换 embedding      |
+| 中文分词        | **jieba**                                          | 中文标题聚类前置处理                                         |
+| Prompt          | **Jinja2** 模板文件                                | 见 §8                                                        |
+| 渲染            | Jinja2 → Markdown / HTML                           | 同一套数据多格式输出                                         |
+| 日志            | **structlog** → JSON Lines                         | 便于事后分析与排查                                           |
+| 测试            | **pytest** + **respx** + **pytest-asyncio**        | 目标：核心模块覆盖率 ≥70%                                    |
+| 质量            | **ruff**（lint+format）+ **mypy** + **pre-commit** | 提交即检查                                                   |
+| 调度            | **GitHub Actions**（主）+ WSL cron（备）           | Actions 免费且天然适合开源展示                               |
+| Web（M4）       | **FastAPI** + Jinja2 模板 + **HTMX**               | 无前端构建链，纯 Python，只读看板                            |
+| 向量（M5+可选） | **sqlite-vec** 或本地 bge-small（CPU）             | 默认关闭，配置开启                                           |
 
 > **明确不引入**：Docker（全阶段均不需要）、Celery / Redis（无异步任务需求）、LangChain（本项目 LLM 调用模式固定，自研 200 行更可控可测）。
 
@@ -602,11 +619,11 @@ class RawItem(BaseModel):
 - 通用 RSS/Atom 采集器，源列表在 `configs/sources.yaml` 中声明（`feedparser` 解析）。
 - **源分层策略**：
 
-| 层级 | 源 | 定位 |
-|---|---|---|
+| 层级             | 源                                                           | 定位                                                       |
+| ---------------- | ------------------------------------------------------------ | ---------------------------------------------------------- |
 | **主干（英文）** | Simon Willison's Blog、Import AI、Latent Space、Anthropic 官方博客、OpenAI 官方博客、DeepSeek 官方博客、HuggingFace Blog | RSS 极其稳定、信噪比高、几乎无营销稿，**新闻板块的基本盘** |
-| **主干（英文）** | The Verge AI、TechCrunch AI、Ars Technica | 补充产业与产品动态 |
-| **补充（中文）** | 机器之心、量子位、36氪 AI | 国内视角与工程实践；**失效视为可接受的降级**，不阻塞流水线 |
+| **主干（英文）** | The Verge AI、TechCrunch AI、Ars Technica                    | 补充产业与产品动态                                         |
+| **补充（中文）** | 机器之心、量子位、36氪 AI                                    | 国内视角与工程实践；**失效视为可接受的降级**，不阻塞流水线 |
 
 - **中文源的现实问题（M0 探测实测结论，v1.4 更新）**：
   - **实测结果**：机器之心、36氪 的 feed **已下线或返回 HTML**（非 RSS）；**仅量子位可用，但摘要仅 22 字（≈只有标题）**。
@@ -627,10 +644,10 @@ class RawItem(BaseModel):
 
 **决策：不实现任何针对微信公众号 / X 的抓取、RSS 桥或第三方接口集成。** 理由：
 
-| 源 | 为什么放弃 |
-|---|---|
-| X/Twitter | 官方 API 已转为付费且免费额度极低；Nitter 公共实例大量关停，自建需维护代理与反爬，投入产出比极差 |
-| 微信公众号 | 无任何公开 API；第三方接口不稳定、随时失效，且转载其内容存在明确的版权与合规风险 |
+| 源                  | 为什么放弃                                                   |
+| ------------------- | ------------------------------------------------------------ |
+| X/Twitter           | 官方 API 已转为付费且免费额度极低；Nitter 公共实例大量关停，自建需维护代理与反爬，投入产出比极差 |
+| 微信公众号          | 无任何公开 API；第三方接口不稳定、随时失效，且转载其内容存在明确的版权与合规风险 |
 | RSS 桥（RSSHub 等） | 需要自建并长期运维一个服务，与"个人单机工具"的定位冲突；且桥本身仍依赖上述不稳定上游 |
 
 **唯一替代通道 = 手动投喂 `inbox`（M1 必须实现，成本极低、价值高）**：
@@ -650,15 +667,15 @@ aipulse inbox add-file data/inbox/notes.md          # 批量从本地 markdown �
 
 #### 5.11.1 当前数据源全景（M0 实测后确认的 7 类入口）
 
-| # | 源 | 类型 | 提供什么信号 | 本地 | Actions | 唯一性 |
-|---|---|---|---|---|---|---|
-| 1 | **GitHub Trending** | API + HTML | 开源项目热度、**star 增速** | △ 不稳 | ✅ | 唯一的"工程落地热度"信号 |
-| 2 | **arXiv API** | API | 论文预印本、研究前沿 | △ 不稳 | ✅ | 唯一的"学术一手"信号 |
-| 3 | **HF Daily Papers** | API | 论文**社区认可度**(upvotes)、是否开源代码 | ❌ DNS | ✅ | 判断"论文是否真被买账" |
-| 4 | **Hacker News** | API(Algolia) | 技术社区舆论、讨论热度 | ✅ | ✅ | 唯一的"高质量开发者舆论" |
-| 5 | **Reddit r/LocalLLaMA** | RSS | 一线玩家真实反馈、草根实践 | ❌ | ✅ | 唯一的"玩家视角" |
-| 6 | **RSS（9 个英文 + 1 中文）** | RSS/Atom | 产业动态、官方发布、名家观点 | 部分 ✅ | ✅ | 唯一的"产业/官方"信号 |
-| 7 | **inbox 手动投喂** | 手动 | 任意来源 + 你自己的观察 | ✅ | ✅ | **永不失效的兜底通道** |
+| #    | 源                           | 类型         | 提供什么信号                              | 本地   | Actions | 唯一性                   |
+| ---- | ---------------------------- | ------------ | ----------------------------------------- | ------ | ------- | ------------------------ |
+| 1    | **GitHub Trending**          | API + HTML   | 开源项目热度、**star 增速**               | △ 不稳 | ✅       | 唯一的"工程落地热度"信号 |
+| 2    | **arXiv API**                | API          | 论文预印本、研究前沿                      | △ 不稳 | ✅       | 唯一的"学术一手"信号     |
+| 3    | **HF Daily Papers**          | API          | 论文**社区认可度**(upvotes)、是否开源代码 | ❌ DNS  | ✅       | 判断"论文是否真被买账"   |
+| 4    | **Hacker News**              | API(Algolia) | 技术社区舆论、讨论热度                    | ✅      | ✅       | 唯一的"高质量开发者舆论" |
+| 5    | **Reddit r/LocalLLaMA**      | RSS          | 一线玩家真实反馈、草根实践                | ❌      | ✅       | 唯一的"玩家视角"         |
+| 6    | **RSS（9 个英文 + 1 中文）** | RSS/Atom     | 产业动态、官方发布、名家观点              | 部分 ✅ | ✅       | 唯一的"产业/官方"信号    |
+| 7    | **inbox 手动投喂**           | 手动         | 任意来源 + 你自己的观察                   | ✅      | ✅       | **永不失效的兜底通道**   |
 
 #### 5.11.2 核心结论：任何一个源挂掉，功能都不会废
 
@@ -670,14 +687,14 @@ aipulse inbox add-file data/inbox/notes.md          # 批量从本地 markdown �
 
 **② 信号冗余：没有哪个"能力"依赖单一源**
 
-| 能力 | 需要的信号 | 可用源 | 挂掉一个会怎样 |
-|---|---|---|---|
-| 每日简报 | 任意热点条目 | 7 类全部 | **完全无感**——少一个源只是少几条候选，Top N 照样排得出来 |
-| 主题聚类 | ≥2 个条目语义相近 | 任意源 | 无感 |
-| 开源项目板块 | GitHub 数据 | GitHub Trending / Search API（双通道） | Trending HTML 改版 → 自动降级 Search API |
-| 论文板块 | arXiv ID + upvotes | arXiv + HF（**互为备份**，同一篇论文） | 挂一个，另一个仍能提供该论文（只是少 upvotes 或社区热度） |
-| 社区舆论板块 | 讨论热度 | HN + Reddit | 挂一个仍有另一个 |
-| 产业新闻板块 | RSS | 10 个 feed，**英文主干 9 个** | 挂 1-2 个 feed 完全无感 |
+| 能力         | 需要的信号         | 可用源                                 | 挂掉一个会怎样                                            |
+| ------------ | ------------------ | -------------------------------------- | --------------------------------------------------------- |
+| 每日简报     | 任意热点条目       | 7 类全部                               | **完全无感**——少一个源只是少几条候选，Top N 照样排得出来  |
+| 主题聚类     | ≥2 个条目语义相近  | 任意源                                 | 无感                                                      |
+| 开源项目板块 | GitHub 数据        | GitHub Trending / Search API（双通道） | Trending HTML 改版 → 自动降级 Search API                  |
+| 论文板块     | arXiv ID + upvotes | arXiv + HF（**互为备份**，同一篇论文） | 挂一个，另一个仍能提供该论文（只是少 upvotes 或社区热度） |
+| 社区舆论板块 | 讨论热度           | HN + Reddit                            | 挂一个仍有另一个                                          |
+| 产业新闻板块 | RSS                | 10 个 feed，**英文主干 9 个**          | 挂 1-2 个 feed 完全无感                                   |
 
 **结论：只有"辩论"和"周期长文"会在数据源极度贫瘠时质量下降**（因为需要足够的证据包做推演），
 而且这两个功能本来就在 M5、且只在 `full` 档启用。**采集、打分、聚类、简报、预言、回测这条主链路，不受任何单一源影响。**
@@ -688,14 +705,14 @@ aipulse inbox add-file data/inbox/notes.md          # 批量从本地 markdown �
 
 #### 5.11.3 源不可达时的分级应对手册
 
-| 场景 | 表现 | 应对 |
-|---|---|---|
-| 临时抽风（超时/429/503） | 偶发失败 | `tenacity` 退避重试 3 次；HTTP 缓存保留上次成功结果 |
-| 长期限速 | 频繁 429 | 调低该源 `rate_limit`；降低采集频率 |
-| 端点改版（GitHub HTML） | 解析出 0 条 | 快照测试报警 → 自动降级 Search API（已实现双通道） |
-| 域名污染 / 被墙 | 连接超时 | 标 `actions_only`，Actions 环境采集；或配代理 |
-| feed 下线 | 404 / 返回 HTML | `optional` 源静默跳过；`core` 源报警并尽快替换 URL |
-| 源彻底废弃 | 长期不可用 | 从 `sources.yaml` 移除或 `enabled: false`，见 §5.12 |
+| 场景                     | 表现            | 应对                                                |
+| ------------------------ | --------------- | --------------------------------------------------- |
+| 临时抽风（超时/429/503） | 偶发失败        | `tenacity` 退避重试 3 次；HTTP 缓存保留上次成功结果 |
+| 长期限速                 | 频繁 429        | 调低该源 `rate_limit`；降低采集频率                 |
+| 端点改版（GitHub HTML）  | 解析出 0 条     | 快照测试报警 → 自动降级 Search API（已实现双通道）  |
+| 域名污染 / 被墙          | 连接超时        | 标 `actions_only`，Actions 环境采集；或配代理       |
+| feed 下线                | 404 / 返回 HTML | `optional` 源静默跳过；`core` 源报警并尽快替换 URL  |
+| 源彻底废弃               | 长期不可用      | 从 `sources.yaml` 移除或 `enabled: false`，见 §5.12 |
 
 **判断"要不要修"的标准**：看该源是否是某类信号的**唯一提供者**（见 5.11.1 最后一列）。
 若是唯一的（如 GitHub 是唯一工程热度源），优先修；若有冗余（如 arXiv 与 HF），可以先放着让备份顶上。
@@ -706,10 +723,10 @@ aipulse inbox add-file data/inbox/notes.md          # 批量从本地 markdown �
 
 **根因**：两类数据源的时间语义根本不同，此前被混为一谈。
 
-| 类型 | 源 | 时间语义 | 例子 |
-|---|---|---|---|
+| 类型       | 源                    | 时间语义                                    | 例子                          |
+| ---------- | --------------------- | ------------------------------------------- | ----------------------------- |
 | **事件型** | arXiv / HF / HN / RSS | `published_at` = 事件发生时刻，**固定不变** | 论文 10-15 发表就永远是 10-15 |
-| **状态型** | **GitHub Trending** | **无发布时间**，只有"此刻是否在榜" | REA 此刻在榜 = 当下热点 |
+| **状态型** | **GitHub Trending**   | **无发布时间**，只有"此刻是否在榜"          | REA 此刻在榜 = 当下热点       |
 
 Trending 页面是一份**当前快照**，不含任何时间戳。采集时给它赋了首次采集时刻，
 之后跨天重复采集通过 `content_hash` upsert 合并——**合并保留首次发现时间**。于是：
@@ -722,11 +739,11 @@ Trending 页面是一份**当前快照**，不含任何时间戳。采集时给�
 
 **修复**：
 
-| 字段 | 含义 |
-|---|---|
+| 字段            | 含义                                                   |
+| --------------- | ------------------------------------------------------ |
 | `first_seen_at` | **首次发现**，只在第一次采集时设置，之后 upsert 不更新 |
-| `last_seen_at` | **最近一次被采集到**，每次 upsert 都更新 |
-| `published_at` | 事件型源的发布时间（状态型源为空） |
+| `last_seen_at`  | **最近一次被采集到**，每次 upsert 都更新               |
+| `published_at`  | 事件型源的发布时间（状态型源为空）                     |
 
 #### ★★ 时间语义有**三态**不是两态（v1.15 修正）
 
@@ -735,10 +752,10 @@ arXiv/HF 按 `published_at` 过滤时，**因索引滞后 3-4 天而大量丢失
 M1 为了解决这个问题设了 `lookback_days: 7`（采集过去 7 天），
 但过滤时只保留"24h 内发布的"，**等于采了却不用，白采**。
 
-| 语义 | 依据字段 | 适用源 | 为什么 |
-|---|---|---|---|
-| **`event`** | `published_at` | Hacker News / RSS | 有准确发布时间**且不滞后**。某天采集失败就是漏了，这是正确行为 |
-| **`state`** | `last_seen_at` | GitHub Trending | 无发布时间，关心"此刻是否仍在榜"；连续在榜应连续出现 |
+| 语义                          | 依据字段            | 适用源                      | 为什么                                                       |
+| ----------------------------- | ------------------- | --------------------------- | ------------------------------------------------------------ |
+| **`event`**                   | `published_at`      | Hacker News / RSS           | 有准确发布时间**且不滞后**。某天采集失败就是漏了，这是正确行为 |
+| **`state`**                   | `last_seen_at`      | GitHub Trending             | 无发布时间，关心"此刻是否仍在榜"；连续在榜应连续出现         |
 | **`discovery`**（v1.15 新增） | **`first_seen_at`** | **arXiv / HF Daily Papers** | 索引滞后使 `published_at` 不可用；<br>**读者关心的是"今天新发现了什么"，不是"投稿日期是不是今天"** |
 
 **`discovery` 不会造成重复**：`first_seen_at` 只在首次采集时设置，之后 upsert 不更新，
@@ -776,10 +793,10 @@ M1 为了解决这个问题设了 `lookback_days: 7`（采集过去 7 天），
 
 **先分清两种情况，不要一上来就改代码**：
 
-| 情况 | 判定依据 | 处理 |
-|---|---|---|
-| **A. 仍在榜但没进日报** | 本次采集的 trending 条目里有它，日报却没有 | **真 bug**，修 |
-| **B. 已掉榜** | 本次采集的 trending 条目里根本没有它 | **正确行为**（Trending 是快照，掉榜就该消失） |
+| 情况                    | 判定依据                                   | 处理                                          |
+| ----------------------- | ------------------------------------------ | --------------------------------------------- |
+| **A. 仍在榜但没进日报** | 本次采集的 trending 条目里有它，日报却没有 | **真 bug**，修                                |
+| **B. 已掉榜**           | 本次采集的 trending 条目里根本没有它       | **正确行为**（Trending 是快照，掉榜就该消失） |
 
 **即便确认是 B，用户的诉求依然成立**。真实诉求不是"它必须每天出现"，而是：
 
@@ -787,10 +804,10 @@ M1 为了解决这个问题设了 `lookback_days: 7`（采集过去 7 天），
 
 #### 解法：把两个概念分开
 
-| 概念 | 语义 | 数据来源 | 时间语义 |
-|---|---|---|---|
-| **今日 Trending** | 此刻在榜（快照） | `items` | `state`（`last_seen_at`） |
-| **★ 持续追踪** | 值得长期关注的项目 | **`signals` 表的 star 快照序列** | 序列，与"在榜"无关 |
+| 概念              | 语义               | 数据来源                         | 时间语义                  |
+| ----------------- | ------------------ | -------------------------------- | ------------------------- |
+| **今日 Trending** | 此刻在榜（快照）   | `items`                          | `state`（`last_seen_at`） |
+| **★ 持续追踪**    | 值得长期关注的项目 | **`signals` 表的 star 快照序列** | 序列，与"在榜"无关        |
 
 **★ 关键洞察**：`signals` 表**从 M1 起就在持续记录所有采集过的 GitHub 项目的 star 快照**
 （每天写 `metric=stars`）——**REA 的 star 数据一直在被追踪，只是没在日报里展示**。
@@ -800,13 +817,13 @@ M1 为了解决这个问题设了 `lookback_days: 7`（采集过去 7 天），
 
 #### ★★ 诊断结案（2026-10-17 真实数据）
 
-| 证据 | 值 |
-|---|---|
-| 17 号采集的 trending 条目 | **7 条，没有 REA** |
-| `collect.failed_sources` | **0**（7 源全通，不是采集失败） |
-| REA 最后被采到 | 2026-10-16T01:03Z |
-| 17 号窗口起点 | 2026-10-16T08:41Z |
-| 差值 | **早约 7.6 小时** → 按 `state` 语义正确排除 |
+| 证据                      | 值                                          |
+| ------------------------- | ------------------------------------------- |
+| 17 号采集的 trending 条目 | **7 条，没有 REA**                          |
+| `collect.failed_sources`  | **0**（7 源全通，不是采集失败）             |
+| REA 最后被采到            | 2026-10-16T01:03Z                           |
+| 17 号窗口起点             | 2026-10-16T08:41Z                           |
+| 差值                      | **早约 7.6 小时** → 按 `state` 语义正确排除 |
 
 **结论：真掉榜，不是 bug。M6a 的修复行为完全正确。**
 
@@ -866,10 +883,10 @@ delta:     +8617（约 10 小时）      status: ok
 
 **答案：能，而且分两个难度等级。**
 
-| 等级 | 适用 | 操作 | 耗时 |
-|---|---|---|---|
-| **L1：改配置** | 新增/删除/替换任何 **RSS 或 Atom** 源 | 编辑 `configs/sources.yaml` 的 `rss.feeds` 列表，增删一行 | **1 分钟，零代码** |
-| **L2：写模块** | 新增**全新类型**的源（Product Hunt、微博、YouTube 频道、某个新 API） | 在 `collectors/` 下新建一个继承 `BaseCollector` 的类，实现 `fetch()`，在 `registry.py` 注册 | 约 30-60 分钟 |
+| 等级           | 适用                                                         | 操作                                                         | 耗时               |
+| -------------- | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------ |
+| **L1：改配置** | 新增/删除/替换任何 **RSS 或 Atom** 源                        | 编辑 `configs/sources.yaml` 的 `rss.feeds` 列表，增删一行    | **1 分钟，零代码** |
+| **L2：写模块** | 新增**全新类型**的源（Product Hunt、微博、YouTube 频道、某个新 API） | 在 `collectors/` 下新建一个继承 `BaseCollector` 的类，实现 `fetch()`，在 `registry.py` 注册 | 约 30-60 分钟      |
 
 **为什么 RSS 类这么简单**：`rss.py` 是通用采集器，`feeds` 列表里每一项只需 `name` / `url` / `tier`，
 新增任意 RSS 源不需要写任何解析代码——**这是当初坚持"统一 Item 抽象 + 通用 RSS 采集器"的回报**。
@@ -904,16 +921,16 @@ class MyNewCollector(BaseCollector):
 **背景（来自 M0 真实探测）**：本地 WSL 环境与 GitHub Actions 环境的网络可达性**完全不同**。
 若按"本地测不到 = 源不可用"来写采集器，会永久丢失一批在 Actions 里其实完全可用的高质量源。
 
-| 源 | 本地 WSL（无代理） | GitHub Actions | 分级 |
-|---|---|---|---|
-| GitHub Trending / Search API | 可用但不稳定（约 1/3 成功率） | 稳定可用 | `always` |
-| arXiv API | 可用但不稳定 | 稳定可用 | `always` |
-| HF Daily Papers | **DNS 污染**，不可达 | 可达 | `actions_only` |
-| Hacker News Algolia | 可用 | 稳定可用 | `always` |
-| Reddit RSS | **不可达** | 可达 | `actions_only` |
-| RSS · Import AI | ✅ 可达（v1.6 改用 `importai.net/feed`，官方站且含全文） | 可达 | **`always`**（v1.6 升级） |
-| RSS · 其余英文主干 | 可用 | 稳定可用 | `always` |
-| RSS · 中文（量子位） | 可用，仅标题 | 可用 | `always`（`title_only: true`） |
+| 源                           | 本地 WSL（无代理）                                      | GitHub Actions | 分级                           |
+| ---------------------------- | ------------------------------------------------------- | -------------- | ------------------------------ |
+| GitHub Trending / Search API | 可用但不稳定（约 1/3 成功率）                           | 稳定可用       | `always`                       |
+| arXiv API                    | 可用但不稳定                                            | 稳定可用       | `always`                       |
+| HF Daily Papers              | **DNS 污染**，不可达                                    | 可达           | `actions_only`                 |
+| Hacker News Algolia          | 可用                                                    | 稳定可用       | `always`                       |
+| Reddit RSS                   | **不可达**                                              | 可达           | `actions_only`                 |
+| RSS · Import AI              | ✅ 可达（v1.6 改用 `importai.net/feed`，官方站且含全文） | 可达           | **`always`**（v1.6 升级）      |
+| RSS · 其余英文主干           | 可用                                                    | 稳定可用       | `always`                       |
+| RSS · 中文（量子位）         | 可用，仅标题                                            | 可用           | `always`（`title_only: true`） |
 
 **配置字段**：
 
@@ -928,11 +945,11 @@ sources:
 
 **行为约定（Agent 必须实现）**：
 
-| 场景 | `always` | `actions_only` |
-|---|---|---|
+| 场景                                   | `always`                                  | `actions_only`                                               |
+| -------------------------------------- | ----------------------------------------- | ------------------------------------------------------------ |
 | 本地运行（未设 `AIPULSE_ENV=actions`） | 正常采集，失败计入 `source_runs` 失败统计 | **跳过采集**，写入 `source_runs.status = 'skipped_offline'`，**不计入失败**，退出码不受影响 |
-| Actions 运行（`AIPULSE_ENV=actions`） | 正常采集 | **正常采集**，失败按常规处理 |
-| `aipulse doctor` | 正常探针 | 本地显示 ⏸「本环境不可达，将在 Actions 启用」而非 ❌ |
+| Actions 运行（`AIPULSE_ENV=actions`）  | 正常采集                                  | **正常采集**，失败按常规处理                                 |
+| `aipulse doctor`                       | 正常探针                                  | 本地显示 ⏸「本环境不可达，将在 Actions 启用」而非 ❌          |
 
 **为什么必须现在定**：M1 要写 6 个采集器。若没有这个分级，Agent 会因为"reddit 本地测不到"而在采集器里写死跳过逻辑，
 或反过来把本地失败当 bug 反复排查——两种都是错的。
@@ -959,12 +976,12 @@ sources:
 
 ### 6.2 三级去重
 
-| 级别 | 方法 | 判定 |
-|---|---|---|
-| L1 精确 | `content_hash = sha1(canonical_url + source)` | 完全相同 → 跳过 |
-| L2 跨源 | `cross_source_key`（arxiv_id / repo full_name / HN objectID） | 同 key 合并为一条 Item，`seen_in` 记录多个来源并合并 metrics |
-| L3 近似 | `simhash64(title + summary 前 500 字)`，汉明距离 ≤3 | 视为同一事件，合并为 topic 内的同组，保留热度最高者为主条目 |
-| L3+（可选，M5） | embedding 余弦 ≥0.92 | 语义相似，不删，只在聚类中归组 |
+| 级别            | 方法                                                         | 判定                                                         |
+| --------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| L1 精确         | `content_hash = sha1(canonical_url + source)`                | 完全相同 → 跳过                                              |
+| L2 跨源         | `cross_source_key`（arxiv_id / repo full_name / HN objectID） | 同 key 合并为一条 Item，`seen_in` 记录多个来源并合并 metrics |
+| L3 近似         | `simhash64(title + summary 前 500 字)`，汉明距离 ≤3          | 视为同一事件，合并为 topic 内的同组，保留热度最高者为主条目  |
+| L3+（可选，M5） | embedding 余弦 ≥0.92                                         | 语义相似，不删，只在聚类中归组                               |
 
 **合并规则**：保留最早 `published_at`、最新 `metrics`、合并 `tags`、保留 `seen_in: list[source]`。合并后的 Item 热度加成 `+5%`（多源印证 = 更强信号，这个系数可配置）。
 
@@ -974,42 +991,42 @@ sources:
 
 ### 7.1 items（主表）
 
-| 字段 | 类型 | 说明 |
-|---|---|---|
-| `id` | TEXT PK | uuid4 |
-| `source` | TEXT | 主来源 |
-| `external_id` | TEXT | 源内 ID |
-| `cross_key` | TEXT | 跨源去重键（arxiv:{id} / repo:{full_name}） |
-| `title` | TEXT | |
-| `url` | TEXT | 规范 URL |
-| `summary` | TEXT | 清洗后摘要 |
-| `author` | TEXT NULL | |
-| `published_at` | DATETIME | UTC |
-| `collected_at` | DATETIME | UTC |
-| `language` | TEXT NULL | 代码语言或自然语言 |
-| `tags` | TEXT | JSON array |
-| `metrics` | TEXT | JSON（stars/points/upvotes/...） |
-| `seen_in` | TEXT | JSON array，出现过的所有源 |
-| `content_hash` | TEXT UNIQUE | |
-| `simhash` | TEXT | 64 位指纹 |
-| `hot_score` | REAL | 0-100 |
-| `topic_id` | TEXT NULL | 聚类结果 |
-| `is_duplicate` | BOOL | 被合并的次条目 |
-| `dedup_group_id` | TEXT NULL | |
-| `raw_ref` | TEXT NULL | 原始快照路径（可选不存） |
+| 字段             | 类型        | 说明                                        |
+| ---------------- | ----------- | ------------------------------------------- |
+| `id`             | TEXT PK     | uuid4                                       |
+| `source`         | TEXT        | 主来源                                      |
+| `external_id`    | TEXT        | 源内 ID                                     |
+| `cross_key`      | TEXT        | 跨源去重键（arxiv:{id} / repo:{full_name}） |
+| `title`          | TEXT        |                                             |
+| `url`            | TEXT        | 规范 URL                                    |
+| `summary`        | TEXT        | 清洗后摘要                                  |
+| `author`         | TEXT NULL   |                                             |
+| `published_at`   | DATETIME    | UTC                                         |
+| `collected_at`   | DATETIME    | UTC                                         |
+| `language`       | TEXT NULL   | 代码语言或自然语言                          |
+| `tags`           | TEXT        | JSON array                                  |
+| `metrics`        | TEXT        | JSON（stars/points/upvotes/...）            |
+| `seen_in`        | TEXT        | JSON array，出现过的所有源                  |
+| `content_hash`   | TEXT UNIQUE |                                             |
+| `simhash`        | TEXT        | 64 位指纹                                   |
+| `hot_score`      | REAL        | 0-100                                       |
+| `topic_id`       | TEXT NULL   | 聚类结果                                    |
+| `is_duplicate`   | BOOL        | 被合并的次条目                              |
+| `dedup_group_id` | TEXT NULL   |                                             |
+| `raw_ref`        | TEXT NULL   | 原始快照路径（可选不存）                    |
 
 索引：`(published_at)`、`(source, published_at)`、`(cross_key)`、`(topic_id)`、`(hot_score DESC)`。
 
 ### 7.2 signals（指标时间序列，用于算增速）
 
-| 字段 | 类型 |
-|---|---|
-| `id` | INTEGER PK AUTOINCREMENT |
-| `entity_type` | TEXT（`repo` / `hn_story` / `paper` / `model`） |
-| `entity_key` | TEXT（如 `owner/name`） |
-| `metric` | TEXT（`stars` / `points` / `comments` / `upvotes`） |
-| `value` | REAL |
-| `ts` | DATETIME |
+| 字段          | 类型                                                |
+| ------------- | --------------------------------------------------- |
+| `id`          | INTEGER PK AUTOINCREMENT                            |
+| `entity_type` | TEXT（`repo` / `hn_story` / `paper` / `model`）     |
+| `entity_key`  | TEXT（如 `owner/name`）                             |
+| `metric`      | TEXT（`stars` / `points` / `comments` / `upvotes`） |
+| `value`       | REAL                                                |
+| `ts`          | DATETIME                                            |
 
 唯一索引 `(entity_type, entity_key, metric, ts)`。用途：Δ 值 / 增速 / 趋势曲线。
 
@@ -1024,27 +1041,27 @@ sources:
 
 ### 7.5 predictions（★ 项目灵魂）
 
-| 字段 | 类型 | 说明 |
-|---|---|---|
-| `id` | TEXT PK | |
-| `date` | DATE | 生成日期 |
-| `statement` | TEXT | 一句话、可证伪的预言 |
-| `category` | TEXT | `capability`/`product`/`research`/`business`/`policy`/`hardware`/`community` |
-| `confidence` | REAL | 0.05–0.95，步长 0.05 |
-| `horizon_days` | INT | 7 / 30 / 90 / 180 |
-| `due_date` | DATE | `date + horizon_days` |
-| `falsifiable_criteria` | TEXT | **判定标准**：满足什么算命中、什么算落空 |
-| `rationale` | TEXT | 推理链条（3-5 句） |
-| `evidence_item_ids` | TEXT | JSON array，引用当日 Item id |
-| `model` | TEXT | 生成模型名 |
-| `prompt_version` | TEXT | 模板 hash |
-| `status` | TEXT | `pending` / `verified` / `unverifiable` |
-| `verdict` | TEXT NULL | `hit` / `partial` / `miss` |
-| `verdict_score` | REAL NULL | hit=1.0 / partial=0.5 / miss=0.0 |
-| `verdict_note` | TEXT NULL | 验证理由 |
-| `verdict_evidence_ids` | TEXT NULL | 验证时引用的新 Item id |
-| `verified_at` | DATETIME NULL | |
-| `verified_by` | TEXT NULL | `auto` / `human` |
+| 字段                   | 类型          | 说明                                                         |
+| ---------------------- | ------------- | ------------------------------------------------------------ |
+| `id`                   | TEXT PK       |                                                              |
+| `date`                 | DATE          | 生成日期                                                     |
+| `statement`            | TEXT          | 一句话、可证伪的预言                                         |
+| `category`             | TEXT          | `capability`/`product`/`research`/`business`/`policy`/`hardware`/`community` |
+| `confidence`           | REAL          | 0.05–0.95，步长 0.05                                         |
+| `horizon_days`         | INT           | 7 / 30 / 90 / 180                                            |
+| `due_date`             | DATE          | `date + horizon_days`                                        |
+| `falsifiable_criteria` | TEXT          | **判定标准**：满足什么算命中、什么算落空                     |
+| `rationale`            | TEXT          | 推理链条（3-5 句）                                           |
+| `evidence_item_ids`    | TEXT          | JSON array，引用当日 Item id                                 |
+| `model`                | TEXT          | 生成模型名                                                   |
+| `prompt_version`       | TEXT          | 模板 hash                                                    |
+| `status`               | TEXT          | `pending` / `verified` / `unverifiable`                      |
+| `verdict`              | TEXT NULL     | `hit` / `partial` / `miss`                                   |
+| `verdict_score`        | REAL NULL     | hit=1.0 / partial=0.5 / miss=0.0                             |
+| `verdict_note`         | TEXT NULL     | 验证理由                                                     |
+| `verdict_evidence_ids` | TEXT NULL     | 验证时引用的新 Item id                                       |
+| `verified_at`          | DATETIME NULL |                                                              |
+| `verified_by`          | TEXT NULL     | `auto` / `human`                                             |
 
 ### 7.6 运行与成本表
 
@@ -1131,10 +1148,10 @@ class LLMClient(Protocol):
 
 **必须做两层防护，只做校验是不够的**：
 
-| 层 | 做法 | 为什么 |
-|---|---|---|
+| 层                 | 做法                                                         | 为什么                                                       |
+| ------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | **① 预防（先做）** | 把**候选证据池**（id + 标题）显式注入 prompt，明确要求"只能引用此列表中的 id" | 模型有了可引用清单就不容易编。**只做事后校验，会导致证据不足时全被拒收 → 当天一条预言都拿不到** |
-| **② 校验（兜底）** | `evidence_item_ids` 必须全部存在于候选池内，否则触发一次重写 → 仍不合法则丢弃并记录 | 防止模型无视清单 |
+| **② 校验（兜底）** | `evidence_item_ids` 必须全部存在于候选池内，否则触发一次重写 → 仍不合法则丢弃并记录 | 防止模型无视清单                                             |
 
 **★ 候选池的规模约束（v1.16，重要）**：池取 **Top 20，每条只给 `id + 标题`，不给摘要**。
 
@@ -1360,12 +1377,12 @@ class DailyBrief(BaseModel):
 
 #### `unverifiable` 的归属与防滥用（v1.9 明确）
 
-| 项 | 规定 |
-|---|---|
-| 归属 | **`status` 字段**，不是 `verdict`。`Verdict` 保持 3 值契约（`hit` / `partial` / `miss`）不变 |
-| 产生方 | **只允许系统的证据门槛产生**，LLM **不得**输出 `unverifiable` |
-| 理由 | 若允许 LLM 输出，它会变成**逃避 miss 的软出口**——模型一旦犹豫就标"无法验证"，<br>命中率与 Brier 都会被系统性美化，整个记分板失去意义 |
-| 部分命中 | `partial` 必须**高度克制**：仅当①存在可列举的多个子条件且部分满足，或②量化阈值落在容差带（默认 5%）时使用。<br>**"拿不准" ≠ partial**——拿不准应走证据门槛 → `unverifiable` 或延后重试 |
+| 项          | 规定                                                         |
+| ----------- | ------------------------------------------------------------ |
+| 归属        | **`status` 字段**，不是 `verdict`。`Verdict` 保持 3 值契约（`hit` / `partial` / `miss`）不变 |
+| 产生方      | **只允许系统的证据门槛产生**，LLM **不得**输出 `unverifiable` |
+| 理由        | 若允许 LLM 输出，它会变成**逃避 miss 的软出口**——模型一旦犹豫就标"无法验证"，<br>命中率与 Brier 都会被系统性美化，整个记分板失去意义 |
+| 部分命中    | `partial` 必须**高度克制**：仅当①存在可列举的多个子条件且部分满足，或②量化阈值落在容差带（默认 5%）时使用。<br>**"拿不准" ≠ partial**——拿不准应走证据门槛 → `unverifiable` 或延后重试 |
 | miss 的前提 | **证据覆盖已充分**。"查不到"不等于"没发生"，不得因检索不到就判 miss |
 
 ### 10.3 周期趋势长文（`trend`）
@@ -1402,16 +1419,16 @@ class DailyBrief(BaseModel):
 
 每次运行产出到 `data/reports/YYYY/MM/DD/`：
 
-| 文件 | 内容 |
-|---|---|
-| `brief.md` | 每日简报（主产物，人读） |
-| `brief.html` | HTML 版（可选，带基础样式，便于分享） |
-| `predictions.md` | 当日新生成的预言 |
-| `verdicts.md` | 当日到期的验证结果 |
-| `scoreboard.md` | **★ 预言记分板（v1.10：`daily` 流水线自动产出）** |
-| `debate-<slug>.md` | 辩论记录（若有） |
-| `daily.json` | 全量结构化结果（机器读，供 Web/二次开发） |
-| `meta.json` | 运行元信息：耗时、各源条数、LLM 调用次数/花费、降级情况 |
+| 文件               | 内容                                                    |
+| ------------------ | ------------------------------------------------------- |
+| `brief.md`         | 每日简报（主产物，人读）                                |
+| `brief.html`       | HTML 版（可选，带基础样式，便于分享）                   |
+| `predictions.md`   | 当日新生成的预言                                        |
+| `verdicts.md`      | 当日到期的验证结果                                      |
+| `scoreboard.md`    | **★ 预言记分板（v1.10：`daily` 流水线自动产出）**       |
+| `debate-<slug>.md` | 辩论记录（若有）                                        |
+| `daily.json`       | 全量结构化结果（机器读，供 Web/二次开发）               |
+| `meta.json`        | 运行元信息：耗时、各源条数、LLM 调用次数/花费、降级情况 |
 
 **记分板产出时机（v1.10）**：`daily` 流水线在 `auto_verify` 之后**自动**生成
 `data/reports/YYYY/MM/DD/scoreboard.md`（这样 Actions 每天 commit 的报告中天然包含记分板）。
@@ -1426,6 +1443,91 @@ class DailyBrief(BaseModel):
 
 **Web UI（M4，可选）**：FastAPI + Jinja2 + HTMX，只读页面：
 `/`（今日简报）、`/archive`（按日期浏览）、`/predictions`（预言记分板 + 校准曲线）、`/topics`（主题演化）、`/search`（关键词检索）。数据全部来自 SQLite 与 `daily.json`，**不做任何写操作**。
+
+### 11.1 M6b · 日报条目增强（why/stance 全覆盖 + 中文要点）
+
+> 本节补齐红线 34 / 35 与 v1.17 第 64 / 65 条长期引用的 `§11.1`——此前该小节并不存在。
+
+**问题（§18.8 实证）**：M6a 之后日报表格里「为什么重要」「立场」时有时无。
+规律是**每板块约前 1-2 条有、其余没有**，不是按板块或来源集中——**是模型在自主挑选**。
+这说明缺的是**契约与校验**，不是更好的措辞：光润色 prompt 无法稳定覆盖率。
+
+#### 覆盖对象 = 最终渲染集
+
+    渲染集 = ∪ section.item_ids[:brief.max_items_per_section]
+
+在 `_ensure_single_section()` 之后取（此时板块已归一）。
+`enhance_top_n`（默认 30）是**纯成本闸门**，不参与选集——
+避免出现第二处选集逻辑，防止覆盖定义二次漂移。
+
+#### 两次独立调用（v1.17 #66）
+
+| # | prompt | 顶层键 | 产出 |
+| - | ------ | ------ | ---- |
+| ① | `brief/item_comment.j2` v2 | `one_liners` | `one_liner`（一律中文） |
+| ② | `brief/item_enhance.j2` v1 | `comments` | `why` + `stance` |
+
+**★ 中文概述不新增字段，由 `one_liner` 承担。**
+M6a 把「一句话」改名「要点」的理由正是——off 档填的是**英文摘要截断**，
+易被误读成模型判断。若新增 `zh_summary`，会与 `one_liner` 职责重叠，
+导致同一行出现两句"这是什么"。改为约束 `one_liner` 一律输出中文。
+
+#### 输出必须紧凑（红线 34）
+
+只返回 `id + 目标字段`，**不回显标题/摘要**——回显会让输出翻倍撞 `max_tokens`
+（v1.17 事故：predict 曾因此生成 0 条）。
+
+**全覆盖契约**：模板用 `{{ item_count }}` 把"输入 N 条必输出 N 条"写死成模板里的数字，
+把覆盖率从"模型自觉"变成**可校验的契约**。
+
+#### 条目级缓存（红线 23）
+
+新建 `item_enhance` 表（第 10 张）。**四条全满足才算命中**：
+
+| # | 条件 |
+| - | ---- |
+| ① | `content_hash` 与当前 `items.content_hash` 一致 |
+| ② | 两个 prompt 的 `version_hash` 与当前一致（否则改了 prompt 看不到效果） |
+| ③ | `now - updated_at ≤ enhance_ttl_days`（默认 30） |
+| ④ | `abs(hot_score - last_hot_score) < enhance_refresh_hot_delta`（默认 10.0） |
+
+`enhance_refresh_on_new_signals` 默认 **false**——trending 每天都有新 star 快照，
+开成 true 等于每日重算，缓存收益归零。
+
+> ★ **缓存键必须按条目，不是按批次。**
+> 按批次哈希时，只要集合里有一条进出，整批就失效 → 天天全重算 →
+> 与"必须持久化"的意图完全相反。**分批只是传输层的事，不该污染缓存层。**
+
+#### 档位（挂既有 `mode`，零新增顶层开关）
+
+| mode | 增强行为 | 增强调用/日 |
+| ---- | -------- | ----------- |
+| `off` | 不调用 LLM，只读缓存 | 0 |
+| `hybrid` | **只补缺失**（渲染集中尚无的才调用）★ 生产默认 | 稳态 0-2；全刷日 6 |
+| `full` | 强制全刷，忽略缓存 | 6 |
+
+`hybrid` 与 `full` 的差异是**认不认缓存**，不是"做不做增强"——两档都追求全覆盖。
+（上表只计增强调用；另有 brief 主调用 1 次/日，故首次全刷日全天共 7 次。）
+
+#### 实测成本（2026-10-18 Actions 真实跑，run 39112189002 / 39112974821）
+
+| 场景 | 实测 | 年化 |
+| ---- | ---- | ---- |
+| 全刷（23 条 3 批） | 0.011862 元/天 | 4.33 元/年 |
+| **稳态（仅补 3 条新条目）** | 0.002768 元/天 | **1.01 元/年** |
+
+单条综合 ≈ 0.00052 元。全天调用 7 次（brief 主调用 1 + 增强 6）。
+
+`enhance_budget_cny = 0.15`——**闸门用于防失控，不是省日常**：
+冷启动仅占 7.9%，余量充足；缓存若天天失效会立刻暴露。
+（曾考虑"首次运行豁免"分支，预算给够后该特例即消失——**如无必要，勿增实体**。）
+
+#### 验收实证
+
+    enhance_total=23 / enhanced=23 / skipped=0 / cache_hit=20 / degraded=false
+
+抽查 23 条：`why` / `stance` / `one_liner` 全非空，套话正则命中 0 次。
+抽检样本均给出「变化 → 谁受影响 → 往哪个方向」的因果链，**是判断不是复述**。
 
 ### 11.2 日报触达与通知抽象（v1.2 确认）
 
@@ -1442,12 +1544,12 @@ class Notifier(Protocol):
 - `configs/default.yaml` 中 `notify.channels: [file]`，后续加渠道只需追加名字并实现对应类——**pipeline 代码零改动**。
 - 预留渠道及实现要点（**现在不要实现**，仅登记，避免提前付成本）：
 
-| 渠道 | 实现要点 | 何时值得加 |
-|---|---|---|
-| 邮件（SMTP） | Actions 内用 QQ/163 免费 SMTP，把 `brief.md` 正文发出 | 如果你发现自己连续几天忘了打开看板 |
-| Telegram Bot | 需 bot token；国内需代理 | 想要手机推送且能解决网络 |
-| 飞书/企微机器人 | 需建企业应用，webhook 相对简单 | 有团队协作需求时 |
-| Windows 桌面通知 | 仅本地 cron 场景有效，Actions 场景无意义 | 基本不推荐，WSL→Windows 通知桥较折腾 |
+| 渠道             | 实现要点                                              | 何时值得加                           |
+| ---------------- | ----------------------------------------------------- | ------------------------------------ |
+| 邮件（SMTP）     | Actions 内用 QQ/163 免费 SMTP，把 `brief.md` 正文发出 | 如果你发现自己连续几天忘了打开看板   |
+| Telegram Bot     | 需 bot token；国内需代理                              | 想要手机推送且能解决网络             |
+| 飞书/企微机器人  | 需建企业应用，webhook 相对简单                        | 有团队协作需求时                     |
+| Windows 桌面通知 | 仅本地 cron 场景有效，Actions 场景无意义              | 基本不推荐，WSL→Windows 通知桥较折腾 |
 
 - **判断标准**：先用文件 + 看板跑两周。若确实出现"产出没人看"的情况，再花半小时加邮件推送——**这是最容易补的一环，不值得提前设计**。
 
@@ -1503,11 +1605,11 @@ aipulse predict add
 
 #### 11.4.2 为什么值得为向导多写这几十行（开发量权衡）
 
-| 方案 | 代码量 | 体验 | 问题 |
-|---|---|---|---|
-| 纯参数 | ~60 行 | 差 | **手写 JSON 判据极其痛苦**，用户会因麻烦而放弃使用，off 档等于失去预言能力 |
-| 纯向导 | ~130 行 | 好 | 无法在脚本/Actions 中使用 |
-| **参数 + 缺参自动降级为向导** | **~100 行** | **最好** | 无 |
+| 方案                          | 代码量      | 体验     | 问题                                                         |
+| ----------------------------- | ----------- | -------- | ------------------------------------------------------------ |
+| 纯参数                        | ~60 行      | 差       | **手写 JSON 判据极其痛苦**，用户会因麻烦而放弃使用，off 档等于失去预言能力 |
+| 纯向导                        | ~130 行     | 好       | 无法在脚本/Actions 中使用                                    |
+| **参数 + 缺参自动降级为向导** | **~100 行** | **最好** | 无                                                           |
 
 **权衡结论：采用第三种。** 关键洞察——它不是两套独立代码，而是**同一套参数定义**，
 仅把必填参数设为 `Optional`，为 `None` 时用 `typer.prompt()` 追问。
@@ -1525,15 +1627,15 @@ aipulse predict add
 
 ### 11.4.4 向导的字段收集策略（v1.8 明确）
 
-| 字段 | 是否收集 | 说明 |
-|---|---|---|
-| `statement` | ✅ 必填，第一步 | |
-| `confidence` | ✅ 必填（有默认 0.6，回车即可） | |
-| `horizon_days` | ✅ 必填（7/30/90/180 序号选择） | |
-| `criteria`（量化判据） | ⚠️ **可选** | 选模板 → 自动渲染 `falsifiable_criteria` |
-| **`falsifiable_criteria`（判据文本）** | ✅ **必填（红线）** | 选了模板 → 自动填充；**选"不设定" → 向导必须追问一句话判据**，不得留空 |
-| **`category`** | ✅ 收集（v1.8 新增，有默认值） | 7 个序号选项，默认 `capability`，回车跳过 |
-| `rationale` | ⚠️ 可选 | `--note` 或向导末尾可选填写 |
+| 字段                                   | 是否收集                       | 说明                                                         |
+| -------------------------------------- | ------------------------------ | ------------------------------------------------------------ |
+| `statement`                            | ✅ 必填，第一步                 |                                                              |
+| `confidence`                           | ✅ 必填（有默认 0.6，回车即可） |                                                              |
+| `horizon_days`                         | ✅ 必填（7/30/90/180 序号选择） |                                                              |
+| `criteria`（量化判据）                 | ⚠️ **可选**                     | 选模板 → 自动渲染 `falsifiable_criteria`                     |
+| **`falsifiable_criteria`（判据文本）** | ✅ **必填（红线）**             | 选了模板 → 自动填充；**选"不设定" → 向导必须追问一句话判据**，不得留空 |
+| **`category`**                         | ✅ 收集（v1.8 新增，有默认值）  | 7 个序号选项，默认 `capability`，回车跳过                    |
+| `rationale`                            | ⚠️ 可选                         | `--note` 或向导末尾可选填写                                  |
 
 **为什么 `category` 必须收集**（v1.8 决策）：
 M3b 要做「按 `category` 分组的命中率统计」（§10.2.3）。若手写预言全部默认 `capability`，
@@ -1553,15 +1655,15 @@ M3b 要做「按 `category` 分组的命中率统计」（§10.2.3）。若手�
 
 **内置判据模板库**（`configs/criteria.yaml`，可扩展）：
 
-| 模板名 | 含义 | 参数 | 判定方式 |
-|---|---|---|---|
-| `github_new_repo` | 某 owner 出现新仓库 | `owner` | 查 `signals` 中该 owner 的 repo 集合是否新增 |
-| `github_stars_reach` | 某仓库 star 达到阈值 | `repo`, `threshold` | 查 `signals(entity=repo, metric=stars)` 最新值 |
-| `hn_story_points` | HN 上某关键词故事达 X 分 | `keyword`, `threshold` | 检索 `items` 中 `source=hackernews` 且标题含关键词 |
-| `entity_mentions` | 某实体在库中提及数达阈值 | `entity`, `threshold`, `window_days` | 统计 `entities` 表 |
-| `arxiv_paper_count` | arXiv 某关键词论文数达阈值 | `keyword`, `threshold`, `window_days` | 统计 `items` 中 `source=arxiv` |
-| `custom` | 手写表达式 | `expr` | 兜底，供高级用户。**当前支持 5 原语 + `and`/`or`/`not`** |
-| *（不设定）* | 到期人工判定 | — | off/hybrid 档人工 `predict review`；full 档走 LLM |
+| 模板名               | 含义                       | 参数                                  | 判定方式                                                 |
+| -------------------- | -------------------------- | ------------------------------------- | -------------------------------------------------------- |
+| `github_new_repo`    | 某 owner 出现新仓库        | `owner`                               | 查 `signals` 中该 owner 的 repo 集合是否新增             |
+| `github_stars_reach` | 某仓库 star 达到阈值       | `repo`, `threshold`                   | 查 `signals(entity=repo, metric=stars)` 最新值           |
+| `hn_story_points`    | HN 上某关键词故事达 X 分   | `keyword`, `threshold`                | 检索 `items` 中 `source=hackernews` 且标题含关键词       |
+| `entity_mentions`    | 某实体在库中提及数达阈值   | `entity`, `threshold`, `window_days`  | 统计 `entities` 表                                       |
+| `arxiv_paper_count`  | arXiv 某关键词论文数达阈值 | `keyword`, `threshold`, `window_days` | 统计 `items` 中 `source=arxiv`                           |
+| `custom`             | 手写表达式                 | `expr`                                | 兜底，供高级用户。**当前支持 5 原语 + `and`/`or`/`not`** |
+| *（不设定）*         | 到期人工判定               | —                                     | off/hybrid 档人工 `predict review`；full 档走 LLM        |
 
 **三重收益**：
 1. **省钱**——量化判据不走 LLM，off 档也能自动验证
@@ -1821,17 +1923,17 @@ Windows 侧也可用"任务计划程序"调用 `wsl -e bash -lc "..."`（需开�
 
 ## 15. 开发环境（WSL2 专项注意事项）
 
-| 事项 | 要求 |
-|---|---|
+| 事项     | 要求                                                         |
+| -------- | ------------------------------------------------------------ |
 | 代码位置 | **必须放 WSL 原生 ext4 文件系统**（如 `~/projects/aipulse`），**禁止放 `/mnt/c/`**（跨文件系统 I/O 极慢、SQLite 文件锁与 git 行为异常） |
-| 编辑器 | VSCode 安装 **Remote - WSL** 扩展，从 WSL 内 `code .` 打开 |
-| Python | WSL 内 `uv python install 3.11` + `uv venv`，**不要**用 Windows 侧 Python |
-| 网络 | 若需代理，配置 `HTTP_PROXY`/`HTTPS_PROXY` 并在 `HttpClient` 中显式支持；`aipulse doctor` 应能检测并提示代理问题 |
-| 换行符 | 仓库内 `git config core.autocrlf input`，统一 LF；`.gitattributes` 固化 |
-| 时区 | 全部时间 UTC 入库，展示按 `Asia/Shanghai`；WSL 时钟与 Windows 可能漂移，用 `sudo hwclock -s` 或在 doctor 中校验 |
+| 编辑器   | VSCode 安装 **Remote - WSL** 扩展，从 WSL 内 `code .` 打开   |
+| Python   | WSL 内 `uv python install 3.11` + `uv venv`，**不要**用 Windows 侧 Python |
+| 网络     | 若需代理，配置 `HTTP_PROXY`/`HTTPS_PROXY` 并在 `HttpClient` 中显式支持；`aipulse doctor` 应能检测并提示代理问题 |
+| 换行符   | 仓库内 `git config core.autocrlf input`，统一 LF；`.gitattributes` 固化 |
+| 时区     | 全部时间 UTC 入库，展示按 `Asia/Shanghai`；WSL 时钟与 Windows 可能漂移，用 `sudo hwclock -s` 或在 doctor 中校验 |
 | 中文字体 | 终端与 HTML 报告用系统已装字体；Linux 下如需渲染图表用 `WenQuanYi Micro Hei` |
-| 数据库 | `data/aipulse.db` 加入 `.gitignore`；提供 `scripts/export_site.py` 导出可公开的数据 |
-| 文件监听 | WSL 下 inotify 正常，Web 开发可用 `--reload` |
+| 数据库   | `data/aipulse.db` 加入 `.gitignore`；提供 `scripts/export_site.py` 导出可公开的数据 |
+| 文件监听 | WSL 下 inotify 正常，Web 开发可用 `--reload`                 |
 
 ---
 
@@ -1900,10 +2002,10 @@ Windows 侧也可用"任务计划程序"调用 `wsl -e bash -lc "..."`（需开�
 
 **M3 是项目灵魂，也是最大的一个里程碑，拆成两个子阶段执行。**
 
-| 子阶段 | 内容 | 交付物 | 会话策略 |
-|---|---|---|---|
-| **M3a · 生成** | 预言生成、入库、不可证伪拦截、手写预言 `predict add`（含交互式向导）、量化判据模板库 | `predict` 命令可用，预言能入库 | 独立会话（S/A 档模型） |
-| **M3b · 验证与统计** | 到期验证、证据检索、量化判据自动判定、人工 review、命中率/Brier/校准曲线、记分板 | 记分板可生成，闭环成立 | 独立会话（A 档模型） |
+| 子阶段               | 内容                                                         | 交付物                         | 会话策略               |
+| -------------------- | ------------------------------------------------------------ | ------------------------------ | ---------------------- |
+| **M3a · 生成**       | 预言生成、入库、不可证伪拦截、手写预言 `predict add`（含交互式向导）、量化判据模板库 | `predict` 命令可用，预言能入库 | 独立会话（S/A 档模型） |
+| **M3b · 验证与统计** | 到期验证、证据检索、量化判据自动判定、人工 review、命中率/Brier/校准曲线、记分板 | 记分板可生成，闭环成立         | 独立会话（A 档模型）   |
 
 **拆分理由**：
 1. **单次会话负担过重** —— 生成 + 验证 + 统计 + 记分板一次做完，上下文里塞太多东西，质量难保证
@@ -1969,15 +2071,15 @@ Windows 侧也可用"任务计划程序"调用 `wsl -e bash -lc "..."`（需开�
 
 ## 17. 测试策略
 
-| 层级 | 内容 | 工具 |
-|---|---|---|
-| 单测 | 解析器（fixtures 驱动）、打分公式、去重算法、时间窗、prompt 渲染 | pytest |
-| 网络 mock | 所有 HTTP 走 `HttpClient`，用 `respx` 拦截 | respx |
-| LLM mock | `FakeLLM` 返回固定结构化结果，`--no-llm` 模式跑通全链路 | 自研 |
-| 故障注入 | 单源 500 / 超时 / 429 / 空返回 / HTML 结构变更（用失效 fixture） | pytest |
-| 契约测试 | LLM 输出 schema 校验，含"非法 JSON → 修复重试"用例 | pytest |
-| 集成 | `aipulse daily --skip-llm` 端到端（本地 SQLite 临时库） | pytest + tmp_path |
-| 覆盖率 | 目标：`collectors/` ≥80%，`analysis/` ≥85%，`reasoning/` ≥60%（LLM 部分靠 mock） | pytest-cov |
+| 层级      | 内容                                                         | 工具              |
+| --------- | ------------------------------------------------------------ | ----------------- |
+| 单测      | 解析器（fixtures 驱动）、打分公式、去重算法、时间窗、prompt 渲染 | pytest            |
+| 网络 mock | 所有 HTTP 走 `HttpClient`，用 `respx` 拦截                   | respx             |
+| LLM mock  | `FakeLLM` 返回固定结构化结果，`--no-llm` 模式跑通全链路      | 自研              |
+| 故障注入  | 单源 500 / 超时 / 429 / 空返回 / HTML 结构变更（用失效 fixture） | pytest            |
+| 契约测试  | LLM 输出 schema 校验，含"非法 JSON → 修复重试"用例           | pytest            |
+| 集成      | `aipulse daily --skip-llm` 端到端（本地 SQLite 临时库）      | pytest + tmp_path |
+| 覆盖率    | 目标：`collectors/` ≥80%，`analysis/` ≥85%，`reasoning/` ≥60%（LLM 部分靠 mock） | pytest-cov        |
 
 **CI 必须能在无密钥环境通过**：所有涉及真实 API 的测试用 `@pytest.mark.skipif(not os.getenv("AIPULSE_LLM__API_KEY"))` 隔离。
 
@@ -1985,68 +2087,68 @@ Windows 侧也可用"任务计划程序"调用 `wsl -e bash -lc "..."`（需开�
 
 ## 18. 风险、合规与运维
 
-| 风险 | 影响 | 应对 |
-|---|---|---|
-| GitHub Trending HTML 改版 | 采集归零 | 解析器快照测试 + 空结果自动降级 Search API + 日志告警 |
-| arXiv 限流 3 req/s | 采集中断 | 强制 sleep + 退避 + 缓存；单源失败隔离 |
-| Reddit 强制 OAuth | RSS 降级丢 score | 默认 RSS；提供 OAuth 配置路径；score 缺失时用评论数与 LLM 判断弥补 |
-| 中文 RSS 源失效 | 新闻板块空 | M0 探测阶段逐个验证；维护备选源清单；提供 `inbox` 手动投喂 |
-| LLM 输出不稳定 | 报告质量波动 | 结构化 + 校验 + 修复重试 + prompt 版本化 + 可回溯 |
-| API 成本失控 | 超预算 | 每日预算硬上限 + 自动降级 + 缓存 + `llm_usage` 可审计 |
-| 数据合规 | 版权/隐私 | 只存标题+摘要+指标，**不全文转载**；标注来源与原链接；遵守各站 robots.txt 与 User-Agent 要求；Reddit 内容遵循其 48 小时删除同步策略 |
+| 风险                      | 影响             | 应对                                                         |
+| ------------------------- | ---------------- | ------------------------------------------------------------ |
+| GitHub Trending HTML 改版 | 采集归零         | 解析器快照测试 + 空结果自动降级 Search API + 日志告警        |
+| arXiv 限流 3 req/s        | 采集中断         | 强制 sleep + 退避 + 缓存；单源失败隔离                       |
+| Reddit 强制 OAuth         | RSS 降级丢 score | 默认 RSS；提供 OAuth 配置路径；score 缺失时用评论数与 LLM 判断弥补 |
+| 中文 RSS 源失效           | 新闻板块空       | M0 探测阶段逐个验证；维护备选源清单；提供 `inbox` 手动投喂   |
+| LLM 输出不稳定            | 报告质量波动     | 结构化 + 校验 + 修复重试 + prompt 版本化 + 可回溯            |
+| API 成本失控              | 超预算           | 每日预算硬上限 + 自动降级 + 缓存 + `llm_usage` 可审计        |
+| 数据合规                  | 版权/隐私        | 只存标题+摘要+指标，**不全文转载**；标注来源与原链接；遵守各站 robots.txt 与 User-Agent 要求；Reddit 内容遵循其 48 小时删除同步策略 |
 | Actions 无法持久化 SQLite | signals 历史丢失 | 报告文件 commit + cache 尽力恢复 + 关键增速数据落 `data/reports/.../signals.json` |
 
 ### 18.2 M0 探测实证：网络与解析层的已知问题（v1.4 归档，M1 直接复用这些结论）
 
 以下均为 M0 真实探测中遇到的问题及已验证的解决办法，**M1 编写采集器时直接采用，不要重新踩一遍**：
 
-| # | 问题 | 现象 | 已验证的解决办法 |
-|---|---|---|---|
-| 1 | **DNS 污染** | `huggingface.co`、`www.reddit.com`、`importai.substack.com` 解析到无关网段（Facebook/Teredo）后连接超时 | 无法在代码层解决 → 按 §5.10 标 `actions_only`；Actions 环境可达 |
-| 2 | **连接不稳定** | arXiv / GitHub 本地约 1/3 成功率 | 探测默认 4 次重试 + 10s 连接超时；生产采集沿用 `tenacity` 退避 |
-| 3 | **偶发损坏 gzip** | `DecodingError` | ① 把解码失败加入可重试异常；② 对 trending / RSS 请求发 `Accept-Encoding: identity`；③ **注意：坏响应会被写进 HTTP 缓存并持续复现，排查时必须 `--no-cache` 重跑** |
-| 4 | httpx 0.28 API 变更 | `Response.ext` 不存在 | 改用 `extensions`；`httpx.Timeout` 必须显式给 `default=` |
-| 5 | SQLModel 字段冲突 | 字段名 `date` 与 `datetime.date` 注解冲突 | `from datetime import date as date_type` |
-| 6 | alembic autogenerate 漏 import | 生成的迁移缺 `sqlmodel` | 补进 `script.py.mako`；`migrations/` 从 mypy 排除 |
-| 7 | 依赖不存在 | `types-feedparser` 在注册表无此包 | 已从 pyproject 移除 |
+| #    | 问题                           | 现象                                                         | 已验证的解决办法                                             |
+| ---- | ------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| 1    | **DNS 污染**                   | `huggingface.co`、`www.reddit.com`、`importai.substack.com` 解析到无关网段（Facebook/Teredo）后连接超时 | 无法在代码层解决 → 按 §5.10 标 `actions_only`；Actions 环境可达 |
+| 2    | **连接不稳定**                 | arXiv / GitHub 本地约 1/3 成功率                             | 探测默认 4 次重试 + 10s 连接超时；生产采集沿用 `tenacity` 退避 |
+| 3    | **偶发损坏 gzip**              | `DecodingError`                                              | ① 把解码失败加入可重试异常；② 对 trending / RSS 请求发 `Accept-Encoding: identity`；③ **注意：坏响应会被写进 HTTP 缓存并持续复现，排查时必须 `--no-cache` 重跑** |
+| 4    | httpx 0.28 API 变更            | `Response.ext` 不存在                                        | 改用 `extensions`；`httpx.Timeout` 必须显式给 `default=`     |
+| 5    | SQLModel 字段冲突              | 字段名 `date` 与 `datetime.date` 注解冲突                    | `from datetime import date as date_type`                     |
+| 6    | alembic autogenerate 漏 import | 生成的迁移缺 `sqlmodel`                                      | 补进 `script.py.mako`；`migrations/` 从 mypy 排除            |
+| 7    | 依赖不存在                     | `types-feedparser` 在注册表无此包                            | 已从 pyproject 移除                                          |
 
 ### 18.3 M1 实证结论与待办（v1.6 归档）
 
-| # | 发现 | 结论 / 处理 |
-|---|---|---|
-| 1 | **arXiv 索引滞后 3-4 天** | Atom 的 `published` 是提交日，严格 24h 窗口永远采空 → 新增 `lookback_days: 7`（放宽时 warning）。**这是只有真实数据才暴露的问题** |
-| 2 | 单 feed / subreddit / 关键词失败拖垮整源 | 三层都改内部隔离，**全部失败才判源级失败** |
-| 3 | HN 全关键词失败时静默返回空 | 会伪装成"今天没热点" → 显式抛 `CollectorError`，区分"真为空"和"全挂了" |
-| 4 | 本地库缺 `skip_cluster` 列导致崩溃 | 迁移已生成但未执行 → pipeline 入口加 `ensure_schema()` 自动 upgrade 到 head |
-| 5 | Trending 页面约 1/3 概率超时 | 改"HTML 失败也走 Search API"，**两通道都拿不到才判死** |
-| 6 | 正则 `<p[^>]*>` 误匹配 SVG `<path>` | 改为 `<p(?:\s[^>]*)?>` |
-| 7 | `--json` 输出被日志污染 | `--json` 时日志走 stderr，stdout 保持纯 JSON |
-| 8 | HF fallback 语义 | 用户只填镜像基址，路径由代码拼接（`{base}/api/daily_papers`） |
-| 9 | **本地 RSS 串行 8 feed 耗时 298s** | **M2 待办**：改为每 feed 一个任务并发拉取（仍受全局并发 6 限制）。逐 feed 隔离已就位，改造风险低 |
+| #    | 发现                                     | 结论 / 处理                                                  |
+| ---- | ---------------------------------------- | ------------------------------------------------------------ |
+| 1    | **arXiv 索引滞后 3-4 天**                | Atom 的 `published` 是提交日，严格 24h 窗口永远采空 → 新增 `lookback_days: 7`（放宽时 warning）。**这是只有真实数据才暴露的问题** |
+| 2    | 单 feed / subreddit / 关键词失败拖垮整源 | 三层都改内部隔离，**全部失败才判源级失败**                   |
+| 3    | HN 全关键词失败时静默返回空              | 会伪装成"今天没热点" → 显式抛 `CollectorError`，区分"真为空"和"全挂了" |
+| 4    | 本地库缺 `skip_cluster` 列导致崩溃       | 迁移已生成但未执行 → pipeline 入口加 `ensure_schema()` 自动 upgrade 到 head |
+| 5    | Trending 页面约 1/3 概率超时             | 改"HTML 失败也走 Search API"，**两通道都拿不到才判死**       |
+| 6    | 正则 `<p[^>]*>` 误匹配 SVG `<path>`      | 改为 `<p(?:\s[^>]*)?>`                                       |
+| 7    | `--json` 输出被日志污染                  | `--json` 时日志走 stderr，stdout 保持纯 JSON                 |
+| 8    | HF fallback 语义                         | 用户只填镜像基址，路径由代码拼接（`{base}/api/daily_papers`） |
+| 9    | **本地 RSS 串行 8 feed 耗时 298s**       | **M2 待办**：改为每 feed 一个任务并发拉取（仍受全局并发 6 限制）。逐 feed 隔离已就位，改造风险低 |
 
 **M1 成果**：142 passed（M0 时 64），collectors 覆盖率 87.7%，TOTAL 91%；
 真实采集 107 条 / 4 源成功 / 2 源按设计跳过 / 0 失败 / 退出码 0。
 
 ### 18.4 M3a 实证结论（v1.8 归档）
 
-| # | 发现 | 处理 |
-|---|---|---|
-| 1 | Typer `invoke_without_command=True` 的回调**在带子命令时也会触发** | 回调首参加 `ctx: typer.Context`，`ctx.invoked_subcommand is not None` 时 `return` |
-| 2 | `session.add` 后 `commit` 默认过期 | `Session(engine, expire_on_commit=False)`（M2 已遇，M3a 复现） |
-| 3 | ruff B008 误报 `list[str] = typer.Option(...)` | 加 `# noqa: B008` |
-| 4 | **★ `json_schema` / `json_object` 两种响应格式共用缓存键会串** | **缓存键追加 `:js` / `:jo` 后缀**。这个坑很微妙：同一 prompt 在自动降级前后会命中错误的缓存结果 |
-| 5 | 模糊拦截需防"过度拦截" | 已加负向用例：`"该模型不可能在 30 天内发布"` 不应被误伤（"不可能"是可证伪的否定断言） |
+| #    | 发现                                                         | 处理                                                         |
+| ---- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| 1    | Typer `invoke_without_command=True` 的回调**在带子命令时也会触发** | 回调首参加 `ctx: typer.Context`，`ctx.invoked_subcommand is not None` 时 `return` |
+| 2    | `session.add` 后 `commit` 默认过期                           | `Session(engine, expire_on_commit=False)`（M2 已遇，M3a 复现） |
+| 3    | ruff B008 误报 `list[str] = typer.Option(...)`               | 加 `# noqa: B008`                                            |
+| 4    | **★ `json_schema` / `json_object` 两种响应格式共用缓存键会串** | **缓存键追加 `:js` / `:jo` 后缀**。这个坑很微妙：同一 prompt 在自动降级前后会命中错误的缓存结果 |
+| 5    | 模糊拦截需防"过度拦截"                                       | 已加负向用例：`"该模型不可能在 30 天内发布"` 不应被误伤（"不可能"是可证伪的否定断言） |
 
 **M3a 成果**：229 passed（M2 时 180），TOTAL 88%，`openai_compat` 覆盖率 **94%**（改造目标 ≥80% 达成）。
 8 种模糊句拦截 + 1 个负向防误伤用例。**预言尚未闭环**（`verify` / `review` / `stats` 为占位），符合 M3a 设计。
 
 ### 18.5 M3b 实证结论（v1.10 归档）
 
-| # | 发现 | 处理 |
-|---|---|---|
-| 1 | mypy strict：`dict[str, Any]` 存处理器导致返回值推断为 `Any` | 用 `Callable[...]` 类型别名精确标注 |
-| 2 | `float(dict.get(...))` 触发 `Any \| None` | 先取列表再 `if v is not None` 过滤 |
-| 3 | 误写 `# type: ignore[return-value]`（实际错误码是 `no-any-return`） | 改用 `cast(Verdict, parsed)`。**不要凭印象写错误码，mypy 会报"未使用的 ignore"** |
+| #    | 发现                                                         | 处理                                                         |
+| ---- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| 1    | mypy strict：`dict[str, Any]` 存处理器导致返回值推断为 `Any` | 用 `Callable[...]` 类型别名精确标注                          |
+| 2    | `float(dict.get(...))` 触发 `Any \| None`                    | 先取列表再 `if v is not None` 过滤                           |
+| 3    | 误写 `# type: ignore[return-value]`（实际错误码是 `no-any-return`） | 改用 `cast(Verdict, parsed)`。**不要凭印象写错误码，mypy 会报"未使用的 ignore"** |
 
 **M3b 成果**：272 passed（M3a 时 229，+43），TOTAL 88%，`analysis/stats` 覆盖率 100%。
 **★ 预言系统闭环**：off 档实测 `llm_usage` 行数 = 0，即零 API 花费完成
@@ -2061,13 +2163,13 @@ Windows 侧也可用"任务计划程序"调用 `wsl -e bash -lc "..."`（需开�
 
 **修掉的 5 个 bug（全部只有真实运行才暴露）**：
 
-| # | bug | 说明 |
-|---|---|---|
-| 1 | `effective_mode` 缺 `base_url` 判断 | 配 key 没配 base_url → daily 全线崩溃，**违反红线 9** |
-| 2 | `AIPULSE_*` env 覆盖全线失效 | yaml 字面量当 init kwargs，pydantic-settings 下**优先级压过环境变量** |
-| 3 | `llm.timeout_s: 120` 是死配置 | 实际吃 HttpClient 的 20s → 改按 fast/strong 分档透传（strong 180s） |
-| 4 | 超时记 `predict.llm_failed` | 改记"本次未生成"（warning），不当失败 |
-| 5 | 记分板生成时间用 UTC | 改本地时区 |
+| #    | bug                                 | 说明                                                         |
+| ---- | ----------------------------------- | ------------------------------------------------------------ |
+| 1    | `effective_mode` 缺 `base_url` 判断 | 配 key 没配 base_url → daily 全线崩溃，**违反红线 9**        |
+| 2    | `AIPULSE_*` env 覆盖全线失效        | yaml 字面量当 init kwargs，pydantic-settings 下**优先级压过环境变量** |
+| 3    | `llm.timeout_s: 120` 是死配置       | 实际吃 HttpClient 的 20s → 改按 fast/strong 分档透传（strong 180s） |
+| 4    | 超时记 `predict.llm_failed`         | 改记"本次未生成"（warning），不当失败                        |
+| 5    | 记分板生成时间用 UTC                | 改本地时区                                                   |
 
 **★ 教训（值得写进 CODEBUDDY.md）**：这 5 个 bug 加上 M4 的"data/ 目录缺失"，
 **全部只有真实运行才暴露**——off 档跑得再久也覆盖不了 hybrid/full 路径。
@@ -2076,20 +2178,20 @@ Windows 侧也可用"任务计划程序"调用 `wsl -e bash -lc "..."`（需开�
 
 yaml 里混用两套机制（字面量 vs `${ENV}` 占位符）会静默失效。划线原则：
 
-| 类型 | 机制 | 项 |
-|---|---|---|
-| **环境开关** | `${ENV}` 占位符（可覆盖） | `mode` / `log_level` / `llm.enabled` / `fast_model` / `strong_model` / `timeout_s` / `timeout_strong_s` / `budget.daily_limit_cny` |
-| **算法阈值** | 字面量（要 git 版本化、可复现） | `verify.*` / `signals.*` / `scoring` |
+| 类型         | 机制                            | 项                                                           |
+| ------------ | ------------------------------- | ------------------------------------------------------------ |
+| **环境开关** | `${ENV}` 占位符（可覆盖）       | `mode` / `log_level` / `llm.enabled` / `fast_model` / `strong_model` / `timeout_s` / `timeout_strong_s` / `budget.daily_limit_cny` |
+| **算法阈值** | 字面量（要 git 版本化、可复现） | `verify.*` / `signals.*` / `scoring`                         |
 
 #### 分析窗口的时区论证（v1.11，为什么 cron 改到北京 08:00）
 
 北京 ≈ 美西 +15~16 小时。**AI 新闻高度美国中心**——重要发布多发生在美西工作时间。
 
-| 方案 | 窗口（换算美西） | 问题 |
-|---|---|---|
-| 原设计（北京 07:00 + "本地今天"） | 只覆盖美西前一日 08:30 后的一小段，**实际约 7 小时** | 窗口严重不足 |
-| 方案一（保留"本地今天"，cron 改北京 23:30） | 美西前一日 08:30 → 当日 08:30 | **完全错过当日美西发布**（美西上午 10 点 = 北京次日凌晨 1 点），读到时已滞后约 1.5 天 |
-| **方案二（滚动 24h，cron 北京 08:00）** ✅ | 美西前一日 17:00 → 当日 17:00 | **完整覆盖当日美国工作日**，AI 新闻主战场全在窗口内 |
+| 方案                                        | 窗口（换算美西）                                     | 问题                                                         |
+| ------------------------------------------- | ---------------------------------------------------- | ------------------------------------------------------------ |
+| 原设计（北京 07:00 + "本地今天"）           | 只覆盖美西前一日 08:30 后的一小段，**实际约 7 小时** | 窗口严重不足                                                 |
+| 方案一（保留"本地今天"，cron 改北京 23:30） | 美西前一日 08:30 → 当日 08:30                        | **完全错过当日美西发布**（美西上午 10 点 = 北京次日凌晨 1 点），读到时已滞后约 1.5 天 |
+| **方案二（滚动 24h，cron 北京 08:00）** ✅   | 美西前一日 17:00 → 当日 17:00                        | **完整覆盖当日美国工作日**，AI 新闻主战场全在窗口内          |
 
 **结论：采用方案二。** 代价是"日报"跨两个自然日（覆盖"截至 08:00 的过去 24 小时"）——
 对每日学习而言，**新鲜度 > 日历整齐**，这个代价值得。
@@ -2113,12 +2215,12 @@ yaml 里混用两套机制（字面量 vs `${ENV}` 占位符）会静默失效�
 
 **这段点评展示了四个层次**，正是"数据版"给不了的：
 
-| 层次 | 例子 |
-|---|---|
-| 具体判断 | 不是模型刷榜，而是"交付"进入评测标题 |
-| 交叉信号 | 三篇论文同做"冻结权重、改脚手架" |
+| 层次       | 例子                                 |
+| ---------- | ------------------------------------ |
+| 具体判断   | 不是模型刷榜，而是"交付"进入评测标题 |
+| 交叉信号   | 三篇论文同做"冻结权重、改脚手架"     |
 | 反直觉观察 | HN 最热的是 code review 而非模型能力 |
-| 风险提醒 | 隐私边界需自己兜底 |
+| 风险提醒   | 隐私边界需自己兜底                   |
 
 **★ 对 M6a 的直接启示**：`brief.j2` 这个 prompt 已经学会了"给判断而非摘要"。
 **M6a 的「为什么重要」应复用同一套风格指令**（要求：具体判断 / 交叉信号 / 反直觉 / 风险），
@@ -2128,10 +2230,10 @@ yaml 里混用两套机制（字面量 vs `${ENV}` 占位符）会静默失效�
 
 **现象**：`git push` 被拒 → 当天报告丢失（报告即数据库，不可恢复）。
 
-| 尝试 | 结果 |
-|---|---|
-| 直接 `git push` | 被拒即丢 |
-| `git pull --rebase` | **同日重跑时报告文件必然内容冲突** → 还是丢 |
+| 尝试                                              | 结果                                                         |
+| ------------------------------------------------- | ------------------------------------------------------------ |
+| 直接 `git push`                                   | 被拒即丢                                                     |
+| `git pull --rebase`                               | **同日重跑时报告文件必然内容冲突** → 还是丢                  |
 | **`git fetch` + `git reset --soft FETCH_HEAD`** ✅ | runner 上除 `data/reports` 外无其他改动，<br>把本次报告作为新提交叠在远端最新之上，**既不冲突也不丢** |
 
 ### 18.8 M6a 收尾实证（v1.16 归档）
@@ -2140,24 +2242,24 @@ yaml 里混用两套机制（字面量 vs `${ENV}` 占位符）会静默失效�
 
 #### 四节点评真实样本（质量已达预期）
 
-| 节 | 内容 |
-|---|---|
+| 节         | 内容                                                         |
+| ---------- | ------------------------------------------------------------ |
 | 🎯 核心判断 | Claude 解开 ECDSA 曲线种子来源——证明大模型能在**有客观验证标准的硬问题**上产出可核查推理，而非只写通顺文字 |
 | 🔍 交叉信号 | 论文侧 FDE-Gym/MAI-Gym/Terminal-RSI 与社区侧 Claude Code review、官方插件目录**互相印证**：瓶颈已从模型智力转到脚手架 |
-| 🔄 反直觉 | 真正被大量使用的不是更强的模型，而是套在现有模型上的提示词与工作流外壳——**模型层边际价值正被脚手架层吸走** |
+| 🔄 反直觉   | 真正被大量使用的不是更强的模型，而是套在现有模型上的提示词与工作流外壳——**模型层边际价值正被脚手架层吸走** |
 | ⚠️ 风险提醒 | 生态扩张速度已超过权限审计能力，用户为几个插件可能交出代码库、密钥与本地文件系统 |
 
 #### ★ 意外收获：M6b 的起点比预想的好
 
 **同一份日报的表格中，部分条目已经出现了「为什么重要」与「立场」**：
 
-| 条目 | 为什么重要 | 立场 |
-|---|---|---|
-| VoiceStudio | 语音克隆这类高敏感能力走向本地化，绕开云端授权与数据留存问题 | 本地化路线在敏感模态上比云端更有长期说服力 |
-| claude-plugins-official | 官方收编插件意味着从工具变成平台，第三方技能包将被迫分层 | 平台化必要一步，但审查缺位会放大供应链风险 |
-| FDE-Gym | 承认需求模糊与隐性约束才是落地难点，等于给整个 agent 评测体系提出质疑 | 方向正确，但真实交付难以标准化 |
-| ECDSA | 密码学结论可被独立验证，让"模型是否真在推理"第一次有了难以造假的检验场 | 今日最具实质意义的一条 |
-| secrets 扫描 | 集成生态扩张速度超过用户对权限的理解速度 | 被低估的警报，比任何模型发布都更影响生态长期健康 |
+| 条目                    | 为什么重要                                                   | 立场                                             |
+| ----------------------- | ------------------------------------------------------------ | ------------------------------------------------ |
+| VoiceStudio             | 语音克隆这类高敏感能力走向本地化，绕开云端授权与数据留存问题 | 本地化路线在敏感模态上比云端更有长期说服力       |
+| claude-plugins-official | 官方收编插件意味着从工具变成平台，第三方技能包将被迫分层     | 平台化必要一步，但审查缺位会放大供应链风险       |
+| FDE-Gym                 | 承认需求模糊与隐性约束才是落地难点，等于给整个 agent 评测体系提出质疑 | 方向正确，但真实交付难以标准化                   |
+| ECDSA                   | 密码学结论可被独立验证，让"模型是否真在推理"第一次有了难以造假的检验场 | 今日最具实质意义的一条                           |
+| secrets 扫描            | 集成生态扩张速度超过用户对权限的理解速度                     | 被低估的警报，比任何模型发布都更影响生态长期健康 |
 
 **这说明**：`daily_brief.j2` v3 已让模型**自主挑选**它认为重要的几条做了点评。
 
@@ -2188,10 +2290,10 @@ retry_head=
 
 **结论：截断，不是格式问题。** 若没有"打印前 500 字符 + 长度"这一步，就只能猜。
 
-| 修复 | 效果 |
-|---|---|
-| `max_tokens` 分档 fast 4000 / **strong 8000** | 首次调用即成功 |
-| 候选池 Top 20、只给 `id + 标题` | `candidate_pool=20`，输入不再膨胀 |
+| 修复                                          | 效果                              |
+| --------------------------------------------- | --------------------------------- |
+| `max_tokens` 分档 fast 4000 / **strong 8000** | 首次调用即成功                    |
+| 候选池 Top 20、只给 `id + 标题`               | `candidate_pool=20`，输入不再膨胀 |
 
 **结果（run 39018293521）**：`generated=5` / `degraded=false` / 无 retry 无 degraded /
 证据对照 10 个 id 全部可查、无池外 id。
@@ -2219,12 +2321,12 @@ REA 消失这个 bug 很能说明问题：**它很难提前发现**，
 
 **因此项目应确立以下机制**：
 
-| 机制 | 说明 |
-|---|---|
-| **常态化人工抽检** | 每天看日报时问一句"有没有该出现却没出现的"（比任何自动化指标有效） |
+| 机制                 | 说明                                                         |
+| -------------------- | ------------------------------------------------------------ |
+| **常态化人工抽检**   | 每天看日报时问一句"有没有该出现却没出现的"（比任何自动化指标有效） |
 | **关键状态显式暴露** | `llm.degraded` 进简报、证据 id 出对照表、signals 三态可观测 —— **让异常自己浮出来** |
-| **快照对比** | 报告每天 commit，可 diff——**异常往往藏在"今天和昨天不一样"里** |
-| **反馈闭环留痕** | 用户反馈的问题写进 SSOT 变更摘要与踩坑实录，不修完就忘 |
+| **快照对比**         | 报告每天 commit，可 diff——**异常往往藏在"今天和昨天不一样"里** |
+| **反馈闭环留痕**     | 用户反馈的问题写进 SSOT 变更摘要与踩坑实录，不修完就忘       |
 
 **一句话**：
 > 信息工具的价值不在"功能齐全"，而在"**用户相信它没漏**"。
@@ -2240,45 +2342,45 @@ REA 消失这个 bug 很能说明问题：**它很难提前发现**，
 
 ### 19.1 已确认的决策（Agent 直接按此执行，无需再问）
 
-| # | 决策项 | 结论 | 决策依据 |
-|---|---|---|---|
-| 1 | 项目/仓库命名 | **`aipulse`（AI 脉搏）** | 脉搏的三层隐喻完整覆盖产品主线：把脉（每日采样信号）→ 诊断（分析判断）→ 预后（推演预言）。名字短、可作 CLI 名、中英文都好念。若 GitHub 仓库名被占用，加后缀 `-daily` 或改用组织名，包名 `aipulse` 不变 |
-| 2 | 开源许可证 | **MIT**（v1.0 的 Apache-2.0 已否决） | 本项目是**应用工具而非基础库**，不涉及专利密集领域，Apache 的明示专利授权条款实际用不上；Apache 还需维护 NOTICE 文件、修改时声明变更，属于过度设计。MIT 文本约 20 行、GitHub 最流行、企业法务审查最快，对吸引使用者与贡献者最有利 |
-| 3 | 微信 / X 支持 | **彻底移除**（含 RSS 桥） | X 官方 API 已收费且额度极低、Nitter 大量关停；公众号无公开 API、第三方接口有版权合规风险；RSS 桥需自建长期运维，与单机工具定位冲突。**替代 = `inbox` 手动投喂**（§5.8） |
-| 4 | 主力 LLM | **DeepSeek**：`deepseek-chat`（fast）+ `deepseek-reasoner`（strong） | 便宜、中文强、OpenAI 兼容；换厂商只改环境变量不改代码（§8.2） |
-| 5 | 里程碑顺序 | **M0→M1→M2→M3→M4(发布与自动化)→M5(深度推演)** | 记分板价值靠时间沉淀，越早自动跑越值钱；长文与辩论无等待期，晚做不损失。详见 §16.0 |
-| 6 | Reddit 认证方式 | 先用**免认证 RSS**，跑通后再决定是否申请 OAuth | RSS 够用（≤25 条、无 score），OAuth 需注册应用且要承担合规义务 |
-| 7 | 每日预算上限 | **2 CNY/日**（约 0.3 USD） | 按每天简报 1 次 + 预言 1 次 + 验证数次估算，DeepSeek 定价下绰绰有余；超预算按 §8.4 自动降级 |
-| 8 | 报告语言 | **中文为主**，术语保留英文 | 面向中文 AI 从业者；英文标题/项目名不强行翻译 |
-| 9 | 运行方式 | **WSL 本地 cron + GitHub Actions 双轨** | Actions 保证公开可追溯与"每天真在跑"的观感；本地 cron 保证数据不丢 |
-| 10 | HTML 样式 | 极简黑白 + 数据表格（终端友好） | 无需前端构建链，打印与分享都好用 |
-| 11 | embedding | **默认关闭**，M5 可选开启（本地 bge-small CPU） | V1 用 TF-IDF 足够；关闭状态下行为不得被破坏 |
-| 12 | GitHub Token | **建议配置**（30 req/min vs 10 req/min，且能拿到更全的 repo 信息） | 免费的 fine-grained token，勾选只读权限即可；未配置时自动降级且 doctor 会提示 |
-| 13 | 预言记分板 | **作为 README 与 Web 首页的门面** | 本项目最强辨识度资产，且随时间自动变强（自带复利效应） |
-| 14 | RSS 源策略 | **英文主干 + 中文补充** | 英文优质源（Simon Willison、Import AI、Latent Space、官方博客、The Verge/TechCrunch/Ars）RSS 极稳定、几乎无营销稿，作为新闻板块基本盘；中文源（机器之心/量子位）标 `optional: true`，失效只告警不阻塞。详见 §5.7 |
-| 15 | Reddit 认证 | **先走免认证 RSS**，M1 验收后再评估 OAuth | OAuth 需注册应用 + 承担 Responsible Builder Policy 义务 + 多一套密钥管理，不要提前付这个成本。score 缺失用「排名位次代理 + 该源降权 + LLM 判断」三重补偿。详见 §5.6 |
-| 16 | 仓库公开时机 | **M0 即公开**，README 顶部标 WIP | 开发过程本身即说服力（完整 git 历史 + 每阶段验收 + 真实取舍理由），且能早期收到反馈。丢掉"等完美再公开"的负担。详见 §14.2 |
-| 21 | **数据源环境分级** | **`availability: always|actions_only`** | M0 实测发现本地 WSL 与 Actions 网络可达性完全不同（reddit/hf/importai 本地 DNS 污染、Actions 可达）。不分级会导致"本地测不到就永久禁用高质量源"。本地跳过且不计失败，Actions 全开。详见 §5.10 |
-| 22 | **HF 镜像站** | **只预留 `fallback_endpoints: []` 空字段，默认走官方** | 第三方镜像的可信度与稳定性不受控，开源项目不应替所有用户做这个决定；但留字段让国内用户填一行即可。探测脚本里可自动尝试（那是诊断工具）。详见 §5.4 |
-| 23 | **中文源** | **接受现状，定义为「仅标题源」** | 实测机器之心/36氪 已下线或返回 HTML，仅量子位可用且摘要仅 22 字。关键处理：**`title_only` 源不参与 TF-IDF 聚类**（短摘要会污染聚类）。详见 §5.7 |
-| 24 | **WSL 网络** | **按无代理推进** | HttpClient 已支持 `HTTP_PROXY/HTTPS_PROXY`，用户后续有代理时配环境变量即可，无需改代码 |
-| 18 | **三档运行模式** | **`off` / `hybrid` / `full`，API 从必需降级为可选** | 让零 API 花费的用户也能用（off 档保留采集/打分/聚类/手写预言/自动验证/校准统计全链路）。API 是"让它更好"而非"让它能用"。详见 §8.5 |
-| 19 | **手写预言交互** | **参数 + 缺参自动降级为交互式向导** | 纯参数方案用户要手写 JSON 判据，太痛苦会导致功能被弃用；纯向导无法脚本化。混合方案只比纯参数多约 40 行，却两者兼得。详见 §11.4.2 |
-| 20 | **量化判据** | **可选字段 + 内置模板库** | 带阈值的预言到期查表即判，零成本；且填判据的过程倒逼预言写得可证伪。不强制，语义型预言仍走人工/LLM。详见 §11.5 |
-| 17 | 日报触达 | **文件 + Web 看板为主，架构预留 Notifier 抽象** | 先用文件+看板跑两周；若真出现"产出没人看"，再花半小时加邮件推送。这是最容易补的一环，不值得提前设计。预留渠道：SMTP / Telegram / 飞书 / 桌面通知（**现在都不实现**）。详见 §11.2 |
+| #    | 决策项             | 结论                                                         | 决策依据                                                     |
+| ---- | ------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| 1    | 项目/仓库命名      | **`aipulse`（AI 脉搏）**                                     | 脉搏的三层隐喻完整覆盖产品主线：把脉（每日采样信号）→ 诊断（分析判断）→ 预后（推演预言）。名字短、可作 CLI 名、中英文都好念。若 GitHub 仓库名被占用，加后缀 `-daily` 或改用组织名，包名 `aipulse` 不变 |
+| 2    | 开源许可证         | **MIT**（v1.0 的 Apache-2.0 已否决）                         | 本项目是**应用工具而非基础库**，不涉及专利密集领域，Apache 的明示专利授权条款实际用不上；Apache 还需维护 NOTICE 文件、修改时声明变更，属于过度设计。MIT 文本约 20 行、GitHub 最流行、企业法务审查最快，对吸引使用者与贡献者最有利 |
+| 3    | 微信 / X 支持      | **彻底移除**（含 RSS 桥）                                    | X 官方 API 已收费且额度极低、Nitter 大量关停；公众号无公开 API、第三方接口有版权合规风险；RSS 桥需自建长期运维，与单机工具定位冲突。**替代 = `inbox` 手动投喂**（§5.8） |
+| 4    | 主力 LLM           | **DeepSeek**：`deepseek-chat`（fast）+ `deepseek-reasoner`（strong） | 便宜、中文强、OpenAI 兼容；换厂商只改环境变量不改代码（§8.2） |
+| 5    | 里程碑顺序         | **M0→M1→M2→M3→M4(发布与自动化)→M5(深度推演)**                | 记分板价值靠时间沉淀，越早自动跑越值钱；长文与辩论无等待期，晚做不损失。详见 §16.0 |
+| 6    | Reddit 认证方式    | 先用**免认证 RSS**，跑通后再决定是否申请 OAuth               | RSS 够用（≤25 条、无 score），OAuth 需注册应用且要承担合规义务 |
+| 7    | 每日预算上限       | **2 CNY/日**（约 0.3 USD）                                   | 按每天简报 1 次 + 预言 1 次 + 验证数次估算，DeepSeek 定价下绰绰有余；超预算按 §8.4 自动降级 |
+| 8    | 报告语言           | **中文为主**，术语保留英文                                   | 面向中文 AI 从业者；英文标题/项目名不强行翻译                |
+| 9    | 运行方式           | **WSL 本地 cron + GitHub Actions 双轨**                      | Actions 保证公开可追溯与"每天真在跑"的观感；本地 cron 保证数据不丢 |
+| 10   | HTML 样式          | 极简黑白 + 数据表格（终端友好）                              | 无需前端构建链，打印与分享都好用                             |
+| 11   | embedding          | **默认关闭**，M5 可选开启（本地 bge-small CPU）              | V1 用 TF-IDF 足够；关闭状态下行为不得被破坏                  |
+| 12   | GitHub Token       | **建议配置**（30 req/min vs 10 req/min，且能拿到更全的 repo 信息） | 免费的 fine-grained token，勾选只读权限即可；未配置时自动降级且 doctor 会提示 |
+| 13   | 预言记分板         | **作为 README 与 Web 首页的门面**                            | 本项目最强辨识度资产，且随时间自动变强（自带复利效应）       |
+| 14   | RSS 源策略         | **英文主干 + 中文补充**                                      | 英文优质源（Simon Willison、Import AI、Latent Space、官方博客、The Verge/TechCrunch/Ars）RSS 极稳定、几乎无营销稿，作为新闻板块基本盘；中文源（机器之心/量子位）标 `optional: true`，失效只告警不阻塞。详见 §5.7 |
+| 15   | Reddit 认证        | **先走免认证 RSS**，M1 验收后再评估 OAuth                    | OAuth 需注册应用 + 承担 Responsible Builder Policy 义务 + 多一套密钥管理，不要提前付这个成本。score 缺失用「排名位次代理 + 该源降权 + LLM 判断」三重补偿。详见 §5.6 |
+| 16   | 仓库公开时机       | **M0 即公开**，README 顶部标 WIP                             | 开发过程本身即说服力（完整 git 历史 + 每阶段验收 + 真实取舍理由），且能早期收到反馈。丢掉"等完美再公开"的负担。详见 §14.2 |
+| 21   | **数据源环境分级** | **`availability: always|actions_only`**                      | M0 实测发现本地 WSL 与 Actions 网络可达性完全不同（reddit/hf/importai 本地 DNS 污染、Actions 可达）。不分级会导致"本地测不到就永久禁用高质量源"。本地跳过且不计失败，Actions 全开。详见 §5.10 |
+| 22   | **HF 镜像站**      | **只预留 `fallback_endpoints: []` 空字段，默认走官方**       | 第三方镜像的可信度与稳定性不受控，开源项目不应替所有用户做这个决定；但留字段让国内用户填一行即可。探测脚本里可自动尝试（那是诊断工具）。详见 §5.4 |
+| 23   | **中文源**         | **接受现状，定义为「仅标题源」**                             | 实测机器之心/36氪 已下线或返回 HTML，仅量子位可用且摘要仅 22 字。关键处理：**`title_only` 源不参与 TF-IDF 聚类**（短摘要会污染聚类）。详见 §5.7 |
+| 24   | **WSL 网络**       | **按无代理推进**                                             | HttpClient 已支持 `HTTP_PROXY/HTTPS_PROXY`，用户后续有代理时配环境变量即可，无需改代码 |
+| 18   | **三档运行模式**   | **`off` / `hybrid` / `full`，API 从必需降级为可选**          | 让零 API 花费的用户也能用（off 档保留采集/打分/聚类/手写预言/自动验证/校准统计全链路）。API 是"让它更好"而非"让它能用"。详见 §8.5 |
+| 19   | **手写预言交互**   | **参数 + 缺参自动降级为交互式向导**                          | 纯参数方案用户要手写 JSON 判据，太痛苦会导致功能被弃用；纯向导无法脚本化。混合方案只比纯参数多约 40 行，却两者兼得。详见 §11.4.2 |
+| 20   | **量化判据**       | **可选字段 + 内置模板库**                                    | 带阈值的预言到期查表即判，零成本；且填判据的过程倒逼预言写得可证伪。不强制，语义型预言仍走人工/LLM。详见 §11.5 |
+| 17   | 日报触达           | **文件 + Web 看板为主，架构预留 Notifier 抽象**              | 先用文件+看板跑两周；若真出现"产出没人看"，再花半小时加邮件推送。这是最容易补的一环，不值得提前设计。预留渠道：SMTP / Telegram / 飞书 / 桌面通知（**现在都不实现**）。详见 §11.2 |
 
 ### 19.2 运行后再调的参数（不阻塞开工，属于"跑起来看效果再调"）
 
 这些**不需要现在问**，因为答案取决于真实数据。做法是：先按默认值跑，在对应里程碑验收时用真实结果判断。
 
-| # | 参数 | 默认值 | 何时用真实数据回调 |
-|---|---|---|---|
-| A | 每日新生成预言条数 | 5 | M3 验收后：若校验器频繁拒收导致实际只产出 1-2 条，说明 prompt 需要改而非放宽标准 |
-| B | 预言 horizon 组合 | 7 / 30 / 90 | M3 验收后：观察各期限的验证成功率，若 7 天太短可上调 |
-| C | 简报板块划分 | 开源项目 / 论文研究 / 社区舆论 / 产业新闻 | M2 验收后：按实际数据分布调整，若某板块长期为空则合并 |
-| D | 热度打分权重（`scoring.yaml`） | 见 §9.1 | M2 验收后：这是**最需要调**的地方，用 Top10 结果是否符合直觉来校准 |
-| E | Reddit 是否升级 OAuth | RSS | M1 验收后：看 r/LocalLLaMA 条目在简报中的实际占比与质量 |
-| F | 是否加邮件推送 | 否 | 跑两周后：若你发现自己忘了打开看板，再花半小时加 |
+| #    | 参数                           | 默认值                                    | 何时用真实数据回调                                           |
+| ---- | ------------------------------ | ----------------------------------------- | ------------------------------------------------------------ |
+| A    | 每日新生成预言条数             | 5                                         | M3 验收后：若校验器频繁拒收导致实际只产出 1-2 条，说明 prompt 需要改而非放宽标准 |
+| B    | 预言 horizon 组合              | 7 / 30 / 90                               | M3 验收后：观察各期限的验证成功率，若 7 天太短可上调         |
+| C    | 简报板块划分                   | 开源项目 / 论文研究 / 社区舆论 / 产业新闻 | M2 验收后：按实际数据分布调整，若某板块长期为空则合并        |
+| D    | 热度打分权重（`scoring.yaml`） | 见 §9.1                                   | M2 验收后：这是**最需要调**的地方，用 Top10 结果是否符合直觉来校准 |
+| E    | Reddit 是否升级 OAuth          | RSS                                       | M1 验收后：看 r/LocalLLaMA 条目在简报中的实际占比与质量      |
+| F    | 是否加邮件推送                 | 否                                        | 跑两周后：若你发现自己忘了打开看板，再花半小时加             |
 
 ### 19.3 已确认，无需再讨论的项
 
@@ -2307,11 +2409,11 @@ REA 消失这个 bug 很能说明问题：**它很难提前发现**，
 
 **为什么值得做**：
 
-| 场景 | 没有日志 | 有日志 |
-|---|---|---|
-| 继续维护 | 不知道上次改到哪 | 一眼看到基线 |
+| 场景               | 没有日志                   | 有日志                                               |
+| ------------------ | -------------------------- | ---------------------------------------------------- |
+| 继续维护           | 不知道上次改到哪           | 一眼看到基线                                         |
 | **Agent 中断重启** | 新会话不知道上一版写了什么 | **唯一可靠的锚点**，甚至能自己判断文档是否落后于代码 |
-| 日后回溯 | 无从查证 | tag + 一句话总结，可精确定位 |
+| 日后回溯           | 无从查证                   | tag + 一句话总结，可精确定位                         |
 
 **顺带价值**：它让"先提交再刷新文档"这条纪律**可执行**——
 写不出 tag 栏就说明顺序错了。
@@ -2323,12 +2425,12 @@ REA 消失这个 bug 很能说明问题：**它很难提前发现**，
 
 **约定：文档以项目负责人产出的全量版本为唯一权威，每次覆盖仓库内 `docs/`。**
 
-| 角色 | 职责 |
-|---|---|
+| 角色       | 职责                                                         |
+| ---------- | ------------------------------------------------------------ |
 | 项目负责人 | 产出 `AI_Pulse_设计方案_vX.md` 与 `AI_Pulse_Agent开发执行手册_vX.md` 的**全量版本** |
-| 项目负责人 | 每轮开始时把这两份文档**覆盖**到仓库 `docs/` |
-| Agent | **只读**这两份 SSOT；可在 `docs/开发日志.md`、`docs/数据源手册.md`、`docs/新增数据源指南.md` 中追加内容 |
-| Agent | **不得修改** SSOT 两份文档（已在红线中约束） |
+| 项目负责人 | 每轮开始时把这两份文档**覆盖**到仓库 `docs/`                 |
+| Agent      | **只读**这两份 SSOT；可在 `docs/开发日志.md`、`docs/数据源手册.md`、`docs/新增数据源指南.md` 中追加内容 |
+| Agent      | **不得修改** SSOT 两份文档（已在红线中约束）                 |
 
 **为什么是全量覆盖而非增量补丁**：补丁容易冲突或漏合，而 SSOT 出错会导致 Agent 按错误规格写代码，
 代价远高于"每轮拷贝一次文件"。
@@ -2344,19 +2446,19 @@ REA 消失这个 bug 很能说明问题：**它很难提前发现**，
 
 ## 附录 A · 已核实的数据源事实（2026-10 核对，供 Agent 直接引用）
 
-| 源 | 端点 | 认证 | 限速/限制 | 备注 |
-|---|---|---|---|---|
-| GitHub Trending | `https://github.com/trending?since=daily[&l=python]` | 无 | 约每 6h 更新；HTML 不稳定 | 建议同时用 Search API 交叉验证 |
-| GitHub Search API | `https://api.github.com/search/repositories?q=created:>{date}&sort=stars` | Token（建议） | 无 token 10 req/min；有 token 30 req/min | 排序按总 star，非增速 |
-| arXiv API | `http://export.arxiv.org/api/query?search_query=cat:cs.LG&sortBy=submittedDate&sortOrder=descending&max_results=200` | 无 | **3 req/s**（超限 503） | Atom XML，建议 feedparser；需描述性 UA |
-| HF Daily Papers | `https://huggingface.co/api/daily_papers?date=YYYY-MM-DD&limit=50` | 无（只读公开） | 未公开限流，建议温和 | 与 arXiv 重叠，需按 arxiv_id 交叉去重 |
-| HF Paper 详情 | `https://huggingface.co/api/papers/{arxiv_id}` | 无 | — | upvotes、AI 摘要、关联 repo |
-| HF 论文→资源 | `https://huggingface.co/api/arxiv/{arxiv_id}/repos` | 无 | — | models/datasets/spaces，判断可复现性 |
-| HN Algolia | `https://hn.algolia.com/api/v1/search_by_date?query=AI&tags=story&numericFilters=created_at_i>{ts},points>30` | 无 | 宽松 | 另有 `/api/v1/items/{id}` 一次取全评论树 |
-| HN Firebase | `https://hacker-news.firebaseio.com/v0/item/{id}.json` | 无 | — | 取单条最新分数 |
-| Reddit OAuth | `https://oauth.reddit.com/r/{sub}/top?t=day&limit=50` | **必须 OAuth** | 100 QPM / client_id（10min 滑动） | UA 必须 `<platform>:<appid>:<ver> (by /u/<user>)` |
-| Reddit RSS | `https://www.reddit.com/r/LocalLLaMA/top/.rss?t=day` | 无 | 按 IP 限流 | ≤25 条、无 score，V1 默认走这条 |
-| RSS/Atom | 各站 feed | 无 | — | feedparser 解析；中文站需逐个验证可用性 |
+| 源                | 端点                                                         | 认证           | 限速/限制                                | 备注                                              |
+| ----------------- | ------------------------------------------------------------ | -------------- | ---------------------------------------- | ------------------------------------------------- |
+| GitHub Trending   | `https://github.com/trending?since=daily[&l=python]`         | 无             | 约每 6h 更新；HTML 不稳定                | 建议同时用 Search API 交叉验证                    |
+| GitHub Search API | `https://api.github.com/search/repositories?q=created:>{date}&sort=stars` | Token（建议）  | 无 token 10 req/min；有 token 30 req/min | 排序按总 star，非增速                             |
+| arXiv API         | `http://export.arxiv.org/api/query?search_query=cat:cs.LG&sortBy=submittedDate&sortOrder=descending&max_results=200` | 无             | **3 req/s**（超限 503）                  | Atom XML，建议 feedparser；需描述性 UA            |
+| HF Daily Papers   | `https://huggingface.co/api/daily_papers?date=YYYY-MM-DD&limit=50` | 无（只读公开） | 未公开限流，建议温和                     | 与 arXiv 重叠，需按 arxiv_id 交叉去重             |
+| HF Paper 详情     | `https://huggingface.co/api/papers/{arxiv_id}`               | 无             | —                                        | upvotes、AI 摘要、关联 repo                       |
+| HF 论文→资源      | `https://huggingface.co/api/arxiv/{arxiv_id}/repos`          | 无             | —                                        | models/datasets/spaces，判断可复现性              |
+| HN Algolia        | `https://hn.algolia.com/api/v1/search_by_date?query=AI&tags=story&numericFilters=created_at_i>{ts},points>30` | 无             | 宽松                                     | 另有 `/api/v1/items/{id}` 一次取全评论树          |
+| HN Firebase       | `https://hacker-news.firebaseio.com/v0/item/{id}.json`       | 无             | —                                        | 取单条最新分数                                    |
+| Reddit OAuth      | `https://oauth.reddit.com/r/{sub}/top?t=day&limit=50`        | **必须 OAuth** | 100 QPM / client_id（10min 滑动）        | UA 必须 `<platform>:<appid>:<ver> (by /u/<user>)` |
+| Reddit RSS        | `https://www.reddit.com/r/LocalLLaMA/top/.rss?t=day`         | 无             | 按 IP 限流                               | ≤25 条、无 score，V1 默认走这条                   |
+| RSS/Atom          | 各站 feed                                                    | 无             | —                                        | feedparser 解析；中文站需逐个验证可用性           |
 
 ## 附录 B · 给 Agent 的"开工第一句 Prompt"模板
 
