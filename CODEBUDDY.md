@@ -10,7 +10,7 @@ This file provides guidance to CodeBuddy Code when working with code in this rep
 
 `aipulse`（AI 脉搏）：每日采集 AI 领域热点，产出可回测的推演与预言。Python 3.11 + `uv`，SQLite 单文件存储，MIT。
 
-**里程碑状态（改动前先确认当前阶段）**：M0（骨架 + 数据源探测）、M1（6 采集器 + inbox + 三级去重）、M2（打分 / 聚类 / 实体 + LLM 抽象 + 简报）、**M3a / M3b（★ 预言生成 + 到期验证 + 命中率 / Brier / 校准度）**、**M4（Actions 自动化 + Web 看板 + README 发布）** 均已完成（tag `m0` / `m1` / `m2` / `m3a` / `m3b`）；**M6a（快照型源修复 + 简报格式规范化 + predict 截断修复）已于 2026-10-17 完成并真实运行验证**（`docs/文档维护日志.md` 记为 `m6a` / `4a12fa3`；`git tag` 现有 `m0`–`m4`、`m6a`（`4a12fa3`）与 `star-tracking`（`cdcab79`））。**P0「star 追踪」（★ 总数 / 增量两列、增速榜、`source_runs.json`）已实现（tag `star-tracking` / `cdcab79`）并在 Actions 环境实跑验证过（`data/reports/2026/10/17/` 由 `aipulse-bot` 提交，`generated_at 2026-10-17T14:55Z`，含 `source_runs.json`）**。M6b（「为什么重要」等 LLM 增强）**暂缓**；M5（周期长文 + 多角色辩论）继续后置。M5 的入口已留好：`prompts/trend/` 与 `prompts/debate/` 是空目录，`cli/commands/{trend,debate}.py` 是占位（`reasoning/` 下目前**没有** trend / debate 模块）。不要跨阶段实现。
+**里程碑状态（改动前先确认当前阶段）**：M0（骨架 + 数据源探测）、M1（6 采集器 + inbox + 三级去重）、M2（打分 / 聚类 / 实体 + LLM 抽象 + 简报）、**M3a / M3b（★ 预言生成 + 到期验证 + 命中率 / Brier / 校准度）**、**M4（Actions 自动化 + Web 看板 + README 发布）** 均已完成（tag `m0` / `m1` / `m2` / `m3a` / `m3b`）；**M6a（快照型源修复 + 简报格式规范化 + predict 截断修复）已于 2026-10-17 完成并真实运行验证**（`docs/文档维护日志.md` 记为 `m6a` / `4a12fa3`；`git tag` 现有 `m0`–`m4`、`m6a`（`4a12fa3`）与 `star-tracking`（`cdcab79`））。**P0「star 追踪」（★ 总数 / 增量两列、增速榜、`source_runs.json`）已实现（tag `star-tracking` / `cdcab79`）并在 Actions 环境实跑验证过（`data/reports/2026/10/17/` 由 `aipulse-bot` 提交，`generated_at 2026-10-17T14:55Z`，含 `source_runs.json`）**。M6b（日报条目 why/stance 全覆盖 + 中文要点）已于 2026-10-18 完成并 Actions 真跑验证（tag `m6b` / `11fb09a`，冷启动 0.011862 元/天）；M6c（知识库）与 M5（周期长文 + 多角色辩论）继续后置。M5 的入口已留好：`prompts/trend/` 与 `prompts/debate/` 是空目录，`cli/commands/{trend,debate}.py` 是占位（`reasoning/` 下目前**没有** trend / debate 模块）。不要跨阶段实现。
 
 **文档版本基线**：SSOT 两份文档当前 v1.20（`docs/文档维护日志.md` 最新一行 v1.20 = tag `star-tracking` / `cdcab79`）。文件名固定为 `docs/AI_Pulse_设计方案.md` 与 `docs/AI_Pulse_Agent开发执行手册.md`，**版本由 git 管理，不再写进文件名**。`docs/文档维护日志.md` 最后一行的 tag 才是「文档对应哪次提交」的唯一锚点。新会话先读它确认基线。**SSOT 两份文档与 `docs/文档维护日志.md` 是 Agent 只读，不得修改**；文档维护必须「先提交代码 + 打 tag，再刷新文档」。
 
@@ -172,7 +172,7 @@ configs/*.yaml ──> collectors/ ──> RawItem ──> normalize/dedup ─�
 | `collectors/registry.py` | 按名注册 + `select()` 按 `enabled` / `availability` 过滤，返回 `(collectors, skipped)` |
 | `normalize/clean.py` | `strip_html` / `normalize_whitespace` / `clean_text` / `truncate` / `detect_language`（只分 zh/en/None） |
 | `normalize/dedup.py` | 三级去重（见下） |
-| `store/models.py` | 9 张表：`items` / `signals` / `topics` / `entities` / `predictions` / `source_runs` / `pipeline_runs` / `llm_usage` / `llm_cache`。JSON 字段用 `sa_column=Column(JSON)`，不手写 `json.dumps` |
+| `store/models.py` | 10 张表：`items` / `signals` / `topics` / `entities` / `predictions` / `source_runs` / `pipeline_runs` / `llm_usage` / `llm_cache` / **`item_enhance`**（M6b 条目增强缓存，PK=item_id）。JSON 字段用 `sa_column=Column(JSON)`，不手写 `json.dumps` |
 | `store/repo_items.py` | `upsert_items` / `write_signals` / `list_items_collected`（当日窗口）/ `apply_hot_scores` / `apply_topic_ids` / `upsert_topics` / `upsert_entities` / `list_topics` / `list_entities` / `list_signals`（全量）/ `topic_uid` |
 | `store/repo_predictions.py` | `prediction_id`（`pred_` + `short_hash(day:statement:origin)`，稳定 id → `predict` 幂等）/ `insert_predictions`（已存在即跳过）/ `list_predictions` / `list_pending_due` / `list_verified_since`（`verdicts.md` 用）/ `save_verdict` |
 | `store/repo_runs.py` | `record_pipeline_run()`：写 `pipeline_runs`（stage=`daily`） |
@@ -185,7 +185,7 @@ configs/*.yaml ──> collectors/ ──> RawItem ──> normalize/dedup ─�
 | `llm/prompt.py` | 加载 `prompts/**.j2`，解析 front-matter（`model_tier` / `temperature` / `purpose`），`version_hash` = 全文 sha256 前 8 位 |
 | `llm/openai_compat.py` | 唯一真实实现：**httpx 直连**（复用项目 `HttpClient`；`openai` SDK 已在 v1.7 移除，`uv.lock` 无 openai），fast/strong 双模型；`llm.json_schema: auto` 下首次 json_schema 收到 400 即降级 json_object + prompt 内嵌 schema，并进程内记忆（降级原因写 `llm_usage.error`，迁移 `a3c1d9f2e07b`） |
 | `llm/cache.py` / `llm/budget.py` | `llm_cache` 表缓存 / 每日预算（`budget.daily_limit_cny`）与降级顺序 |
-| `reasoning/brief.py` | `generate_brief()`：Top N 上下文组装（token 预算裁剪）→ LLM → 失败降级为 `_data_brief()` 数据版 |
+| `reasoning/brief.py` | `generate_brief()`：Top N 上下文组装（token 预算裁剪）→ LLM → 失败降级为 `_data_brief()` 数据版。**M6b**：`_render_ids()` 取渲染集 → `_enhance_comments()` 条目级缓存（`content_hash` + 双 prompt 版本 + TTL + 热度差）→ 分批调 `item_comment` / `item_enhance`，写 `item_enhance` 表；off 只读 / hybrid 补缺 / full 全刷 |
 | `reasoning/predictor.py` | `generate_predictions()`：Top N + 主题 + 实体频次组装上下文 → `prompts/predict/generate.j2` → 结构化 `PredictionBatch` → 硬校验 → **一次**语义重写 → 仍不合法丢弃记账（任何 LLM 异常都降级为空，绝不 raise 到 pipeline） |
 | `reasoning/criteria.py` | 量化判据模板库（`configs/criteria.yaml`）的加载/渲染：`criteria_names` / `render_criteria` / `coerce_param` / `parse_param_assignments`。M3b 的 verifier 将复用同一套模板定义 |
 | `schema/prediction.py` | `Prediction` / `PredictionBatch` / `Verdict` + `find_vague_phrases`（模糊措辞黑名单，"可能"用负向断言排除"不可能"）+ `validate_prediction`（可证伪红线校验） |
@@ -395,7 +395,7 @@ hot_score = 100 * clamp( w_engagement*engagement_norm        # Σ coeff*log1p(me
 | `docs/开发日志.md` | 每阶段"做了什么 / 踩了什么坑 / 为什么这么决策"，**每阶段结束必须追加**；已有 M0/M1/M2/M3a/M3b/M4/**M6a（含 predict 截断补丁）** 七章 |
 | `docs/images/dashboard.png` | 看板截图（README「看板预览」引用，取自 2026-10-17 真实日报）|
 | `scripts/probe_sources.py` · `scripts/cron_daily.sh` | 数据源探测（加源/改 URL 前必跑）与 WSL 本地 cron 备份入口（crontab：`35 7 * * * /home/<you>/projects/aipulse/scripts/cron_daily.sh`，北京 07:35，避开 Actions 的 08:00）|
-| `prompts/{brief,predict,debate,trend}/` | Jinja2 模板落点。`brief/` 有 `daily_brief.j2` + `item_comment.j2`，`predict/` 有 `generate.j2` + `verify.j2`；`debate/` `trend/` 待 M5 |
+| `prompts/{brief,predict,debate,trend}/` | Jinja2 模板落点。`brief/` 有 `daily_brief.j2` + `item_comment.j2`（v2，顶层键 `one_liners`，只产中文要点）+ `item_enhance.j2`（顶层键 `comments`，产 why/stance）；`predict/` 有 `generate.j2` + `verify.j2`；`debate/` `trend/` 待 M5 |
 
 `configs/scoring.yaml` 的打分权重与 `cluster` 段已被 M2 实际读取（engagement / freshness / velocity / source_weight / cold_start / title_only_weight / cluster），调权重改配置即可，不要改代码。
 

@@ -1,10 +1,51 @@
 # 变更日志
 
 本项目采用 [Keep a Changelog](https://keepachangelog.com/) 风格，按里程碑组织。
-代码 tag：`m0`–`m4` 为里程碑，`m6a` 为 M6a 收尾，`star-tracking` 为 P0 功能 tag；M6a 之后的追加工作使用功能名 tag，不占用里程碑编号。
+代码 tag：`m0`–`m4` 为里程碑，`m6a` 为 M6a 收尾，`star-tracking` 为 P0 功能 tag，`m6b` 为 M6b（条目增强）里程碑 tag；M6a 之后的追加工作使用功能名 tag，不占用里程碑编号。
 
-**版本与 tag 的对应**：`m0`–`m4`、`m6a`、`star-tracking` 已发布；M5 尚未实现，因此不占 `m5` 编号。
+**版本与 tag 的对应**：`m0`–`m4`、`m6a`、`star-tracking`、`m6b` 已发布；M5 尚未实现，因此不占 `m5` 编号。
 **设计文档版本**（见 `docs/AI_Pulse_设计方案.md` 头部的 `v1.x`）与代码版本**独立编号**，不要混淆。
+
+---
+
+## [m6b] — 日报条目 why/stance 全覆盖 + 中文要点
+
+> 目标：日报渲染集里的**每一条**都有「为什么重要 / 立场」，英文条目的要点强制中文。
+> 此前 brief v3 只让模型自选几条点评，覆盖率不稳定——这正是"详略不一"的另一半。
+
+### Added
+
+- **`item_enhance` 表 + 迁移 `e6b2f7c1a9d4`**：条目级增强结果持久化
+  （`one_liner` / `why` / `stance` / `content_hash` / 双 prompt 版本 / 热度与信号基线）
+- **`prompts/brief/item_enhance.j2`**：why/stance 独立批量调用，含正反例表与套话禁用清单
+- **`ItemComment` 新契约**：`item_id` / `one_liner` / `why` / `stance`；
+  新增 `OneLinersOut` / `EnhancesOut` 等轻量结构化输出模型
+- **`brief.enhance_*` 配置**：`enhance_top_n=30`、`enhance_batch_size=10`、
+  `enhance_budget_cny=0.15`、`enhance_ttl_days=30`、`enhance_refresh_hot_delta=10.0`、
+  `enhance_refresh_on_new_signals=false`
+- **`meta.json` 新增计数**：`enhance_total` / `enhanced` / `enhance_skipped_count` /
+  `enhance_cache_hit` / `enhance_cost_cny`
+
+### Changed
+
+- `prompts/brief/item_comment.j2` 升 v2：只产中文要点，不再产出 why/stance，顶层键 `one_liners`
+- 增强挂 `mode` 档（零新增开关）：`off` 只读表 / `hybrid` 只补缺失（生产默认）/ `full` 忽略缓存全刷
+- `ItemComment` 移除 `who_cares` / `what_to_watch` / `novelty` / `impact`（从未被渲染）
+- Web 看板「为什么重要」列兼容旧归档（`why` → `why_it_matters` 回退）
+
+### Fixed
+
+- Actions `runs-on` 固定 `ubuntu-24.04`（三处 workflow），避开 2026-10-19 的 Ubuntu 26 迁移
+
+### 实测（Actions run 39112189002 / 39112974821）
+
+| 指标 | 数值 |
+|---|---|
+| enhance_total / enhanced | 23 / 23（skipped 0，全覆盖成立） |
+| 冷启动 / 全刷成本 | **0.011862 元/天**（4.33 元/年） |
+| 稳态成本（第二次跑） | **0.002768 元/天**（1.01 元/年） |
+| 缓存命中 | 20/23（3 条新条目按设计补算） |
+| 套话命中 | 0（值得关注 / 未来可期 / 有望 / 具有重要意义…） |
 
 ---
 

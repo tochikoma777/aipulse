@@ -26,8 +26,10 @@ jobs:
       #   在 Actions 环境可达，必须显式声明，否则这两个源会被当成"本地"而跳过。
       AIPULSE_ENV: actions
       # ★ 显式声明 hybrid 档，不依赖 configs/default.yaml 里的 full 默认值：
-      #   每天只调 2-3 次（预言生成 + 主编点评），配合 budget 每日 2 元上限自动降级，成本可控。
-      #   意义在于**记分板样本会每天自动增长**；full 档多出的单条点评对说服力没有帮助。
+      #   日常增强 6 次/日（item_comment 3 + item_enhance 3，实测 run 39112189002）；
+      #   加 brief 主调用 1 次，全天约 7 次。增强稳态 0-2 次/日，全刷日 6 次增强。
+      #   配合 budget 每日 2 元上限自动降级，成本可控。
+      #   意义在于**记分板样本会每天自动增长**；M6b 起 hybrid/full 均做增强，差异只在认不认缓存。
       #   未配置 AIPULSE_LLM__API_KEY 时 effective_mode() 自动降级为 off（不报错退出）。
       AIPULSE_MODE: hybrid
     steps:
