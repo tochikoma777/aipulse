@@ -92,12 +92,6 @@ class DailyBrief(BaseModel):
         return seen
 
 
-class ItemComments(BaseModel):
-    """单条点评的批量包装（v1 遗留契约，保留以免打断既有引用）。"""
-
-    comments: list[ItemComment] = Field(default_factory=list)
-
-
 class OneLinerOut(BaseModel):
     """one_liner 单条输出（`brief/item_comment.j2` v2 的结构化契约）。
 
@@ -140,7 +134,6 @@ __all__ = [
     "EnhanceOut",
     "EnhancesOut",
     "ItemComment",
-    "ItemComments",
     "OneLinerOut",
     "OneLinersOut",
     "OverviewBullet",

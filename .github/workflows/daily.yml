@@ -33,7 +33,7 @@ jobs:
       #   未配置 AIPULSE_LLM__API_KEY 时 effective_mode() 自动降级为 off（不报错退出）。
       AIPULSE_MODE: hybrid
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Install uv
         uses: astral-sh/setup-uv@v5

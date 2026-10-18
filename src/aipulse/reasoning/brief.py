@@ -30,7 +30,6 @@ from aipulse.schema.brief import (
     EditorNote,
     EnhancesOut,
     ItemComment,
-    ItemComments,
     OneLinersOut,
     OverviewBullet,
     Section,
@@ -644,38 +643,6 @@ async def generate_brief(
         )
 
     return BriefOutput(brief=brief, items=chosen_items, meta=meta)
-
-
-async def _item_comments(
-    client: LLMClient, items: list[Item], meta: dict[str, Any]
-) -> list[ItemComment]:
-    """full 档：对 Top N 条目生成单条点评（一条批量调用）。"""
-    contexts = [
-        {
-            "id": it.id,
-            "title": it.title,
-            "source": it.source,
-            "summary": truncate_summary(it.summary or "", 300),
-        }
-        for it in items
-    ]
-    rendered, template = render_prompt(
-        "brief/item_comment",
-        items_json=json.dumps(contexts, ensure_ascii=False),
-    )
-    parsed, _ = await generate_structured(
-        client,
-        [ChatMessage(role="system", content=rendered)],
-        response_model=ItemComments,
-        temperature=template.temperature,
-        max_tokens=3000,
-        purpose="brief_item_comment",
-        model_tier=template.model_tier,
-    )
-    meta["llm_calls"] += 1
-    if parsed is None:
-        return []
-    return cast(ItemComments, parsed).comments
 
 
 __all__ = ["BriefOutput", "generate_brief"]

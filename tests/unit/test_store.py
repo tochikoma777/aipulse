@@ -152,4 +152,4 @@ def test_ensure_schema_upgrades_existing_alembic_db(tmp_path):
     version = con.execute("SELECT version_num FROM alembic_version").fetchone()[0]
     con.close()
     assert "first_seen_at" in columns
-    assert version == "e6b2f7c1a9d4"
+    assert version == "f1a2b3c4d5e6"
