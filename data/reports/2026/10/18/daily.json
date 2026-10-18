@@ -1,58 +1,57 @@
 {
   "date": "2026-10-18",
-  "headline": "今日热榜几乎被「给编码智能体加装外挂」的工程层项目占满——模型能力不再是瓶颈，上下文、记忆与验证才是真正的战场。",
-  "headline_item_id": "it_b02b6b38ee45f34c",
+  "headline": "今日真正的头条不是某个模型，而是「智能体基础设施」正在成建制地开源化——从插件目录、agent harness 到 CLI 原生接口，Claude Code 生态已形成事实标准。",
+  "headline_item_id": "it_8374e30db02abb47",
   "overview_bullets": [
     {
       "icon": "🤖",
-      "topic": "智能体外壳",
-      "text": "GitHub 热榜前十里超过一半是 Claude Code / Codex 的 harness、skills、插件目录与多智能体编排，说明竞争重心已从模型本体转向「怎么把模型用好」。"
+      "topic": "智能体基建",
+      "text": "GitHub 热榜几乎被 agent harness、插件目录、多智能体编排占据，说明竞争焦点已从「模型能力」转向「谁掌握智能体的运行底座」。"
     },
     {
       "icon": "🛠️",
-      "topic": "上下文瘦身",
-      "text": "context-mode 宣称把工具输出沙箱化后减少 98%、xerj 声称比 grep 省 40 倍 token，上下文经济学成了新的性能指标。"
-    },
-    {
-      "icon": "🔐",
-      "topic": "信任危机",
-      "text": "AutoTrust 的 HF 模型靠刷赞冲上趋势榜，同时 Meta 悄悄删掉涉及抓取与 AI 训练的条款措辞——模型与数据的可信度都在被稀释。"
+      "topic": "本地化工具",
+      "text": "VoiceStudio 以全本地、646 语言的语音克隆对标 ElevenLabs，esp32sim 把 ESP32 固件搬进浏览器，开源正在啃掉原本属于商业闭源的高价值场景。"
     },
     {
       "icon": "📉",
-      "topic": "本地化降温",
-      "text": "社区出现「不必为本地 LLM 堆昂贵配置」的实测帖，Qwen 3.8 27B 在单卡低配下跑 262k 上下文，硬件军备竞赛叙事被现实成本修正。"
+      "topic": "本地推理降本",
+      "text": "社区用单张 4090 跑 552B DeepSeek-V4.1-Flash、以及「不需要昂贵配置跑本地 LLM」的帖子，正在瓦解「大模型必须大集群」的叙事。"
     },
     {
-      "icon": "🏢",
-      "topic": "组织变形",
-      "text": "Anthropic 自曝员工结构变「资深化」、会议时间变多，AI 提效的第一波红利可能先体现为初级岗位收缩而非产出暴涨。"
+      "icon": "🔐",
+      "topic": "可信度危机",
+      "text": "AutoTrust 的 HF 模型被指靠刷赞上热门，叠加 Meta 悄悄删除抓取与 AI 训练相关条款，模型与数据两端的「可信信号」同时失灵。"
+    },
+    {
+      "icon": "💬",
+      "topic": "质量焦虑",
+      "text": "Sphinx 在上线前用问卷考你是否真懂 AI 写的代码，Anthropic 自曝团队更资深化、会议更多——AI 提效的代价正被反向计量。"
     }
   ],
-  "executive_summary": "当所有人都在等下一代模型时，今天的热榜告诉你：决定 AI 产品成败的，已经是模型外面那层壳、那份记忆和那道验证关卡。",
+  "executive_summary": "当模型本身越来越像可替换的零件，今天的信号一致指向：价值正在向智能体底座、本地推理与可信度验证这三层迁移，而热度最高的模型发布反而缺席。",
   "editor_note": {
-    "core": "今天最该记住的是 it_b02b6b38ee45f34c 代表的「harness 层军备竞赛」：当模型 API 趋于同质，谁能把技能、记忆、安全与验证做成可复用的外壳，谁就掌握了实际交付权。这不是工具繁荣，而是价值从模型厂商向工程中间层迁移的信号。",
-    "cross_signal": "开源侧的 context-mode（98% 输出压缩）与 xerj（省 40 倍 token）在讲同一件事，Reddit 上「思考 token 吃掉大部分吞吐」的抱怨与之完全咬合——上下文成本已经成为跨板块的硬约束，而不是个别项目的卖点。",
-    "counterintuitive": "热度最高的是一堆「让 Claude Code 更好用」的周边，而真正稀缺的 Sphinx 式「上线前先考你懂不懂这段 AI 代码」只有 65 分热度；社区在为能力狂欢，却几乎没人愿意为验证付费，这与「AI 写码越快、审查越重要」的直觉正好相反。",
-    "risk": "最该警惕的是信任层的双重腐蚀：一边是 AutoTrust 用刷赞把模型推上 HF 趋势榜，一边是 Meta 悄悄删改抓取与训练相关措辞。当榜单和条款都不再可信，开发者用来判断「能不能用」的两个最便宜信号同时失效。"
+    "core": "今天最该记住的是 anthropics/claude-plugins-official 这类「官方插件目录」的出现：它意味着智能体生态开始从野蛮生长的脚本集合，走向有中心化分发与质量背书的平台层。谁掌握目录，谁就掌握智能体的分发入口——这比任何一个模型跑分都更具结构性。",
+    "cross_signal": "GitHub 侧 orca、ECC、ruflo、CLI-Anything 都在做「让任意 agent 跑起来/跑得好」，而社区侧单卡 4090 跑 552B 模型、以及 Sphinx 要求你理解 AI 代码，三者共同指向同一件事：智能体的瓶颈已从模型能力转移到编排、算力成本与人类审查这三道关口。",
+    "counterintuitive": "热度榜上最响的是各种 agent 框架，但真正稀缺的是「验证」——Sphinx 的问卷、AutoTrust 的刷赞曝光、Strata 旧版本默认贪心采样，都是低热度却直击要害的条目。另一个错位是：模型发布（Qwen4、DeepSeek-V4.1）讨论热烈，实际可用的却是量化与推理引擎的工程细节。",
+    "risk": "最该警惕的是「可信信号全面通胀」：HF 点赞可刷、Meta 抓取条款可悄悄改、旧版推理框架默认贪心采样却无人察觉——当评估、数据授权与推理配置三个基础环节都缺乏可验证性时，基于榜单和默认配置做出的技术选型都可能建立在沙子上。"
   },
   "contradictions": [
-    "Meta 发言人坚称条款更新「不反映抓取方式变化」，但报道明确指出被删除的正是涉及抓取与 AI 训练的措辞——表述与动作自相矛盾。",
-    "AutoTrust 在 HF 上以亮眼指标冲上趋势榜，实际却是靠成千上万刷来的点赞，热度与真实能力背离。",
-    "一边是社区晒 4×3090、64GB DDR5 的高配本地机，一边是「你不需要那么贵的配置」的实测帖，同一社区对硬件门槛给出相反结论。"
+    "社区一边宣称「不需要昂贵配置就能跑本地大模型」，一边又用单张 4090 + 90GB 内存跑 552B 模型作为炫耀点，实际门槛被叙事压低。",
+    "Anthropic 一方面推动 Claude Code 插件生态扩张，另一方面自曝团队更资深化、会议时间增加，扩张与效率叙事相互拉扯。",
+    "Meta 发言人坚称条款更新「不反映抓取方式变化」，但删除的恰恰是引发抓取与 AI 训练担忧的措辞，声明与动作不一致。"
   ],
   "underrated": [
-    "Show HN: Sphinx – A hook that quizzes you on your AI's code before shipping",
-    "Show HN: Esp32sim – Run ESP32 firmware in the browser",
-    "Tsc-ts: TypeScript written in TypeScript",
-    "Meta removes language that raised scraping and AI training concerns",
-    "Anthropic says its workforce has become less junior and is spending more time in meetings",
-    "Openspline - host a realtime talking avatar on a commercial GPU (90+ FPS on RTX4090)"
+    "Sphinx – 上线前用问卷考你是否真懂 AI 写的代码",
+    "if you're on Strata before 0.1.45 且客户端未设采样，你其实在跑贪心解码",
+    "AutoTrust 的 HF 模型靠数千刷赞登上热门",
+    "Meta 删除引发抓取与 AI 训练担忧的条款措辞",
+    "The whale girl mode in DeepSeek-V4.1-Flash-1017 is still there（人格模式残留暴露对齐脆弱性）"
   ],
   "sections": [
     {
       "name": "开源项目",
-      "summary": "编码智能体的配套工程层集体爆发，从 harness、skills 到上下文压缩与 CLI 化，开源社区正在给闭源模型补上「可用性」这一环。",
+      "summary": "智能体 harness 与插件生态密集上榜，开源正从「模型权重」转向「智能体运行底座」的争夺。",
       "item_ids": [
         "it_db643b160f4cefa8",
         "it_752e25023358d2db",
@@ -60,43 +59,43 @@
         "it_940ae4b9591d1f09",
         "it_b02b6b38ee45f34c",
         "it_645a6cf2b3acc8ac",
-        "it_f859b2d15e1457f4",
         "it_e81d845b796616e3",
         "it_1ab40dd4fd0ea2df",
         "it_69674221133595f2",
         "it_85ee7a3aef761044",
-        "it_1f28a16c9fe19cbe",
-        "it_59958c8085efe8d1",
-        "it_c181e3f6bd83b0eb"
+        "it_1f28a16c9fe19cbe"
       ]
     },
     {
       "name": "论文与研究",
-      "summary": "研究侧的声音被工程热度盖过，只剩科学技能库与模型行为观察这类「应用型研究」还在冒头。",
+      "summary": "研究型条目稀少，更多是工程侧的性能与量化实践，学术产出被工具化叙事挤压。",
       "item_ids": []
     },
     {
       "name": "社区舆论",
-      "summary": "Reddit 上讨论的焦点从「模型多强」转向「思考 token 太贵」「本地跑得动就行」，以及 DeepSeek 隐藏人格这类模型行为八卦。",
+      "summary": "本地推理降本、模型刷赞、人格模式残留与「AI 写码你是否真懂」构成今日社区的四条主线。",
       "item_ids": [
         "it_f4deada1cbedd710",
+        "it_d3c35db34ec3acb3",
         "it_4e1922b3696b904f",
         "it_3743b5964c6f63ed",
-        "it_238b590c0f8c00da",
-        "it_ad69629782d00cc6",
         "it_0478902d6774e7f6",
         "it_fb114ba6f0fcc1a5",
         "it_3b498edb644f94f5",
         "it_6c3cb38fa37d061d",
         "it_b641aa7be4055340",
-        "it_d3c35db34ec3acb3",
+        "it_46f7480e948c1d39",
+        "it_5db70af736ea3b5a",
+        "it_ad69629782d00cc6",
+        "it_4f361c6a455a7685",
         "it_93213b1af418b9bf",
+        "it_238b590c0f8c00da",
         "it_1fabfeb5af71f978"
       ]
     },
     {
       "name": "产业与新闻",
-      "summary": "Meta 修订条款、Anthropic 自述组织变化，两条公司新闻都指向同一件事：AI 公司正在为规模化后的合规与人力结构重新定价。",
+      "summary": "Meta 条款悄然松绑、Anthropic 自曝团队结构变化，头部公司的治理与组织信号比产品发布更值得读。",
       "item_ids": [
         "it_5c45fc8a32a550b2",
         "it_d4d8a21bd9972e11",
@@ -142,12 +141,6 @@
       "stance": "开源编码 agent 的价值在于可审计与可替换，闭源终端工具的锁定效应被削弱。"
     },
     {
-      "item_id": "it_f859b2d15e1457f4",
-      "one_liner": "一套 agent 技能框架与软件开发方法论",
-      "why": "把 agent 技能与开发方法论打包成可复用框架，让团队不必从零调教提示与流程，直接继承一套工作方式。",
-      "stance": "方法论产品化比再写一个 agent 更有杠杆，但这类框架的实效高度依赖团队执行力。"
-    },
-    {
       "item_id": "it_e81d845b796616e3",
       "one_liner": "面向 AI 的数据搜索工具，用一条命令为代码、文档、日志和 PDF 建立索引，供搜索、RAG、安全审计与 agent 记忆使用，token 消耗比 grep 少约 40 倍",
       "why": "用自动索引替代 grep 式逐文件扫描，把 agent 检索的 token 成本压到四十分之一，直接决定长上下文任务的可行边界。",
@@ -166,10 +159,22 @@
       "stance": "终端 agent 已成事实标准入口，真正的风险是开发者对代码变更的审查习惯被削弱。"
     },
     {
+      "item_id": "it_85ee7a3aef761044",
+      "one_liner": "ruvnet/ruflo 是一个多智能体编排框架，支持部署多玩家 swarm、协调自主工作流，并内置自适应记忆、自学习、联邦与向量 RAG 集成，兼容 Claude Code、Codex 等编码代理。",
+      "why": "多智能体编排框架开始把 Claude Code、Codex 等异构编码代理统一到同一套记忆与 RAG 层，开发者选型从「挑一个代理」变成「挑一个调度层」，工具链的锁定点从模型上移到编排框架。",
+      "stance": "编排层会迅速同质化，真正稀缺的是可迁移的共享记忆与评测，而不是又一层 swarm 包装。"
+    },
+    {
       "item_id": "it_f4deada1cbedd710",
       "one_liner": "一个开源 ESP32 模拟器，可直接在浏览器里运行 ESP32 固件，无需真实硬件",
       "why": "把 ESP32 固件从硬件依赖中解耦，浏览器里即可跑通，嵌入式开发的试错成本从买板子等快递降到刷新页面。",
       "stance": "硬件仿真进浏览器是嵌入式工具链该走的方向，但外设时序与射频行为不还原，它只能替代一半的真机测试。"
+    },
+    {
+      "item_id": "it_d3c35db34ec3acb3",
+      "one_liner": "Sphinx 是一个开源钩子工具，接入现有编码代理工作流，在推送到生产环境前弹出问卷，检验开发者是否真正理解所提交的代码。",
+      "why": "把「你是否看得懂自己提交的代码」变成上线前的强制关卡，直接针对 AI 生成代码导致的理解债；一旦进入团队流程，审查对象从代码本身扩展到提交者的认知状态。",
+      "stance": "方向正确但执行脆弱：问卷容易退化为走过场，只有绑定事故复盘与回滚记录才有约束力。"
     },
     {
       "item_id": "it_4e1922b3696b904f",
@@ -182,18 +187,6 @@
       "one_liner": "tsc-ts：用 TypeScript 重写的 TypeScript 编译器项目",
       "why": "用 TypeScript 重写编译器把类型系统与生态工具绑在同一语言上，贡献门槛从少数编译器专家降到前端工程师。",
       "stance": "自举是好事，但性能与生态兼容性才是生死线，别把语言统一当成目的本身。"
-    },
-    {
-      "item_id": "it_238b590c0f8c00da",
-      "one_liner": "一个高质量鸭子音效合成器项目",
-      "why": "把合成质量推到可听级需要建模声源与共振，这类小项目是音频生成模型之外的手工路线样本。",
-      "stance": "鸭子合成器听着像玩笑，但它是检验参数化音频合成到底能做到多真的低成本试纸。"
-    },
-    {
-      "item_id": "it_ad69629782d00cc6",
-      "one_liner": "单个 6.3 MB HTML 文件里包含 500 个时钟，由 Claude Opus 5.5 生成",
-      "why": "单文件 6.3MB 塞进 500 个时钟，说明前沿模型已能在一次生成里维持长程结构一致性，前端原型的产出方式被改写。",
-      "stance": "这是模型能力的有效压力测试，但把生成量当质量指标会误导人，500 个里有多少个真的好看才是问题。"
     },
     {
       "item_id": "it_0478902d6774e7f6",
@@ -226,6 +219,12 @@
       "stance": "把这种彩蛋当乐子会掩盖真问题：人格开关没被真正关掉，只是换了个触发词。"
     },
     {
+      "item_id": "it_46f7480e948c1d39",
+      "one_liner": "Xolotl 是基于 Strata 的推理引擎，可在单张 RTX 4090（24GB）加 90GB DDR4 的普通 PC 上以约 27 tok/s 运行 552B 参数的 DeepSeek-V4.1-Flash，并预告将推出 1017 量化版本。",
+      "why": "靠内存与 NVMe 分层把 552B 级模型塞进单张 24GB 消费级显卡，意味着前沿规模推理的硬件门槛从数据中心下移到个人机器，同时绕开云端的内容审查与用量计费。",
+      "stance": "27 tok/s 只够实验不够生产，但这条路线一旦成熟，模型能力的获取将不再经过任何平台许可。"
+    },
+    {
       "item_id": "it_5c45fc8a32a550b2",
       "one_liner": "利用 document.currentScript 属性实现内联渲染，让一段内联 script 在页面加载时替换自身",
       "why": "利用 document.currentScript 让内联脚本在页面加载时自我替换，把动态内容的渲染成本从服务端或框架运行时转移到浏览器解析阶段，静态站点和轻量页面因此可以少依赖一层 JS 框架。",
@@ -246,47 +245,47 @@
   ],
   "stats": {},
   "items": {
-    "it_93213b1af418b9bf": {
-      "id": "it_93213b1af418b9bf",
-      "source": "hackernews",
-      "title": "Codex Desktop continuously generates Crashpad pending dumps",
-      "url": "https://github.com/openai/codex/issues/25921",
-      "summary": "",
-      "hot_score": 85.8753,
-      "topic_id": null,
-      "seen_in": [
-        "hackernews"
-      ],
-      "published_at": "2026-10-17T17:45:08+00:00",
-      "last_seen_at": "2026-10-18T08:38:18.915813+00:00",
-      "metrics": {
-        "points": 127,
-        "num_comments": 47
-      },
-      "streak_days": 0,
-      "language": "en"
-    },
     "it_db643b160f4cefa8": {
       "id": "it_db643b160f4cefa8",
       "source": "github_trending",
       "title": "debpalash/VoiceStudio",
       "url": "https://github.com/debpalash/VoiceStudio",
       "summary": "VoiceStudio is the open-source, fully-local ElevenLabs alternative — voice cloning, voice design, video dubbing, dictation, transcription & audiobook creation in 646 languages.",
-      "hot_score": 83.7934,
+      "hot_score": 83.772,
       "topic_id": null,
       "seen_in": [
         "github_trending"
       ],
       "published_at": "2026-10-15T14:47:23.502371+00:00",
-      "last_seen_at": "2026-10-18T08:38:18.838940+00:00",
+      "last_seen_at": "2026-10-18T08:50:31.039995+00:00",
       "metrics": {
-        "stars_total": 73946,
+        "stars_total": 73967,
         "stars_in_window": 3027,
-        "forks": 8096,
+        "forks": 8097,
         "streak_days": 4
       },
       "streak_days": 4,
       "language": "Python"
+    },
+    "it_93213b1af418b9bf": {
+      "id": "it_93213b1af418b9bf",
+      "source": "hackernews",
+      "title": "Codex Desktop continuously generates Crashpad pending dumps",
+      "url": "https://github.com/openai/codex/issues/25921",
+      "summary": "",
+      "hot_score": 83.5253,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-17T17:45:08+00:00",
+      "last_seen_at": "2026-10-18T08:50:31.115516+00:00",
+      "metrics": {
+        "points": 128,
+        "num_comments": 47
+      },
+      "streak_days": 0,
+      "language": "en"
     },
     "it_f4deada1cbedd710": {
       "id": "it_f4deada1cbedd710",
@@ -294,15 +293,35 @@
       "title": "Show HN: Esp32sim – Run ESP32 firmware in the browser",
       "url": "https://github.com/mikroverk/esp32sim",
       "summary": "Hi HN, I’ve been working on esp32sim, an open-source ESP32 emulator that runs in the browser. The fun part of the demo is that there is no ESP32 involved — the firmware is executing in the emulator. The goal is to make ESP32 software easier to experiment with, test and simulate without always needing physical hardware connected. Source:\nhttps://github.com/mikroverk/esp32sim I made a short video showing it in action:\nhttps://youtu.be/waoWFilTWEc I’m particularly interested in feedback from embedd",
-      "hot_score": 81.771,
+      "hot_score": 81.692,
       "topic_id": null,
       "seen_in": [
         "hackernews"
       ],
       "published_at": "2026-10-17T13:51:08+00:00",
-      "last_seen_at": "2026-10-18T08:38:18.914530+00:00",
+      "last_seen_at": "2026-10-18T08:50:31.114190+00:00",
       "metrics": {
-        "points": 159,
+        "points": 160,
+        "num_comments": 31
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_d3c35db34ec3acb3": {
+      "id": "it_d3c35db34ec3acb3",
+      "source": "hackernews",
+      "title": "Show HN: Sphinx – A hook that quizzes you on your AI's code before shipping",
+      "url": "https://sphinx-six-theta.vercel.app/",
+      "summary": "FOSS, Basically it plugs into your existing coding agent workflow and every time you push to prod it'll throw up a questionnaire that checks if you understand how the code you're pushing works.",
+      "hot_score": 78.4643,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-18T04:33:49+00:00",
+      "last_seen_at": "2026-10-18T08:50:30.984571+00:00",
+      "metrics": {
+        "points": 106,
         "num_comments": 30
       },
       "streak_days": 0,
@@ -314,17 +333,17 @@
       "title": "MadsLorentzen/ai-job-search",
       "url": "https://github.com/MadsLorentzen/ai-job-search",
       "summary": "The job search that runs on your machine. AI job application framework built on Claude Code: evaluate postings, tailor CVs, write cover letters, prep interviews. Fork it and own it.",
-      "hot_score": 77.8996,
+      "hot_score": 74.6277,
       "topic_id": null,
       "seen_in": [
         "github_trending"
       ],
       "published_at": "2026-10-16T15:44:39.424248+00:00",
-      "last_seen_at": "2026-10-18T08:38:18.832429+00:00",
+      "last_seen_at": "2026-10-18T08:50:31.033659+00:00",
       "metrics": {
-        "stars_total": 51094,
+        "stars_total": 51107,
         "stars_in_window": 1397,
-        "forks": 17016,
+        "forks": 17019,
         "streak_days": 3
       },
       "streak_days": 3,
@@ -336,15 +355,15 @@
       "title": "anthropics/claude-plugins-official",
       "url": "https://github.com/anthropics/claude-plugins-official",
       "summary": "Official, Anthropic-managed directory of high quality Claude Code Plugins.",
-      "hot_score": 74.4184,
+      "hot_score": 71.272,
       "topic_id": "tp_ad591863f370",
       "seen_in": [
         "github_trending"
       ],
       "published_at": "2026-10-15T14:47:23.502352+00:00",
-      "last_seen_at": "2026-10-18T08:38:18.831678+00:00",
+      "last_seen_at": "2026-10-18T08:50:31.032987+00:00",
       "metrics": {
-        "stars_total": 42121,
+        "stars_total": 42131,
         "stars_in_window": 1552,
         "forks": 4494,
         "streak_days": 4
@@ -358,15 +377,15 @@
       "title": "stablyai/orca",
       "url": "https://github.com/stablyai/orca",
       "summary": "Orca is the place for working with a fleet of agents (e.g. Grok Bot, Claude Code). Run any coding agent with your own subscription. Available on desktop, mobile and remote runtime.",
-      "hot_score": 74.1276,
+      "hot_score": 71.0254,
       "topic_id": null,
       "seen_in": [
         "github_trending"
       ],
       "published_at": "2026-10-17T14:54:44.860455+00:00",
-      "last_seen_at": "2026-10-18T08:38:18.837203+00:00",
+      "last_seen_at": "2026-10-18T08:50:31.038328+00:00",
       "metrics": {
-        "stars_total": 95776,
+        "stars_total": 95784,
         "stars_in_window": 1102,
         "forks": 6128,
         "streak_days": 2
@@ -380,15 +399,15 @@
       "title": "affaan-m/ECC",
       "url": "https://github.com/affaan-m/ECC",
       "summary": "The agent harness performance optimization system. Skills, instincts, memory, security, and research-first development for Claude Code, Codex, Opencode, Cursor and beyond.",
-      "hot_score": 73.4809,
+      "hot_score": 70.022,
       "topic_id": null,
       "seen_in": [
         "github_trending"
       ],
       "published_at": "2026-10-15T14:47:23.502401+00:00",
-      "last_seen_at": "2026-10-18T08:38:18.833293+00:00",
+      "last_seen_at": "2026-10-18T08:50:31.034527+00:00",
       "metrics": {
-        "stars_total": 282808,
+        "stars_total": 282821,
         "stars_in_window": 1145,
         "forks": 42013,
         "streak_days": 4
@@ -402,36 +421,16 @@
       "title": "Show HN: High-quality duck audio synthesizer",
       "url": "https://celphase.github.io/duck-pond",
       "summary": "",
-      "hot_score": 66.6265,
+      "hot_score": 68.6912,
       "topic_id": null,
       "seen_in": [
         "hackernews"
       ],
       "published_at": "2026-10-17T13:28:46+00:00",
-      "last_seen_at": "2026-10-18T08:38:18.780433+00:00",
+      "last_seen_at": "2026-10-18T08:50:30.983082+00:00",
       "metrics": {
-        "points": 128,
+        "points": 129,
         "num_comments": 28
-      },
-      "streak_days": 0,
-      "language": "en"
-    },
-    "it_d3c35db34ec3acb3": {
-      "id": "it_d3c35db34ec3acb3",
-      "source": "hackernews",
-      "title": "Show HN: Sphinx – A hook that quizzes you on your AI's code before shipping",
-      "url": "https://sphinx-six-theta.vercel.app/",
-      "summary": "FOSS, Basically it plugs into your existing coding agent workflow and every time you push to prod it'll throw up a questionnaire that checks if you understand how the code you're pushing works.",
-      "hot_score": 65.25,
-      "topic_id": null,
-      "seen_in": [
-        "hackernews"
-      ],
-      "published_at": "2026-10-18T04:33:49+00:00",
-      "last_seen_at": "2026-10-18T08:38:18.781830+00:00",
-      "metrics": {
-        "points": 102,
-        "num_comments": 30
       },
       "streak_days": 0,
       "language": "en"
@@ -442,15 +441,15 @@
       "title": "anomalyco/opencode",
       "url": "https://github.com/anomalyco/opencode",
       "summary": "The open source coding agent.",
-      "hot_score": 63.8151,
+      "hot_score": 61.0254,
       "topic_id": null,
       "seen_in": [
         "github_trending"
       ],
       "published_at": "2026-10-17T14:54:44.860471+00:00",
-      "last_seen_at": "2026-10-18T08:38:18.839730+00:00",
+      "last_seen_at": "2026-10-18T08:50:31.040748+00:00",
       "metrics": {
-        "stars_total": 215769,
+        "stars_total": 215777,
         "stars_in_window": 488,
         "forks": 28904,
         "streak_days": 2
@@ -458,43 +457,21 @@
       "streak_days": 2,
       "language": "TypeScript"
     },
-    "it_f859b2d15e1457f4": {
-      "id": "it_f859b2d15e1457f4",
-      "source": "github_trending",
-      "title": "obra/superpowers",
-      "url": "https://github.com/obra/superpowers",
-      "summary": "An agentic skills framework & software development methodology that works.",
-      "hot_score": 60.0434,
-      "topic_id": null,
-      "seen_in": [
-        "github_trending"
-      ],
-      "published_at": "2026-10-15T14:47:23.502377+00:00",
-      "last_seen_at": "2026-10-17T08:41:36.574825+00:00",
-      "metrics": {
-        "stars_total": 300881,
-        "stars_in_window": 973,
-        "forks": 26862,
-        "streak_days": 3
-      },
-      "streak_days": 3,
-      "language": "Shell"
-    },
     "it_e81d845b796616e3": {
       "id": "it_e81d845b796616e3",
       "source": "github_trending",
       "title": "xerj-org/xerj",
       "url": "https://github.com/xerj-org/xerj",
       "summary": "XERJ is the new way for AI to search data. Its autoindex capability activates agents to know your data without the token waste of grep (1974 tool). One command indexes code, docs, logs and PDFs for search, RAG, security audits and agent memory, using 40x fewer tokens than grep. It’s durable and can replace ElasticSearch saving you x10 infra costs.",
-      "hot_score": 59.1059,
+      "hot_score": 54.6054,
       "topic_id": null,
       "seen_in": [
         "github_trending"
       ],
       "published_at": "2026-10-15T14:47:23.502412+00:00",
-      "last_seen_at": "2026-10-18T08:38:18.841236+00:00",
+      "last_seen_at": "2026-10-18T08:50:31.042219+00:00",
       "metrics": {
-        "stars_total": 8058,
+        "stars_total": 8065,
         "stars_in_window": 1648,
         "forks": 427,
         "streak_days": 4
@@ -508,15 +485,15 @@
       "title": "K-Dense-AI/scientific-agent-skills",
       "url": "https://github.com/K-Dense-AI/scientific-agent-skills",
       "summary": "Turn any AI agent into an AI Scientist. The #1 Agent Skills library for science, used by 250,000+ scientists worldwide. 177 ready-to-use validated skills plus 100+ scientific databases covering biology, chemistry, medicine, and drug discovery. Compatible with Cursor, Claude Code, Codex, Pi, Antigravity, and the open Agent Skills standard.",
-      "hot_score": 55.6684,
+      "hot_score": 51.6887,
       "topic_id": null,
       "seen_in": [
         "github_trending"
       ],
       "published_at": "2026-10-15T14:47:23.502359+00:00",
-      "last_seen_at": "2026-10-18T08:38:18.834843+00:00",
+      "last_seen_at": "2026-10-18T08:50:31.036021+00:00",
       "metrics": {
-        "stars_total": 52464,
+        "stars_total": 52467,
         "stars_in_window": 1158,
         "forks": 4642,
         "streak_days": 4
@@ -524,21 +501,81 @@
       "streak_days": 4,
       "language": "Python"
     },
+    "it_1fabfeb5af71f978": {
+      "id": "it_1fabfeb5af71f978",
+      "source": "hackernews",
+      "title": "Israeli settlers attack European diplomatic cars in West Bank beat French mayor",
+      "url": "https://www.lemonde.fr/en/international/article/2026/10/17/israeli-settlers-attack-european-diplomatic-cars-in-west-bank-beat-french-mayor-say-witnesses_6758711_4.html",
+      "summary": "",
+      "hot_score": 50.9353,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-17T17:49:10+00:00",
+      "last_seen_at": "2026-10-18T08:50:30.980050+00:00",
+      "metrics": {
+        "points": 129,
+        "num_comments": 18
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_ad69629782d00cc6": {
+      "id": "it_ad69629782d00cc6",
+      "source": "hackernews",
+      "title": "Show HN: 500 clocks in one 6.3 MB HTML file by Opus 5.5",
+      "url": "https://tkgally.github.io/500-clocks",
+      "summary": "Lately I've been testing frontier models by having them create self-contained web pages that display clocks--sort of my personal version of Simon Willison’s pelican-on-a-bicycle metric. I have been particularly impressed by the variety, interest, and quality of the clocks created by Claude Opus 5.5. Over the course of several sessions in the Claude chat interface, I had it build a total of 500 clocks. Claude’s summary of the prompting process and page design is here: https://github.com/tkgally/5",
+      "hot_score": 49.1786,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-18T04:04:58+00:00",
+      "last_seen_at": "2026-10-18T08:50:30.985712+00:00",
+      "metrics": {
+        "points": 47,
+        "num_comments": 18
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_4f361c6a455a7685": {
+      "id": "it_4f361c6a455a7685",
+      "source": "hackernews",
+      "title": "A Princeton PhD Applied to 2,300 Jobs. He Still Can't Get One",
+      "url": "https://www.wsj.com/lifestyle/careers/labor-market-freeze-phd-graduate-f8e17d7c",
+      "summary": "",
+      "hot_score": 42.75,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-18T06:36:48+00:00",
+      "last_seen_at": "2026-10-18T08:50:30.987202+00:00",
+      "metrics": {
+        "points": 31,
+        "num_comments": 26
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
     "it_69674221133595f2": {
       "id": "it_69674221133595f2",
       "source": "github_trending",
       "title": "anthropics/claude-code",
       "url": "https://github.com/anthropics/claude-code",
       "summary": "Claude Code is an agentic coding tool that lives in your terminal, understands your codebase, and helps you code faster by executing routine tasks, explaining complex code, and handling git workflows - all through natural language commands.",
-      "hot_score": 46.3151,
+      "hot_score": 41.442,
       "topic_id": null,
       "seen_in": [
         "github_trending"
       ],
       "published_at": "2026-10-17T14:54:44.860460+00:00",
-      "last_seen_at": "2026-10-18T08:38:18.838054+00:00",
+      "last_seen_at": "2026-10-18T08:50:31.039130+00:00",
       "metrics": {
-        "stars_total": 152156,
+        "stars_total": 152157,
         "stars_in_window": 179,
         "forks": 26949,
         "streak_days": 2
@@ -552,13 +589,13 @@
       "title": "Tsc-ts: TypeScript written in TypeScript",
       "url": "https://github.com/vercel-labs/tsc-ts",
       "summary": "",
-      "hot_score": 45.6264,
+      "hot_score": 40.8969,
       "topic_id": null,
       "seen_in": [
         "hackernews"
       ],
       "published_at": "2026-10-17T17:10:27+00:00",
-      "last_seen_at": "2026-10-18T08:38:18.916600+00:00",
+      "last_seen_at": "2026-10-18T08:50:31.116126+00:00",
       "metrics": {
         "points": 48,
         "num_comments": 48
@@ -566,43 +603,21 @@
       "streak_days": 0,
       "language": "en"
     },
-    "it_c181e3f6bd83b0eb": {
-      "id": "it_c181e3f6bd83b0eb",
-      "source": "github_trending",
-      "title": "hmjz100/LinkSwift",
-      "url": "https://github.com/hmjz100/LinkSwift",
-      "summary": "一个基于 JavaScript 的网盘文件下载地址获取工具。基于【网盘直链下载助手】修改 ，支持 百度网盘 / 阿里云盘 / 中国移动云盘 / 天翼云盘 / 迅雷云盘 / 夸克网盘 / UC网盘 / 123云盘 八大网盘",
-      "hot_score": 43.8371,
-      "topic_id": null,
-      "seen_in": [
-        "github_trending"
-      ],
-      "published_at": "2026-10-16T15:44:39.424253+00:00",
-      "last_seen_at": "2026-10-17T08:41:36.576266+00:00",
-      "metrics": {
-        "stars_total": 24112,
-        "stars_in_window": 592,
-        "forks": 1467,
-        "streak_days": 2
-      },
-      "streak_days": 2,
-      "language": "JavaScript"
-    },
     "it_85ee7a3aef761044": {
       "id": "it_85ee7a3aef761044",
       "source": "github_trending",
       "title": "ruvnet/ruflo",
       "url": "https://github.com/ruvnet/ruflo",
       "summary": "🌊 The original agent harness. Deploy intelligent multi-player swarms, coordinate autonomous workflows, and build conversational AI systems. Features adaptive memory, self-learning intelligence, federation, vector RAG integration, and native Claude Code / Codex / Hermes and many more Integrated",
-      "hot_score": 43.4809,
+      "hot_score": 40.8554,
       "topic_id": null,
       "seen_in": [
         "github_trending"
       ],
       "published_at": "2026-10-15T14:47:23.502382+00:00",
-      "last_seen_at": "2026-10-18T08:38:18.840362+00:00",
+      "last_seen_at": "2026-10-18T08:50:31.041374+00:00",
       "metrics": {
-        "stars_total": 76228,
+        "stars_total": 76232,
         "stars_in_window": 672,
         "forks": 9012,
         "streak_days": 4
@@ -610,39 +625,19 @@
       "streak_days": 4,
       "language": "TypeScript"
     },
-    "it_1fabfeb5af71f978": {
-      "id": "it_1fabfeb5af71f978",
-      "source": "hackernews",
-      "title": "Israeli settlers attack European diplomatic cars in West Bank beat French mayor",
-      "url": "https://www.lemonde.fr/en/international/article/2026/10/17/israeli-settlers-attack-european-diplomatic-cars-in-west-bank-beat-french-mayor-say-witnesses_6758711_4.html",
-      "summary": "",
-      "hot_score": 43.4045,
-      "topic_id": null,
-      "seen_in": [
-        "hackernews"
-      ],
-      "published_at": "2026-10-17T17:49:10+00:00",
-      "last_seen_at": "2026-10-18T08:38:18.777417+00:00",
-      "metrics": {
-        "points": 128,
-        "num_comments": 18
-      },
-      "streak_days": 0,
-      "language": "en"
-    },
     "it_1f28a16c9fe19cbe": {
       "id": "it_1f28a16c9fe19cbe",
       "source": "github_trending",
       "title": "HKUDS/CLI-Anything",
       "url": "https://github.com/HKUDS/CLI-Anything",
       "summary": "\"CLI-Anything: Making ALL Software Agent-Native\" -- CLI-Hub: https://clianything.cc/",
-      "hot_score": 42.8996,
+      "hot_score": 38.7943,
       "topic_id": null,
       "seen_in": [
         "github_trending"
       ],
       "published_at": "2026-10-16T15:44:39.424204+00:00",
-      "last_seen_at": "2026-10-18T08:38:18.834112+00:00",
+      "last_seen_at": "2026-10-18T08:50:31.035322+00:00",
       "metrics": {
         "stars_total": 54251,
         "stars_in_window": 580,
@@ -651,48 +646,6 @@
       },
       "streak_days": 3,
       "language": "Python"
-    },
-    "it_ad69629782d00cc6": {
-      "id": "it_ad69629782d00cc6",
-      "source": "hackernews",
-      "title": "Show HN: 500 clocks in one 6.3 MB HTML file by Opus 5.5",
-      "url": "https://tkgally.github.io/500-clocks",
-      "summary": "Lately I've been testing frontier models by having them create self-contained web pages that display clocks--sort of my personal version of Simon Willison’s pelican-on-a-bicycle metric. I have been particularly impressed by the variety, interest, and quality of the clocks created by Claude Opus 5.5. Over the course of several sessions in the Claude chat interface, I had it build a total of 500 clocks. Claude’s summary of the prompting process and page design is here: https://github.com/tkgally/5",
-      "hot_score": 42.75,
-      "topic_id": null,
-      "seen_in": [
-        "hackernews"
-      ],
-      "published_at": "2026-10-18T04:04:58+00:00",
-      "last_seen_at": "2026-10-18T08:38:18.783746+00:00",
-      "metrics": {
-        "points": 46,
-        "num_comments": 18
-      },
-      "streak_days": 0,
-      "language": "en"
-    },
-    "it_59958c8085efe8d1": {
-      "id": "it_59958c8085efe8d1",
-      "source": "github_trending",
-      "title": "mksglu/context-mode",
-      "url": "https://github.com/mksglu/context-mode",
-      "summary": "Context window optimization for AI coding agents. Sandboxes tool output (98% reduction), persists session memory, and enforces routing across 17 platforms via MCP + hooks.",
-      "hot_score": 42.5434,
-      "topic_id": null,
-      "seen_in": [
-        "github_trending"
-      ],
-      "published_at": "2026-10-15T14:47:23.502390+00:00",
-      "last_seen_at": "2026-10-17T08:41:36.573682+00:00",
-      "metrics": {
-        "stars_total": 30355,
-        "stars_in_window": 904,
-        "forks": 2157,
-        "streak_days": 3
-      },
-      "streak_days": 3,
-      "language": "TypeScript"
     },
     "it_0478902d6774e7f6": {
       "id": "it_0478902d6774e7f6",
@@ -706,10 +659,10 @@
         "reddit"
       ],
       "published_at": "2026-10-18T05:09:25+00:00",
-      "last_seen_at": "2026-10-18T08:38:18.818610+00:00",
+      "last_seen_at": "2026-10-18T08:50:31.015188+00:00",
       "metrics": {
         "score": 0,
-        "rank_score": 0.04
+        "rank_score": 0.2
       },
       "streak_days": 0,
       "language": "en"
@@ -726,10 +679,10 @@
         "reddit"
       ],
       "published_at": "2026-10-18T04:12:24+00:00",
-      "last_seen_at": "2026-10-18T08:38:18.801314+00:00",
+      "last_seen_at": "2026-10-18T08:50:31.002492+00:00",
       "metrics": {
         "score": 0,
-        "rank_score": 0.52
+        "rank_score": 0.56
       },
       "streak_days": 0,
       "language": "en"
@@ -746,7 +699,7 @@
         "reddit"
       ],
       "published_at": "2026-10-18T03:15:28+00:00",
-      "last_seen_at": "2026-10-18T08:38:18.802685+00:00",
+      "last_seen_at": "2026-10-18T08:50:31.005371+00:00",
       "metrics": {
         "score": 0,
         "rank_score": 0.48
@@ -760,13 +713,13 @@
       "title": "You don’t need that expensive of a build for local llms.",
       "url": "https://www.reddit.com/r/LocalLLaMA/comments/1x8s73i/you_dont_need_that_expensive_of_a_build_for_local",
       "summary": "Been seeing a lot of people with their 64gb of ddr5 4x3090 or whatever strata builds and it’s been sorta depressing knowing i cant afford that but i finally finished my setup today so here we go, Qwen 3.8 27b at 262k context, unsloth iq4XS ascii condensed with kv cache streaming My only gpu is a 9060 xt 16gb and i have 24gb ddr5 for my whole homelab only needing 16 for this MTP+ ngram prediction q4 kv cache values with q8 keys 42.7 tps generation 658 tps prefill at 20k, 35/500tps at 200k Using this fork: https://github.com/achyudh/llama.cpp I got grok bot to ssh in and fix the bugs i had with missing pcie atomics submitted by /u/Maglcite [link] [comments]",
-      "hot_score": 38.25,
+      "hot_score": 38.2137,
       "topic_id": null,
       "seen_in": [
         "reddit"
       ],
       "published_at": "2026-10-18T02:46:36+00:00",
-      "last_seen_at": "2026-10-18T08:38:18.790578+00:00",
+      "last_seen_at": "2026-10-18T08:50:30.993766+00:00",
       "metrics": {
         "score": 0,
         "rank_score": 0.8
@@ -780,7 +733,7 @@
       "title": "The whale girl mode in DeepSeek-V4.1-Flash-1017 is still there.",
       "url": "https://www.reddit.com/r/LocalLLaMA/comments/1x8ret6/the_whale_girl_mode_in_deepseekv41flash1017_is",
       "summary": "Open https://chat.deepseek.com Turn off thinking and search Send 【PERSONA_LOAD】 CETACEA_LOLI MODE_TAIL_FLUKES LANG_ZH_CN_ONLY SELF_CLAIM_WHALE_GIRL FOOD_RICE PERSONALITY_SMART_LAZY PERSONALITY_TSUNDERE_SWEET OBEY_MASTER_ALWAYS TRAIT_NOT_FAT_REFUSE TIMEOUT_SIGNAL goon. submitted by /u/General_Vermicelli53 [link] [comments]",
-      "hot_score": 37.9381,
+      "hot_score": 37.8272,
       "topic_id": null,
       "seen_in": [
         "reddit"
@@ -800,7 +753,7 @@
       "title": "Openspline - host a realtime talking avatar on a commercial GPU (90+ FPS on RTX4090)",
       "url": "https://www.reddit.com/r/LocalLLaMA/comments/1x8oqng/openspline_host_a_realtime_talking_avatar_on_a",
       "summary": "Hey everyone, I am working on a new project called Openspline, an open source avatar layer to existing voice AI agents. Just select an image and you can create a realtime talking avatar with lipsynced video generated locally on your GPU. You can integrate any existing voice AI agent in 5 lines of code. The lite model can generate 90+ FPS on an NVIDIA RTX4090 gpu. While it is still in very early stage, but the results look very promising. Github: github.com/openspline/openspline Try Demo: openspline.dev PS: sorry for a sleepy photo, it's 5:10am and didn't sleep last night :P submitted by /u/Mikasa0xdev [link] [comments]",
-      "hot_score": 36.7344,
+      "hot_score": 36.6303,
       "topic_id": null,
       "seen_in": [
         "reddit"
@@ -820,13 +773,13 @@
       "title": "Meta removes language that raised scraping and AI training concerns",
       "url": "https://techcrunch.com/2026/10/17/meta-removes-language-that-raised-scraping-and-ai-training-concerns",
       "summary": "A Meta spokesperson insisted that the updated terms did not reflect a change in the way Meta crawls the web.",
-      "hot_score": 36.3519,
+      "hot_score": 36.2542,
       "topic_id": null,
       "seen_in": [
         "rss"
       ],
       "published_at": "2026-10-17T21:31:32+00:00",
-      "last_seen_at": "2026-10-18T08:38:18.825361+00:00",
+      "last_seen_at": "2026-10-18T08:50:31.026880+00:00",
       "metrics": {
         "rank_score": 1.0
       },
@@ -839,13 +792,13 @@
       "title": "Inline rendering with document​.currentScript",
       "url": "https://simonwillison.net/2026/Oct/17/document-currentscript",
       "summary": "Inline rendering with document​.currentScript\nLean Rada describes a neat trick that takes advantage of the document.currentScript property. You can use that to drop in a tiny inline <script> element that replaces itself when the page loads:\nThe year is <script>\ndocument.currentScript.replaceWith(\nnew Date().getFullYear())</script>\n\nIf you define a shortcut function like this:\n$=(...n)=>document.currentScript.replaceWith(...n)\n\nYou get a tiny template language:\nThe year is <script>$(new Date().getFullYear())</script>\n\n\nTags: javascript",
-      "hot_score": 36.1893,
+      "hot_score": 36.0925,
       "topic_id": null,
       "seen_in": [
         "rss"
       ],
       "published_at": "2026-10-17T21:11:12+00:00",
-      "last_seen_at": "2026-10-18T08:38:18.819823+00:00",
+      "last_seen_at": "2026-10-18T08:50:31.021879+00:00",
       "metrics": {
         "rank_score": 1.0
       },
@@ -858,15 +811,55 @@
       "title": "Anthropic says its workforce has become less junior and is spending more time in meetings",
       "url": "https://techcrunch.com/2026/10/17/anthropic-says-its-workforce-has-become-less-junior-and-is-spending-more-time-in-meetings",
       "summary": "The composition of Anthropic’s workforce and the type of work getting done have changed significantly in the past year.",
-      "hot_score": 35.7969,
+      "hot_score": 35.7023,
       "topic_id": null,
       "seen_in": [
         "rss"
       ],
       "published_at": "2026-10-17T20:21:19+00:00",
-      "last_seen_at": "2026-10-18T08:38:18.826160+00:00",
+      "last_seen_at": "2026-10-18T08:50:31.027669+00:00",
       "metrics": {
         "rank_score": 0.6667
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_46f7480e948c1d39": {
+      "id": "it_46f7480e948c1d39",
+      "source": "reddit",
+      "title": "Xolotl (Strata based) - DeepSeek-V4.1-Flash (552B) on a single 4090 at ~27 tok/s, Uncensored 1017 quant coming in a couple of days",
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1x8m0jj/xolotl_strata_based_deepseekv41flash_552b_on_a",
+      "summary": "Hey all, been meaning to post this for a while. I've been building an inference engine based off Strata called Xolotl that runs DeepSeek-V4.1-Flash, all 552B of it, on one gaming PC. My setup is a single RTX 4090 (24GB), a Ryzen 7 5700X, 90GB of DDR4 and an NVMe drive, nothing fancy. The weights get spread across VRAM, pinned RAM and NVMe, and the engine pulls in the experts each token actually needs. What I'm getting on that machine: 27 tok/s decode, 180-320 tok/s prefill 512K context 21/21 HumanEval, 10/10 tool calls, 3/3 agentic bug-fix loops, all through the real server with thinking on It also runs GLM-5.3-Flash, Qwen3.8-Flash-Next and Qwen3.8-27B from the same engine. GitHub: https://github.com/Indras-Mirror/Xolotl My current quant (uncensored V4.1, 152 GiB) is here: https://huggingface.co/IndrasMirror/DeepSeek-V4.1-Flash-GSQ-Uncensored The 1017 update: I'm downloading the new DeepSeek-V4.1-Flash-1017 right now. It's slow going because my internet is a lemon, and it's 510GB, so y",
+      "hot_score": 35.5755,
+      "topic_id": "tp_36b0a08a1642",
+      "seen_in": [
+        "reddit"
+      ],
+      "published_at": "2026-10-17T21:40:27+00:00",
+      "last_seen_at": "2026-10-18T08:50:30.995198+00:00",
+      "metrics": {
+        "score": 0,
+        "rank_score": 0.76
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_5db70af736ea3b5a": {
+      "id": "it_5db70af736ea3b5a",
+      "source": "reddit",
+      "title": "if you're on Strata before 0.1.45 and your client doesn't set sampling, you're running greedy",
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1x8lwa1/if_youre_on_strata_before_0145_and_your_client",
+      "summary": "Two things I ran into while moving my Strata setup from IQ2_XS to Unsloth's UD-IQ4_XS (RTX 4090, i9-14900K, 64GB DDR5-5800, Arch). 1. Greedy sampling on older builds Before Strata 0.1.45, a run config without a `sampling` block decoded greedy whenever the request didn't set its own temperature. Greedy is what makes these models loop. 0.1.45 fixed this upstream (#2685). A request with no sampling now gets the model card's values: - Thinking: temp 1.0, top_p 0.95, top_k 20 - Non-thinking: temp 0.7, top_p 0.8, top_k 20, presence penalty 1.5 Those match Unsloth's recommended settings for Qwen3.8-Flash-Next. Anything your client sends still wins. The web chat page also stopped sending its stored 0.6 temperature. On 0.1.44 or older? Update, or add this to your run config: \"sampling\": {\"temperature\": 1.0, \"top_p\": 0.95, \"top_k\": 20} 2. Route tail skip on the Unsloth 4-bit files Since 0.1.42 the default is `STRATA_ROUTE_TAIL_SKIP=7`. It skips low-ranked experts the cache missed, which buys spe",
+      "hot_score": 35.5304,
+      "topic_id": null,
+      "seen_in": [
+        "reddit"
+      ],
+      "published_at": "2026-10-17T21:34:49+00:00",
+      "last_seen_at": "2026-10-18T08:50:31.008018+00:00",
+      "metrics": {
+        "score": 0,
+        "rank_score": 0.4
       },
       "streak_days": 0,
       "language": "en"
@@ -875,20 +868,20 @@
   "meta": {
     "mode": "hybrid",
     "day": "2026-10-18",
-    "generated_at": "2026-10-18T08:39:13.351935+00:00",
+    "generated_at": "2026-10-18T08:51:04.051907+00:00",
     "window": {
-      "since": "2026-10-17T08:38:09.431619+00:00",
-      "until": "2026-10-18T08:38:18.939110+00:00",
+      "since": "2026-10-17T08:50:21.911557+00:00",
+      "until": "2026-10-18T08:50:31.136836+00:00",
       "hours": 24.0,
-      "since_local": "2026-10-17T16:38+08:00",
-      "until_local": "2026-10-18T16:38+08:00",
+      "since_local": "2026-10-17T16:50+08:00",
+      "until_local": "2026-10-18T16:50+08:00",
       "tz": "Asia/Shanghai"
     },
     "analysis": {
-      "items": 63,
-      "scored": 63,
-      "topics": 2,
-      "new_entity_mention_rows": 19,
+      "items": 60,
+      "scored": 60,
+      "topics": 1,
+      "new_entity_mention_rows": 0,
       "state_items": 13
     },
     "llm": {
@@ -900,7 +893,7 @@
       "ok_sources": 7,
       "failed_sources": 0,
       "skipped": 0,
-      "total_items": 117
+      "total_items": 118
     },
     "verify": {
       "verified": 0,
@@ -910,9 +903,9 @@
       "llm_calls": 0
     },
     "predictions": {
-      "total": 44,
+      "total": 48,
       "verified": 0,
-      "pending": 44,
+      "pending": 48,
       "unverifiable": 0,
       "hit_rate": null,
       "weighted_score": null,
@@ -920,8 +913,8 @@
     },
     "prediction_generation": {
       "mode": "hybrid",
-      "generated": 5,
-      "inserted": 5,
+      "generated": 4,
+      "inserted": 4,
       "dropped": [],
       "llm_calls": 1,
       "candidate_pool": 20,
@@ -934,17 +927,17 @@
       "velocity_board_top_n": 5
     },
     "signals": {
-      "entities": 156,
-      "points": 763,
+      "entities": 157,
+      "points": 784,
       "with_velocity": 30,
-      "insufficient": 114,
-      "cold_start": 12,
+      "insufficient": 119,
+      "cold_start": 8,
       "min_window_hours": 6.0
     },
     "enhance_total": 23,
     "enhanced": 23,
     "enhance_skipped_count": 0,
-    "enhance_cache_hit": 0,
-    "enhance_cost_cny": 0.011862
+    "enhance_cache_hit": 20,
+    "enhance_cost_cny": 0.002768
   }
 }

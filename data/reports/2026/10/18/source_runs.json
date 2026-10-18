@@ -1,62 +1,62 @@
 {
   "date": "2026-10-18",
-  "generated_at": "2026-10-18T08:39:13.351935+00:00",
+  "generated_at": "2026-10-18T08:51:04.051907+00:00",
   "collected": true,
   "sources": [
     {
       "source": "github_trending",
       "status": "ok",
       "item_count": 13,
-      "started_at": "2026-10-18T08:38:09.518928+00:00",
-      "finished_at": "2026-10-18T08:38:10.758120+00:00",
+      "started_at": "2026-10-18T08:50:22.000531+00:00",
+      "finished_at": "2026-10-18T08:50:23.184597+00:00",
       "error": null
     },
     {
       "source": "arxiv",
       "status": "ok",
       "item_count": 60,
-      "started_at": "2026-10-18T08:38:09.556845+00:00",
-      "finished_at": "2026-10-18T08:38:11.595550+00:00",
+      "started_at": "2026-10-18T08:50:22.036935+00:00",
+      "finished_at": "2026-10-18T08:50:22.274795+00:00",
       "error": null
     },
     {
       "source": "hf_papers",
       "status": "degraded",
       "item_count": 0,
-      "started_at": "2026-10-18T08:38:09.557819+00:00",
-      "finished_at": "2026-10-18T08:38:09.615667+00:00",
+      "started_at": "2026-10-18T08:50:22.037814+00:00",
+      "finished_at": "2026-10-18T08:50:22.098374+00:00",
       "error": null
     },
     {
       "source": "hackernews",
       "status": "ok",
-      "item_count": 7,
-      "started_at": "2026-10-18T08:38:09.558578+00:00",
-      "finished_at": "2026-10-18T08:38:11.833700+00:00",
+      "item_count": 8,
+      "started_at": "2026-10-18T08:50:22.038564+00:00",
+      "finished_at": "2026-10-18T08:50:24.491396+00:00",
       "error": null
     },
     {
       "source": "reddit",
       "status": "degraded",
       "item_count": 25,
-      "started_at": "2026-10-18T08:38:09.559310+00:00",
-      "finished_at": "2026-10-18T08:38:13.520611+00:00",
+      "started_at": "2026-10-18T08:50:22.039327+00:00",
+      "finished_at": "2026-10-18T08:50:26.125031+00:00",
       "error": null
     },
     {
       "source": "rss",
       "status": "degraded",
       "item_count": 12,
-      "started_at": "2026-10-18T08:38:09.559964+00:00",
-      "finished_at": "2026-10-18T08:38:18.686299+00:00",
+      "started_at": "2026-10-18T08:50:22.039951+00:00",
+      "finished_at": "2026-10-18T08:50:30.890831+00:00",
       "error": null
     },
     {
       "source": "inbox",
       "status": "degraded",
       "item_count": 0,
-      "started_at": "2026-10-18T08:38:09.560189+00:00",
-      "finished_at": "2026-10-18T08:38:09.615792+00:00",
+      "started_at": "2026-10-18T08:50:22.040170+00:00",
+      "finished_at": "2026-10-18T08:50:22.098581+00:00",
       "error": null
     }
   ]
