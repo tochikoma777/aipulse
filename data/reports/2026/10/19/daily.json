@@ -1,0 +1,979 @@
+{
+  "date": "2026-10-19",
+  "headline": "Anthropic 把 AI 安全立法门槛定在“50 死或 10 亿美元损失”，等于承认监管只能事后追责，而今天真正在扩张的是智能体基础设施。",
+  "headline_item_id": "it_a257dddc2d05fd3f",
+  "overview_bullets": [
+    {
+      "icon": "🔐",
+      "topic": "安全立法",
+      "text": "Anthropic 提出的 AI 安全法案以“50 人死亡或 10 亿美元损失”为触发线，把监管重心放在灾难性后果而非事前能力评估上。"
+    },
+    {
+      "icon": "🤖",
+      "topic": "智能体工程",
+      "text": "从 orca 的智能体集群、ai-memory 的跨厂商记忆到 CLI-Anything 的“让所有软件对智能体原生”，智能体正从单次对话转向可运维的长期系统。"
+    },
+    {
+      "icon": "📄",
+      "topic": "长程评测",
+      "text": "BizBench、Into the Unknown、PhysClosureBench 同日出现，研究界开始用真实业务与科研闭环来考核智能体，而非只看最终成功率。"
+    },
+    {
+      "icon": "🛠️",
+      "topic": "本地开源",
+      "text": "VoiceStudio 以全本地、646 语言的语音克隆对标 ElevenLabs，ComfyUI 继续占据本地推理，开源侧在“可自托管”上持续加码。"
+    },
+    {
+      "icon": "💬",
+      "topic": "代理自省",
+      "text": "HN 上“不自己跑 LLM 代理，你怎么知道发生了什么”与 WhatsApp MCP 免费部署同框，开发者对调用链可观测性的焦虑正在变成自建基础设施的动力。"
+    }
+  ],
+  "executive_summary": "今天的主线不是某个模型发布，而是智能体从演示走向可运维系统时，安全、评测与可观测性三条配套链条同时被补课。",
+  "editor_note": {
+    "core": "今天最该记住的是 Anthropic 把安全法案的触发条件写成“50 死或 10 亿美元损失”——这不是保守，而是承认能力评估追不上部署速度，只能退守后果追责。",
+    "cross_signal": "BizBench 指出真实业务里策略过时与冲突才是智能体失败主因，HN 上“不自己跑代理就不知道发生了什么”的焦虑与之同源：问题不在模型不够强，而在执行过程不可审计。",
+    "counterintuitive": "热度最高的是安全法案和 Zelda 时间线，但真正改变格局的是 ai-memory、CLI-Anything 这类低热度基础设施——它们决定智能体能否跨厂商交接，而不是某个模型多考几分。",
+    "risk": "大量“长程智能体”论文用自建基准互相打分，若评测与真实业务脱节，会制造能力已就绪的错觉；同时本地语音克隆与 WhatsApp MCP 这类工具把隐私风险直接推给个人用户。"
+  },
+  "contradictions": [
+    "Anthropic 一边推动以灾难后果为触发线的安全立法，一边其 Claude Code 生态（官方插件目录、orca 等）正加速智能体在真实环境的部署，监管节奏与产品节奏明显错位。",
+    "论文宣称 GPT-6-Astra 在机器人操作上挑战专用模型范式，但 HexaShell 同时显示 VLM 编码智能体控制机器人仍有明确边界，能力上限的表述互相拉扯。"
+  ],
+  "underrated": [
+    "akitaonrails/ai-memory：跨厂商智能体记忆与交接，解决的是生态割裂这一真问题",
+    "DLite: History-free Speculative Decoding for Agentic AI：针对智能体长上下文演化的推理加速，比通用投机解码更贴场景",
+    "HKUDS/CLI-Anything：把软件改造成智能体原生接口，可能比再做一个 agent 框架更有杠杆",
+    "British Airways 对 Meta 眼镜拍摄的票务限制：AI 硬件进入公共空间的规则摩擦先于产品成熟到来"
+  ],
+  "sections": [
+    {
+      "name": "开源项目",
+      "summary": "智能体编排、记忆与本地多模态工具集中冒头，开源侧在“自托管 + 可组合”上继续挤压闭源 SaaS。",
+      "item_ids": [
+        "it_752e25023358d2db",
+        "it_db643b160f4cefa8",
+        "it_645a6cf2b3acc8ac",
+        "it_940ae4b9591d1f09",
+        "it_8374e30db02abb47",
+        "it_7d0ed93b88de47b1",
+        "it_1f28a16c9fe19cbe",
+        "it_e5cfb0e04690d62f",
+        "it_f5b06496973809a2",
+        "it_85ee7a3aef761044",
+        "it_6edbb4ac65c44807"
+      ]
+    },
+    {
+      "name": "论文与研究",
+      "summary": "长程智能体的上下文组织、信用分配与真实场景评测成为今日论文的绝对重心。",
+      "item_ids": [
+        "it_941d94c2aa45f176",
+        "it_21ce41f5011b329d",
+        "it_b9421a3a92244e06",
+        "it_8e5d3dfe2f11aa37",
+        "it_2cfbdd1f149165c9",
+        "it_da30642e95212d7a",
+        "it_da6fa09c3b2638e7",
+        "it_7dfc26153906a371",
+        "it_a76893f97d65e1d8",
+        "it_476331c599306ba7"
+      ]
+    },
+    {
+      "name": "社区舆论",
+      "summary": "HN 讨论从模型能力转向代理可观测性、隐私边界与“模型能不能真的干活”的实测趣味。",
+      "item_ids": [
+        "it_a257dddc2d05fd3f",
+        "it_e9bd6e2a8f74e6f7",
+        "it_3d018421b0939c7e",
+        "it_de27b9e1c78286c0",
+        "it_d2e2b582e2726ffa",
+        "it_de3bfda753661ac1",
+        "it_ad69629782d00cc6"
+      ]
+    },
+    {
+      "name": "产业与新闻",
+      "summary": "航空场景对智能眼镜拍摄的限制，是消费级 AI 硬件撞上现实规则的第一个明确案例。",
+      "item_ids": [
+        "it_ad547968d473b564",
+        "it_8f1b78fcf0c44ef0"
+      ]
+    }
+  ],
+  "comments": [
+    {
+      "item_id": "it_752e25023358d2db",
+      "one_liner": "一个基于 Claude Code 的本地求职框架，可评估职位、定制简历、撰写求职信并准备面试",
+      "why": "求职流程被拆成可 fork 的本地框架，简历与求职信在用户机器上生成，投递数据不再经过第三方招聘平台。",
+      "stance": "求职者拿回数据主权是好事，但批量定制简历会把招聘方的筛选成本转嫁给 HR。"
+    },
+    {
+      "item_id": "it_db643b160f4cefa8",
+      "one_liner": "一个完全本地运行的开源 ElevenLabs 替代品，支持语音克隆、语音设计、视频配音、听写、转写和有声书制作，覆盖 646 种语言",
+      "why": "语音克隆与配音从云端订阅搬到本地，646 种语言覆盖让中小创作者绕开按量计费与声音数据留存。",
+      "stance": "本地化是正确方向，但声音克隆门槛降到零之后，冒用他人声纹的追责机制完全没跟上。"
+    },
+    {
+      "item_id": "it_645a6cf2b3acc8ac",
+      "one_liner": "一个开源的编码 agent",
+      "why": "编码代理的开源实现把模型调用与工具编排暴露给用户自改，闭源产品的定价权被侵蚀。",
+      "stance": "开源编码代理会赢下重度开发者，但摘要只有一句话，说明项目成熟度还撑不起生产环境。"
+    },
+    {
+      "item_id": "it_940ae4b9591d1f09",
+      "one_liner": "一个用于管理多个 agent（如 Grok Bot、Claude Code）的协作平台，可用自己的订阅运行任意编码 agent，支持桌面、移动端和远程运行时",
+      "why": "把多个编码代理放进同一调度层并复用用户自有订阅，代理从单机工具变成可远程编排的机群。",
+      "stance": "多代理编排是真需求，但依赖用户订阅额度转用，随时会被上游厂商的条款收紧掐断。"
+    },
+    {
+      "item_id": "it_8374e30db02abb47",
+      "one_liner": "Anthropic 官方维护的高质量 Claude Code 插件目录",
+      "why": "官方接管插件目录，等于把第三方技能包纳入审核与分发体系，生态从野生走向分层准入。",
+      "stance": "官方收编是平台化的必经一步，代价是未被收录的插件会被默认视为不可信。"
+    },
+    {
+      "item_id": "it_7d0ed93b88de47b1",
+      "one_liner": "一个模块化的扩散模型 GUI、API 与后端，采用图/节点式界面，主打本地推理",
+      "why": "节点式图界面把扩散模型的推理流程标准化，本地出图成本压到接近零，云端生图服务被持续挤出。",
+      "stance": "本地推理引擎已是事实标准，但节点图的学习曲线把非技术创作者挡在门外。"
+    },
+    {
+      "item_id": "it_1f28a16c9fe19cbe",
+      "one_liner": "HKUDS 推出的项目，旨在让所有软件都成为 agent 原生，并提供 CLI-Hub 入口",
+      "why": "把传统软件包装成命令行接口供代理调用，代理可操作的工具面从少数 API 扩展到全部本地程序。",
+      "stance": "方向对，但让代理直接驱动任意 CLI 意味着权限边界形同虚设，安全模型是最大短板。"
+    },
+    {
+      "item_id": "it_e5cfb0e04690d62f",
+      "one_liner": "一个为 agent 编码 CLI 提供长期记忆的方案，并支持在不同 agent 厂商之间交接",
+      "why": "跨厂商的长期记忆与交接层出现，用户换编码代理时不必重灌上下文，厂商锁定被削弱。",
+      "stance": "记忆层是代理生态里最该被中立化的部分，交给单一厂商做就是新的锁定。"
+    },
+    {
+      "item_id": "it_f5b06496973809a2",
+      "one_liner": "一套入门大语言模型的课程，包含学习路线图和 Colab notebook",
+      "why": "带路线图与可运行笔记本的课程降低了入门门槛，把 LLM 学习从论文阅读转为动手复现。",
+      "stance": "入门教材的价值在于降低试错成本，但课程更新速度永远追不上模型迭代。"
+    },
+    {
+      "item_id": "it_85ee7a3aef761044",
+      "one_liner": "一个 agent harness，可部署多 agent 集群、协调自主工作流并构建对话式 AI 系统，内置自适应记忆、向量 RAG 与 Claude Code、Codex 等集成",
+      "why": "多代理蜂群加自适应记忆与向量检索，把代理框架从单任务执行推向可编排的协作系统。",
+      "stance": "功能堆得越全越难验证，这类全家桶框架的实际可靠性远低于其特性列表。"
+    },
+    {
+      "item_id": "it_941d94c2aa45f176",
+      "one_liner": "提出一种面向长程 agent 的「面向对象上下文」方法，用可复用的任务进展状态替代冗长的交互历史",
+      "why": "把长程智能体的上下文从「过程历史」重构为「可复用进度对象」，直接削减上下文膨胀带来的推理成本与遗忘风险，受益方是需要跑数百步的任务型智能体。",
+      "stance": "方向正确：上下文该按状态而非流水账组织，历史回放是当前长程智能体最大的浪费。"
+    },
+    {
+      "item_id": "it_21ce41f5011b329d",
+      "one_liner": "一份评估 GPT-6-Astra 在机器人操作与导航任务上表现、并讨论其具身智能含义的报告",
+      "why": "若单一通用模型在操作与导航上追平专用策略，机器人栈的「一任务一模型」分工与数据采集投入将被重新定价。",
+      "stance": "标题里的问号是营销，但结论若成立，专用机器人模型公司的护城河会被削平。"
+    },
+    {
+      "item_id": "it_b9421a3a92244e06",
+      "one_liner": "BizBench：面向真实商业场景的长程 agent 基准，重点考察中间执行过程是否合规，而非只看最终任务是否成功",
+      "why": "把评测重心从最终成功率移到中间步骤合规性，暴露企业部署中真正致命的失败模式——过时或冲突的政策被静默绕过。",
+      "stance": "这是目前最贴近落地痛点的基准方向，只看终局成功率的排行榜已经失真。"
+    },
+    {
+      "item_id": "it_8e5d3dfe2f11aa37",
+      "one_liner": "一种面向长程 agentic 强化学习的树状后验蒸馏方法，用于缓解稀疏终局奖励带来的信用分配问题",
+      "why": "用树结构后验蒸馏把终端奖励分摊到每一轮，缓解长程强化学习的信用分配稀疏与高方差，直接决定智能体后训练能否规模化。",
+      "stance": "信用分配是长程 RL 的真瓶颈，这类方法比再堆算力更有价值。"
+    },
+    {
+      "item_id": "it_2cfbdd1f149165c9",
+      "one_liner": "Into the Unknown：让 AI agent 针对开放科学问题撰写后续论文的科研能力基准，任务由 DOE 国家实验室科学家参与设计",
+      "why": "以「能否写出后续论文」作为开放科研任务的判据，把智能体评测从有标准答案的题面推向无解空间，国家实验室参与意味着评测口径带有领域权威性。",
+      "stance": "开放科研基准比刷题基准难造假，但也最容易把「像论文」误判为「有发现」。"
+    },
+    {
+      "item_id": "it_da30642e95212d7a",
+      "one_liner": "DiscoveryRSI：通过递归学习从研究过程中提炼可检验、有价值科学假设的方法",
+      "why": "给「有价值假设」下可操作定义并递归学习，使假设生成从一次性提示变成可迭代优化的对象，影响的是 AI 科研助手的产出筛选环节。",
+      "stance": "定义先行是对的，但「有价值」一旦被形式化，模型就会去优化这个代理指标而非真实新颖性。"
+    },
+    {
+      "item_id": "it_da6fa09c3b2638e7",
+      "one_liner": "HexaShell：一个轻量封装层，让 VLM 编码 agent 直接控制机器人，以探测其能力边界",
+      "why": "用极薄的封装让 VLM 编码智能体直接驱动机器人，测的是通用编码能力迁移到物理世界的边界，而非再训一个策略网络。",
+      "stance": "薄封装路线值得押注：它把机器人能力问题转化为接口与反馈设计问题。"
+    },
+    {
+      "item_id": "it_7dfc26153906a371",
+      "one_liner": "PhysClosureBench：包含 50 个专家核验物理研究任务的基准，评估 agent 能否得出有证据支撑的结论",
+      "why": "以「结论是否有证据支撑」为评分轴，50 个专家核验的物理任务把智能体评测从任务完成推向论证闭合，直接影响科研智能体的可信度叙事。",
+      "stance": "评证据链比评答案对错更接近科研本质，但 50 题的规模撑不起统计结论。"
+    },
+    {
+      "item_id": "it_a76893f97d65e1d8",
+      "one_liner": "DLite：面向 agentic 场景的无历史投机解码方法，应对长且持续变化的上下文",
+      "why": "针对智能体负载中持续增长且不断变异的上下文，去掉对历史草稿的依赖，直接压低长会话推理的延迟与显存开销。",
+      "stance": "投机解码的战场已从通用对话转向智能体长上下文，这一步是必要的工程修正。"
+    },
+    {
+      "item_id": "it_476331c599306ba7",
+      "one_liner": "Game2Real-Bench：考察玩具游戏类任务能否揭示并迁移到真实世界视觉推理能力的基准",
+      "why": "检验玩具游戏上的视觉推理能否迁移到真实场景，决定程序化生成数据能否作为 VLM 训练与评测的廉价替代品。",
+      "stance": "迁移性若被证伪，一整类合成视觉基准的合法性会随之崩塌。"
+    },
+    {
+      "item_id": "it_a257dddc2d05fd3f",
+      "one_liner": "Anthropic 提出的 AI 安全法案规定，只有在造成 50 人死亡或 10 亿美元损失时才触发监管条款。",
+      "why": "把 AI 安全立法的触发条件量化为死亡人数与十亿美元级损失，等于把监管从预防性审查改成事后追责，前沿实验室的合规成本与发布节奏随之重排。",
+      "stance": "以尸体和账单为门槛的立法不是安全护栏，是给事故发的许可证。"
+    },
+    {
+      "item_id": "it_e9bd6e2a8f74e6f7",
+      "one_liner": "一个为迎接 Ocarina of Time 重制版而制作的 Zelda 系列时间线梳理网站。",
+      "why": "玩家为赶在重制版发售前补完三十年叙事线而自建时间线，说明重制潮正在把老 IP 的考据工作外包给社区，官方设定集的权威被民间整理稀释。",
+      "stance": "社区考据比官方设定集更实用，但这份热情本质是给炒冷饭买单。"
+    },
+    {
+      "item_id": "it_3d018421b0939c7e",
+      "one_liner": "British Airways 警告称，使用 Meta Glasses 拍摄的摄制团队可能被取消机票。",
+      "why": "航司把可穿戴摄像设备列为可取消机票的理由，把拍摄行为从内容合规问题升级为运输合同问题，智能眼镜用户在所有封闭场所的默认许可被推翻。",
+      "stance": "航司有权管客舱秩序，但用取消机票来执法是把乘客当潜在违规者。"
+    },
+    {
+      "item_id": "it_de27b9e1c78286c0",
+      "one_liner": "在 PalmOS 平台上运行的 Lemmings 游戏移植版。",
+      "why": "把经典游戏移植回已死二十年的掌上系统，是复古计算社区在证明老硬件的可维护性，也让这批设备的软件遗产免于随硬件一起消失。",
+      "stance": "这类移植的价值不在怀旧，在于证明封闭平台死后仍可被社区接管。"
+    },
+    {
+      "item_id": "it_d2e2b582e2726ffa",
+      "one_liner": "一篇讨论自建 LLM 代理以掌握请求流向与可观测性的帖子。",
+      "why": "自建代理才能看到请求与响应的真实流向，把模型调用的可观测性从厂商仪表盘夺回自己手里，代价是运维负担与密钥管理责任全部内化。",
+      "stance": "不自建代理就等于把审计权交给供应商，这笔账迟早要还。"
+    },
+    {
+      "item_id": "it_de3bfda753661ac1",
+      "one_liner": "一个运行在 Cloudflare 上、免费接入个人 WhatsApp 账号的 MCP 服务。",
+      "why": "把个人 WhatsApp 账号接进移动端助手，绕开商业版 API 与自建服务器，意味着私人通信数据开始流入第三方模型上下文，隐私边界被个人便利性击穿。",
+      "stance": "免费跑通很聪明，但把私人聊天喂给模型是拿隐私换便利的典型交易。"
+    },
+    {
+      "item_id": "it_ad69629782d00cc6",
+      "one_liner": "用 Claude Opus 5.5 生成的单个 6.3 MB HTML 文件，内含 500 个时钟。",
+      "why": "用单文件网页里的时钟数量与体积作为模型能力标尺，把评测从基准分数转向可肉眼检验的产物复杂度，模型对比的公共话语因此更依赖作品而非榜单。",
+      "stance": "这种土办法比跑分诚实，但拿生成物数量当能力证明仍是自我安慰。"
+    },
+    {
+      "item_id": "it_ad547968d473b564",
+      "one_liner": "llm-tools-datasette 发布 0.1.1，修复了 LLM 0.33 切换 httpx2 导致的插件兼容问题。",
+      "why": "底层 HTTP 库换代导致依赖它的插件静默失效，暴露 LLM 插件生态对宿主内部实现的隐性耦合，第三方扩展的稳定性取决于上游是否记得声明依赖。",
+      "stance": "插件被上游换库顺手打挂，说明这个生态的兼容承诺还很脆弱。"
+    },
+    {
+      "item_id": "it_8f1b78fcf0c44ef0",
+      "one_liner": "llm-echo 调试插件发布 0.5，更新了模拟 token 相关行为。",
+      "why": "不接模型的回显插件随主版本同步更新，让开发者能在不烧 token 的前提下验证提示词与工具链，调试成本从按量计费降到零。",
+      "stance": "这种哑模型插件是 LLM 工具链里最被低估的基础设施。"
+    }
+  ],
+  "stats": {},
+  "items": {
+    "it_a257dddc2d05fd3f": {
+      "id": "it_a257dddc2d05fd3f",
+      "source": "hackernews",
+      "title": "Anthropic's proposed AI safety bill only kicks in if 50 deaths or $1B in damages",
+      "url": "https://www.tomshardware.com/tech-industry/artificial-intelligence/anthropics-proposed-ai-safety-bill-only-kicks-in-if-50-deaths-or-usd1-billion-in-damages-are-on-the-line-proposal-would-effectively-make-the-commerce-department-the-only-agency-capable-of-stopping-an-ai-model",
+      "summary": "",
+      "hot_score": 84.383,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-18T14:30:27+00:00",
+      "last_seen_at": "2026-10-19T03:08:37.997859+00:00",
+      "metrics": {
+        "points": 157,
+        "num_comments": 161
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_752e25023358d2db": {
+      "id": "it_752e25023358d2db",
+      "source": "github_trending",
+      "title": "MadsLorentzen/ai-job-search",
+      "url": "https://github.com/MadsLorentzen/ai-job-search",
+      "summary": "The job search that runs on your machine. AI job application framework built on Claude Code: evaluate postings, tailor CVs, write cover letters, prep interviews. Fork it and own it.",
+      "hot_score": 80.7876,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-16T15:44:39.424248+00:00",
+      "last_seen_at": "2026-10-19T03:08:38.031386+00:00",
+      "metrics": {
+        "stars_total": 53638,
+        "stars_in_window": 2232,
+        "forks": 17454,
+        "streak_days": 4
+      },
+      "streak_days": 4,
+      "language": "Python"
+    },
+    "it_db643b160f4cefa8": {
+      "id": "it_db643b160f4cefa8",
+      "source": "github_trending",
+      "title": "debpalash/VoiceStudio",
+      "url": "https://github.com/debpalash/VoiceStudio",
+      "summary": "VoiceStudio is the open-source, fully-local ElevenLabs alternative — voice cloning, voice design, video dubbing, dictation, transcription & audiobook creation in 646 languages.",
+      "hot_score": 80.0465,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-15T14:47:23.502371+00:00",
+      "last_seen_at": "2026-10-19T03:08:38.036288+00:00",
+      "metrics": {
+        "stars_total": 75680,
+        "stars_in_window": 3027,
+        "forks": 8289,
+        "streak_days": 5
+      },
+      "streak_days": 5,
+      "language": "Python"
+    },
+    "it_645a6cf2b3acc8ac": {
+      "id": "it_645a6cf2b3acc8ac",
+      "source": "github_trending",
+      "title": "anomalyco/opencode",
+      "url": "https://github.com/anomalyco/opencode",
+      "summary": "The open source coding agent.",
+      "hot_score": 76.6918,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-17T14:54:44.860471+00:00",
+      "last_seen_at": "2026-10-19T03:08:38.032868+00:00",
+      "metrics": {
+        "stars_total": 216721,
+        "stars_in_window": 1414,
+        "forks": 29014,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "TypeScript"
+    },
+    "it_e9bd6e2a8f74e6f7": {
+      "id": "it_e9bd6e2a8f74e6f7",
+      "source": "hackernews",
+      "title": "Show HN: The Zelda timeline to catch up before the Ocarina of Time remake",
+      "url": "https://legendofhyrule.com/",
+      "summary": "I made this ahead of the Ocarina of Time remake which comes out in 17 days. I remember the feeling of playing it as a kid but I hadn’t kept up with the story so I built a timeline to catch up before the Door of Time reopens. Nintendo’s own timeline is the authority here (Hyrule Historia and their chronicle page). The fun part was rethinking how to visualize it. It branches at the end of Ocarina into three eras depending on whether Link wins or loses, so each era is its own thread on the cloth. T",
+      "hot_score": 76.2519,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-18T13:06:54+00:00",
+      "last_seen_at": "2026-10-19T03:08:37.994489+00:00",
+      "metrics": {
+        "points": 167,
+        "num_comments": 102
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_3d018421b0939c7e": {
+      "id": "it_3d018421b0939c7e",
+      "source": "hackernews",
+      "title": "British Airways: Filming Crew W Meta Glasses Could Get Your Tickets Cancelled",
+      "url": "https://liveandletsfly.com/british-airways-meta-smart-glasses-filming",
+      "summary": "",
+      "hot_score": 70.8038,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-18T17:27:30+00:00",
+      "last_seen_at": "2026-10-19T03:08:38.000041+00:00",
+      "metrics": {
+        "points": 91,
+        "num_comments": 146
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_941d94c2aa45f176": {
+      "id": "it_941d94c2aa45f176",
+      "source": "hf_papers",
+      "title": "Pack Light, CarryOn: Building Object-Oriented Context for Long-Horizon Agents",
+      "url": "arxiv:2610.18784",
+      "summary": "Long-horizon agents accumulate progress in persistent task state, yet repeatedly process interaction histories describing how that progress was achieved. This raises a natural question: can long-horizon context instead be organized around reusable progress rather than the history that produced it? In this paper, we introduce CarryOn, an object-oriented context runtime that organizes continuation around reusable task objects. Rather than treating compressed histories or reconstructed accounts of progress as the primary basis for continuation, CarryOn builds a context view from continuation carriers, complementary execution context, and a live tail of recent interactions. A core challenge is keeping this reusable basis valid after its surrounding history is retired: how can CarryOn update the basis without reconstructing the full representation at every fold? CarryOn maintains carrier records across folds, revising affected records against bound evidence and applicable environment checks while carrying forward unaffected records and jointly updating execution context. Experiments on OSWorld 2.0 and BrowseComp-Plus show improved gains of 5.8% and 7.0% while reducing total token usage by 51.9% and 22.9%, respectively. Project page: https://ethannju.github.io/carryon",
+      "hot_score": 69.0784,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-13T13:35:27+00:00",
+      "last_seen_at": "2026-10-19T03:08:38.038725+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 51
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_21ce41f5011b329d": {
+      "id": "it_21ce41f5011b329d",
+      "source": "hf_papers",
+      "title": "Has GPT-6-Astra Achieved Embodied Intelligence?",
+      "url": "arxiv:2610.22471",
+      "summary": "GPT-6-Astra demonstrates a level of competence in robotic manipulation and navigation that challenges the conventional paradigm of building specialized models for individual tasks and embodiments. In this report, we ask not only how capable GPT-6-Astra is, but what its capabilities imply for the field. First, we probe the limits of standalone GPT-6-Astra. We conduct a large-scale evaluation across 12 representative benchmarks spanning tabletop manipulation, humanoids, mobile platforms, and dexterous hands. Under a unified protocol that allows in-context learning (ICL) from training-set demonstrations and substantially increases the number of execution steps, GPT-6-Astra achieves unprecedented performance (Fig. 1). Future research may focus on improving 1) the generality of ICL 2) cost and execution time, 3) physical-state verification, 4) recovery from irreversible failures, and 5) long-horizon preservation of progress. Second, we study the agentic harness for embodied control. We identify that close-loop coordination between a high-level \"System 2\" reasoner (i.e., GPT-6-Astra) and a low-level \"System 1\" controller (e.g., π0.5) is costly but effective. Third, we examine GPT-6-Astra on real-world deployment. Our experiments on 8 robot configurations reveal substantial gaps: 1) robot demonstrations required for ICL are expensive to collect, and 2) it is implausible to trade longer execution for higher success rates with physical constraints. Fourth, we envision the next generation of embodied benchmarks. We develop a prototype that 1) derives tasks from real-world needs, 2) provides no in-domain demonstrations, and 3) judges agents on a world clock that keeps running while they deliberate. Taken together, our results suggest that GPT-6-Astra has largely crossed the threshold of embodied competence, but not yet that of practical embodied intelligence.",
+      "hot_score": 67.3462,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-14T20:00:00+00:00",
+      "last_seen_at": "2026-10-19T03:08:38.039612+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 26
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_940ae4b9591d1f09": {
+      "id": "it_940ae4b9591d1f09",
+      "source": "github_trending",
+      "title": "stablyai/orca",
+      "url": "https://github.com/stablyai/orca",
+      "summary": "Orca is the place for working with a fleet of agents (e.g. Grok Bot, Claude Code). Run any coding agent with your own subscription. Available on desktop, mobile and remote runtime.",
+      "hot_score": 66.9696,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-17T14:54:44.860455+00:00",
+      "last_seen_at": "2026-10-19T03:08:38.035127+00:00",
+      "metrics": {
+        "stars_total": 96855,
+        "stars_in_window": 1146,
+        "forks": 6186,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "TypeScript"
+    },
+    "it_b9421a3a92244e06": {
+      "id": "it_b9421a3a92244e06",
+      "source": "hf_papers",
+      "title": "BizBench: Unveiling Hidden Challenges in Deploying Long-Horizon Agents for Real-World Business",
+      "url": "arxiv:2610.20424",
+      "summary": "Existing long-horizon agent benchmarks often emphasize final task success while providing limited assessment of intermediate execution validity. Yet real-world business operations require agents to navigate extensive, potentially outdated or conflicting policies while satisfying critical constraints throughout execution. These requirements are particularly consequential in high-stakes domains such as payments, where intermediate violations can incur financial losses or regulatory consequences regardless of the final outcome. To bridge this evaluation gap, we introduce BizBench, a multi-turn benchmark grounded in real-world procedures from a leading payments company. Its executable environment integrates 789 knowledge documents and 601 discoverable business tools, with consistent policies, states, and tool behavior. The benchmark comprises 50 tasks involving resource constraints, temporal dependencies, prior commitments, and conflicting or outdated guidance. Each task is validated through reference execution, while deterministic checks assess both goal attainment and execution validity without prescribing a single solution path. Experiments reveal substantial limitations even among frontier models: Claude Opus 5 and GPT-6 Sol achieve strict success rates of only 64.0% and 61.3%, respectively. For Qwen3.8-27B, goal attainment reaches 42.0%, but strict success drops to 32.7%, demonstrating how outcome-based evaluation can mask invalid execution. Beyond success rates, DeepSeek-V4.1-Flash averages 191.3 tool calls per run, approximately 70% more than reference executions, revealing substantial execution overhead. Overall, BizBench establishes a testbed for evaluating and advancing long-horizon agents beyond task completion, toward reliable and constraint-compliant execution in complex business environments.",
+      "hot_score": 64.1912,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-13T20:00:00+00:00",
+      "last_seen_at": "2026-10-19T03:08:38.040587+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 19
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_8e5d3dfe2f11aa37": {
+      "id": "it_8e5d3dfe2f11aa37",
+      "source": "hf_papers",
+      "title": "Tree-Aware Posterior Distillation for Long-Horizon Agentic Reinforcement Learning",
+      "url": "arxiv:2610.23181",
+      "summary": "Reinforcement learning with verifiable rewards has become a scalable post-training paradigm for large language models. However, training agents over long-horizon interactions presents two challenges: using only terminal rewards makes turn-level credit assignment sparse and high-variance, while sequential mini-batch updates on a fixed rollout batch introduce policy staleness as the current policy drifts from the behavior policy. Existing approaches obtain denser credit via learned critics, process reward models, or on-policy distillation, but they rely on a value network, step-level annotations, or a stronger external teacher that increase training complexity. Meanwhile, importance sampling and clipping mitigate policy drift, but they do not specify a finite target that stops sequential updates from overshooting. In this work, we introduce TreeOPSD, a critic-free, tree-aware posterior self-distillation framework for long-horizon agentic reinforcement learning. Treating each interaction turn as a tree node, TreeOPSD branches alternative continuations from shared prefixes and recursively backs up terminal rewards into implicit turn-level credit. It then maps each credit to a closed-form, bounded teacher distribution parameterized by the likelihood ratio relative to the frozen behavior policy. Minimizing the divergence between this teacher and the student policy recovers the policy-gradient direction as the tangent at the behavior policy while bounding updates toward a finite target across sequential mini-batches. Empirically, TreeOPSD improves agentic capabilities across several competitive benchmarks and model scales, especially for long-horizon tasks, e.g., raising the average accuracy of Qwen3-30B-A3B-Thinking-2507 by 4.97 points over GRPO on the Deep Research setting.",
+      "hot_score": 63.6221,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-15T20:00:00+00:00",
+      "last_seen_at": "2026-10-19T03:08:38.041487+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 17
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_de27b9e1c78286c0": {
+      "id": "it_de27b9e1c78286c0",
+      "source": "hackernews",
+      "title": "PalmOS Lemmings",
+      "url": "https://github.com/ardiri/palmos-lemmings",
+      "summary": "",
+      "hot_score": 63.5519,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-18T17:56:59+00:00",
+      "last_seen_at": "2026-10-19T03:08:38.057771+00:00",
+      "metrics": {
+        "points": 99,
+        "num_comments": 23
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_8374e30db02abb47": {
+      "id": "it_8374e30db02abb47",
+      "source": "github_trending",
+      "title": "anthropics/claude-plugins-official",
+      "url": "https://github.com/anthropics/claude-plugins-official",
+      "summary": "Official, Anthropic-managed directory of high quality Claude Code Plugins.",
+      "hot_score": 62.1299,
+      "topic_id": "tp_d32c153ff40f",
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-15T14:47:23.502352+00:00",
+      "last_seen_at": "2026-10-19T03:08:38.032060+00:00",
+      "metrics": {
+        "stars_total": 42785,
+        "stars_in_window": 1552,
+        "forks": 4538,
+        "streak_days": 5
+      },
+      "streak_days": 5,
+      "language": "Python"
+    },
+    "it_2cfbdd1f149165c9": {
+      "id": "it_2cfbdd1f149165c9",
+      "source": "hf_papers",
+      "title": "Into the Unknown: Benchmarking AI agents on open scientific research problems",
+      "url": "arxiv:2610.19159",
+      "summary": "Can AI agents carry out research on open scientific problems? We introduce Into the Unknown, a benchmark that provides an agent with a science paper along with a research direction to pursue and tasks it to write a follow-up paper. We work with scientists at US Department of Energy (DOE) national laboratories, who each contribute an unpublished follow-up direction from their own work together with the necessary conditions a submission must meet. While assessing the quality of a follow-up paper is challenging in general, using these conditions to form a rubric makes evaluation more tractable for research problems that have no reference answer. We have nine frontier agents write 15 follow-ups each, spanning quantum computing, plasma physics, computational chemistry, materials science, and scientific machine learning domains. None of the 135 submissions satisfies all the conditions, and 114 fail our integrity check, most often because the paper claims work that was never done or reports numbers that contradict the recorded evidence. Overall, agents readily produce papers that look like follow-ups, but none meets the standard of the domain scientist, leaving substantial headroom. Our code and data are publicly available.",
+      "hot_score": 58.8549,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-12T20:00:00+00:00",
+      "last_seen_at": "2026-10-19T03:08:38.042379+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 12
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_da30642e95212d7a": {
+      "id": "it_da30642e95212d7a",
+      "source": "hf_papers",
+      "title": "DiscoveryRSI: Recursively Learning to Discover Valuable Hypotheses",
+      "url": "arxiv:2610.23839",
+      "summary": "Scientific discovery requires developing worthwhile hypotheses into practical investigations, yet learning from this evolving research process remains challenging. We introduce an operational definition of valuable and testable research hypotheses: evidence-grounded claims about consequential uncertainties, coupled with feasible investigations, explicit decision criteria, and alternative explanations. Our DiscoveryRSI framework develops hypothesis trees through multi-agent evolutionary search, compiles selected investigations into executable Harbor tasks, and recursively learns through three mechanisms: hypothesis credit optimization attributes scientific assessments to documented research contributions; harness replay identifies productive strategies and recurring failures to refine research workflows; and rediscovery applies accepted improvements to new investigations, generating further experience for subsequent learning. We also introduce DFM-Bench, which provides comprehensive assessment of hypothesis quality and cumulative research progress at the levels of hypotheses, revisions, development paths and research runs. Across four life-science domains, automated evaluation shows that hypothesis quality rises from 4.86 for the base model to 5.39 after two rounds of self-improvement, with the large gains in falsifiability and data resolvability. We further validate hypothesis quality through expert review, comparing our DiscoveryRSI-27B with other research agents. Preliminary human assessments show that DiscoveryRSI-27B scores higher than GPT-6 Luna on hypothesis importance and whether claims are plausible and evidence-bounded. DiscoveryRSI-27B achieved a 6.3% rate of hypothesis correspondence with research published after the model cutoff, largely outperform GPT-6 with 2.5% and Claude Opus 5 with 2.3%, while delivering greater human-rated improvement along research paths.",
+      "hot_score": 58.6221,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-15T20:00:00+00:00",
+      "last_seen_at": "2026-10-19T03:08:38.043361+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 8
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_d2e2b582e2726ffa": {
+      "id": "it_d2e2b582e2726ffa",
+      "source": "hackernews",
+      "title": "If you don't run your own LLM proxy, how do you know whats going on?",
+      "url": "https://jrdsgl.com/if-you-dont-run-your-own-llm-proxy-how-the-fuck-do-you-even-know-whats-going-on",
+      "summary": "",
+      "hot_score": 57.75,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-18T21:09:12+00:00",
+      "last_seen_at": "2026-10-19T03:08:38.002086+00:00",
+      "metrics": {
+        "points": 54,
+        "num_comments": 42
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_da6fa09c3b2638e7": {
+      "id": "it_da6fa09c3b2638e7",
+      "source": "hf_papers",
+      "title": "HexaShell: A Thin Harness for Exploring the Limits of VLM Agents as Robot Coding Agents",
+      "url": "arxiv:2610.23479",
+      "summary": "Agents built on vision language models (VLMs) now compete with learned policies on robot manipulation leaderboards. We ask how far a coding agent can go when it controls a robot instead of a computer, and where it stops. Our system, HexaShell, keeps the harness thin: it only turns the agent's commands into robot motion. The agent drives a robot with two arms through one command line. It sees three RGB cameras and knows their calibration. After each failed attempt, the agent reads the log, finds the cause, and writes or fixes small programs called tools. In this way it keeps what it learns as code, as a coding agent does when it fixes a failing test. The tools may use only what the robot observes. They use triangulation to find where objects are, relative to each other and to the gripper. If two cameras see the same point, the point lies where the two camera rays meet. If a point lies on a known plane, such as the table or the top of a block, it lies where its ray meets that plane. When the head camera is not enough, the robot moves a wrist camera to get a second view. We build the tools on only ten layouts of one seed per task, then freeze them and test them on ten new layouts of the same seed. We use Codex with GPT-6-Astra at medium reasoning effort. On all 42 RoboDojo tasks, HexaShell reaches a success rate of 39.7% and a progress score of 48.0, averaged in the same way as the leaderboard. This is a new state of the art on RoboDojo. The limit is contact, not reasoning: pushing reaches 92.5% and memory tasks 65.0%, but tight insertion only 8.3%. When the agent fails, it usually sees the failure but cannot make the motion work. We open source the tools evolved so far at https://github.com/HexaFuture/HexaShell.",
+      "hot_score": 56.1221,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-15T20:00:00+00:00",
+      "last_seen_at": "2026-10-19T03:08:38.044134+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 6
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_7d0ed93b88de47b1": {
+      "id": "it_7d0ed93b88de47b1",
+      "source": "github_trending",
+      "title": "Comfy-Org/ComfyUI",
+      "url": "https://github.com/Comfy-Org/ComfyUI",
+      "summary": "The most powerful and modular diffusion model GUI, api and backend with a graph/nodes interface. The fastest local inference engine in the world.",
+      "hot_score": 52.5,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-19T03:07:38.381715+00:00",
+      "last_seen_at": "2026-10-19T03:08:38.038159+00:00",
+      "metrics": {
+        "stars_total": 138730,
+        "stars_in_window": 154,
+        "forks": 16506,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_7dfc26153906a371": {
+      "id": "it_7dfc26153906a371",
+      "source": "hf_papers",
+      "title": "From Research Goals to Scientific Closure: Evaluating Agents Through Evidence-Supported Physics Research",
+      "url": "arxiv:2610.21767",
+      "summary": "Can AI agents organize scientific investigations that lead to well-supported conclusions? To evaluate this capability, we introduce PhysClosureBench, a benchmark of 50 expert-verified, goal-specified research tasks spanning strong-field, attosecond, and neighboring physics areas. Each task specifies the research objective and essential scientific constraints, while leaving the agent to organize the investigation and determine how to generate and validate the evidence needed to answer the question. A 20-criterion Atomic Score measures local scientific accomplishment, while Research Closure (RC0--RC4) assesses how fully the investigation resolves the specified research question based on whether its indispensable evidence requirements and applicable scope conditions are satisfied. We evaluate seven frontier LLMs, where Claude-Opus-5 achieves the highest mean Atomic Score (6.29/10) but reaches RC4 in only 32.7% of attempts. Across the benchmark, 36.2% of attempts scoring at least 8/10 still fall short of RC4, while all seven models reach RC4 on substantially fewer tasks in all three runs than in at least one. Case-level analysis further illustrates how misinterpretation of generated results and unresolved physical applicability limits can lead to incomplete closure. Together, these results reveal a persistent gap between AI agents' local scientific accomplishments and their ability to achieve complete research closure.",
+      "hot_score": 52.3462,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-14T20:00:00+00:00",
+      "last_seen_at": "2026-10-19T03:08:38.045148+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 4
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_1f28a16c9fe19cbe": {
+      "id": "it_1f28a16c9fe19cbe",
+      "source": "github_trending",
+      "title": "HKUDS/CLI-Anything",
+      "url": "https://github.com/HKUDS/CLI-Anything",
+      "summary": "\"CLI-Anything: Making ALL Software Agent-Native\" -- CLI-Hub: https://clianything.cc/",
+      "hot_score": 50.9265,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-16T15:44:39.424204+00:00",
+      "last_seen_at": "2026-10-19T03:08:38.035769+00:00",
+      "metrics": {
+        "stars_total": 54674,
+        "stars_in_window": 589,
+        "forks": 4951,
+        "streak_days": 4
+      },
+      "streak_days": 4,
+      "language": "Python"
+    },
+    "it_a76893f97d65e1d8": {
+      "id": "it_a76893f97d65e1d8",
+      "source": "hf_papers",
+      "title": "DLite: History-free Speculative Decoding for Agentic AI",
+      "url": "arxiv:2610.23787",
+      "summary": "Speculative decoding has become a mainstream technique for accelerating large language model (LLM) inference by using a lightweight draft model to generate candidate tokens that are subsequently verified by the target model. However, agentic workloads introduce long and continuously evolving contexts and frequent multi-turn interactions. Under such workloads, we observe that existing draft models suffer from up to an 80% degradation in acceptance length, while maintaining their historical KV cache introduces substantial system overhead. In this paper, we identify the growing historical context as a common source of both problems and introduce DLite, a history-free speculative decoding framework for agentic AI. DLite directly reuses contextual hidden states from the target model and performs local speculative prediction without explicitly maintaining the historical context, transforming an increasingly complex modeling problem into local simple prediction problem. A lightweight sequential head further restores intra-block causal dependencies with low overhead. To effectively train this heterogeneous history-free architecture, we introduce a tailored two-stage training strategy. Experiments on general-purpose, long-context and agentic workloads show that DLite achieves 2-6 acceptance length and outperforms the state-of-the-art speculative decoding method, DSpark, up to 70%.",
+      "hot_score": 49.8721,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-15T20:00:00+00:00",
+      "last_seen_at": "2026-10-19T03:08:38.046076+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 2
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_e5cfb0e04690d62f": {
+      "id": "it_e5cfb0e04690d62f",
+      "source": "github_trending",
+      "title": "akitaonrails/ai-memory",
+      "url": "https://github.com/akitaonrails/ai-memory",
+      "summary": "Solution for long term memory for agent coding CLIs and to facilitate handoff between different agent vendors",
+      "hot_score": 49.0529,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-17T14:54:44.860440+00:00",
+      "last_seen_at": "2026-10-19T03:08:38.034578+00:00",
+      "metrics": {
+        "stars_total": 10577,
+        "stars_in_window": 512,
+        "forks": 754,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "Rust"
+    },
+    "it_f5b06496973809a2": {
+      "id": "it_f5b06496973809a2",
+      "source": "github_trending",
+      "title": "mlabonne/llm-course",
+      "url": "https://github.com/mlabonne/llm-course",
+      "summary": "Course to get into Large Language Models (LLMs) with roadmaps and Colab notebooks.",
+      "hot_score": 48.75,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-19T03:07:38.381704+00:00",
+      "last_seen_at": "2026-10-19T03:08:38.037264+00:00",
+      "metrics": {
+        "stars_total": 84121,
+        "stars_in_window": 81,
+        "forks": 9787,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": null
+    },
+    "it_85ee7a3aef761044": {
+      "id": "it_85ee7a3aef761044",
+      "source": "github_trending",
+      "title": "ruvnet/ruflo",
+      "url": "https://github.com/ruvnet/ruflo",
+      "summary": "🌊 The original agent harness. Deploy intelligent multi-player swarms, coordinate autonomous workflows, and build conversational AI systems. Features adaptive memory, self-learning intelligence, federation, vector RAG integration, and native Claude Code / Codex / Hermes and many more Integrated",
+      "hot_score": 47.9632,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-15T14:47:23.502382+00:00",
+      "last_seen_at": "2026-10-19T03:08:38.033883+00:00",
+      "metrics": {
+        "stars_total": 76604,
+        "stars_in_window": 672,
+        "forks": 9058,
+        "streak_days": 5
+      },
+      "streak_days": 5,
+      "language": "TypeScript"
+    },
+    "it_476331c599306ba7": {
+      "id": "it_476331c599306ba7",
+      "source": "hf_papers",
+      "title": "Game2Real-Bench: Do Toy Games Reveal and Transfer to Real-World Visual Reasoning?",
+      "url": "arxiv:2610.18834",
+      "summary": "Visual reasoning is an important capability for vision-language models (VLMs) to understand visual evidence, spatial structure, constraints, and state changes. Existing evaluations mainly rely on real-world data or procedurally generated tasks. Real-world data preserve natural complexity, while procedural games provide controllable generation and verifiable solutions. However, it remains unclear whether abilities measured in toy games correspond to real-world visual reasoning and whether game examples can support transfer. We introduce Game2Real-Bench, a benchmark that studies these connections across four capability groups, including fine-grained perception, spatial reasoning, constraint reasoning, and sequential planning. We construct 1,000 procedurally generated game samples with executable verification and curate 400 real-world samples aligned by shared reasoning requirements rather than visual similarity. We evaluate 25 representative VLMs and observe strong game-to-real consistency, with Pearson and Spearman correlations of 0.935. We further study one-shot game-to-real transfer on four models. Constraint reasoning improves for several models, while fine-grained perception declines with game demonstrations. We also construct Game2Real-Dataset with nearly 24K verified game samples across 18 tasks and 65 QA families. Our benchmark, dataset, and code are available at https://github.com/QingAnLiu/Game2Real-Bench.",
+      "hot_score": 47.6049,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-12T20:00:00+00:00",
+      "last_seen_at": "2026-10-19T03:08:38.046956+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 2
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_6edbb4ac65c44807": {
+      "id": "it_6edbb4ac65c44807",
+      "source": "github_trending",
+      "title": "Kruk2/jasna",
+      "url": "https://github.com/Kruk2/jasna",
+      "summary": "Video restoration tool",
+      "hot_score": 45.0,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-19T03:07:38.381710+00:00",
+      "last_seen_at": "2026-10-19T03:08:38.037727+00:00",
+      "metrics": {
+        "stars_total": 2489,
+        "stars_in_window": 115,
+        "forks": 193,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_de3bfda753661ac1": {
+      "id": "it_de3bfda753661ac1",
+      "source": "hackernews",
+      "title": "Show HN: WhatsApp MCP running free on Cloudflare",
+      "url": "https://github.com/finereli/whatsapp-mcp",
+      "summary": "I wanted my humble Claude on mobile to access my WhatsApp messages but the only options I could find either required WhatsApp Business or an actual server to run Baileys on. I wanted to run it for free on ClaudeFlare and with my personal WhatsApp account, so I built this. Important feature - it connects to your Google account as well as WhatsApp to grab the names of all your WhatsApp contacts, otherwise you get only phone numbers for many of them and search doesn't work properly. This is a singl",
+      "hot_score": 42.75,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-18T21:36:10+00:00",
+      "last_seen_at": "2026-10-19T03:08:38.058198+00:00",
+      "metrics": {
+        "points": 50,
+        "num_comments": 35
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_ad69629782d00cc6": {
+      "id": "it_ad69629782d00cc6",
+      "source": "hackernews",
+      "title": "Show HN: 500 clocks in one 6.3 MB HTML file by Opus 5.5",
+      "url": "https://tkgally.github.io/500-clocks",
+      "summary": "Lately I've been testing frontier models by having them create self-contained web pages that display clocks--sort of my personal version of Simon Willison’s pelican-on-a-bicycle metric. I have been particularly impressed by the variety, interest, and quality of the clocks created by Claude Opus 5.5. Over the course of several sessions in the Claude chat interface, I had it build a total of 500 clocks. Claude’s summary of the prompting process and page design is here: https://github.com/tkgally/5",
+      "hot_score": 42.7011,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-18T04:04:58+00:00",
+      "last_seen_at": "2026-10-19T03:08:38.000885+00:00",
+      "metrics": {
+        "points": 65,
+        "num_comments": 27
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_ad547968d473b564": {
+      "id": "it_ad547968d473b564",
+      "source": "rss",
+      "title": "llm-tools-datasette 0.1.1",
+      "url": "https://simonwillison.net/2026/Oct/18/llm-tools-datasette",
+      "summary": "Release: llm-tools-datasette 0.1.1\nWhen I switched LLM over to httpx2 in LLM 0.33 I forget that this would break any plugins which used httpx without directly depending on it. llm-tools-datasette was one of those plugins, now fixed.\n\n\nTags: datasette , llm",
+      "hot_score": 39.0,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-10-18T23:43:09+00:00",
+      "last_seen_at": "2026-10-19T03:08:38.026242+00:00",
+      "metrics": {
+        "rank_score": 1.0
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_8f1b78fcf0c44ef0": {
+      "id": "it_8f1b78fcf0c44ef0",
+      "source": "rss",
+      "title": "llm-echo 0.5",
+      "url": "https://simonwillison.net/2026/Oct/18/llm-echo",
+      "summary": "Release: llm-echo 0.5\nI'm working towards a new LLM release, and testing PRs caused me to revisit the llm-echo debug plugin. This plugin provides a \"model\" which doesn't involve an LLM at all - it just repeats back the prompts that have been fed to it. The new release now updates the simulated token usage counts to take tool calls, system prompts, and reasoning tokens into account.\nExample usage:\nuvx --with llm-echo llm -m echo 'hi there' -o thinking 1 --usage\n\nOutputs:\nFirst I consider the prompt, then I decide what to say.\n{\n\"prompt\": \"hi there\",\n\"system\": \"\",\n\"attachments\": [],\n\"stream\": true,\n\"previous\": []\n}\nToken usage: 2 input, 24 output\n\n\n\nTags: llm",
+      "hot_score": 39.0,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-10-18T23:16:16+00:00",
+      "last_seen_at": "2026-10-19T03:08:38.027022+00:00",
+      "metrics": {
+        "rank_score": 0.5
+      },
+      "streak_days": 0,
+      "language": "en"
+    }
+  },
+  "meta": {
+    "mode": "hybrid",
+    "day": "2026-10-19",
+    "generated_at": "2026-10-19T03:09:32.567452+00:00",
+    "window": {
+      "since": "2026-10-18T03:07:35.420378+00:00",
+      "until": "2026-10-19T03:08:38.092323+00:00",
+      "hours": 24.0,
+      "since_local": "2026-10-18T11:07+08:00",
+      "until_local": "2026-10-19T11:08+08:00",
+      "tz": "Asia/Shanghai"
+    },
+    "analysis": {
+      "items": 70,
+      "scored": 70,
+      "topics": 1,
+      "new_entity_mention_rows": 88,
+      "state_items": 13
+    },
+    "llm": {
+      "degraded": false,
+      "degraded_reason": "",
+      "calls": 1
+    },
+    "collect": {
+      "ok_sources": 6,
+      "failed_sources": 1,
+      "skipped": 0,
+      "total_items": 73
+    },
+    "verify": {
+      "verified": 0,
+      "unverifiable": 0,
+      "deferred": 0,
+      "failed": 0,
+      "llm_calls": 0
+    },
+    "predictions": {
+      "total": 44,
+      "verified": 0,
+      "pending": 44,
+      "unverifiable": 0,
+      "hit_rate": null,
+      "weighted_score": null,
+      "brier": null
+    },
+    "prediction_generation": {
+      "mode": "hybrid",
+      "generated": 5,
+      "inserted": 5,
+      "dropped": [],
+      "llm_calls": 1,
+      "candidate_pool": 20,
+      "degraded": false,
+      "degraded_reason": ""
+    },
+    "brief": {
+      "max_items_per_section": 10,
+      "velocity_board_enabled": true,
+      "velocity_board_top_n": 5
+    },
+    "signals": {
+      "entities": 183,
+      "points": 785,
+      "with_velocity": 30,
+      "insufficient": 112,
+      "cold_start": 41,
+      "min_window_hours": 6.0
+    },
+    "enhance_total": 29,
+    "enhanced": 29,
+    "enhance_skipped_count": 0,
+    "enhance_cache_hit": 0,
+    "enhance_cost_cny": 0.013338
+  }
+}
