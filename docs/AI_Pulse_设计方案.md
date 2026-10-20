@@ -1,6 +1,6 @@
 # AI Pulse 设计方案
 
-> ★ **当前版本：v1.21** · 对应基线 `m6b` / `11fb09a` · 详见 `docs/文档维护日志.md`
+> ★ **当前版本：v1.22** · 对应基线 `m6c` / `c9b2fa1` · 详见 `docs/文档维护日志.md`
 > 文件名**固定不带版本号**——版本由文档头与维护日志标识，历史由 git 管理。
 
 > 一句话定位：**每日自动采集 AI 领域热点，不只整理，还给出可回测的推演与预言。**
@@ -22,6 +22,32 @@ v1.2（第二轮确认）：
 6. **Reddit 先用免认证 RSS**，M1 验收后再评估是否升级 OAuth（§5.6 / §19.1-6）
 7. **M0 即建公开仓库**，README 顶部标注 `WIP / 开发中`（§19.1-14、§14.2）
 8. **日报触达 = 文件 + Web 看板为主**，但**架构上必须预留统一 Notifier 抽象**，后续可加邮件/TG/飞书（§11.2）
+
+v1.22（★ M6c：知识库——本地笔记 + 导出为可消费的 Markdown）：
+91. **★ M6c：知识库。** 成功判据 = 「导出的东西能不能**直接喂给任意 AI 工具**」，
+    不是「能不能记笔记」（§11.6）
+92. **双库物理隔离**：主库 `aipulse.db` **只读**，另开 `data/user_data.db` 存笔记（§11.6）
+    —— `readonly_engine_for()` + 测试断言主库 **size / mtime / sha256 三不变**
+93. **★ `user_data.db` 必须在 `data/` 顶层** —— `.gitignore` 是 `data/*.db`（只匹配顶层），
+    放到 `data/knowledge/` 下会被 commit → **个人笔记公开**（仓库 public）
+94. **导出物 = 合成文档**：条目元信息 + why + 用户笔记（§11.6）
+    —— 纯条目列表只是 daily.json 的另一种排版，没有价值
+95. **JSONL 明确不做（YAGNI），但 Exporter 协议现在就留**（§11.6）
+    —— 加格式 = 新增一个 renderer，不动现有代码
+96. **聚合主键 = 板块 slug + 体积分片**，不用 `topic_id`（§11.6）
+    —— `topic_id = hash(日期:名称)` 跨天必变；daily.json 只导出 id、不导出名称，仅 3/30 非空
+97. **★ 取数 = 扫描全部 committed daily.json + 本地笔记，导出在本地跑**（§11.6）
+    —— 笔记不进仓库，**Actions 里根本没有笔记**；且导出不需要网络
+98. **跨天去重优先保留有 why 的那条**（不是保留最新）—— why 是随机产出，
+    「保留最新」会把已有 why 覆盖成空；**导出默认包含未读**（只导已读与动机相反）
+99. **CLI 支持 `--url` / `--query` 定位**（§11.6）
+    —— `item_id` 在 brief.md 与页面中**均不显示**，`aipulse search` 是占位；
+    **URL 才是用户可见的稳定定位键**
+100. **`cron_knowledge.sh` 工作区检查只看已跟踪改动**（`git diff --quiet`）
+    —— 用 `git status --porcelain` 会因 `data/inbox/` 等未跟踪文件长期命中
+     → 「不干净则跳过」→ **导出永不执行**（本项目静默失败的第三次出现）
+101. **实测（5 份 daily.json）**：113 条、带 why 51（45.1%）、最大文件 25 KB、
+    引擎 1.96 ms、索引构建 1.43 ms、**LLM 成本 0 元/日**
 
 v1.21（★ M6b：日报条目 why/stance 全覆盖 + 中文要点）：
 84. **★ M6b：why/stance 全覆盖**，覆盖对象 = **最终渲染集**（§11.1）
@@ -238,7 +264,7 @@ v1.3（第三轮：无 API 可用性，★ 重要架构变更）：
 
 ## 0. 给开发 Agent 的总纲（最高优先级，请先读）
 
-1. **分阶段交付**：严格按 §16 的里程碑推进（**v1.1 重排：M4=发布与自动化，M5=深度推演；v1.6 拆 M3 为 M3a/M3b；**★ v1.13 新增 M6=每日学习增强，且 M6 插队到 M5 之前**）。当前顺序：**M0→M1→M2→M3a→M3b→M4→M6a→M6b→M5**。**禁止一次性生成整个项目**。每个里程碑结束必须跑通测试并向项目负责人汇报验收清单，得到确认后才能进入下一阶段。
+1. **分阶段交付**：严格按 §16 的里程碑推进（**v1.1 重排：M4=发布与自动化，M5=深度推演；v1.6 拆 M3 为 M3a/M3b；**★ v1.13 新增 M6=每日学习增强，且 M6 插队到 M5 之前**）。当前顺序：**M0→M1→M2→M3a→M3b→M4→M6a→M6b→M6c→M5**。**禁止一次性生成整个项目**。每个里程碑结束必须跑通测试并向项目负责人汇报验收清单，得到确认后才能进入下一阶段。
 2. **先探测，再编码**：M0 阶段必须先运行 `scripts/probe_sources.py`，把每个数据源的真实返回字段打印并存为 `tests/fixtures/*.json`。**严禁凭记忆或猜测编写字段解析代码**；所有解析逻辑必须基于真实响应快照。
 3. **单源失败不影响全局**：任何一个采集器抛异常，只记录到 `source_runs` 表并告警，其余源继续跑，pipeline 不得整体崩溃。
 4. **结构化输出优先**：所有 LLM 输出必须是 JSON，并用 Pydantic 模型校验；校验失败自动触发一次"修复重试"，再失败则记录错误并降级（跳过该条目，不中断）。
@@ -1675,6 +1701,211 @@ M3b 要做「按 `category` 分组的命中率统计」（§10.2.3）。若手�
 **关于 `custom` 的覆盖面（v1.10 裁定）**：当前支持 5 原语 + `and`/`or`/`not`。
 **暂不扩展比较与算术运算符**——6 个内置模板已覆盖绝大多数场景，
 `custom` 定位是"高级用户兜底"而非常规路径。若后续真实使用中确实遇到表达不了的需求，再按需扩展（YAGNI）。
+
+---
+
+### 11.6 M6c · 知识库（双库 + 笔记 + 导出）
+
+**动机**（用户原话）：*"这么多信息我不可能每天都看完消化完，
+但是沉淀成知识库，就能够借助 AI 工具利用其价值。"*
+
+**★ 成功判据**：导出的东西能不能**直接喂给任意 AI 工具**——不是"能不能记笔记"。
+
+#### 双库物理隔离（红线）
+
+| 库 | 路径 | 权限 | 内容 |
+|---|---|---|---|
+| 主库 | `data/aipulse.db` | **只读** | 采集数据，M6c 零改动 |
+| 用户库 | `data/user_data.db` | 读写 | 笔记、阅读状态 |
+
+- ★ **`user_data.db` 必须在 `data/` 顶层**：`.gitignore:9` 是 `data/*.db`，
+  **只匹配顶层、不匹配嵌套目录**。放到 `data/knowledge/` 下会被 commit →
+  **个人笔记公开**（仓库 public）。
+- 建表走 `create_all` + `schema_version`，**不走 alembic**：表少（1 张）、
+  是用户私有数据、不该被自动迁移意外改动。
+- 主库只读守卫 `store/db.py::readonly_engine_for()`（SQLite `mode=ro`）
+  + 测试断言主库 **size / mtime / sha256 三不变**。
+
+#### 数据模型
+
+    knowledge_items: item_id(PK) / status / note / tags / topic_id / created_at / updated_at
+    schema_version:  version(PK) / applied_at
+
+- 不建物理外键（跨库 + 主库只读）→ 应用层用 `item_id` 关联，缺失即跳过
+- **不加 `starred`**：笔记本身就是最强的收藏信号（愿意写笔记 = 重要）
+
+#### 阅读状态：三态
+
+| 值 | 说明 |
+|---|---|
+| `unread` | 默认，**默认导出包含**——这是动机的落地点 |
+| `read` | 仍导出（笔记可能有价值） |
+| `skipped` | 默认不导出（`--include-skipped` 可含） |
+
+★ **导出默认包含未读**——若只导已读，恰恰把"没看完的"丢了，**与动机相反**。
+
+#### ★ item_id 在用户侧不可见（实测）
+
+| 位置 | 是否显示 item_id |
+|---|---|
+| `brief.md` | ❌ `grep -c 'it_[0-9a-f]'` = **0** |
+| `index.html` | ❌ 内部用 id，不渲染 |
+| `_results.html` | ❌ 只显示标题 / URL |
+| `aipulse search` | ❌ 占位，调用即 `NotImplementedError` |
+
+→ **用户可见的唯一稳定定位键是 URL**（标题是展示文本）。
+故 CLI 除 `item_id` 外必须支持 `--url` / `--query`。
+
+#### CLI
+
+    aipulse knowledge mark <item_id>            --status read|unread|skipped
+    aipulse knowledge note --url <URL>          --note "..."
+    aipulse knowledge note --query "关键词"     --note "..."
+    aipulse knowledge note <item_id>            --note "..."     # 交互版 $EDITOR 占 TODO
+    aipulse knowledge items [--query ...] [--day YYYY-MM-DD] [--limit N]
+    aipulse knowledge list [--status X] [--with-notes] [--limit N]
+    aipulse knowledge export [--out DIR] [--include-skipped]
+
+- `item_id` / `--url` / `--query` **三选一**，多给或都不给均报错
+- **不用主库校验 item_id**（本地主库过期，会误拒最新条目）；
+  位置参数改为查 daily index，查不到报错退出（`--allow-unknown` 为逃生门）
+- `--query` 口径：标题**大小写不敏感子串**匹配、按 item_id 去重、按匹配位置排序；
+  命中 1 条直接执行、**多条列候选并退出码 2**、0 条报错 —— **绝不自动挑第一条**
+- 状态非法值 → 报错退出码 2，不静默、不默认成 unread
+
+#### daily index（★ S4 复用同一份索引）
+
+    src/aipulse/knowledge/daily_index.py
+    扫描 data/reports/**/daily.json →
+      item_id → {title, url, section, date, hot_score, why, one_liner, summary}
+      url     → item_id
+      title   → [item_id]
+
+- 跨天合并：**有 why 的优先**；都有 why 取较新；缺字段回填
+- **实测构建耗时：4 份 1.148 ms / 5 份 1.426 ms** → 当前规模**不需要缓存**
+
+#### 取数路径（★ 本地导出，不跑 Actions）
+
+    条目 + why  ← data/reports/ 下【所有】daily.json（已 commit，git pull 即最新）
+    笔记        ← 本地 user_data.db
+    导出        ← 本地执行
+
+- **扫描所有 daily.json，不是只读当天**（知识库是累积的）
+- **去重优先保留有 why 的那条**，不是保留最新
+- **why 一律取 daily.json** —— 不用 `item_enhance` 表、不迁本地主库
+  （主库在 M6c 全程只读，且 M6c **根本不读主库**）
+
+#### 解析容错（★ 累积数据的硬要求）
+
+`data/reports/` 下各份结构不同，必须全部兼容：
+
+| 项 | 差异 |
+|---|---|
+| `comments[].why` | 10-18 起 |
+| `comments[].why_it_matters` | 10-17 及更早（另有 who_cares / what_to_watch / novelty / impact） |
+| `comments` 为空数组 | 10-15、10-16 |
+| `items[].last_seen_at` / `metrics` / `streak_days` | 10-17 起才有 |
+| 顶层键 | 10-17 起新增 `headline_item_id` / `overview_bullets` |
+
+→ **字段缺失就跳过，不要崩**（崩在最后一份 = 前面全白做）。
+
+#### 聚合主键：板块 slug + 体积分片
+
+- **不用 `topic_id`**：`tp_` + hash(日期:名称)，**跨天必变**；
+  且 daily.json **只导出 topic_id、不导出名称**，10-18 仅 3/30 非空
+  → 覆盖率 10% + 不稳定 = **双重失效**
+- **用 `sections[].name`（板块）**：daily.json 里**唯一既稳定又全覆盖**的维度
+
+**★ 体积分片（否则判据落空）**：174 条/天 × 365 ÷ 4 板块 ≈ **1.6 万条/文件**，
+几百 KB 的 Markdown **喂不进任何 AI 工具**——而这是成功判据。
+
+    topics/<板块 slug>-<YYYY-MM>.md
+    单文件超 500 条 或 200KB（先到先切）→ 自动分片（后缀 -2 / -3）
+    分片依据 = **条目日期**，不是导出时间（否则每次导出都重新分）
+
+**原则：稳定 > 精细。** 不稳定的细粒度聚合 = 每天一个文件 = 累积落空。
+
+> 实测（5 份）：最大文件仅 **25 KB**，分片阈值远未触发。
+> 分片是**保险**不是当前需求——留抽象、不留负担，正是 YAGNI 的正确用法。
+
+#### 目录结构
+
+    data/knowledge/            # ★ .gitignore（仓库 public，笔记不公开）
+      index.md                 # 总索引（★ 兼作分片索引与漂移兜底）
+      my-notes.md              # ★ 所有带笔记的条目（最高价值，优先喂 AI）
+      topics/<slug>-<YYYY-MM>.md
+      topics/uncategorized.md
+
+#### Exporter 抽象
+
+    class Exporter(Protocol):
+        format: str
+        def render(self, items: list[ExportItem]) -> str: ...
+        def file_ext(self) -> str: ...
+
+当前只实现 `MarkdownExporter`；JSONL **不做**，但加格式 = 新增一个 renderer。
+
+#### 单条渲染
+
+```markdown
+## <标题>
+- 来源：<source> · 热度 <hot_score> · 发现 <date>
+- 链接：<url>
+- 阅读状态：<status>
+
+**为什么重要**：<why>
+  ← 无 why 时：<summary 截断>（摘要，AI 未分析）
+
+**我的笔记**：<note>
+  ← 无笔记时整段不输出
+```
+
+**★ 幂等**：重复导出 sha256 完全一致。
+故"更新时间"用**条目最大日期**，不用导出当前时间（否则每次内容都变）。
+
+#### 自动化：方案 E（★ 不跑本地 daily）
+
+```
+scripts/cron_knowledge.sh
+  1. 工作区有已跟踪改动 → 记日志 + exit 0（不静默继续）
+  2. git -c http.version=HTTP/1.1 pull --ff-only || { 记日志; exit 1; }
+  3. aipulse knowledge export（★ 必须检查退出码并记日志）
+```
+
+| # | 约束 | 理由 |
+|---|---|---|
+| 1 | `--ff-only` | 有本地提交就失败退出，绝不产生 merge commit |
+| 2 | 第二步依赖第一步成功 | 拉取失败记日志退出，**不静默继续**（否则旧数据覆盖新导出） |
+| 3 | 必须带 `-c http.version=HTTP/1.1` | HTTP/2 会超时（已验证两次） |
+| 4 | **工作区检查用 `git diff --quiet`** | 用 `--porcelain` 会因 `data/inbox/` 等未跟踪文件<br>长期命中 → 导出永不执行 |
+
+**★ 为什么是方案 E（不跑本地 daily）**：M6c 只读 committed daily.json + 本地笔记，
+**全程不读主库**；而本地 daily 的价值是"更新本地库（权威副本）"，与 M6c 无关，
+且 WSL 无外网时采集跑不通、该价值本身也无法实现。实测 `crontab -l` 为空——
+`cron_daily.sh` **从未安装过**，所以 E 放弃的是"从未启用、且启用也无效"的能力。
+
+> **升级路径**：E 不动 daily 代码，只新增独立脚本 →
+> 将来需要本地 daily（要那份跨天累积库）时，升级为 B3（双 checkout）是**纯增量**。
+
+**★ cron 时间**：Actions 是 `0 0 * * *`（UTC 00:00 = **北京 08:00**）。
+导出排在 **UTC 00:30（北京 08:30）** 或更晚。
+（`cron_daily.sh` 注释里写的 07:00 **已过时**，以 `daily.yml` 为准。）
+
+#### 实测数据（2026-10-19，5 份 daily.json）
+
+| 项 | 实测 |
+|---|---|
+| 总条目（跨天去重后） | 113 |
+| 带 why | 51（**45.1%**） |
+| 去重效果 | 4 份原始 120 条 → 去重后 91 条 |
+| 最大文件 | 25 KB（`research-2026-10.md`） |
+| 导出引擎 | 1.96 ms（CLI 端到端 1.38 s） |
+| 索引构建 | 1.43 ms |
+| **LLM 成本** | **0 元/日**（纯文本合成，不调模型） |
+
+> ★ 覆盖率 45.1% 高于早期估算的 24% —— 跨天去重删掉的
+> 恰恰是重复的**无 why** 条目。**分母必须写清**：全量采集约 4%、
+> 单份 76.7%、累积去重后 45.1%，三者都对，口径不同。
 
 ---
 
