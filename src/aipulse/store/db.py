@@ -39,6 +39,7 @@ __all__ = [
     "Topic",
     "engine_for",
     "init_db",
+    "readonly_engine_for",
     "session_for",
 ]
 
@@ -60,6 +61,25 @@ def init_db(db_path: str | Path, *, echo: bool = False) -> Engine:
     engine = engine_for(db_path, echo=echo)
     SQLModel.metadata.create_all(engine)
     return engine
+
+
+def readonly_engine_for(db_path: str | Path) -> Engine:
+    """打开主库的物理只读连接（知识库等旁路只读主库，不得写入）。
+
+    使用 SQLite `mode=ro`，任何 INSERT / UPDATE / DELETE 都会直接抛
+    `OperationalError: attempt to write a readonly database`。
+    库不存在时**不创建**，直接报错——只读路径不应产生副作用。
+    """
+    path = Path(db_path)
+    if not path.exists():
+        raise StoreError(f"数据库不存在，拒绝以只读方式打开：{path}")
+    try:
+        return sqlmodel_create_engine(
+            f"sqlite:///file:{path.as_posix()}?mode=ro&uri=true",
+            connect_args={"check_same_thread": False},
+        )
+    except Exception as exc:  # pragma: no cover - 仅在环境异常时触发
+        raise StoreError(f"无法以只读方式打开数据库 {path}: {exc}") from exc
 
 
 def session_for(engine: Engine) -> Iterator[Session]:

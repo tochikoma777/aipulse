@@ -23,6 +23,7 @@ ALL_COMMANDS = [
     "topics",
     "search",
     "inbox",
+    "knowledge",
     "sources",
     "serve",
 ]

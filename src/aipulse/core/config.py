@@ -233,6 +233,10 @@ class Settings(BaseSettings):
     def db_path(self) -> Path:
         return self.data_dir() / "aipulse.db"
 
+    def user_db_path(self) -> Path:
+        """用户知识库；独立于主库，固定放 data_dir 顶层。"""
+        return self.data_dir() / "user_data.db"
+
     def cache_path(self) -> Path:
         path = Path(self.http.cache_dir)
         return path if path.is_absolute() else project_root() / path

@@ -1,7 +1,7 @@
 """CLI 入口（`aipulse`）。
 
-已实现：`init` / `doctor` / `serve` / `inbox`，以及 `collect` / `analyze` / `brief` /
-`daily` / `predict` / `stats`（各自的 app 在 commands/ 内实现）。
+已实现：`init` / `doctor` / `serve` / `inbox` / `knowledge`，以及 `collect` / `analyze` /
+`brief` / `daily` / `predict` / `stats`（各自的 app 在 commands/ 内实现）。
 未实现的子命令由 `placeholder_app()` 占位——调用时显式抛 `NotImplementedError`，
 但 `--help` 中可见（刻意的，不是漏实现）。
 """
@@ -17,6 +17,7 @@ from aipulse.cli.commands import (
     daily,
     debate,
     inbox,
+    knowledge,
     normalize,
     predict,
     search,
@@ -45,6 +46,8 @@ app.command("doctor", help="环境体检：Python / LLM key / 代理 / 磁盘 / 
 app.add_typer(serve_app)
 # 手动投喂（v1.1 微信 / X 唯一合规入口）
 app.add_typer(inbox.app)
+# 用户知识库（M6c）：笔记 / 阅读状态
+app.add_typer(knowledge.app)
 
 # 待实现（占位，--help 可见）；collect / analyze / brief / daily / predict / stats 已实现，
 # 与占位命令共用 add_typer 注册（占位于 commands/_placeholder.py 内定义）

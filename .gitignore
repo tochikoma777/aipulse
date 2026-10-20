@@ -10,6 +10,8 @@ data/*.db
 data/*.sqlite
 data/cache/
 data/logs/
+# 用户知识库笔记（user_data.db 固定在 data/ 顶层，见 knowledge/store.py）
+data/knowledge/
 *.db-journal
 
 # ── Python ───────────────────────────────────────────────────────────
