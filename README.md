@@ -7,8 +7,8 @@
 
 > **每日自动采集 AI 领域热点，不只整理，还给出可回测的推演与预言。**
 
-> ✅ **状态**：M0–M4 已完成，**M6a（简报格式 + 快照源修复 + predict 截断修复）、P0 star 追踪、M6b（条目 why/stance 全覆盖 + 中文要点）均已落地**——**系统每天自动跑**（Actions 定时流水线），产出日报 + **预言记分板**。
-> M6c（知识库）与 M5（周期趋势长文 + 多角色辩论）待做。历史报告见 [`data/reports/`](data/reports/)。
+> ✅ **状态**：M0–M4 已完成，**M6a（简报格式 + 快照源修复 + predict 截断修复）、P0 star 追踪、M6b（条目 why/stance 全覆盖 + 中文要点）、M6c（知识库：本地笔记 + Markdown 导出）均已落地**——**系统每天自动跑**（Actions 定时流水线），产出日报 + **预言记分板**。
+> M5（周期趋势长文 + 多角色辩论）待做。历史报告见 [`data/reports/`](data/reports/)。
 >
 > 完整变更见 [CHANGELOG](CHANGELOG.md) · 开发踩坑见 [踩坑实录](docs/踩坑实录.md)
 
@@ -36,7 +36,8 @@ aipulse 多做了一件难得多的事：**每天给出 3-5 条可证伪的预�
 | 每日简报 | 头条 / 总览 / 主编点评 / 分板块条目 / 矛盾之处 / 被低估的条目 |
 | **★ 预言系统** | 生成 + 手写 + 不可证伪拦截 → 到期验证（双路径）→ 命中率 / Brier / 校准度 / 5 维分组统计 |
 | Web 看板 | `aipulse serve`：今日简报 / 归档 / **预言记分板 + 校准曲线** / 主题演化 / 检索（**只读**，htmx 已内置，无外部依赖） |
-| 自动化 | GitHub Actions 每日 08:00（北京时间）跑一次（`hybrid` 档：自动生成预言 + 主编点评），报告 commit 回仓库；本地 cron 作为备份 |
+| 自动化 | GitHub Actions 每日 08:00（北京时间）跑一次（`hybrid` 档：自动生成预言 + 主编点评），报告 commit 回仓库；本地 cron 作为备份；知识库导出由 `scripts/cron_knowledge.sh` 独立执行（方案 E） |
+| **★ 知识库** | 给日报条目写本地笔记 / 阅读状态；`knowledge export` 生成 `index.md` / `my-notes.md` / `topics/*.md`，可直接喂给任意 AI 工具。主库只读，笔记存独立 `data/user_data.db` |
 | 零 API 也能用 | 三档模式，未配置 key 自动降级，**采集 / 打分 / 聚类 / 手写预言 / 自动验证 / 统计全链路可用** |
 
 ## 三档运行模式
@@ -209,6 +210,12 @@ uv run aipulse stats --predictions --out data/reports/scoreboard.md
 # 看板与运维
 uv run aipulse serve --port 8000
 uv run aipulse doctor --no-network --json
+
+# 知识库（本地笔记 + Markdown 导出）
+uv run aipulse knowledge items --query "agent"          # 列出可记笔记的条目
+uv run aipulse knowledge note --url "<URL>" --note "..." # 按 URL 写笔记
+uv run aipulse knowledge list                            # 查看笔记
+uv run aipulse knowledge export                          # → data/knowledge/
 ```
 
 ## 数据源
@@ -241,7 +248,7 @@ uv run aipulse doctor --no-network --json
 | **M6a** | 简报格式规范化 + 快照型源修复 + predict 截断修复 | ✅ |
 | **P0** | star 追踪：★ 总数 / 增量 + 增速榜 + `source_runs.json` | ✅（Actions 实跑验证 2026-10-17） |
 | **M6b** | 日报条目「为什么重要 / 立场」全覆盖 + 中文要点（`one_liner`） | ✅（tag `m6b`） |
-| **M6c** | 知识库 | ⬜ 待做 |
+| **M6c** | 知识库：本地笔记 + 阅读状态 + Markdown 导出 | ✅（tag `m6c`） |
 | **M5** | 周期趋势长文 + 多角色辩论 | ⬜ 待做 |
 
 ## 开发

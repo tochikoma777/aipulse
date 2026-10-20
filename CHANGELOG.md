@@ -1,10 +1,62 @@
 # 变更日志
 
 本项目采用 [Keep a Changelog](https://keepachangelog.com/) 风格，按里程碑组织。
-代码 tag：`m0`–`m4` 为里程碑，`m6a` 为 M6a 收尾，`star-tracking` 为 P0 功能 tag，`m6b` 为 M6b（条目增强）里程碑 tag；M6a 之后的追加工作使用功能名 tag，不占用里程碑编号。
+代码 tag：`m0`–`m4` 为里程碑，`m6a` 为 M6a 收尾，`star-tracking` 为 P0 功能 tag，`m6b` 为 M6b（条目增强）里程碑 tag，`m6c` 为 M6c（知识库）里程碑 tag；M6a 之后的追加工作使用功能名 tag，不占用里程碑编号。
 
-**版本与 tag 的对应**：`m0`–`m4`、`m6a`、`star-tracking`、`m6b` 已发布；M5 尚未实现，因此不占 `m5` 编号。
+**版本与 tag 的对应**：`m0`–`m4`、`m6a`、`star-tracking`、`m6b`、`m6c` 已发布；M5 尚未实现，因此不占 `m5` 编号。
 **设计文档版本**（见 `docs/AI_Pulse_设计方案.md` 头部的 `v1.x`）与代码版本**独立编号**，不要混淆。
+
+---
+
+## [m6c] — 知识库：本地笔记 + 导出为可消费的 Markdown
+
+> 目标：把日报条目沉淀成能直接喂给任意 AI 工具的本地知识库；
+> 主库 `data/aipulse.db` 全程只读，笔记存独立 `data/user_data.db`。
+
+### Added
+
+- **独立用户库**：`knowledge_items` / `schema_version`，`create_all` 建表、不走 alembic；
+  路径固定 `data/user_data.db`（`data/` 顶层，`.gitignore` 的 `data/*.db` 可覆盖）。
+- **主库只读守卫**：`store/db.py::readonly_engine_for()`（SQLite `mode=ro`）；
+  测试断言知识库操作前后主库 **size / mtime / sha256 三不变**。
+- **daily index**：扫描 `data/reports/**/daily.json`，构建 `item_id` / `url` / `title` 映射；
+  兼容 10-15/16 空 `comments`、10-17 `why_it_matters`、10-18 `why` 与字段缺失。
+- **知识库 CLI**：`knowledge mark` / `note` / `items` / `list` / `export`；
+  支持位置 `item_id`、`--url`、`--query` 三种定位（三选一）。
+- **导出引擎**：`Exporter` Protocol + `MarkdownExporter`，输出
+  `index.md` / `my-notes.md` / `topics/<slug>-<YYYY-MM>.md`；按 500 条或 200KB 分片。
+- **`scripts/cron_knowledge.sh`**：方案 E，独立于本地 `daily`，只做
+  `git pull --ff-only` + `knowledge export`，避免 `data/reports/` 未跟踪文件阻断。
+
+### Changed
+
+- `knowledge export` 默认包含未读条目，`skipped` 默认排除；`--include-skipped` 可含。
+- `item_id` 现在查 daily index 校验；索引外条目需显式 `--allow-unknown`
+  （避免打错字符存下永远导不出的孤儿笔记）。
+- 用户库 `note` 更新保留 `created_at`、更新 `updated_at`；重复导出按条目日期与固定排序保持幂等。
+- `scripts/cron_knowledge.sh` 工作区检查只看已跟踪/已暂存改动
+  （`git diff --quiet` / `git diff --cached --quiet`），避免 `data/inbox/` 等未跟踪文件长期阻断。
+
+### Fixed
+
+- **`item_id` 在 `brief.md` 与 Web 页面中均不显示**：新增 URL / 标题查询入口；
+  `--query` 多条候选只列出、不自动选择，命中 0 条明确报错。
+- **历史 `daily.json` 结构不统一**：索引兼容 `why` / `why_it_matters` / 空 comments / 字段缺失。
+- **导出失败静默**：cron 检查 export 退出码并记录 `export OK total=N` / `export FAILED exit=N`。
+
+### 实测
+
+| 指标 | 数值 |
+|---|---|
+| 真实 5 份 daily.json | 113 条，带 why 51（45.1%） |
+| 导出文件 | `index.md` / `my-notes.md` / 4 个 topic 文件；最大 25 KB |
+| 引擎耗时 | 1.96 ms（索引另计约 1.43 ms） |
+| 幂等 | 重复导出所有文件 sha256 一致 |
+| 主库 | `dbc4b2ae…c1d847` 全程未变 |
+| 测试 / 覆盖率 | 407 passed / 90% |
+| LLM 成本 | 0 元/日（导出不调 LLM） |
+
+> `m6c` tag 指向 `c9b2fa1`；SSOT 文档 v1.22 随收口提交更新。
 
 ---
 
