@@ -132,3 +132,21 @@ def test_data_dir_and_db_path(monkeypatch, tmp_path):
     settings = load_settings.__wrapped__() if hasattr(load_settings, "__wrapped__") else Settings()
     assert settings.data_dir() == tmp_path / "data"
     assert settings.db_path().name == "aipulse.db"
+
+
+def test_load_settings_invokes_dotenv_before_yaml(monkeypatch):
+    """★ 回归：`Settings(**yaml)` 的 init 参数优先于 env_file，
+    不先 load_dotenv()，本地按 README 写进 .env 的 key 永远读不到。"""
+    from aipulse.core import config as config_module
+
+    monkeypatch.delenv("AIPULSE_LLM__API_KEY", raising=False)
+
+    def fake_load_dotenv(*args, **kwargs):  # noqa: ANN001, ARG001
+        os.environ["AIPULSE_LLM__API_KEY"] = "sk-from-dotenv"
+        return True
+
+    monkeypatch.setattr(config_module, "load_dotenv", fake_load_dotenv)
+    load_settings.cache_clear()
+    settings = load_settings()
+    assert settings.llm.api_key == "sk-from-dotenv"
+    load_settings.cache_clear()

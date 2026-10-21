@@ -18,6 +18,7 @@ from pathlib import Path
 from typing import Any, Literal
 
 import yaml
+from dotenv import load_dotenv
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -344,7 +345,14 @@ def load_yaml(path: Path) -> dict[str, Any]:
 
 @lru_cache(maxsize=8)
 def load_settings(path: str | Path | None = None) -> Settings:
-    """加载主配置。默认读 `configs/default.yaml`。"""
+    """加载主配置。默认读 `configs/default.yaml`。
+
+    ★ 先 `load_dotenv()`：YAML 里的 `${VAR}` 是在 `load_yaml()` 里用 `os.environ`
+    插值的，而 `Settings(**yaml)` 的 init 参数优先级高于 pydantic-settings 的
+    `env_file`。不先把 .env 灌进环境，本地按 README 写进 .env 的 key 永远读不到
+    （只有 CI 那种直接注入环境变量的场景才生效）。
+    """
+    load_dotenv(override=False)
     config_path = Path(path) if path else default_config_dir() / "default.yaml"
     return Settings(**load_yaml(config_path))
 
