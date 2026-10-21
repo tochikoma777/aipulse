@@ -1,0 +1,978 @@
+{
+  "date": "2026-10-21",
+  "headline": "当 Claude 能设计抗蝎毒蛋白、编码智能体开始自我进化，今天的真正主线是「智能体从工具变成基础设施」——而 Cloudflare 把安全审计做成智能体技能，说明信任问题已被摆上台面。",
+  "headline_item_id": "it_77f9ddd43bbeeb71",
+  "overview_bullets": [
+    {
+      "icon": "🤖",
+      "topic": "智能体基建化",
+      "text": "GitHub 热榜被编码智能体占据：opencode、orca 的智能体舰队、agency-agents 的专家角色库，竞争焦点已从「能不能写代码」转向「怎么调度一支智能体队伍」。"
+    },
+    {
+      "icon": "🔐",
+      "topic": "安全技能化",
+      "text": "cloudflare/security-audit-skill 把多阶段安全审计封装成可被编码智能体调用、结论机器可验证的技能，安全从人审流程变成智能体流水线的一环。"
+    },
+    {
+      "icon": "📄",
+      "topic": "自我进化",
+      "text": "Self-Evolving Coding Agents 提出 harness 与 policy 必须协同进化，Sage-A1.5 则用 35B MoE 做长程任务的能力组合——两条论文指向同一件事：智能体的瓶颈在「组织工作」而非单步能力。"
+    },
+    {
+      "icon": "📉",
+      "topic": "数据污染",
+      "text": "「Publish fake stats, get cited in LLMs」与 Google Cloud 欧洲大面积故障同日出现，一边是模型可信度被投毒，一边是云依赖的单点脆弱，基础设施信任正在双向松动。"
+    },
+    {
+      "icon": "🏢",
+      "topic": "科学落地",
+      "text": "Claude 设计出针对蝎子神经毒素的蛋白结合体，是 LLM 从写文本跨到湿实验设计的少数硬证据，比任何 benchmark 都更能说明模型能力的边界在移动。"
+    }
+  ],
+  "executive_summary": "今天的热度集中在智能体的「编排层」而非模型层，而真正决定这条赛道能走多远的，是安全审计、数据可信与云韧性这些不性感的基础件。",
+  "editor_note": {
+    "core": "今天最该记住的是智能体的「编排层」正在成形：orca 管舰队、graphify 建知识图谱、Cloudflare 把审计做成技能，模型本身不再是差异化来源。谁掌握调度与验证，谁就掌握下一层议价权。",
+    "cross_signal": "GitHub 上多个编码智能体项目与 HF 上 Self-Evolving Coding Agents、Sage-A1.5 相互印证——工程界在拼编排，学术界在论证 harness 与 policy 必须共同进化，两条线指向同一个结论：单点模型提升的边际收益在下降。",
+    "counterintuitive": "热度最高的是各种智能体框架，但真正稀缺的是「验证」——Cloudflare 强调机器可验证结论、论文强调企业多版本记录评测，说明行业缺的不是更聪明的智能体，而是能证明它没撒谎的机制。",
+    "risk": "「Publish fake stats, get cited in LLMs」揭示的投毒路径，与大量智能体自动抓取代码库、文档建图谱的做法叠加，会让错误信息以「结构化知识」的形式被固化，比单纯的幻觉更难清理。"
+  },
+  "contradictions": [
+    "一边是智能体框架与技能生态高速扩张（orca、agency-agents、security-audit-skill），一边是 Self-Evolving Coding Agents 指出只优化 policy 或 harness 单侧无法持续提升——开源社区的扩张速度与论文对有效性的谨慎判断存在张力。",
+    "社区一边热议 AI 写作与模型能力（On AI writing、Jev 视觉问答），一边出现「发布假数据被 LLM 引用」的讨论，对模型输出既依赖又普遍不信任。"
+  ],
+  "underrated": [
+    "Kronos: A Foundation Model for the Language of Financial Markets——金融时序基础模型，热度仅 60.8，但垂类基础模型是少数能直接变现的方向。",
+    "MMEnterprise-Bench: Evaluating Enterprise Agents over Evolving Multimodal Records——企业智能体评测几乎无人讨论，却是落地前最缺的一块。",
+    "Death Plan Switch：面向独立开发者的自托管死亡开关，冷门但切中单人创业者的真实风险。",
+    "VoidAccess：开源暗网 OSINT 图谱工具，安全侧的开源替代正在成形。"
+  ],
+  "sections": [
+    {
+      "name": "开源项目",
+      "summary": "编码智能体生态从单点工具扩张到技能、舰队与知识图谱，开源侧正在抢占智能体的「操作系统」位置。",
+      "item_ids": [
+        "it_77f9ddd43bbeeb71",
+        "it_752e25023358d2db",
+        "it_42565b5232096036",
+        "it_645a6cf2b3acc8ac",
+        "it_01d32fd68c2d717a",
+        "it_940ae4b9591d1f09",
+        "it_ba7f74ab3df8693a",
+        "it_7d0ed93b88de47b1",
+        "it_d3dba292c159325a",
+        "it_c9cdc26758b48a34"
+      ]
+    },
+    {
+      "name": "论文与研究",
+      "summary": "研究侧集体转向长程执行、多模态记录与企业级评测，扩散模型则在训练效率与多轮一致性上做工程化收敛。",
+      "item_ids": [
+        "it_2132166d14a053db",
+        "it_1f2f25669b1202a1",
+        "it_5a706687da8bb239",
+        "it_d56bf7f0d55e498a",
+        "it_1b9bdf1cb5577897",
+        "it_c806bff75fe35cd8",
+        "it_2a31dcf80a81c61c",
+        "it_cc532a2a9fc5a98f",
+        "it_982c31d1cc6bde2a",
+        "it_ca5526b04a2a17ad",
+        "it_81d0790fb79eb500"
+      ]
+    },
+    {
+      "name": "社区舆论",
+      "summary": "HN 讨论从 AI 写作、假数据投毒到自托管「死亡开关」，社区情绪偏向对 AI 内容可信度与个人数字遗产的焦虑。",
+      "item_ids": [
+        "it_6a01ce2d8f264031",
+        "it_831c67cb59ce1d58",
+        "it_e4980aa15f219508",
+        "it_1cfd95139a436f28",
+        "it_6e64464d4eaec941",
+        "it_3ce7834bc9511b94",
+        "it_0c0643e13635f1ed",
+        "it_c021c28354e5e9fa",
+        "it_186fa8565548fc42"
+      ]
+    },
+    {
+      "name": "产业与新闻",
+      "summary": "Google Cloud 欧洲故障冲击银行业务，与 Claude 设计蛋白结合体形成对照：云集中风险与 AI 科学价值同时被验证。",
+      "item_ids": []
+    }
+  ],
+  "comments": [
+    {
+      "item_id": "it_77f9ddd43bbeeb71",
+      "one_liner": "Cloudflare 开源的 coding-agent 技能，用于分阶段执行安全审计并输出可独立验证的机器可读结果",
+      "why": "把安全审计拆成多阶段并输出可机器校验的结论，让编码代理的审计结果从「人读报告」变成可接入 CI 的判定信号，审计责任从人转移到流水线。",
+      "stance": "方向对，但审计结论一旦可自动化，误报就会被当成合规证据，必须保留人工复核闸门。"
+    },
+    {
+      "item_id": "it_752e25023358d2db",
+      "one_liner": "一个基于 Claude Code 的本地求职框架，可评估职位、定制简历、撰写求职信并准备面试",
+      "why": "求职流程被拆成可 fork 的本地框架，简历与求职信在用户机器上生成，投递数据不再经过第三方招聘平台。",
+      "stance": "求职者拿回数据主权是好事，但批量定制简历会把招聘方的筛选成本转嫁给 HR。"
+    },
+    {
+      "item_id": "it_42565b5232096036",
+      "one_liner": "一个让 AI agent 以「最懒的资深开发者」思路写代码的提示技能，主张能不写的代码就不写",
+      "why": "用「最懒的资深工程师」作为代理的行为约束，直接压低生成代码量，把代理的优化目标从产出更多转向少写，减少维护面。",
+      "stance": "这是对代理过度生成的一次有价值的反向校准，但懒惰若无边界会退化成该做的抽象也不做。"
+    },
+    {
+      "item_id": "it_645a6cf2b3acc8ac",
+      "one_liner": "一个开源的编码 agent",
+      "why": "编码代理的开源实现把模型调用与工具编排暴露给用户自改，闭源产品的定价权被侵蚀。",
+      "stance": "开源编码代理会赢下重度开发者，但摘要只有一句话，说明项目成熟度还撑不起生产环境。"
+    },
+    {
+      "item_id": "it_01d32fd68c2d717a",
+      "one_liner": "把代码库连同文档、SQL schema、配置和 PDF 转成可查询知识图谱的 /graphify 技能，支持 Claude Code、Cursor、Codex 与 Gemini CLI，本地确定性 AST 解析且不依赖向量库",
+      "why": "用确定性 AST 解析替代向量库，把代码库、SQL、配置、PDF 统一成可解释边的知识图谱，检索结果可追溯到具体语法结构，降低代理在大型仓库里的幻觉定位。",
+      "stance": "拒绝向量库是正确取舍，可解释的边比相似度分数更适合工程场景。"
+    },
+    {
+      "item_id": "it_940ae4b9591d1f09",
+      "one_liner": "一个用于管理多个 agent（如 Grok Bot、Claude Code）的协作平台，可用自己的订阅运行任意编码 agent，支持桌面、移动端和远程运行时",
+      "why": "把多个编码代理放进同一调度层并复用用户自有订阅，代理从单机工具变成可远程编排的机群。",
+      "stance": "多代理编排是真需求，但依赖用户订阅额度转用，随时会被上游厂商的条款收紧掐断。"
+    },
+    {
+      "item_id": "it_ba7f74ab3df8693a",
+      "one_liner": "一套覆盖前端、社区运营等多种角色的 AI agent 集合，每个 agent 带有人设、工作流程和交付物模板",
+      "why": "把代理按职能和人格打包成「完整机构」，卖点从能力转向角色分工，采购方会按岗位而非按模型来评估，定价与责任边界随之碎片化。",
+      "stance": "人格化包装是营销层，真正决定成败的是各角色间的交接协议，目前看不到。"
+    },
+    {
+      "item_id": "it_7d0ed93b88de47b1",
+      "one_liner": "ComfyUI 是一个基于图/节点界面的模块化扩散模型 GUI、API 与后端，主打本地快速推理。",
+      "why": "节点式图界面把扩散模型的推理流程拆成可复用模块，本地跑图不再依赖云端 API，创作者的工作流资产沉淀在自己机器上。",
+      "stance": "本地优先的推理引擎正在把生成式图像的控制权从平台手里拿回来，闭源 SaaS 的护城河只剩模型权重。"
+    },
+    {
+      "item_id": "it_d3dba292c159325a",
+      "one_liner": "Kronos 是一个面向金融市场语言的基础模型。",
+      "why": "把金融时序当成一种语言来建模，意味着行情预测从手工因子工程转向通用序列预训练，量化研究的门槛被重新定义。",
+      "stance": "金融基础模型的方向对，但市场反身性会让任何公开权重的模型迅速失效，别把它当alpha机器。"
+    },
+    {
+      "item_id": "it_c9cdc26758b48a34",
+      "one_liner": "Anthropic 开源的插件仓库，主要面向知识工作者在 Claude Cowork 中使用",
+      "why": "官方直接面向知识工作者发插件仓库，意味着 Claude 从对话工具转为工作流宿主，第三方技能生态被官方目录收编并分层。",
+      "stance": "官方收编是平台化的必经一步，代价是独立插件作者的议价空间被压缩。"
+    },
+    {
+      "item_id": "it_2132166d14a053db",
+      "one_liner": "Sage-A1.5：35B MoE agentic 模型，通过自适应能力组合提升长程任务求解与科学探索能力",
+      "why": "35B MoE 代理把重点放在组织工作与自我修正而非单任务得分，长程任务的评估口径从「答对」转向「会不会改计划」，直接影响代理产品的可靠性叙事。",
+      "stance": "能力组合比单点分数更接近真实工作，但自我修正若缺乏外部校验就是自我循环。"
+    },
+    {
+      "item_id": "it_1f2f25669b1202a1",
+      "one_liner": "研究 GUI agent 如何在截图、音频、视频等多模态流式观测中聚焦稀疏且时变的有效信息",
+      "why": "指出全量多模态上下文每步都喂给 GUI 代理是浪费，因为相关性稀疏且瞬时，这会把代理的算力预算从「看得全」转向「看得准」。",
+      "stance": "稀疏注意力是 GUI 代理落地的必要工程判断，全模态堆料路线该被质疑。"
+    },
+    {
+      "item_id": "it_5a706687da8bb239",
+      "one_liner": "SolarRenderer：少步数生成式参考渲染方法，把游戏引擎或编码 agent 给出的场景结构补全为真实感视频",
+      "why": "让引擎或编码代理给出的粗结构直接生成写实视频，渲染器不再绑定单一引擎表示，游戏与影视的前期预览成本被压到几步采样。",
+      "stance": "少步渲染的价值在预览而非成片，宣称替代离线渲染是过度承诺。"
+    },
+    {
+      "item_id": "it_d56bf7f0d55e498a",
+      "one_liner": "MT Forcing 提出一种自回归扩散方法，用于提升多轮图像编辑的稳定性与一致性。",
+      "why": "多轮编辑的漂移问题被定位为视觉不稳定与语义偏移两类，解决了它，交互式修图才能从单次生成走向连续工作流。",
+      "stance": "多轮一致性是图像编辑真正可用的分水岭，单轮demo再惊艳也说明不了产品化能力。"
+    },
+    {
+      "item_id": "it_1b9bdf1cb5577897",
+      "one_liner": "SWIFT：用冻结的弱去噪器引导强扩散模型的自引导训练方法，不增加推理开销",
+      "why": "用冻结的弱去噪器引导强模型且不增加推理开销，把扩散模型的质量提升从采样阶段挪回训练阶段，推理成本曲线被改写。",
+      "stance": "训练期引导优于推理期堆采样，这条路线应成为默认选项。"
+    },
+    {
+      "item_id": "it_c806bff75fe35cd8",
+      "one_liner": "该研究提出通过 harness-policy 联合优化让编程智能体自我进化。",
+      "why": "把agent的脚手架与策略模型放在一起优化，承认了工具调用框架本身就是能力来源，单靠换更强基座无法继续涨点。",
+      "stance": "harness与policy共同进化是编码agent下一阶段的主战场，只调prompt的队伍会被甩开。"
+    },
+    {
+      "item_id": "it_2a31dcf80a81c61c",
+      "one_liner": "MMEnterprise-Bench：面向不断演进的多模态企业记录，评测企业 agent 的问答能力",
+      "why": "企业记录会随协作不断修订、多版本并存，基准把「哪版为准」变成核心考点，代理的失败模式从检索不到转为引用过期信息。",
+      "stance": "版本演化才是企业场景的真问题，只测静态文档的基准已经失真。"
+    },
+    {
+      "item_id": "it_cc532a2a9fc5a98f",
+      "one_liner": "RoAR-VAE 通过稳健预测来改善视觉 tokenizer 潜变量的可扩散性。",
+      "why": "重新审视tokenizer与扩散模型的耦合方式，说明视觉分词器的目标不该只是重建保真，而是让潜空间更易被扩散学习。",
+      "stance": "分词器与生成器的联合设计才是正路，分开优化重建指标的做法已经到顶。"
+    },
+    {
+      "item_id": "it_982c31d1cc6bde2a",
+      "one_liner": "ScaleNav 利用大规模互联网视频预训练，构建语言条件式的局部导航策略。",
+      "why": "用互联网视频替代昂贵的真机采集来做局部导航预训练，机器人泛化的数据瓶颈从采集成本转向数据筛选质量。",
+      "stance": "视频预训练是机器人数据荒的现实解，但仿真到真机的落差仍是没被解决的那一半。"
+    },
+    {
+      "item_id": "it_ca5526b04a2a17ad",
+      "one_liner": "PhysSkin++ 是一个基于自监督神经蒙皮的物理动画框架，可从静态几何学习连续的神经蒙皮场，实现跨多种 3D 形状与空间离散化的实时可泛化动画",
+      "why": "把物理仿真从逐形状手工建模转为从静态几何自监督学出连续蒙皮场，使实时动画能跨不同网格分辨率复用同一套参数，降低游戏与仿真管线的资产适配成本。",
+      "stance": "方向正确：物理先验加自监督是让实时动画摆脱手工绑定的唯一现实路径。"
+    },
+    {
+      "item_id": "it_6a01ce2d8f264031",
+      "one_liner": "一则讨论：发布编造的统计数据后，内容会被 LLM 引用",
+      "why": "如果伪造的统计数据能被大模型当作事实引用，训练语料的污染就会直接转化为模型输出的可信度崩塌，受害者是所有依赖模型做调研的用户。",
+      "stance": "这是检索增强架构的结构性漏洞，不解决引用溯源，LLM 的事实性叙事就是空话。"
+    },
+    {
+      "item_id": "it_831c67cb59ce1d58",
+      "one_liner": "一篇关于 AI 写作的随笔讨论",
+      "why": "当生成文本的成本趋近于零，读者对文本来源的默认信任被打破，写作者的价值判断从产出速度转向可验证的个人经验与责任承担。",
+      "stance": "AI 写作的真正代价不是质量下降，而是让'谁说的'重新变成比'说了什么'更重要的问题。"
+    },
+    {
+      "item_id": "it_e4980aa15f219508",
+      "one_liner": "Death Plan Switch 是一个面向独立开发者的自托管 dead man's switch，在开发者失联或身故时自动通知指定联系人并安排业务交接",
+      "why": "独立开发者把业务连续性托付给一个自动触发的通知机制，意味着单人公司的客户交接从人情约定变成可执行的技术流程，填补了个人经营者死亡后的责任真空。",
+      "stance": "冷门但刚需，说明 solo 商业模式已经成熟到需要配套的'退出基础设施'。"
+    },
+    {
+      "item_id": "it_1cfd95139a436f28",
+      "one_liner": "VoidAccess 是一个开源暗网 OSINT 工具，可将查询结果整理成关系图谱",
+      "why": "把暗网情报从人工检索推进到自动成图，使威胁情报的门槛从付费平台下移到开源工具，中小安全团队第一次能自建关系图谱。",
+      "stance": "开源 OSINT 引擎会压缩商业情报厂商的溢价空间，但滥用风险也随之落到个人研究者头上。"
+    },
+    {
+      "item_id": "it_6e64464d4eaec941",
+      "one_liner": "Jev Cards 是一个图片问答小游戏，让玩家与具备视觉能力的 Jev 模型比试答题速度",
+      "why": "用四分之一秒响应的视觉模型做答题游戏，把模型能力评测从基准分数变成人类可直观对抗的体验，普通用户第一次能亲手感受推理延迟的差异。",
+      "stance": "把评测游戏化比发论文更能让公众理解模型强弱，这类项目应该更多。"
+    },
+    {
+      "item_id": "it_3ce7834bc9511b94",
+      "one_liner": "一篇关于苯二氮䓬类药物戒断困境的报道",
+      "why": "苯二氮䓬类戒断的长期痛苦在医疗叙事中被阿片危机掩盖，患者停药时缺乏规范减量指导，导致复发与黑市用药循环。",
+      "stance": "处方端的过度开药与停药端的支持缺位是同一个问题的两面，医疗系统欠这批患者一个交代。"
+    },
+    {
+      "item_id": "it_0c0643e13635f1ed",
+      "one_liner": "Google Cloud 故障波及欧洲几乎所有银行业务及其他服务",
+      "why": "单一云厂商的区域故障同时击穿欧洲多家银行的柜面与线上业务，暴露出金融业把可用性押注在少数超大规模云上的集中度风险。",
+      "stance": "这不是意外而是必然，监管该把多云与可迁移性写进金融基础设施的硬性要求。"
+    },
+    {
+      "item_id": "it_c021c28354e5e9fa",
+      "one_liner": "Claude 设计出针对蝎子神经毒素的蛋白质结合体",
+      "why": "模型直接设计出针对蝎毒神经毒素的蛋白结合体，把抗体发现从数年湿实验周期压缩到计算阶段，为罕见中毒与抗毒血清短缺提供新解法。",
+      "stance": "这是 AI 在生物医药里少见的闭环成果，价值远高于又一轮模型跑分。"
+    },
+    {
+      "item_id": "it_186fa8565548fc42",
+      "one_liner": "DeepInfer 是一个面向 DeepSeek 模型的高性能推理框架",
+      "why": "针对特定开源模型做专用推理框架，意味着性能优化从通用引擎转向模型定制，部署成本下降会让 DeepSeek 系模型在自托管场景更具竞争力。",
+      "stance": "专用推理栈是开源模型生态走向成熟的标志，但碎片化也会加重运维负担。"
+    }
+  ],
+  "stats": {},
+  "items": {
+    "it_77f9ddd43bbeeb71": {
+      "id": "it_77f9ddd43bbeeb71",
+      "source": "github_trending",
+      "title": "cloudflare/security-audit-skill",
+      "url": "https://github.com/cloudflare/security-audit-skill",
+      "summary": "A coding-agent skill for multi-phase security audits with independently verified, machine-readable findings",
+      "hot_score": 82.8947,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-21T03:11:29.651293+00:00",
+      "last_seen_at": "2026-10-21T03:12:27.598678+00:00",
+      "metrics": {
+        "stars_total": 34440,
+        "stars_in_window": 1712,
+        "forks": 2159,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "JavaScript"
+    },
+    "it_186fa8565548fc42": {
+      "id": "it_186fa8565548fc42",
+      "source": "hackernews",
+      "title": "DeepInfer: High-performance inference framework for DeepSeek models",
+      "url": "https://github.com/deepseek-ai/DeepInfer",
+      "summary": "",
+      "hot_score": 82.057,
+      "topic_id": "tp_c8195f23dba3",
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-20T09:08:54+00:00",
+      "last_seen_at": "2026-10-21T03:12:27.628663+00:00",
+      "metrics": {
+        "points": 2155,
+        "num_comments": 838
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_752e25023358d2db": {
+      "id": "it_752e25023358d2db",
+      "source": "github_trending",
+      "title": "MadsLorentzen/ai-job-search",
+      "url": "https://github.com/MadsLorentzen/ai-job-search",
+      "summary": "The job search that runs on your machine. AI job application framework built on Claude Code: evaluate postings, tailor CVs, write cover letters, prep interviews. Fork it and own it.",
+      "hot_score": 81.194,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-16T15:44:39.424248+00:00",
+      "last_seen_at": "2026-10-21T03:12:27.597766+00:00",
+      "metrics": {
+        "stars_total": 60925,
+        "stars_in_window": 3861,
+        "forks": 18956,
+        "streak_days": 6
+      },
+      "streak_days": 6,
+      "language": "Python"
+    },
+    "it_42565b5232096036": {
+      "id": "it_42565b5232096036",
+      "source": "github_trending",
+      "title": "DietrichGebert/ponytail",
+      "url": "https://github.com/DietrichGebert/ponytail",
+      "summary": "Makes your AI agent think like the laziest senior dev in the room. The best code is the code you never wrote.",
+      "hot_score": 80.5263,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-21T03:11:29.651306+00:00",
+      "last_seen_at": "2026-10-21T03:12:27.600658+00:00",
+      "metrics": {
+        "stars_total": 169930,
+        "stars_in_window": 1208,
+        "forks": 9243,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "JavaScript"
+    },
+    "it_0c0643e13635f1ed": {
+      "id": "it_0c0643e13635f1ed",
+      "source": "hackernews",
+      "title": "Google Cloud outage affects almost all banking and other operations in Europe",
+      "url": "https://www.neowin.net/news/google-cloud-outage-takes-down-hsbc-revolut-bank-of-scotland-llyods-equifax-more",
+      "summary": "",
+      "hot_score": 78.4862,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-20T10:26:02+00:00",
+      "last_seen_at": "2026-10-21T03:12:27.522844+00:00",
+      "metrics": {
+        "points": 350,
+        "num_comments": 175
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_2132166d14a053db": {
+      "id": "it_2132166d14a053db",
+      "source": "hf_papers",
+      "title": "Sage-A1.5: From Long-Horizon Execution to Scientific Exploration with Capability Composition",
+      "url": "arxiv:2610.28578",
+      "summary": "In this report, we introduce Sage-A1.5, a 35B Mixture-of-Experts agentic model that builds on A1 to advance long-horizon problem solving through adaptive capability composition. Compared with A1, Sage-A1.5 learns not only to solve individual tasks, but also to organize work and revise its approach during execution. Sage-A1.5 highlights three improvements: agentic orchestration, verification, and open scientific discovery. First, agentic orchestration extends single-agent execution through task delegation and parallel collaboration among subagents with isolated contexts, enabling complex tasks to be decomposed and addressed concurrently and supporting efficient execution while reducing interference across concurrent subagents. Second, agentic verification strengthens long-horizon reliability through progress checking, evidence validation, and reflective strategy revision, allowing the agent to recognize unproductive search paths and pursue alternative approaches. Third, open scientific discovery extends agentic capabilities beyond answering predefined questions to conducting exploratory research, connecting scientific inquiry with interactive analysis and inspectable research artifacts. We showcase these capabilities through complicated agentic tasks and multidisciplinary scientific applications. Besides, we hope Sage-A1.5 provides the community with an accessible foundation for open scientific discovery, offering a practical path from long-horizon task execution to collaborative, verifiable, and inspectable scientific exploration.",
+      "hot_score": 76.6988,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-19T20:00:00+00:00",
+      "last_seen_at": "2026-10-21T03:12:27.611216+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 23
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_645a6cf2b3acc8ac": {
+      "id": "it_645a6cf2b3acc8ac",
+      "source": "github_trending",
+      "title": "anomalyco/opencode",
+      "url": "https://github.com/anomalyco/opencode",
+      "summary": "The open source coding agent.",
+      "hot_score": 75.904,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-17T14:54:44.860471+00:00",
+      "last_seen_at": "2026-10-21T03:12:27.604048+00:00",
+      "metrics": {
+        "stars_total": 219047,
+        "stars_in_window": 1414,
+        "forks": 29222,
+        "streak_days": 5
+      },
+      "streak_days": 5,
+      "language": "TypeScript"
+    },
+    "it_01d32fd68c2d717a": {
+      "id": "it_01d32fd68c2d717a",
+      "source": "github_trending",
+      "title": "Graphify-Labs/graphify",
+      "url": "https://github.com/Graphify-Labs/graphify",
+      "summary": "Turn any codebase, with its docs, SQL schemas, configs, and PDFs, into a queryable knowledge graph. A /graphify skill for Claude Code, Cursor, Codex, and Gemini CLI: local deterministic AST parsing, every edge explained, no vector store.",
+      "hot_score": 75.7895,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-21T03:11:29.651321+00:00",
+      "last_seen_at": "2026-10-21T03:12:27.603150+00:00",
+      "metrics": {
+        "stars_total": 130390,
+        "stars_in_window": 802,
+        "forks": 12548,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_6a01ce2d8f264031": {
+      "id": "it_6a01ce2d8f264031",
+      "source": "hackernews",
+      "title": "Publish fake stats, get cited in LLMs",
+      "url": "https://peec.ai/blog/publish-stats-get-cited-the-tactic-that-put-my-data-all-over-the-web",
+      "summary": "",
+      "hot_score": 75.5378,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-20T13:06:22+00:00",
+      "last_seen_at": "2026-10-21T03:12:27.525702+00:00",
+      "metrics": {
+        "points": 325,
+        "num_comments": 191
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_940ae4b9591d1f09": {
+      "id": "it_940ae4b9591d1f09",
+      "source": "github_trending",
+      "title": "stablyai/orca",
+      "url": "https://github.com/stablyai/orca",
+      "summary": "Orca is the place for working with a fleet of agents (e.g. Grok Bot, Claude Code). Run any coding agent with your own subscription. Available on desktop, mobile and remote runtime.",
+      "hot_score": 75.5356,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-17T14:54:44.860455+00:00",
+      "last_seen_at": "2026-10-21T03:12:27.599726+00:00",
+      "metrics": {
+        "stars_total": 99922,
+        "stars_in_window": 1590,
+        "forks": 6331,
+        "streak_days": 5
+      },
+      "streak_days": 5,
+      "language": "TypeScript"
+    },
+    "it_c021c28354e5e9fa": {
+      "id": "it_c021c28354e5e9fa",
+      "source": "hackernews",
+      "title": "Claude designed protein binders against scorpion neurotoxins",
+      "url": "https://www.anthropic.com/research/claude-scorpion-toxin-binder-design",
+      "summary": "",
+      "hot_score": 73.675,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-20T17:48:29+00:00",
+      "last_seen_at": "2026-10-21T03:12:27.527551+00:00",
+      "metrics": {
+        "points": 98,
+        "num_comments": 64
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_1f2f25669b1202a1": {
+      "id": "it_1f2f25669b1202a1",
+      "source": "hf_papers",
+      "title": "Focused Omni-Modal GUI Agents",
+      "url": "arxiv:2610.26203",
+      "summary": "Graphical User Interface (GUI) agents increasingly act over streaming omni-modal observations spanning screenshots, audio, video, interaction history, and device states. However, exposing this complete context uniformly at every step ignores that relevance is transient and sparse: the signal determining one action can become clutter at the next. Because executed actions feed back into the context, these errors compound into Sequential Distraction, driving the agent into irreversible trajectory drift. We formulate the underlying requirement as Focused Perception: a representation that is step-adaptive, action-sufficient, and non-intrusive. We realize this in FocusGUI, a lightweight adapter that dynamically prioritizes multimodal channels against a step-specific decision reference. Instead of uniformly processing all inputs, it compresses the most relevant evidence into a compact latent and subtly injects it into the frozen decoder's embeddings, guiding the model's attention without altering its native parameter space. FocusGUI trains from action supervision alone, requiring neither modality-relevance labels nor backbone fine-tuning. Across four omni-modal backbones, it raises overall Type Match by +33.2 and Exact Match by 3.0 times over the frozen backbone on average, and Type Match by +30.1 over the strongest existing enhancement method.",
+      "hot_score": 73.598,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-18T20:00:00+00:00",
+      "last_seen_at": "2026-10-21T03:12:27.610080+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 24
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_ba7f74ab3df8693a": {
+      "id": "it_ba7f74ab3df8693a",
+      "source": "github_trending",
+      "title": "msitarzewski/agency-agents",
+      "url": "https://github.com/msitarzewski/agency-agents",
+      "summary": "A complete AI agency at your fingertips - From frontend wizards to Reddit community ninjas, from whimsy injectors to reality checkers. Each agent is a specialized expert with personality, processes, and proven deliverables.",
+      "hot_score": 71.0526,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-21T03:11:29.651335+00:00",
+      "last_seen_at": "2026-10-21T03:12:27.604761+00:00",
+      "metrics": {
+        "stars_total": 162443,
+        "stars_in_window": 562,
+        "forks": 26237,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Shell"
+    },
+    "it_5a706687da8bb239": {
+      "id": "it_5a706687da8bb239",
+      "source": "hf_papers",
+      "title": "SolarRenderer: Few-Step Generative Reference Rendering",
+      "url": "arxiv:2610.28630",
+      "summary": "Game engines and coding agents can specify the layout, motion, and camera of a scene, yet turning such coarse structure into realistic video requires a renderer that follows the structure and completes the appearance it leaves open. Existing renderers are tied to the representation of one engine, need tens of denoising steps or a costly distillation of their own, and learn from conditions that are not aligned with their target videos. We present SolarRenderer, a structure-conditioned video renderer that adapts a frozen MiniMax-H3 33B backbone with two lightweight LoRAs. Structural videos enter the native reference pathway of the backbone at the positions of the frames they describe, without a type identifier and described only in plain text, so that a single control LoRA follows arbitrary structural representations. Starting from a pretrained four-step LoRA, structure-guided distribution matching renders in four steps, 12.3 times faster than 50-step sampling, while preserving the learned control. A block-causal variant extends the same design to streaming and renders 768p video in real time. To train the model, we build a frame-aligned corpus of 136K clips from game engines, simulators, and YouTube videos. Experiments on an in-distribution test set and a generalization benchmark of 16 structural representations show that SolarRenderer achieves state-of-the-art results across both, and generalizes to 11 unseen representations, including pose skeletons, drawings, and point clouds.",
+      "hot_score": 69.7757,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-19T20:00:00+00:00",
+      "last_seen_at": "2026-10-21T03:12:27.613640+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 17
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_7d0ed93b88de47b1": {
+      "id": "it_7d0ed93b88de47b1",
+      "source": "github_trending",
+      "title": "Comfy-Org/ComfyUI",
+      "url": "https://github.com/Comfy-Org/ComfyUI",
+      "summary": "The most powerful and modular diffusion model GUI, api and backend with a graph/nodes interface. The fastest local inference engine in the world.",
+      "hot_score": 68.3721,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-19T03:07:38.381715+00:00",
+      "last_seen_at": "2026-10-21T03:12:27.601411+00:00",
+      "metrics": {
+        "stars_total": 140878,
+        "stars_in_window": 1206,
+        "forks": 16671,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "Python"
+    },
+    "it_d56bf7f0d55e498a": {
+      "id": "it_d56bf7f0d55e498a",
+      "source": "hf_papers",
+      "title": "MT Forcing: Towards Stable and Consistent Multi-Turn Image Editing with Autoregressive Diffusion",
+      "url": "arxiv:2610.25404",
+      "summary": "Multi-turn image editing aims to modify an image according to a sequence of instructions, enabling more effective interactive visual content creation for users. However, existing methods often exhibit noticeable drift after only a few editing turns, manifesting in two aspects: 1) unstable visual quality, with accumulating artifacts and degraded details; and 2) inconsistent image content, with unintended changes to preserved regions and prior edits. To address these challenges, we propose MT Forcing, a novel training paradigm for multi-turn image editing with unified multimodal models (UMMs) based on autoregressive diffusion. Specifically, we propose Single-Turn Distribution Matching Distillation (Single-Turn DMD), which supervises student self-rollouts with a teacher that applies cumulative edits to the source image in a single turn, providing visual-quality guidance without recursive error accumulation. Additionally, we introduce Teacher-Forcing Guidance, which supervises history-dependent transitions on reference trajectories during warmup and as a regularizer during distillation, encouraging cross-turn content consistency beyond what per-turn distribution matching alone can ensure. Extensive experiments demonstrate that our approach significantly improves the multi-turn image editing capabilities of UMMs, yielding more stable visual quality and stronger cross-turn consistency.",
+      "hot_score": 67.6559,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-17T20:00:00+00:00",
+      "last_seen_at": "2026-10-20T03:16:40.862877+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 22
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_3ce7834bc9511b94": {
+      "id": "it_3ce7834bc9511b94",
+      "source": "hackernews",
+      "title": "The Other Epidemic: Trying to get off benzodiazepines",
+      "url": "https://www.thebeliever.net/the-other-epidemic",
+      "summary": "https://web.archive.org/web/20261020230542/https://www.thebe... https://archive.ph/Tb1SZ",
+      "hot_score": 67.2955,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-20T23:04:09+00:00",
+      "last_seen_at": "2026-10-21T03:12:27.529851+00:00",
+      "metrics": {
+        "points": 87,
+        "num_comments": 60
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_1b9bdf1cb5577897": {
+      "id": "it_1b9bdf1cb5577897",
+      "source": "hf_papers",
+      "title": "SWIFT: Self-guided Weak-to-strong dIFfusion models via Target extrapolation",
+      "url": "arxiv:2610.25844",
+      "summary": "Training high-quality diffusion models is computationally expensive, and inference-time guidance often adds further sampling cost. In this work, we introduce Swift, a simple yet effective self-guided training method that uses a frozen weak denoiser to improve a stronger model without adding inference overhead. For each noisy input, Swift extrapolates the clean regression target away from the weak denoiser's prediction, amplifying components that remain underfit. The weak guide can be an early training checkpoint, requires no backpropagation during main-model training, and is discarded afterward. The resulting model retains the original sampler and supports both conditional and unconditional generation without label dropout or an unconditional branch. We explain this mechanism through a spectral analysis of finite-time population gradient flow in an RKHS. With an early-stopped weak guide, we prove that a nonempty range of extrapolation strengths yields strictly lower posterior-mean error than matched standard training, despite shifting the regression target away from the posterior mean. Experiments on CIFAR-10 and ImageNet-256 demonstrate improvements across model scales and representations. In one ImageNet-256 configuration, Swift surpasses the baseline's best FID using roughly half the total training compute, including guide preparation and training overhead. On RAEv2, it achieves FID 1.15 without inference-time guidance and 0.99 with guidance. These results establish target extrapolation as an effective approach to weak-to-strong diffusion training with efficient single-model inference.",
+      "hot_score": 66.6749,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-18T20:00:00+00:00",
+      "last_seen_at": "2026-10-21T03:12:27.612441+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 18
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_e4980aa15f219508": {
+      "id": "it_e4980aa15f219508",
+      "source": "hackernews",
+      "title": "Show HN: Death Plan Switch, a self-hosted dead man's switch for solo devs",
+      "url": "https://deathplanswitch.com/",
+      "summary": "Hi HN, I'm Peter Bishop and I've been working in graphics and web tech for over 25yrs. I've recently launched Death Plan Switch to solve a major problem in my succession plan. What if I go missing or die? The right people are told and my business can continue to operate for my clients. There's a backstory to this project, I was hospitalised in 2012 and lost my business back then and I couldn't get the data to my technical 2IC in time without frustrating my clients. Death Plan Switch solves this ",
+      "hot_score": 64.0053,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-20T04:37:43+00:00",
+      "last_seen_at": "2026-10-21T03:12:27.528347+00:00",
+      "metrics": {
+        "points": 93,
+        "num_comments": 62
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_c806bff75fe35cd8": {
+      "id": "it_c806bff75fe35cd8",
+      "source": "hf_papers",
+      "title": "Self-Evolving Coding Agents via Harness-Policy Optimization",
+      "url": "arxiv:2610.22791",
+      "summary": "Large language model (LLM) agents have shown promising potential in coding tasks, and their performance is jointly determined by the policy model and the harness that mediates their interaction with the environment. Indeed, harness and policy are mutually reinforcing and evolving only one component is suboptimal---a harness tuned for one checkpoint may not target the failure modes of an updated policy, while policy learning remains limited to the trajectories elicited by a fixed harness. In light of this, we propose Self-HPO, a recursive self-improving framework for coding agents that alternates harness and policy optimization, using the evolving policy as its own harness proposer. Specifically, in each round, the current policy first analyzes its own failures and proposes new harness candidates (H-step). The policy is then updated through reinforcement learning (RL) under the selected harness (P-step), and hard tasks identified during training form the next harness search set, keeping harness optimization targeted to the policy's evolving failure modes. Across three coding benchmarks, Self-HPO consistently outperforms harness-only and policy-only baselines, improving Qwen3.5-35B-A3B's average resolve rate from 57.8% to 64.8%, with gains generalizing to out-of-distribution settings. Further analysis shows that both optimized components retain gains even when paired with their base counterparts, while their joint gain exceeds the sum of their individual gains. Self-HPO also improves reliability (Pass@1) and expands the capability frontier (Pass@k) over the base agent. Additionally, we show that with a stronger external model (e.g., Opus 4.8) as the harness proposer, the same framework yields a further performance boost.",
+      "hot_score": 63.9976,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-15T20:00:00+00:00",
+      "last_seen_at": "2026-10-20T03:16:40.863877+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 21
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_2a31dcf80a81c61c": {
+      "id": "it_2a31dcf80a81c61c",
+      "source": "hf_papers",
+      "title": "MMEnterprise-Bench: Evaluating Enterprise Agents over Evolving Multimodal Records",
+      "url": "arxiv:2610.27911",
+      "summary": "Enterprise agents answer questions over workplace records that evolve through team collaboration. As information is shared, corrected, and revised across documents, chats, and figures, multiple versions of the same information accumulate in the workspace. Reliable question answering therefore requires agents to reason over sufficient evidence, resolve cross-source and temporal conflicts, and recognize when the available evidence is insufficient to establish an answer. To systematically evaluate these capabilities, we introduce MMEnterprise-Bench, a benchmark comprising 1,613 questions grounded in evolving multimodal records from simulated collaboration projects, covering three categories: Evidence Reasoning, Conflict Resolution, and Unanswerability. We evaluate 10 proprietary and open-source multimodal LLMs and find that even the strongest models struggle when evidence contains cross-source or temporal conflicts or spans multiple images. Moreover, increasing the retrieval budget or employing a larger retriever improves evidence recall but does not consistently translate into higher answer accuracy. These findings highlight the persistent challenges of reasoning over evolving workplace records and establish MMEnterprise-Bench as a testbed for developing more reliable enterprise agents. Code and data are available at https://mlvlab.github.io/MMEnterprise-Bench/.",
+      "hot_score": 63.718,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-19T20:00:00+00:00",
+      "last_seen_at": "2026-10-21T03:12:27.615968+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 10
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_cc532a2a9fc5a98f": {
+      "id": "it_cc532a2a9fc5a98f",
+      "source": "hf_papers",
+      "title": "RoAR-VAE: Improving Latent Diffusability through Robust Prediction",
+      "url": "arxiv:2610.26216",
+      "summary": "An effective visual tokenizer must preserve image fidelity while producing latents that downstream diffusion models can learn efficiently. Prior work improves latent diffusability through semantic alignment or joint tokenizer--diffusion training. Revisiting REPA-E, a representative approach, we find that removing its diffusion objective and dedicated generative blocks while retaining semantic prediction from corrupted latents yields comparable downstream generation performance under a matched setting. This observation motivates a general principle of robust prediction: generation-relevant information should remain recoverable from corrupted latents. We instantiate this principle with two complementary objectives. RobustAlign predicts pretrained semantic features from corrupted latents to preserve high-level structure, while RobustRecon reconstructs the clean image to retain fine-grained spatial and appearance information. Together, they form Robust Alignment and Reconstruction VAE (RoAR-VAE). Our analysis suggests that robust prediction improves diffusability by making useful information more accessible in high-variance latent directions, which diffusion models tend to learn earlier. Empirically, RoAR-VAE improves average generation benchmark performance by 2.19 points over the strongest baseline tokenizer under the same training budget, while improving small-text reconstruction accuracy by 16.93 percentage points over FLUX.1-VAE. These results demonstrate that RoAR-VAE achieves a favorable balance between reconstruction fidelity and downstream generative learnability.",
+      "hot_score": 63.2134,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-18T20:00:00+00:00",
+      "last_seen_at": "2026-10-20T03:16:40.864831+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 13
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_831c67cb59ce1d58": {
+      "id": "it_831c67cb59ce1d58",
+      "source": "hackernews",
+      "title": "On AI writing",
+      "url": "https://www.bolkunov.com/p/on-ai-writing",
+      "summary": "",
+      "hot_score": 62.5017,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-20T19:55:11+00:00",
+      "last_seen_at": "2026-10-21T03:12:27.530676+00:00",
+      "metrics": {
+        "points": 80,
+        "num_comments": 57
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_982c31d1cc6bde2a": {
+      "id": "it_982c31d1cc6bde2a",
+      "source": "hf_papers",
+      "title": "ScaleNav: Scalable Internet Video Pretraining for Language-Conditioned Local Navigation",
+      "url": "arxiv:2610.25690",
+      "summary": "We study language-conditioned local navigation, where a robot must navigate to a text-specified target visible in its initial observation and stop at the described location. End-to-end navigation policies require diverse training data to generalize across scenes, yet real-robot data is costly to collect and simulated data leaves a sim-to-real gap. Internet egocentric videos offer a scalable source of real-world navigation experience. Our key insight is to learn goal-directed visual dynamics from Internet egocentric videos, and use these dynamics to support robot action generation. To this end, we propose ScaleNav, a unified world-action framework with three-stage training. We first perform instruction-conditioned video pretraining on these videos to learn how observations evolve as the camera approaches instructed targets across diverse real-world scenes. Action alignment then uses action-labeled simulated data to train the model to predict executable action chunks. Joint fine-tuning subsequently optimizes all trainable components together for navigation. ScaleNav achieves success rates of 86.5% on a single-view adaptation of Short-Horizon OVON and 94.9% on our HabitatGS-LN benchmark, outperforming the evaluated baselines on both benchmarks. We further deploy and evaluate ScaleNav on a real quadruped robot, with results supporting the model's ability to generalize to real-world navigation. Code and videos are available at https://zju3dv.github.io/ScaleNav/",
+      "hot_score": 61.4826,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-18T20:00:00+00:00",
+      "last_seen_at": "2026-10-20T03:16:40.865687+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 11
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_d3dba292c159325a": {
+      "id": "it_d3dba292c159325a",
+      "source": "github_trending",
+      "title": "shiyu-coder/Kronos",
+      "url": "https://github.com/shiyu-coder/Kronos",
+      "summary": "Kronos: A Foundation Model for the Language of Financial Markets",
+      "hot_score": 60.8379,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-20T03:16:33.930548+00:00",
+      "last_seen_at": "2026-10-21T03:12:27.608719+00:00",
+      "metrics": {
+        "stars_total": 42400,
+        "stars_in_window": 733,
+        "forks": 7017,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "Python"
+    },
+    "it_ca5526b04a2a17ad": {
+      "id": "it_ca5526b04a2a17ad",
+      "source": "hf_papers",
+      "title": "PhysSkin++: Real-Time and Generalizable Physics-Based Animation via Self-Supervised Neural Skinning",
+      "url": "arxiv:2610.26067",
+      "summary": "Generalizing real-time physics-based animation across diverse 3D shapes and spatial discretizations remains challenging. In this paper, we introduce PhysSkin++, a physics-informed framework that learns continuous neural skinning fields from static geometries to construct compact deformation subspaces. Specifically, we propose a Neural Skinning Fields Autoencoder that predicts shape-dependent deformation subspaces without per-object network training. To learn these subspaces without simulation trajectories, we develop a Physics-Informed Self-Supervised Learning strategy that combines skinning-field normalization with conflict-aware gradient correction, stabilizing joint optimization under physical and orthogonality constraints. The learned representation supports efficient reduced dynamics with user control and contact interactions, together with direct animation binding to meshes, point clouds, and 3D Gaussians. For prescribed rig animation, we further introduce a self-supervised complementarity objective to learn complementary elastic responses without enforcing complementarity constraints at runtime. Experiments demonstrate cross-shape generalization of the learned skinning fields, real-time reduced simulation, and applications to controllable, collision-aware, and rig-complementary animation.",
+      "hot_score": 58.8865,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-18T20:00:00+00:00",
+      "last_seen_at": "2026-10-21T03:12:27.614807+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 10
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_c9cdc26758b48a34": {
+      "id": "it_c9cdc26758b48a34",
+      "source": "github_trending",
+      "title": "anthropics/knowledge-work-plugins",
+      "url": "https://github.com/anthropics/knowledge-work-plugins",
+      "summary": "Open source repository of plugins primarily intended for knowledge workers to use in Claude Cowork",
+      "hot_score": 56.8421,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-21T03:11:29.651346+00:00",
+      "last_seen_at": "2026-10-21T03:12:27.606474+00:00",
+      "metrics": {
+        "stars_total": 30837,
+        "stars_in_window": 267,
+        "forks": 3466,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_1cfd95139a436f28": {
+      "id": "it_1cfd95139a436f28",
+      "source": "hackernews",
+      "title": "Show HN: VoidAccess – open-source dark web OSINT, from query to a graph",
+      "url": "https://github.com/KatrielMoses/voidaccess",
+      "summary": "Hi HN! Im Katriel, and im a Security Researcher/Enthusiast and in the wave of AI, i wanted to build that next gen of security tooling that surpasses the current tools, and even the paid industries with an open source engine. I built MailAccess as well, which is going to be the best damn email osint tool out there, in another year. But just before building MailAccess i built VoidAccess, because i was delving a lot into DarkINT and the content inside the dark web is too difficult to navigate throu",
+      "hot_score": 55.8646,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-20T14:49:33+00:00",
+      "last_seen_at": "2026-10-21T03:12:27.629330+00:00",
+      "metrics": {
+        "points": 127,
+        "num_comments": 13
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_81d0790fb79eb500": {
+      "id": "it_81d0790fb79eb500",
+      "source": "hf_papers",
+      "title": "From Short Clips to Real-Time Streams: Identity-Aware Supervision and Context-Efficient Generation for Video Face Swapping",
+      "url": "arxiv:2610.26681",
+      "summary": "Video face swapping transfers the reference identity to a target video while preserving its other attributes and motion. Despite recent progress in reference-guided flow-based methods, jointly achieving faithful identity transfer, high fidelity, and real-time generation over long video streams remains challenging. To address this challenge, we rethink the task-specific structure of reference-guided video face swapping. First, face swapping changes only identity while preserving most visual content, yet flow-matching supervision is weakly sensitive to these changes. We therefore develop Joint Rec-ID Loss, which balances explicit identity supervision and latent reconstruction according to the noise level. Second, the target video already provides non-edited attributes and temporal dynamics, enabling generation with fewer spatial tokens and shorter temporal contexts through Face-RoI Generation and Short-Context Rollout Training. By integrating these designs, we propose StreamingSwap, a reference-guided flow-matching framework for real-time streaming video face swapping. We also introduce HumanFaceVid, comprising 1,000 hours of cinematic training data and evaluation sets of 200 short and 200 long videos. Experiments demonstrate that our method achieves competitive identity transfer and visual quality at 20 FPS on a single NVIDIA RTX 4090 GPU, with stable generation over videos up to 10 minutes long. Project webpage: https://aim-uofa.github.io/StreamingSwap/",
+      "hot_score": 54.5596,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-18T20:00:00+00:00",
+      "last_seen_at": "2026-10-21T03:12:27.618226+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 9
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_6e64464d4eaec941": {
+      "id": "it_6e64464d4eaec941",
+      "source": "hackernews",
+      "title": "Show HN: Jev Cards, Can you beat a vision model at a picture quiz?",
+      "url": "https://jevcards.com",
+      "summary": "I built a quiz game around TypeSafe's new Jev model, which has vision capabilities. Jev looks at a picture and a question and picks an answer (or taps a place) in about a quarter of a second. I've always loved quiz games and thought this would be a fun way to see what it can do and how fast it is. I made the cards from scratch, and Jev gets exactly the picture you see. More cards will come over time. Play against Jev on your own (there's a leaderboard for each mode), or start a live match and ch",
+      "hot_score": 51.9482,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-20T15:11:56+00:00",
+      "last_seen_at": "2026-10-21T03:12:27.531388+00:00",
+      "metrics": {
+        "points": 57,
+        "num_comments": 48
+      },
+      "streak_days": 0,
+      "language": "en"
+    }
+  },
+  "meta": {
+    "mode": "hybrid",
+    "day": "2026-10-21",
+    "generated_at": "2026-10-21T03:13:24.468820+00:00",
+    "window": {
+      "since": "2026-10-20T03:11:27.982766+00:00",
+      "until": "2026-10-21T03:12:27.659633+00:00",
+      "hours": 24.0,
+      "since_local": "2026-10-20T11:11+08:00",
+      "until_local": "2026-10-21T11:12+08:00",
+      "tz": "Asia/Shanghai"
+    },
+    "analysis": {
+      "items": 116,
+      "scored": 116,
+      "topics": 3,
+      "new_entity_mention_rows": 174,
+      "state_items": 15
+    },
+    "llm": {
+      "degraded": false,
+      "degraded_reason": "",
+      "calls": 1
+    },
+    "collect": {
+      "ok_sources": 6,
+      "failed_sources": 1,
+      "skipped": 0,
+      "total_items": 100
+    },
+    "verify": {
+      "verified": 0,
+      "unverifiable": 0,
+      "deferred": 0,
+      "failed": 0,
+      "llm_calls": 0
+    },
+    "predictions": {
+      "total": 54,
+      "verified": 0,
+      "pending": 54,
+      "unverifiable": 0,
+      "hit_rate": null,
+      "weighted_score": null,
+      "brier": null
+    },
+    "prediction_generation": {
+      "mode": "hybrid",
+      "generated": 5,
+      "inserted": 5,
+      "dropped": [],
+      "llm_calls": 1,
+      "candidate_pool": 20,
+      "degraded": false,
+      "degraded_reason": ""
+    },
+    "brief": {
+      "max_items_per_section": 10,
+      "velocity_board_enabled": true,
+      "velocity_board_top_n": 5
+    },
+    "signals": {
+      "entities": 246,
+      "points": 864,
+      "with_velocity": 34,
+      "insufficient": 112,
+      "cold_start": 100,
+      "min_window_hours": 6.0
+    },
+    "enhance_total": 29,
+    "enhanced": 29,
+    "enhance_skipped_count": 0,
+    "enhance_cache_hit": 9,
+    "enhance_cost_cny": 0.008987
+  }
+}
