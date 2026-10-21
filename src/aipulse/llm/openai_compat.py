@@ -225,16 +225,21 @@ class OpenAICompatClient:
         }
 
     @staticmethod
-    def _parse_success(data: dict[str, Any]) -> tuple[str, int, int]:
+    def _parse_success(data: dict[str, Any]) -> tuple[str, int, int, str | None]:
         choices = data.get("choices") or []
         content = ""
+        finish_reason: str | None = None
         if choices:
             message = choices[0].get("message") or {}
             content = message.get("content") or ""
+            # finish_reason == "length" 表示撞了 max_tokens 被截断；
+            # 不检查它，截断就只会表现为"输出变短/JSON 解析失败"（静默失败）。
+            raw_reason = choices[0].get("finish_reason")
+            finish_reason = raw_reason if isinstance(raw_reason, str) else None
         usage = data.get("usage") or {}
         prompt_tokens = int(usage.get("prompt_tokens") or 0)
         completion_tokens = int(usage.get("completion_tokens") or 0)
-        return content, prompt_tokens, completion_tokens
+        return content, prompt_tokens, completion_tokens, finish_reason
 
     async def chat(
         self,
@@ -308,7 +313,29 @@ class OpenAICompatClient:
                     raise LLMError(f"LLM 响应不是合法 JSON（{purpose}）: {exc}") from exc
                 if fmt == "json_schema" and json_schema is not None:
                     remember_json_schema_support(model, True)  # 记住"支持"，后续沿用
-                content, prompt_tokens, completion_tokens = self._parse_success(data)
+                content, prompt_tokens, completion_tokens, finish_reason = self._parse_success(data)
+                # 计费先记账：截断也是真花了钱，不能因为 raise 就漏记
+                self._record_usage(
+                    purpose,
+                    model,
+                    model_tier,
+                    prompt_tokens,
+                    completion_tokens,
+                    error=error_note
+                    or (
+                        "finish_reason=length（输出被 max_tokens 截断）"
+                        if finish_reason == "length"
+                        else None
+                    ),
+                )
+                if finish_reason == "length":
+                    # ★ 静默失败的防线：截断绝不返回、绝不写缓存。
+                    # 缓存写进去会让后续所有同 prompt 调用都读到半截内容。
+                    raise LLMError(
+                        f"LLM 输出被 max_tokens={max_tokens} 截断（{purpose}，"
+                        f"model={model}，completion_tokens={completion_tokens}）；"
+                        "请提高 max_tokens 或缩短输入"
+                    )
                 if json_schema is not None and self.cache is not None and content:
                     self.cache.put(
                         key,
@@ -316,19 +343,12 @@ class OpenAICompatClient:
                         response=content,
                         model=model,
                     )
-                self._record_usage(
-                    purpose,
-                    model,
-                    model_tier,
-                    prompt_tokens,
-                    completion_tokens,
-                    error=error_note,
-                )
                 return LLMResult(
                     content=content,
                     model=model,
                     prompt_tokens=prompt_tokens,
                     completion_tokens=completion_tokens,
+                    finish_reason=finish_reason,
                 )
 
             # ── 401/403：配置错误，立即失败不重试 ──────────────────

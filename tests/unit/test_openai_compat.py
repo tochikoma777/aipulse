@@ -11,6 +11,7 @@ import json
 import httpx
 import pytest
 import respx
+from sqlmodel import Session, select
 
 from aipulse.core.config import LLMSettings
 from aipulse.core.errors import ConfigError, LLMError
@@ -23,6 +24,7 @@ from aipulse.llm.openai_compat import (
     reset_json_schema_memory,
 )
 from aipulse.store.db import init_db
+from aipulse.store.models import LLMUsage
 from aipulse.utils.http import HttpClient
 
 BASE_URL = "https://api.deepseek.com/v1"
@@ -323,6 +325,45 @@ async def test_budget_exceeded_raises(tmp_path):
     with pytest.raises(LLMError):
         await client.chat(_messages(), purpose="brief")
     assert route.call_count == 0
+    engine.dispose()
+
+
+def _ok_json_with_finish(content: str, finish_reason: str) -> httpx.Response:
+    return httpx.Response(
+        200,
+        json={
+            "choices": [{"message": {"content": content}, "finish_reason": finish_reason}],
+            "usage": {"prompt_tokens": 10, "completion_tokens": 5},
+        },
+    )
+
+
+@respx.mock
+async def test_finish_reason_is_exposed_on_result():
+    respx.post(ENDPOINT).mock(return_value=_ok_json_with_finish("done", "stop"))
+    result = await _client().chat(_messages())
+    assert result.finish_reason == "stop"
+    assert result.content == "done"
+
+
+@respx.mock
+async def test_finish_reason_length_raises_and_skips_cache(tmp_path):
+    """★ 静默失败防线：撞 max_tokens 必须报错，且半截内容绝不能写进缓存。"""
+    engine = init_db(tmp_path / "t.db")
+    cache = LLMCache(engine)
+    route = respx.post(ENDPOINT).mock(return_value=_ok_json_with_finish('{"trunc": ', "length"))
+    client = _client(cache=cache, budget=BudgetTracker(engine, daily_limit_cny=100.0))
+    with pytest.raises(LLMError, match="截断"):
+        await client.chat(_messages(), json_schema=_SCHEMA, purpose="brief")
+    assert route.call_count == 1
+    # 若截断结果被缓存，第二次会命中缓存直接返回；这里必须仍然打网络
+    with pytest.raises(LLMError, match="截断"):
+        await client.chat(_messages(), json_schema=_SCHEMA, purpose="brief")
+    assert route.call_count == 2
+    # 截断也是真花了钱：usage 必须落库，并在 error 里留下可查的痕迹
+    with Session(engine) as session:
+        rows = session.exec(select(LLMUsage)).all()
+    assert rows and rows[0].error and "length" in rows[0].error
     engine.dispose()
 
 

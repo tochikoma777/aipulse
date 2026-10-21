@@ -32,6 +32,9 @@ class LLMResult:
     completion_tokens: int = 0
     cached: bool = False
     parsed: BaseModel | None = None
+    # 厂商返回的结束原因。`"length"` = 撞 max_tokens 被截断（调用方必须当失败处理，
+    # 不能把半截内容当成功）。缓存命中时为 None——能进缓存的只有完整输出。
+    finish_reason: str | None = None
 
 
 class LLMClient(Protocol):
