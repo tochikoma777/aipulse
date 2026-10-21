@@ -291,3 +291,59 @@ async def test_truncation_is_counted_and_costed(tmp_path) -> None:  # noqa: ANN0
     assert report.completion_tokens == 1400
     assert report.cost_cny == pytest.approx((700 + 1400) * 4.0 / 1_000_000)
     assert all("截断" in s.skipped_reason for s in report.segments)
+
+
+def test_violations_flag_over_budget() -> None:
+    from aipulse.reasoning.trend import Evidence
+
+    out = violations(
+        "it_abcdef123456 很热。" * 30,
+        Evidence(text=""),
+        requires_speculation=False,
+        weak_corr=False,
+        max_chars=100,
+    )
+    assert any("字数上限" in item for item in out)
+
+
+def test_evidence_lists_collection_failures(tmp_path) -> None:  # noqa: ANN001
+    """采集失败必须作为独立证据块出现，且被污染板块不出现在"上升/下降"里。"""
+    ok = [{"source": "hf_papers", "status": "ok", "item_count": 10}]
+    bad = [{"source": "hf_papers", "status": "degraded", "item_count": 0}]
+    for day, has_items, runs in (
+        ("2026-10-18", True, ok),
+        ("2026-10-19", False, bad),
+        ("2026-10-20", True, ok),
+        ("2026-10-21", True, ok),
+    ):
+        items = [_item("it_p", "paper", 40.0, source="hf_papers")] if has_items else []
+        _day(
+            tmp_path,
+            day,
+            items,
+            sections=[_section("论文与研究", ["it_p"] if has_items else [])],
+            source_runs=runs,
+        )
+    index = load_cross_period(tmp_path)
+    from aipulse.analysis.cross_period import compute_all
+
+    reports = {r.key: r for r in compute_all(index)}
+    evidence = build_evidence(index, reports, "falling_topics")
+    assert "采集异常" in evidence.text
+    assert "item_count=0" in evidence.text
+    assert "禁止对这些板块作趋势判断" in evidence.text
+    # 被污染的板块不得出现在份额清单里
+    assert "论文与研究：份额" not in evidence.text
+
+
+def test_correlation_negation_is_not_a_violation() -> None:
+    """澄清句（不作相关解读 / 无共动证据）不应被判违规。"""
+    from aipulse.reasoning.trend import Evidence
+
+    out = violations(
+        "it_abcdef123456 本周没有可核验的组内同步证据，因此不补充相关性或共动判断。",
+        Evidence(text=""),
+        requires_speculation=False,
+        weak_corr=True,
+    )
+    assert out == []

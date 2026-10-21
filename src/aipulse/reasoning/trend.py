@@ -19,6 +19,7 @@ from dataclasses import dataclass
 from aipulse.analysis.cross_period import (
     CrossPeriodIndex,
     StructureReport,
+    collection_failures,
     compute_all,
 )
 from aipulse.core.errors import LLMError, LLMTruncationError
@@ -87,6 +88,28 @@ SEGMENTS: tuple[tuple[str, str, str], ...] = (
 )
 
 
+# 每节的字数上限（prompt 里给区间，校验时用硬上限）
+SEGMENT_MAX_CHARS: dict[str, int] = {
+    "rising_topics": 500,
+    "falling_topics": 500,
+    "emerging_topics": 400,
+    "structural_changes": 600,
+    "second_order_effects": 600,
+    "prediction_review": 100,
+    "watchlist": 500,
+}
+
+WORD_BUDGET: dict[str, str] = {
+    "rising_topics": "300-500 字",
+    "falling_topics": "300-500 字",
+    "emerging_topics": "250-400 字",
+    "structural_changes": "450-600 字",
+    "second_order_effects": "450-600 字",
+    "prediction_review": "不超过 100 字，一句话说清即可",
+    "watchlist": "300-500 字",
+}
+
+
 @dataclass(frozen=True)
 class Evidence:
     """一段的证据文本 + 其中的标题（用于检测"复述标题"）。"""
@@ -123,18 +146,53 @@ def _heat_lines(
     report = reports.get("heat_migration")
     if report is None or not report.entries:
         return ["- 无板块份额数据"]
-    rows = [e for e in report.entries if (float(e["delta_pp"]) > 0) == positive]
+    rows = [
+        e
+        for e in report.entries
+        if e.get("trend_usable", True) and (float(e["delta_pp"]) > 0) == positive
+    ]
     if not rows:
-        return [f"- 无板块份额{'上升' if positive else '下降'}"]
+        return ["- 无可用板块（无符合方向的条目，或相关板块采集异常已剔除）"]
     out: list[str] = []
     for entry in rows[:limit]:
         ids = _ids(entry.get("t1_top_items"), 3)
+        excluded = entry.get("excluded_days") or []
+        note = f"；已排除 {len(excluded)} 个板块空日" if excluded else ""
         out.append(
             f"- {entry['section']}：份额 {entry['t0_share']}→{entry['t1_share']}"
             f"（{float(entry['delta_pp']):+.2f}pp）；"
-            f"窗口斜率 {float(entry['slope_pp_per_day']):+.2f}pp/天；代表 {ids}"
+            f"窗口斜率 {float(entry['slope_pp_per_day']):+.2f}pp/天"
+            f"（基于 {entry['slope_days']} 天）{note}；代表 {ids}"
         )
     return out
+
+
+def _taint_lines(reports: dict[str, StructureReport]) -> list[str]:
+    """被采集失败污染的板块：禁止对其作结构性趋势判断。"""
+    report = reports.get("heat_migration")
+    if report is None:
+        return []
+    out: list[str] = []
+    for entry in report.entries:
+        if entry.get("trend_usable", True):
+            continue
+        out.append(
+            f"- {entry['section']}：供给源 {'/'.join(entry.get('taint_sources') or [])} "
+            f"在 {'/'.join(entry.get('taint_days') or [])} 整源 0 条"
+            f"（份额 {entry['t0_share']}→{entry['t1_share']}，斜率 "
+            f"{float(entry['slope_pp_per_day']):+.2f}pp/天 仅供参考）"
+        )
+    return out
+
+
+def _failure_lines(index: CrossPeriodIndex) -> list[str]:
+    """逐日的采集失败（failed/degraded 且 item_count=0）。"""
+    rows = [
+        r for r in collection_failures(index) if r["item_count"] == 0 and r["source"] != "inbox"
+    ]
+    return [f"- {row['day']} {row['source']}：{row['status']}，item_count=0" for row in rows] or [
+        "- 窗口内无整源 0 条的采集失败"
+    ]
 
 
 def _group_lines(reports: dict[str, StructureReport], *, coherent_only: bool) -> list[str]:
@@ -213,12 +271,18 @@ def _source_lines(reports: dict[str, StructureReport]) -> list[str]:
     report = reports.get("source_share")
     if report is None or not report.entries:
         return ["- 无来源份额数据"]
-    return [
-        f"- {entry['source']}：条目 {entry['t0_count']}→{entry['t1_count']}"
-        f"（{float(entry['count_delta_pp']):+.2f}pp），热度份额"
-        f" {entry['hot_share_t0']}→{entry['hot_share_t1']}"
-        for entry in report.entries
-    ]
+    out: list[str] = []
+    for entry in report.entries:
+        if not entry.get("trend_usable", True):
+            failed = "/".join(entry.get("collection_failure_days") or [])
+            out.append(f"- {entry['source']}：不可用（{failed} 整源 0 条，采集失败）")
+            continue
+        out.append(
+            f"- {entry['source']}：条目 {entry['t0_count']}→{entry['t1_count']}"
+            f"（{float(entry['count_delta_pp']):+.2f}pp），热度份额"
+            f" {entry['hot_share_t0']}→{entry['hot_share_t1']}"
+        )
+    return out
 
 
 def _prediction_lines(reports: dict[str, StructureReport]) -> list[str]:
@@ -278,6 +342,16 @@ def build_evidence(
 ) -> Evidence:
     """按节组装证据。每块都带 item_id 与数字，且保持紧凑。"""
     blocks: list[str] = []
+    taint = _taint_lines(reports)
+    failures = _failure_lines(index)
+
+    def _append_taint() -> None:
+        if taint:
+            blocks.append("### 采集异常：禁止对这些板块作趋势判断\n" + "\n".join(taint))
+
+    def _append_failures() -> None:
+        blocks.append("### 逐日采集失败（供归因，不得当作趋势）\n" + "\n".join(failures))
+
     if key == "rising_topics":
         blocks.append("### 板块份额（上升）\n" + "\n".join(_heat_lines(reports, positive=True)))
         blocks.append(
@@ -285,10 +359,14 @@ def build_evidence(
             + "\n".join(_group_lines(reports, coherent_only=False))
         )
         blocks.append("### 相邻两日热度上升\n" + "\n".join(_top_movers(index, rising=True)))
+        _append_taint()
+        _append_failures()
     elif key == "falling_topics":
         blocks.append("### 板块份额（下降）\n" + "\n".join(_heat_lines(reports, positive=False)))
         blocks.append("### 连续在榜后跌出 Top30\n" + "\n".join(_event_lines(reports, ("dropped",))))
         blocks.append("### 相邻两日热度下降\n" + "\n".join(_top_movers(index, rising=False)))
+        _append_taint()
+        _append_failures()
     elif key == "emerging_topics":
         blocks.append(
             "### 今日新进榜（单日，不构成趋势）\n" + "\n".join(_event_lines(reports, ("new",)))
@@ -304,6 +382,8 @@ def build_evidence(
         blocks.append(
             "### 结构一致的同步变化组\n" + "\n".join(_group_lines(reports, coherent_only=True))
         )
+        _append_taint()
+        _append_failures()
     elif key == "prediction_review":
         blocks.append("### 预言到期与验证\n" + "\n".join(_prediction_lines(reports)))
     elif key == "watchlist":
@@ -339,20 +419,47 @@ def _has_weak_correlation(reports: dict[str, StructureReport]) -> bool:
     return any(int(g.get("n_days_min", 0)) < 5 for g in report.entries)
 
 
+_CORRELATION_WORDS = ("存在相关", "共动", "高度相关")
+_NEGATIONS = ("不", "未", "无", "没有")
+
+
+def _claims_correlation(body: str) -> bool:
+    """是否存在**肯定**的相关性表述。
+
+    按分句判断：只要该分句同时出现否定词（不/未/无/没有）就视为澄清句，
+    例如「不补充相关性或共动判断」不算违规；「两条存在相关」才算。
+    """
+    for clause in re.split(r"[。；;！？\n]", body):
+        if not any(word in clause for word in _CORRELATION_WORDS):
+            continue
+        if any(neg in clause for neg in _NEGATIONS):
+            continue
+        return True
+    return False
+
+
 def violations(
-    body: str, evidence: Evidence, *, requires_speculation: bool, weak_corr: bool
+    body: str,
+    evidence: Evidence,
+    *,
+    requires_speculation: bool,
+    weak_corr: bool,
+    max_chars: int | None = None,
+    require_item_id: bool = True,
 ) -> list[str]:
     out: list[str] = []
     if not body.strip():
         return ["空输出"]
     if "消失" in body or "退场" in body:
         out.append("使用了「消失/退场」措辞（只能写跌出 Top30）")
-    if not _ITEM_ID_RE.findall(body):
+    if require_item_id and not _ITEM_ID_RE.findall(body):
         out.append("未引用任何 item_id")
     if requires_speculation and "推测" not in body:
         out.append("未标注「推测」")
-    if weak_corr and any(word in body for word in ("存在相关", "共动", "高度相关")):
+    if weak_corr and _claims_correlation(body):
         out.append("对 n_days<5 的组使用了「相关/共动」表述")
+    if max_chars is not None and char_count(body) > max_chars:
+        out.append(f"超出本节字数上限（{char_count(body)} > {max_chars}）")
     for title in evidence.titles:
         if title in body:
             out.append(f"复述了标题：{title[:20]}")
@@ -401,6 +508,7 @@ async def generate_trend(
             window_end=sliced.days[-1],
             window_days=len(sliced.days),
             evidence=evidence.text,
+            word_budget=WORD_BUDGET.get(key, "300-600 字"),
         )
         segment = TrendSegment(key=key, title=title)
         attempts += 1
@@ -440,6 +548,9 @@ async def generate_trend(
             evidence,
             requires_speculation=key in _SPECULATION_SEGMENTS,
             weak_corr=weak_corr,
+            max_chars=SEGMENT_MAX_CHARS.get(key),
+            # 预言复盘本来就是计数类结论，没有条目级事实可引用
+            require_item_id=key != "prediction_review",
         )
         segment.llm_calls = 1
         segment.prompt_tokens = result.prompt_tokens
@@ -463,8 +574,10 @@ async def generate_trend(
 
 __all__ = [
     "BOILERPLATE_PHRASES",
-    "Evidence",
     "SEGMENTS",
+    "SEGMENT_MAX_CHARS",
+    "WORD_BUDGET",
+    "Evidence",
     "boilerplate_hits",
     "build_evidence",
     "char_count",
