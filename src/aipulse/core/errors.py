@@ -33,5 +33,25 @@ class LLMError(AipulseError):
     """LLM 调用失败或输出校验失败（调用方应降级跳过，而不是中断）。"""
 
 
+class LLMTruncationError(LLMError):
+    """输出撞 `max_tokens` 被截断（`finish_reason == "length"`）。
+
+    单独成类是为了让调用方能精确统计"有多少次调用被截断"，
+    同时仍然按 `LLMError` 走既有的降级路径。token 数随异常带出，
+    因为截断也是真花了钱，不能因为抛错就漏记账。
+    """
+
+    def __init__(
+        self,
+        message: str,
+        *,
+        prompt_tokens: int = 0,
+        completion_tokens: int = 0,
+    ) -> None:
+        self.prompt_tokens = prompt_tokens
+        self.completion_tokens = completion_tokens
+        super().__init__(message)
+
+
 class StoreError(AipulseError):
     """数据库读写失败。"""

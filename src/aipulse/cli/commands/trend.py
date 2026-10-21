@@ -41,7 +41,9 @@ def main(
     range_: str = typer.Option("7d", "--range", help="窗口：7d（本轮只做周级）"),
     json_output: bool = typer.Option(False, "--json", help="输出分段指标 JSON"),
     out: str | None = typer.Option(None, "--out", help="把 Markdown 写到指定文件"),
-    max_tokens: int = typer.Option(2000, "--max-tokens", help="每段输出上限"),
+    max_tokens: int = typer.Option(
+        0, "--max-tokens", help="每段输出上限；0 = 用 llm.max_tokens_strong"
+    ),
     segments: str | None = typer.Option(None, "--segments", help="只跑指定段，逗号分隔（调试用）"),
     reports_dir: str | None = typer.Option(
         None, "--reports-dir", help="报告目录（默认 data/reports）"
@@ -77,12 +79,15 @@ def main(
         raise typer.Exit(code=2)
 
     client = build_client(settings)  # engine=None：不写主库
+    # 每段 300-600 字，但 strong 档的思维链也吃 completion 额度；
+    # 2000 会让 reasoner 在写出正文前就撞长度（实测 7/7 段被截断）。
+    budget_tokens = max_tokens or settings.llm.max_tokens_strong
     report = asyncio.run(
         generate_trend(
             index,
             client,
             window_days=window_days,
-            max_tokens=max_tokens,
+            max_tokens=budget_tokens,
             price_strong_cny_per_1m=settings.budget.price_strong_cny_per_1m,
             segment_keys=keys,
         )
@@ -102,7 +107,9 @@ def main(
     # 指标走 stderr，保证 stdout 只有 Markdown
     typer.echo(
         f"[trend] 窗口 {report.window_start}→{report.window_end}（{report.window_days} 天）"
-        f" 调用 {report.llm_calls} 次，tokens {report.prompt_tokens}+{report.completion_tokens}，"
+        f" 调用 {report.llm_calls}/{report.attempts} 次成功，"
+        f"截断 {len(report.truncated_segments)} 段，"
+        f"tokens {report.prompt_tokens}+{report.completion_tokens}，"
         f"成本 ¥{report.cost_cny:.4f}",
         err=True,
     )

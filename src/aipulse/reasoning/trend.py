@@ -21,7 +21,7 @@ from aipulse.analysis.cross_period import (
     StructureReport,
     compute_all,
 )
-from aipulse.core.errors import LLMError
+from aipulse.core.errors import LLMError, LLMTruncationError
 from aipulse.core.logging import get_logger
 from aipulse.llm.base import ChatMessage, LLMClient
 from aipulse.llm.prompt import render_prompt
@@ -384,6 +384,8 @@ async def generate_trend(
 
     segments: list[TrendSegment] = []
     calls = 0
+    attempts = 0
+    truncated: list[str] = []
     prompt_tokens = 0
     completion_tokens = 0
 
@@ -401,6 +403,7 @@ async def generate_trend(
             evidence=evidence.text,
         )
         segment = TrendSegment(key=key, title=title)
+        attempts += 1
         try:
             result = await client.chat(
                 [ChatMessage(role="user", content=prompt)],
@@ -409,8 +412,16 @@ async def generate_trend(
                 purpose=purpose,
                 model_tier="strong",
             )
+        except LLMTruncationError as exc:
+            # 截断也是真花钱：token 随异常带出，必须计入总成本
+            log.warning("trend.segment_truncated", segment=key, error=str(exc))
+            prompt_tokens += exc.prompt_tokens
+            completion_tokens += exc.completion_tokens
+            truncated.append(key)
+            segment.skipped_reason = f"输出被 max_tokens 截断：{exc}"
+            segments.append(segment)
+            continue
         except LLMError as exc:
-            # 含 finish_reason=length：报错但不拖垮整篇
             log.warning("trend.segment_failed", segment=key, error=str(exc))
             segment.skipped_reason = f"LLM 调用失败：{exc}"
             segments.append(segment)
@@ -441,6 +452,8 @@ async def generate_trend(
         window_days=len(sliced.days),
         segments=segments,
         llm_calls=calls,
+        attempts=attempts,
+        truncated_segments=truncated,
         prompt_tokens=prompt_tokens,
         completion_tokens=completion_tokens,
         cost_cny=(prompt_tokens + completion_tokens) * price_strong_cny_per_1m / 1_000_000,

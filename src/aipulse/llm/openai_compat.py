@@ -25,7 +25,7 @@ from typing import Any
 import httpx
 
 from aipulse.core.config import LLMSettings
-from aipulse.core.errors import ConfigError, LLMError
+from aipulse.core.errors import ConfigError, LLMError, LLMTruncationError
 from aipulse.core.logging import get_logger
 from aipulse.llm.base import ChatMessage, LLMResult
 from aipulse.llm.budget import BudgetTracker
@@ -331,10 +331,12 @@ class OpenAICompatClient:
                 if finish_reason == "length":
                     # ★ 静默失败的防线：截断绝不返回、绝不写缓存。
                     # 缓存写进去会让后续所有同 prompt 调用都读到半截内容。
-                    raise LLMError(
+                    raise LLMTruncationError(
                         f"LLM 输出被 max_tokens={max_tokens} 截断（{purpose}，"
                         f"model={model}，completion_tokens={completion_tokens}）；"
-                        "请提高 max_tokens 或缩短输入"
+                        "请提高 max_tokens 或缩短输入",
+                        prompt_tokens=prompt_tokens,
+                        completion_tokens=completion_tokens,
                     )
                 if json_schema is not None and self.cache is not None and content:
                     self.cache.put(

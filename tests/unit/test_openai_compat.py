@@ -14,7 +14,7 @@ import respx
 from sqlmodel import Session, select
 
 from aipulse.core.config import LLMSettings
-from aipulse.core.errors import ConfigError, LLMError
+from aipulse.core.errors import ConfigError, LLMError, LLMTruncationError
 from aipulse.llm.base import ChatMessage
 from aipulse.llm.budget import BudgetTracker
 from aipulse.llm.cache import LLMCache, cache_key
@@ -353,8 +353,9 @@ async def test_finish_reason_length_raises_and_skips_cache(tmp_path):
     cache = LLMCache(engine)
     route = respx.post(ENDPOINT).mock(return_value=_ok_json_with_finish('{"trunc": ', "length"))
     client = _client(cache=cache, budget=BudgetTracker(engine, daily_limit_cny=100.0))
-    with pytest.raises(LLMError, match="截断"):
+    with pytest.raises(LLMTruncationError) as excinfo:
         await client.chat(_messages(), json_schema=_SCHEMA, purpose="brief")
+    assert excinfo.value.completion_tokens == 5
     assert route.call_count == 1
     # 若截断结果被缓存，第二次会命中缓存直接返回；这里必须仍然打网络
     with pytest.raises(LLMError, match="截断"):

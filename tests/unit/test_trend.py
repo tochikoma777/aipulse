@@ -11,7 +11,7 @@ from typing import Any
 import pytest
 
 from aipulse.analysis.cross_period import load_cross_period
-from aipulse.core.errors import LLMError
+from aipulse.core.errors import LLMError, LLMTruncationError
 from aipulse.llm.base import ChatMessage, LLMResult
 from aipulse.reasoning.trend import (
     SEGMENTS,
@@ -264,3 +264,30 @@ def test_cli_rejects_bad_range(monkeypatch) -> None:  # noqa: ANN001
     result = CliRunner().invoke(trend_cli.app, ["--range", "week"])
     assert result.exit_code != 0
     assert "--range" in result.output
+
+
+class _TruncatingClient:
+    """每次调用都抛截断异常（模拟 reasoner 思维链吃满 max_tokens）。"""
+
+    def __init__(self) -> None:
+        self.attempts = 0
+
+    async def chat(self, messages, **kwargs: Any) -> LLMResult:  # noqa: ANN001
+        self.attempts += 1
+        raise LLMTruncationError("被截断", prompt_tokens=100, completion_tokens=200)
+
+
+@pytest.mark.asyncio
+async def test_truncation_is_counted_and_costed(tmp_path) -> None:  # noqa: ANN001
+    """截断的调用也要计入 attempts / tokens / 成本，不能因为抛错就漏账。"""
+    client = _TruncatingClient()
+    report = await generate_trend(_index(tmp_path), client, max_tokens=2000)
+
+    assert report.llm_calls == 0
+    assert report.attempts == 7
+    assert client.attempts == 7
+    assert len(report.truncated_segments) == 7
+    assert report.prompt_tokens == 700
+    assert report.completion_tokens == 1400
+    assert report.cost_cny == pytest.approx((700 + 1400) * 4.0 / 1_000_000)
+    assert all("截断" in s.skipped_reason for s in report.segments)

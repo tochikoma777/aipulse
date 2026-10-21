@@ -33,6 +33,8 @@ class TrendReport(BaseModel):
     window_days: int = 0
     segments: list[TrendSegment] = Field(default_factory=list)
     llm_calls: int = 0
+    attempts: int = 0
+    truncated_segments: list[str] = Field(default_factory=list)
     prompt_tokens: int = 0
     completion_tokens: int = 0
     cost_cny: float = 0.0
@@ -63,6 +65,8 @@ class TrendReport(BaseModel):
             "window_end": self.window_end,
             "window_days": self.window_days,
             "llm_calls": self.llm_calls,
+            "attempts": self.attempts,
+            "truncated_segments": self.truncated_segments,
             "prompt_tokens": self.prompt_tokens,
             "completion_tokens": self.completion_tokens,
             "cost_cny": round(self.cost_cny, 6),
