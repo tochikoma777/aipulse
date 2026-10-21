@@ -372,3 +372,26 @@ def test_missing_config_raises_config_error():
         OpenAICompatClient(
             LLMSettings(base_url="", api_key=""), http=HttpClient(cache_enabled=False)
         )
+
+
+@respx.mock
+async def test_degrade_order_blocks_only_the_disabled_purposes(tmp_path):
+    """超支 2 个额度 → debate/trend 关，简报仍放行；trend 请求不得打到网络。"""
+    engine = init_db(tmp_path / "t.db")
+    budget = BudgetTracker(
+        engine,
+        daily_limit_cny=1.0,
+        degrade_order=["debate", "trend", "brief_topn", "all"],
+    )
+    budget.record(purpose="misc", model="m", prompt_tokens=2_200_000, completion_tokens=0)
+    route = respx.post(ENDPOINT).mock(return_value=_ok_json("ok"))
+    client = _client(budget=budget)
+
+    with pytest.raises(LLMError, match="预算"):
+        await client.chat(_messages(), purpose="trend")
+    assert route.call_count == 0
+
+    result = await client.chat(_messages(), purpose="brief_daily")
+    assert result.content == "ok"
+    assert route.call_count == 1
+    engine.dispose()

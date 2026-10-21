@@ -7,6 +7,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import pytest
+
 from aipulse.llm.base import ChatMessage, LLMResult, NullLLM
 from aipulse.llm.budget import BudgetTracker
 from aipulse.llm.cache import LLMCache, cache_key
@@ -115,6 +117,73 @@ def test_budget_cache_hit_is_free(tmp_path: Path):
         purpose="brief", model="m", prompt_tokens=1000, completion_tokens=1000, cache_hit=True
     )
     assert budget.spent_today() == 0.0
+    engine.dispose()
+
+
+def test_spent_today_does_not_double_count(tmp_path: Path):
+    """record() 已写库，spent_today() 再叠加 session_cost 会把每笔算两遍。"""
+    engine = init_db(tmp_path / "t.db")
+    budget = BudgetTracker(engine, daily_limit_cny=1.0)
+    budget.record(purpose="x", model="m", prompt_tokens=500_000, completion_tokens=0)
+    assert budget.session_cost == pytest.approx(0.5)
+    assert budget.spent_today() == pytest.approx(0.5)
+    engine.dispose()
+
+
+def _spend(budget: BudgetTracker, amount: float, *, purpose: str = "misc") -> None:
+    """fast 档单价 1.0 元/百万 token → 用 prompt_tokens 精确构造花费。"""
+    budget.record(
+        purpose=purpose,
+        model="m",
+        prompt_tokens=int(amount * 1_000_000),
+        completion_tokens=0,
+        model_tier="fast",
+    )
+
+
+def test_degrade_order_disables_features_stage_by_stage(tmp_path: Path):
+    engine = init_db(tmp_path / "t.db")
+    budget = BudgetTracker(
+        engine,
+        daily_limit_cny=1.0,
+        degrade_order=["debate", "trend", "brief_topn", "all"],
+    )
+    assert budget.degrade_stage() == 0
+    assert budget.can_afford("debate") is True
+
+    _spend(budget, 1.2)  # 超 0.2 元 → 1 级
+    assert budget.degrade_stage() == 1
+    assert budget.disabled_features() == ["debate"]
+    assert budget.can_afford("debate") is False
+    assert budget.can_afford("trend") is True
+    assert budget.can_afford("brief_daily") is True
+
+    _spend(budget, 1.0)  # 共 2.2 → 超 1.2 → 2 级
+    assert budget.degrade_stage() == 2
+    assert budget.disabled_features() == ["debate", "trend"]
+    assert budget.can_afford("trend") is False
+    assert budget.can_afford("brief_item_comment") is True
+
+    _spend(budget, 1.0)  # 共 3.2 → 超 2.2 → 3 级
+    assert budget.degrade_stage() == 3
+    assert budget.can_afford("brief_item_comment") is False
+    assert budget.can_afford("predict_generate") is True
+
+    _spend(budget, 1.0)  # 共 4.2 → 超 3.2 → 4 级（all）
+    assert budget.degrade_stage() == 4
+    assert budget.disabled_features() == ["debate", "trend", "brief_topn", "all"]
+    assert budget.can_afford("predict_generate") is False
+    engine.dispose()
+
+
+def test_degrade_under_budget_still_hard_caps_remaining(tmp_path: Path):
+    """未超支时仍按硬额度判断：剩余不够本次预估成本就不放行。"""
+    engine = init_db(tmp_path / "t.db")
+    budget = BudgetTracker(engine, daily_limit_cny=1.0)
+    _spend(budget, 0.9)
+    assert budget.degrade_stage() == 0
+    assert budget.can_afford("brief", est_cost=0.05) is True
+    assert budget.can_afford("brief", est_cost=0.2) is False
     engine.dispose()
 
 
