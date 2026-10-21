@@ -81,6 +81,7 @@ DEFAULT_FLAT_DELTA = 5.0
 DEFAULT_TRACK_MIN_DAYS = 2
 DEFAULT_TRACK_MIN_OVERLAP = 3
 DEFAULT_TRACK_CORRELATION = 0.7
+DEFAULT_MIN_EDGE_CORRELATION = 0.8
 
 # 每个源的"互动指标"：背离检测要拿它跟 hot_score 比方向。
 # rss 只有 rank_score（榜单位次），github 的 stars_in_window 是增量——都偏弱，
@@ -627,6 +628,27 @@ def _section_totals(snap: DaySnapshot) -> dict[str, float]:
     return totals
 
 
+def _section_counts_by_day(index: CrossPeriodIndex) -> dict[str, dict[str, int]]:
+    """每天每个板块实际渲染了多少条（用于识别"整块为空"的生成异常）。"""
+    out: dict[str, dict[str, int]] = {}
+    for day in index.days:
+        counts: dict[str, int] = {}
+        for item in index.snapshots[day].items.values():
+            if item.section:
+                counts[item.section] = counts.get(item.section, 0) + 1
+        out[day] = counts
+    return out
+
+
+def _schema_change_days(index: CrossPeriodIndex) -> set[str]:
+    """板块集合相对前一天发生变化的日子（口径变更日）。"""
+    changed: set[str] = set()
+    for prev, cur in zip(index.days, index.days[1:], strict=False):
+        if set(index.snapshots[prev].sections) != set(index.snapshots[cur].sections):
+            changed.add(cur)
+    return changed
+
+
 # ══════════════════════════════════════════════════════════════════════════
 # ① 热度迁移矩阵
 # ══════════════════════════════════════════════════════════════════════════
@@ -728,6 +750,7 @@ def co_movement(
     min_days: int = DEFAULT_TRACK_MIN_DAYS,
     min_overlap: int = DEFAULT_TRACK_MIN_OVERLAP,
     correlation: float = DEFAULT_TRACK_CORRELATION,
+    min_edge_correlation: float = DEFAULT_MIN_EDGE_CORRELATION,
     min_size: int = DEFAULT_CO_MOVEMENT_MIN_SIZE,
 ) -> StructureReport:
     """同板块 / 同来源内，热度轨迹正相关的条目组。
@@ -750,7 +773,8 @@ def co_movement(
             key, name, 2, f"在榜 ≥{min_days} 天的条目只有 {len(sample)} 条，不足以算共动"
         )
 
-    scored: dict[tuple[str, str], list[tuple[float, str, str]]] = {}
+    # (scope,label) -> {(item_a, item_b): (r, 共同在榜天数)}
+    pair_stats: dict[tuple[str, str], dict[tuple[str, str], tuple[float, int]]] = {}
     comparable: set[tuple[str, str]] = set()
     for scope in ("section", "source"):
         buckets: dict[str, list[ItemTrack]] = {}
@@ -778,15 +802,17 @@ def co_movement(
                         else (right.item_id, left.item_id)
                     )
                     comparable.add(pair_key)
-                    if r >= correlation:
-                        scored.setdefault((scope, label), []).append(
-                            (r, left.item_id, right.item_id)
-                        )
+                    pair_stats.setdefault((scope, label), {})[pair_key] = (r, len(shared))
 
     entries: list[dict[str, Any]] = []
     seen: set[frozenset[str]] = set()
-    for (scope, label), edges in sorted(scored.items(), key=lambda kv: (kv[0][0], kv[0][1])):
-        for component in _components(edges, min_size):
+    for (scope, label), stats in sorted(pair_stats.items(), key=lambda kv: (kv[0][0], kv[0][1])):
+        strong_edges = [
+            (r, a, b, n_days) for (a, b), (r, n_days) in stats.items() if r >= correlation
+        ]
+        if not strong_edges:
+            continue
+        for component in _components(strong_edges, min_size):
             signature = frozenset(component)
             if signature in seen:
                 continue
@@ -796,13 +822,41 @@ def co_movement(
                 key=lambda t: t.days_on,
                 reverse=True,
             )
-            related = [r for r, x, y in edges if x in signature and y in signature]
+            # 组内全部可算的配对（不只达阈值的边），用于回答"这组最弱的一对有多弱"
+            inner = [
+                (r, n_days, a, b)
+                for (a, b), (r, n_days) in stats.items()
+                if a in signature and b in signature
+            ]
+            strong = [p for p in inner if p[0] >= correlation]
+            weak = [p for p in inner if p[0] < min_edge_correlation]
+            edges_out: list[dict[str, Any]] = sorted(
+                (
+                    {"left": a, "right": b, "r": _round(r, 3), "n_days": n_days}
+                    for r, n_days, a, b in strong
+                ),
+                key=lambda e: float(e["r"]),
+                reverse=True,
+            )
             entries.append(
                 {
                     "scope": scope,
                     "label": label,
                     "size": len(component),
-                    "mean_correlation": _round(sum(related) / len(related), 3) if related else 0.0,
+                    "mean_correlation": _round(
+                        sum(float(e["r"]) for e in edges_out) / len(edges_out), 3
+                    ),
+                    "min_correlation": _round(min(p[0] for p in inner), 3),
+                    "weak_pairs": len(weak),
+                    # 连通分量不等于"整体同向"：实测有一组 11 条里存在 r=-0.97 的反向对，
+                    # 只是被中间节点连起来了。coherent=False 时禁止把它写成"板块整体共动"。
+                    "is_coherent": bool(weak) is False,
+                    "n_days_min": min(p[1] for p in inner),
+                    "n_days_max": max(p[1] for p in inner),
+                    # ★ n 只有 3~7 天时 Pearson 的显著阈值接近 0.997；
+                    #   这里报的 0.9x 并不显著，所以必须显式声明"未做显著性检验"，
+                    #   下游只能表述为"观察到同步变化"，不能写"存在相关"。
+                    "has_significance_test": False,
                     "members": [
                         {
                             "item_id": t.item_id,
@@ -814,6 +868,7 @@ def co_movement(
                         }
                         for t in members_sorted
                     ],
+                    "edges": edges_out,
                 }
             )
     entries.sort(key=lambda e: (int(e["size"]), float(e["mean_correlation"])), reverse=True)
@@ -825,14 +880,17 @@ def co_movement(
         entries=tuple(entries),
         notes=(
             f"样本=在榜 ≥{min_days} 天的 {len(sample)} 条；配对需共同在榜 ≥{min_overlap} 天，"
-            f"相关阈值 r≥{correlation}；板块与来源两个维度各算一次（同组成员重复时只留板块）"
+            f"成组阈值 r≥{correlation}；组内弱边（r<{min_edge_correlation}）只计数、不拆组；"
+            "★ 未做显著性检验：n<5 时 Pearson 的显著阈值≈0.997，"
+            "只能表述为「观察到同步变化」，禁止写「存在相关/共动」"
         ),
         metrics={
             "sample_items": len(sample),
             "comparable_pairs": len(comparable),
-            "edges": sum(len(v) for v in scored.values()),
+            "edges": sum(1 for v in pair_stats.values() for r, _ in v.values() if r >= correlation),
             "groups": len(entries),
             "window_days": len(index.days),
+            "has_significance_test": False,
         },
     )
 
@@ -846,7 +904,7 @@ def _pearson(xs: list[float], ys: list[float]) -> float | None:
         return None  # 任一侧方差为 0（热度完全不动）
 
 
-def _components(edges: list[tuple[float, str, str]], min_size: int) -> list[list[str]]:
+def _components(edges: list[tuple[float, str, str, int]], min_size: int) -> list[list[str]]:
     """把边连成连通分量；只返回 size ≥ min_size 的分量。"""
     parent: dict[str, str] = {}
 
@@ -857,7 +915,7 @@ def _components(edges: list[tuple[float, str, str]], min_size: int) -> list[list
             x = parent[x]
         return x
 
-    for _, a, b in edges:
+    for _, a, b, _n_days in edges:
         ra, rb = find(a), find(b)
         if ra != rb:
             parent[rb] = ra
@@ -1090,6 +1148,8 @@ def emergence(
     tracks = tracks if tracks is not None else build_tracks(index)
     today = index.days[-1]
     day_index = {day: i for i, day in enumerate(index.days)}
+    section_counts = _section_counts_by_day(index)
+    schema_changes = _schema_change_days(index)
 
     grouped: dict[str, list[dict[str, Any]]] = {
         KIND_DROPPED: [],
@@ -1141,6 +1201,21 @@ def emergence(
             entry["hot_at_last_seen"] = _round(track.series_day_map()[track.last_seen], 2)
             if kind == KIND_DROPPED and 0 <= pos < len(index.days) - 1:
                 entry["dropped_on"] = index.days[pos + 1]
+
+        # ★ 归因：跌出不一定发生在内容上。2026-10-18 有 13 条「论文与研究」
+        # 集体跌出，真实原因是当天该板块渲染 0 条（hf_papers degraded=0），
+        # 不是话题更替。这类事件必须标出来并从趋势里剔除。
+        attribution = "normal"
+        if kind == KIND_DROPPED and "dropped_on" in entry:
+            drop_day = str(entry["dropped_on"])
+            if section_counts.get(drop_day, {}).get(track.section, 0) == 0:
+                attribution = "section_empty"
+            elif drop_day in schema_changes:
+                attribution = "section_schema_change"
+        entry["attribution"] = attribution
+        entry["trend_eligible"] = attribution == "normal" and track.days_on >= 2
+        if track.days_on < 2:
+            entry["caution"] = "单日，不构成趋势"
         grouped[kind].append(entry)
 
     for kind in (KIND_DROPPED, KIND_NEW, KIND_RETURNED, KIND_FLUCTUATING):
@@ -1155,6 +1230,8 @@ def emergence(
         *grouped[KIND_FLUCTUATING],
     ]
 
+    single_day = [e for e in entries if int(e.get("days_on", 0)) < 2]
+    ineligible = [e for e in entries if not e.get("trend_eligible")]
     return StructureReport(
         key=key,
         name=name,
@@ -1165,12 +1242,24 @@ def emergence(
             f"窗口 {index.days[0]}→{today}（{len(index.days)} 天）；"
             "「跌出」= 连续在榜 ≥2 天后不再出现在 Top30（不等于消失）；"
             "「真新」= 本窗口内首次出现（左边界外不可知）；"
-            "「波动」= 断过又离开或进出 ≥3 次，不算涌现也不算断档"
+            "「波动」= 断过又离开或进出 ≥3 次；"
+            "attribution != normal 的事件（板块整块渲染为空 / 板块口径变更）"
+            "不得计入趋势"
         ),
         metrics={
             **counts,
             "tracks_total": len(tracks),
             "window_days": len(index.days),
+            "dropped_section_empty": sum(
+                1 for e in entries if e.get("attribution") == "section_empty"
+            ),
+            "dropped_schema_change": sum(
+                1 for e in entries if e.get("attribution") == "section_schema_change"
+            ),
+            "trend_eligible_entries": len(entries) - len(ineligible),
+            "ineligible_entries": len(ineligible),
+            "single_day_entries": len(single_day),
+            "schema_change_days": sorted(schema_changes),
         },
     )
 

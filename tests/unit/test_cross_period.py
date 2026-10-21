@@ -766,3 +766,110 @@ def test_unrealized_containment_fallback_and_unmatched(tmp_path: Path) -> None:
     assert report.entry_count == 1
     assert report.entries[0]["item_id"] == "it_long"
     assert report.metrics["unmatched"] == 1
+
+
+# ── 2a：口径归因与显著性标注 ────────────────────────────────────────────────
+
+
+def test_co_movement_reports_n_days_and_no_significance_test(tmp_path: Path) -> None:
+    series = {"it_a": [10.0, 20.0, 30.0], "it_b": [11.0, 21.0, 31.0]}
+    for pos, day in enumerate(("2026-10-19", "2026-10-20", "2026-10-21")):
+        _day(
+            tmp_path,
+            day,
+            [_item(iid, iid, values[pos]) for iid, values in series.items()],
+            sections=[_section("s", list(series))],
+        )
+    report = co_movement(load_cross_period(tmp_path))
+    group = report.entries[0]
+    assert group["has_significance_test"] is False
+    assert group["n_days_min"] == 3
+    assert group["min_correlation"] == pytest.approx(1.0, abs=0.01)
+    assert group["edges"][0]["n_days"] == 3
+    assert report.metrics["has_significance_test"] is False
+
+
+def test_co_movement_counts_weak_pairs_without_dropping_group(tmp_path: Path) -> None:
+    """三条轨迹：a/b 强相关，c 与两者中等相关；弱边只计数，不拆组。"""
+    series = {
+        "it_a": [10.0, 20.0, 40.0, 80.0],
+        "it_b": [11.0, 21.0, 41.0, 81.0],
+        "it_c": [12.0, 19.0, 39.0, 79.0],
+    }
+    for pos, day in enumerate(("2026-10-18", "2026-10-19", "2026-10-20", "2026-10-21")):
+        _day(
+            tmp_path,
+            day,
+            [_item(iid, iid, values[pos]) for iid, values in series.items()],
+            sections=[_section("s", list(series))],
+        )
+    report = co_movement(load_cross_period(tmp_path))
+    assert report.entry_count == 1
+    group = report.entries[0]
+    assert group["size"] == 3
+    assert group["min_correlation"] <= group["mean_correlation"]
+
+
+def test_emergence_flags_section_empty_drops(tmp_path: Path) -> None:
+    """板块当天整块渲染 0 条 → 跌出归因 section_empty，不得计入趋势。"""
+    _day(
+        tmp_path,
+        "2026-10-19",
+        [_item("it_a", "paper a", 50.0)],
+        sections=[_section("论文与研究", ["it_a"])],
+    )
+    _day(
+        tmp_path,
+        "2026-10-20",
+        [_item("it_a", "paper a", 50.0)],
+        sections=[_section("论文与研究", ["it_a"])],
+    )
+    _day(
+        tmp_path,
+        "2026-10-21",
+        [_item("it_b", "community b", 40.0)],
+        sections=[_section("社区舆论", ["it_b"])],
+    )
+    report = emergence(load_cross_period(tmp_path))
+    dropped = next(e for e in report.entries if e["kind"] == "dropped")
+    assert dropped["attribution"] == "section_empty"
+    assert dropped["trend_eligible"] is False
+    assert report.metrics["dropped_section_empty"] == 1
+
+
+def test_emergence_flags_schema_change_drops(tmp_path: Path) -> None:
+    """板块集合变化当天发生的跌出 → section_schema_change。"""
+    _day(
+        tmp_path,
+        "2026-10-19",
+        [_item("it_a", "a", 50.0)],
+        sections=[_section("A", ["it_a"]), _section("B", [])],
+    )
+    _day(
+        tmp_path,
+        "2026-10-20",
+        [_item("it_a", "a", 50.0)],
+        sections=[_section("A", ["it_a"]), _section("B", [])],
+    )
+    _day(
+        tmp_path,
+        "2026-10-21",
+        [_item("it_b", "b", 40.0)],
+        sections=[_section("A", ["it_b"]), _section("B", []), _section("C", [])],
+    )
+    report = emergence(load_cross_period(tmp_path))
+    dropped = next(e for e in report.entries if e["kind"] == "dropped")
+    assert dropped["attribution"] == "section_schema_change"
+    assert dropped["trend_eligible"] is False
+    assert "2026-10-21" in report.metrics["schema_change_days"]
+
+
+def test_emergence_marks_single_day_entries_as_not_trend_eligible(tmp_path: Path) -> None:
+    _day(tmp_path, "2026-10-20", [_item("it_a", "a", 10.0)])
+    _day(tmp_path, "2026-10-21", [_item("it_a", "a", 10.0), _item("it_b", "b", 30.0)])
+    report = emergence(load_cross_period(tmp_path))
+    new = next(e for e in report.entries if e["kind"] == "new")
+    assert new["days_on"] == 1
+    assert new["trend_eligible"] is False
+    assert "单日" in new["caution"]
+    assert report.metrics["single_day_entries"] >= 1
