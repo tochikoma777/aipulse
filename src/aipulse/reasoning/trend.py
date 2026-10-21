@@ -90,13 +90,13 @@ SEGMENTS: tuple[tuple[str, str, str], ...] = (
 
 # 每节的字数上限（prompt 里给区间，校验时用硬上限）
 SEGMENT_MAX_CHARS: dict[str, int] = {
-    "rising_topics": 500,
-    "falling_topics": 500,
+    "rising_topics": 600,
+    "falling_topics": 600,
     "emerging_topics": 400,
     "structural_changes": 600,
     "second_order_effects": 600,
     "prediction_review": 100,
-    "watchlist": 500,
+    "watchlist": 600,
 }
 
 WORD_BUDGET: dict[str, str] = {
@@ -104,7 +104,7 @@ WORD_BUDGET: dict[str, str] = {
     "falling_topics": "300-500 字",
     "emerging_topics": "250-400 字",
     "structural_changes": "450-600 字",
-    "second_order_effects": "450-600 字",
+    "second_order_effects": "450-550 字",
     "prediction_review": "不超过 100 字，一句话说清即可",
     "watchlist": "300-500 字",
 }
@@ -165,6 +165,22 @@ def _heat_lines(
             f"（基于 {entry['slope_days']} 天）{note}；代表 {ids}"
         )
     return out
+
+
+def _comparison_line(reports: dict[str, StructureReport]) -> list[str]:
+    """告诉模型：份额对比用哪个区间，以及为什么不能跨源集合变更日。"""
+    report = reports.get("heat_migration")
+    if report is None:
+        return []
+    m = report.metrics
+    line = (
+        f"- 对比区间 {m.get('comparison_start')}→{m.get('comparison_end')}"
+        f"（{m.get('comparison_days')} 天，源集合同构；全窗口 {m.get('full_window_days')} 天）"
+    )
+    changes = m.get("source_change_days") or []
+    if changes:
+        line += f"；源集合变更日 {'/'.join(str(d) for d in changes)}，禁止跨该日比较"
+    return [line]
 
 
 def _taint_lines(reports: dict[str, StructureReport]) -> list[str]:
@@ -353,6 +369,7 @@ def build_evidence(
         blocks.append("### 逐日采集失败（供归因，不得当作趋势）\n" + "\n".join(failures))
 
     if key == "rising_topics":
+        blocks.append("### 对比区间（源集合同构）\n" + "\n".join(_comparison_line(reports)))
         blocks.append("### 板块份额（上升）\n" + "\n".join(_heat_lines(reports, positive=True)))
         blocks.append(
             "### 同步变化组（未做显著性检验）\n"
@@ -362,6 +379,7 @@ def build_evidence(
         _append_taint()
         _append_failures()
     elif key == "falling_topics":
+        blocks.append("### 对比区间（源集合同构）\n" + "\n".join(_comparison_line(reports)))
         blocks.append("### 板块份额（下降）\n" + "\n".join(_heat_lines(reports, positive=False)))
         blocks.append("### 连续在榜后跌出 Top30\n" + "\n".join(_event_lines(reports, ("dropped",))))
         blocks.append("### 相邻两日热度下降\n" + "\n".join(_top_movers(index, rising=False)))
@@ -375,6 +393,7 @@ def build_evidence(
             "### 回到榜与反复进出\n" + "\n".join(_event_lines(reports, ("returned", "fluctuating")))
         )
     elif key in ("structural_changes", "second_order_effects"):
+        blocks.append("### 对比区间（源集合同构）\n" + "\n".join(_comparison_line(reports)))
         blocks.append("### 板块份额斜率\n" + "\n".join(_heat_lines(reports, positive=True)))
         blocks.append("### 板块份额（下降侧）\n" + "\n".join(_heat_lines(reports, positive=False)))
         blocks.append("### 来源构成\n" + "\n".join(_source_lines(reports)))
