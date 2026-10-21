@@ -54,6 +54,7 @@ __all__ = [
     "StructureReport",
     "TrackPoint",
     "build_tracks",
+    "collection_failures",
     "co_movement",
     "compute_all",
     "divergence",
@@ -130,6 +131,9 @@ class DaySnapshot:
     items: dict[str, PeriodItem]
     sections: tuple[str, ...] = ()
     underrated: tuple[str, ...] = ()
+    # source → (status, item_count)；来自同日目录下的 source_runs.json。
+    # 10-15 / 10-16 没有这个文件，所以是空 dict（不代表采集失败）。
+    source_runs: dict[str, tuple[str, int]] = field(default_factory=dict)
 
 
 @dataclass(frozen=True)
@@ -138,11 +142,14 @@ class TrackPoint:
 
     `in_top=False` 只表示**当天不在 brief 渲染集（Top30）**，不代表它不存在。
     任何对外措辞都必须用「跌出 Top30」，不能用「消失」。
+    `masked=True` 表示**这一天对该条目所属板块无效**（板块整块 0 条，
+    多半是采集失败），既不算在榜也不算离榜。
     """
 
     day: str
     in_top: bool
     hot_score: float | None = None
+    masked: bool = False
 
 
 @dataclass(frozen=True)
@@ -162,6 +169,7 @@ class ItemTrack:
     present_today: bool
     first_seen: str | None
     last_seen: str | None
+    masked_days: tuple[str, ...] = ()  # 所属板块采集异常、无法判定的日子
 
     @property
     def days_on(self) -> int:
@@ -465,6 +473,27 @@ def _norm_statement(value: str) -> str:
 # ══════════════════════════════════════════════════════════════════════════
 
 
+def _parse_source_runs(path: Path) -> dict[str, tuple[str, int]]:
+    """`source_runs.json` → {source: (status, item_count)}；缺失或损坏返回空表。"""
+    data = _read_json(path)
+    if not isinstance(data, dict):
+        return {}
+    rows = data.get("sources")
+    if not isinstance(rows, list):
+        return {}
+    out: dict[str, tuple[str, int]] = {}
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        source = _text(row.get("source"))
+        if not source:
+            continue
+        status = _text(row.get("status")) or "unknown"
+        count = _number(row.get("item_count"))
+        out[source] = (status, int(count) if count is not None else 0)
+    return out
+
+
 def load_cross_period(reports_dir: str | Path) -> CrossPeriodIndex:
     """扫描 `reports_dir/**/daily.json`（并顺带读同目录的 predictions/verdicts）。"""
     root = Path(reports_dir)
@@ -483,6 +512,7 @@ def load_cross_period(reports_dir: str | Path) -> CrossPeriodIndex:
         if not day:
             continue
         snap = _snapshot_from_payload(day, data)
+        snap.source_runs = _parse_source_runs(path.parent / "source_runs.json")
         previous = snapshots.get(day)
         # 同一天多份报告：保留条目更多的（历史重跑会产生 7 件/8 件两种）
         if previous is None or len(snap.items) > len(previous.items):
@@ -532,9 +562,12 @@ def build_tracks(index: CrossPeriodIndex) -> dict[str, ItemTrack]:
     if not days:
         return {}
 
+    bad_days = _bad_days_by_section(index)
     tracks: dict[str, ItemTrack] = {}
     for item_id, present in seen.items():
         present_set = set(present)
+        latest = index.snapshots[present[-1]].items[item_id]
+        masked_set = bad_days.get(latest.section, set()) - present_set
         points = tuple(
             TrackPoint(
                 day=day,
@@ -542,6 +575,7 @@ def build_tracks(index: CrossPeriodIndex) -> dict[str, ItemTrack]:
                 hot_score=(
                     index.snapshots[day].items[item_id].hot_score if day in present_set else None
                 ),
+                masked=day in masked_set,
             )
             for day in days
         )
@@ -550,13 +584,15 @@ def build_tracks(index: CrossPeriodIndex) -> dict[str, ItemTrack]:
         for day in days:
             if day in present_set:
                 current += 1
+            elif day in masked_set:
+                # 采集异常日：既不算在榜也不算离榜，连续段跨过去
+                continue
             elif current:
                 runs.append(current)
                 current = 0
         if current:
             runs.append(current)
 
-        latest = index.snapshots[present[-1]].items[item_id]
         tracks[item_id] = ItemTrack(
             item_id=item_id,
             # 标题/板块可能逐日微调，取最后一次在榜时的值（最能代表当前形态）
@@ -568,6 +604,7 @@ def build_tracks(index: CrossPeriodIndex) -> dict[str, ItemTrack]:
             present_today=days[-1] in present_set,
             first_seen=present[0],
             last_seen=present[-1],
+            masked_days=tuple(day for day in days if day in masked_set),
         )
     return tracks
 
@@ -649,6 +686,69 @@ def _schema_change_days(index: CrossPeriodIndex) -> set[str]:
     return changed
 
 
+def _bad_days_by_section(index: CrossPeriodIndex) -> dict[str, set[str]]:
+    """板块「夹在两次有数据之间」的 0 条日 = 采集异常日（不是板块退场）。
+
+    实测 2026-10-18：「论文与研究」0 条，而 10-17 与 10-19 都有；
+    真实原因是 hf_papers 连续两天 degraded=0 + 24h 滚动窗口把旧条目甩出去。
+    这类日子必须从斜率/轨迹里剔除，否则会算出"前高后低"的伪结构。
+    """
+    counts = _section_counts_by_day(index)
+    sections = {name for per_day in counts.values() for name in per_day}
+    out: dict[str, set[str]] = {}
+    for section in sections:
+        present = [day for day in index.days if counts[day].get(section, 0) > 0]
+        if len(present) < 2:
+            continue
+        first, last = present[0], present[-1]
+        zeros = {
+            day for day in index.days if first < day < last and counts[day].get(section, 0) == 0
+        }
+        if zeros:
+            out[section] = zeros
+    return out
+
+
+def collection_failures(index: CrossPeriodIndex) -> list[dict[str, Any]]:
+    """`source_runs` 里 failed / degraded 的记录（含 item_count），供证据与 prompt 使用。"""
+    rows: list[dict[str, Any]] = []
+    for day in index.days:
+        for source, (status, count) in sorted(index.snapshots[day].source_runs.items()):
+            if status in {"failed", "degraded"}:
+                rows.append({"day": day, "source": source, "status": status, "item_count": count})
+    return rows
+
+
+# 手动投喂通道：没有内容时必然 degraded/0，不能当成采集失败。
+_OPTIONAL_SOURCES = frozenset({"inbox"})
+
+
+def _source_failure_days(index: CrossPeriodIndex) -> dict[str, set[str]]:
+    """真正"没采到东西"的源日：status 为 failed/degraded **且 item_count == 0**。
+
+    `degraded` 但 item_count>0（如 reddit 25 条）不算失败——它只是部分降级；
+    `inbox` 是手动通道，空着是常态，也不算失败。
+    """
+    out: dict[str, set[str]] = {}
+    for day in index.days:
+        for source, (status, count) in index.snapshots[day].source_runs.items():
+            if source in _OPTIONAL_SOURCES:
+                continue
+            if status in {"failed", "degraded"} and count == 0:
+                out.setdefault(source, set()).add(day)
+    return out
+
+
+def _section_sources(index: CrossPeriodIndex) -> dict[str, set[str]]:
+    """板块 → 实际供给它的来源集合（按窗口内出现过的条目统计）。"""
+    out: dict[str, set[str]] = {}
+    for day in index.days:
+        for item in index.snapshots[day].items.values():
+            if item.section and item.source:
+                out.setdefault(item.section, set()).add(item.source)
+    return out
+
+
 # ══════════════════════════════════════════════════════════════════════════
 # ① 热度迁移矩阵
 # ══════════════════════════════════════════════════════════════════════════
@@ -674,10 +774,23 @@ def heat_migration(
 
     sa, sb = _shares(ta), _shares(tb)
     history = _section_share_history(index)
+    bad_days = _bad_days_by_section(index)
+    section_sources = _section_sources(index)
+    failures = _source_failure_days(index)
     entries: list[dict[str, Any]] = []
     for section in sorted(set(ta) | set(tb)):
         delta_pp = (sb.get(section, 0.0) - sa.get(section, 0.0)) * 100
         series = [day_map.get(section, 0.0) * 100 for day_map in history]
+        # ★ 斜率必须剔除"板块整块 0 条"的采集异常日，否则 0 会被当成"回落"
+        excluded = sorted(bad_days.get(section, set()))
+        points = [
+            (pos, series[pos])
+            for pos, day in enumerate(index.days)
+            if day not in bad_days.get(section, set())
+        ]
+        # ★ 若该板块的供给源在窗口内"整源 0 条"，则整个板块的结构判断都不可信
+        taint_sources = sorted(s for s in section_sources.get(section, set()) if failures.get(s))
+        taint_days = sorted({day for source in taint_sources for day in failures[source]})
         entries.append(
             {
                 "section": section,
@@ -686,13 +799,29 @@ def heat_migration(
                 "t0_share": _round(sa.get(section, 0.0)),
                 "t1_share": _round(sb.get(section, 0.0)),
                 "delta_pp": _round(delta_pp, 2),
-                "slope_pp_per_day": _round(_slope(series), 2),
+                "slope_pp_per_day": _round(_slope_at(points), 2),
+                "slope_days": len(points),
+                "excluded_days": excluded,
+                "slope_note": (
+                    f"已排除 {len(excluded)} 个板块空日（{'/'.join(excluded)}）" if excluded else ""
+                ),
+                "taint_sources": taint_sources,
+                "taint_days": taint_days,
+                "trend_usable": not taint_sources,
+                "trend_note": (
+                    f"供给源 {'/'.join(taint_sources)} 在 "
+                    f"{'/'.join(taint_days)} 整源 0 条，本板块不得作结构性趋势判断"
+                    if taint_sources
+                    else ""
+                ),
                 "share_series_pp": [_round(v, 2) for v in series],
                 "t0_top_items": _top_items(a, section, 3),
                 "t1_top_items": _top_items(b, section, 3),
             }
         )
     entries.sort(key=lambda e: abs(float(e["delta_pp"])), reverse=True)
+    excluded_total = sum(len(e["excluded_days"]) for e in entries)
+    tainted = [str(e["section"]) for e in entries if not e["trend_usable"]]
     return StructureReport(
         key=key,
         name=name,
@@ -701,9 +830,13 @@ def heat_migration(
         entries=tuple(entries),
         notes=(
             f"T0={a.day} T1={b.day}；份额分母仅含已归板块的条目；"
-            f"slope_pp_per_day = 全窗口 {len(index.days)} 天份额的最小二乘斜率"
+            f"slope_pp_per_day = 剔除板块空日后、按真实日序号的最小二乘斜率"
+            + (f"（共排除 {excluded_total} 个板块日）" if excluded_total else "")
+            + (f"；采集失败、不可作趋势：{'/'.join(tainted)}" if tainted else "")
         ),
         metrics={
+            "excluded_section_days": excluded_total,
+            "tainted_sections": tainted,
             "t0_items": len(a.items),
             "t1_items": len(b.items),
             "overlap_items": len(_common(a, b)),
@@ -717,15 +850,17 @@ def _section_share_history(index: CrossPeriodIndex) -> list[dict[str, float]]:
     return [_shares(_section_totals(index.snapshots[day])) for day in index.days]
 
 
-def _slope(values: list[float]) -> float:
-    """最小二乘斜率（单位：value/天）。样本 <2 时返回 0。"""
-    n = len(values)
+def _slope_at(points: list[tuple[int, float]]) -> float:
+    """最小二乘斜率（value / 天），x 用真实日序号，允许跳过坏日。"""
+    n = len(points)
     if n < 2:
         return 0.0
-    mean_x = (n - 1) / 2
-    mean_y = sum(values) / n
-    denom = sum((i - mean_x) ** 2 for i in range(n))
-    return sum((i - mean_x) * (values[i] - mean_y) for i in range(n)) / denom
+    mean_x = sum(x for x, _ in points) / n
+    mean_y = sum(y for _, y in points) / n
+    denom = sum((x - mean_x) ** 2 for x, _ in points)
+    if denom == 0:
+        return 0.0
+    return sum((x - mean_x) * (y - mean_y) for x, y in points) / denom
 
 
 def _top_items(snap: DaySnapshot, section: str, limit: int) -> list[dict[str, Any]]:
@@ -1150,6 +1285,7 @@ def emergence(
     day_index = {day: i for i, day in enumerate(index.days)}
     section_counts = _section_counts_by_day(index)
     schema_changes = _schema_change_days(index)
+    bad_by_section = _bad_days_by_section(index)
 
     grouped: dict[str, list[dict[str, Any]]] = {
         KIND_DROPPED: [],
@@ -1208,7 +1344,9 @@ def emergence(
         attribution = "normal"
         if kind == KIND_DROPPED and "dropped_on" in entry:
             drop_day = str(entry["dropped_on"])
-            if section_counts.get(drop_day, {}).get(track.section, 0) == 0:
+            if drop_day in bad_by_section.get(track.section, set()) or (
+                section_counts.get(drop_day, {}).get(track.section, 0) == 0
+            ):
                 attribution = "section_empty"
             elif drop_day in schema_changes:
                 attribution = "section_schema_change"
@@ -1365,9 +1503,13 @@ def source_share(
     share_ha, share_hb = _shares(hot_a), _shares(hot_b)
 
     entries: list[dict[str, Any]] = []
+    # 某个来源在窗口内"整源 0 条"（failed/degraded 且 item_count=0）时，
+    # 它的份额变化一律不可作趋势判断。仅"降级但仍有条目"（如 reddit 25 条）不算。
+    failures = _source_failure_days(index)
     for source in sorted(set(count_a) | set(count_b)):
         share_c0, share_c1 = share_ca.get(source, 0.0), share_cb.get(source, 0.0)
         share_h0, share_h1 = share_ha.get(source, 0.0), share_hb.get(source, 0.0)
+        failed_days = sorted(failures.get(source, set()))
         entries.append(
             {
                 "source": source,
@@ -1379,17 +1521,27 @@ def source_share(
                 "hot_share_t0": _round(share_h0),
                 "hot_share_t1": _round(share_h1),
                 "hot_delta_pp": _round((share_h1 - share_h0) * 100, 2),
+                "collection_failure_days": failed_days,
+                "trend_usable": not failed_days,
+                "note": (
+                    f"{'/'.join(failed_days)} 整源 0 条，份额变化不可作趋势" if failed_days else ""
+                ),
             }
         )
     entries.sort(key=lambda e: abs(float(e["count_delta_pp"])), reverse=True)
+    suspect = [str(e["source"]) for e in entries if not e["trend_usable"]]
     return StructureReport(
         key=key,
         name=name,
         status=STATUS_OK,
         entry_count=len(entries),
         entries=tuple(entries),
-        notes=f"T0={a.day} T1={b.day}；条目数与热度各算一次份额（pp=百分点）",
+        notes=(
+            f"T0={a.day} T1={b.day}；条目数与热度各算一次份额（pp=百分点）"
+            + (f"；采集失败、不可作趋势：{'/'.join(suspect)}" if suspect else "")
+        ),
         metrics={
+            "unusable_sources": suspect,
             "t0_total": len(a.items),
             "t1_total": len(b.items),
             "overlap_items": len(_common(a, b)),

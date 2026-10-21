@@ -14,6 +14,7 @@ import pytest
 from aipulse.analysis.cross_period import (
     STATUS_INSUFFICIENT,
     STATUS_OK,
+    build_tracks,
     co_movement,
     compute_all,
     divergence,
@@ -66,6 +67,7 @@ def _day(
     predictions_md: str | None = None,
     verdicts_md: str | None = None,
     raw_daily: str | None = None,
+    source_runs: list[dict[str, Any]] | None = None,
 ) -> Path:
     target = root / Path(*day.split("-"))
     target.mkdir(parents=True, exist_ok=True)
@@ -86,6 +88,11 @@ def _day(
         (target / "predictions.md").write_text(predictions_md, encoding="utf-8")
     if verdicts_md is not None:
         (target / "verdicts.md").write_text(verdicts_md, encoding="utf-8")
+    if source_runs is not None:
+        (target / "source_runs.json").write_text(
+            json.dumps({"date": day, "sources": source_runs}, ensure_ascii=False),
+            encoding="utf-8",
+        )
     return target
 
 
@@ -873,3 +880,97 @@ def test_emergence_marks_single_day_entries_as_not_trend_eligible(tmp_path: Path
     assert new["trend_eligible"] is False
     assert "单日" in new["caution"]
     assert report.metrics["single_day_entries"] >= 1
+
+
+# ── S2.5：坏日归因传播 ──────────────────────────────────────────────────────
+
+
+def test_track_skips_bad_day_without_splitting_run(tmp_path: Path) -> None:
+    """板块中间整块为空的那天，不应把条目切成两段（否则会误判为"波动"）。"""
+    _day(
+        tmp_path,
+        "2026-10-17",
+        [_item("it_p", "paper", 50.0)],
+        sections=[_section("论文与研究", ["it_p"])],
+    )
+    _day(
+        tmp_path,
+        "2026-10-18",
+        [_item("it_x", "other", 40.0)],
+        sections=[_section("论文与研究", [])],
+    )
+    _day(
+        tmp_path,
+        "2026-10-19",
+        [_item("it_p", "paper", 55.0)],
+        sections=[_section("论文与研究", ["it_p"])],
+    )
+    index = load_cross_period(tmp_path)
+    track = build_tracks(index)["it_p"]
+    assert track.runs == (2,)
+    assert track.masked_days == ("2026-10-18",)
+    assert [p.masked for p in track.points] == [False, True, False]
+
+
+def test_heat_migration_excludes_bad_day_and_marks_taint(tmp_path: Path) -> None:
+    runs_bad = [{"source": "hf_papers", "status": "degraded", "item_count": 0}]
+    runs_ok = [{"source": "hf_papers", "status": "ok", "item_count": 10}]
+    for day, count, runs in (
+        ("2026-10-17", 1, runs_ok),
+        ("2026-10-18", 0, runs_bad),
+        ("2026-10-19", 1, runs_ok),
+        ("2026-10-20", 1, runs_ok),
+    ):
+        items = [] if count == 0 else [_item("it_p", "paper", 10.0, source="hf_papers")]
+        _day(
+            tmp_path,
+            day,
+            items,
+            sections=[_section("论文与研究", ["it_p"] if count else [])],
+            source_runs=runs,
+        )
+    report = heat_migration(load_cross_period(tmp_path))
+    entry = report.entries[0]
+    assert entry["excluded_days"] == ["2026-10-18"]
+    assert entry["slope_days"] == 3
+    assert entry["trend_usable"] is False
+    assert entry["taint_sources"] == ["hf_papers"]
+    assert report.metrics["tainted_sections"] == ["论文与研究"]
+
+
+def test_source_share_flags_collection_failure(tmp_path: Path) -> None:
+    _day(
+        tmp_path,
+        "2026-10-20",
+        [_item("it_a", "a", 10.0, source="arxiv")],
+        source_runs=[{"source": "arxiv", "status": "ok", "item_count": 5}],
+    )
+    _day(
+        tmp_path,
+        "2026-10-21",
+        [_item("it_b", "b", 10.0, source="arxiv")],
+        source_runs=[{"source": "arxiv", "status": "failed", "item_count": 0}],
+    )
+    report = source_share(load_cross_period(tmp_path))
+    entry = report.entries[0]
+    assert entry["trend_usable"] is False
+    assert entry["collection_failure_days"] == ["2026-10-21"]
+    assert report.metrics["unusable_sources"] == ["arxiv"]
+
+
+def test_source_share_degraded_with_items_is_usable(tmp_path: Path) -> None:
+    """degraded 但 item_count>0（reddit 25 条）不算采集失败。"""
+    _day(
+        tmp_path,
+        "2026-10-20",
+        [_item("it_a", "a", 10.0, source="reddit")],
+        source_runs=[{"source": "reddit", "status": "degraded", "item_count": 25}],
+    )
+    _day(
+        tmp_path,
+        "2026-10-21",
+        [_item("it_a", "a", 12.0, source="reddit")],
+        source_runs=[{"source": "reddit", "status": "degraded", "item_count": 25}],
+    )
+    report = source_share(load_cross_period(tmp_path))
+    assert report.entries[0]["trend_usable"] is True
