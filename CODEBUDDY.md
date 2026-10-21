@@ -2,6 +2,25 @@
 
 This file provides guidance to CodeBuddy Code when working with code in this repository.
 
+## ★ 当前阶段：M5（周期趋势长文 + 多角色辩论）—— 未开工
+
+**一句话**：M0–M4、M6a、M6b、M6c 全部完成并真跑验证（代码基线 = tag `m6c` / `c9b2fa1`）；**下一步就是 M5，目前零代码**。新会话不需要靠读文档推断进度，直接按 `docs/AI_Pulse_Agent开发执行手册.md` §6「M5 任务卡」从 S1 起步。
+
+| M5 落点 | 开工前的现状 |
+|---|---|
+| `reasoning/trend.py` · `reasoning/debate.py` | **不存在**，要新建 |
+| `prompts/trend/{weekly,monthly}.j2` · `prompts/debate/{persona_bull,persona_bear,persona_engineer,persona_investor,moderator}.j2` | 目录为空 |
+| `pipeline/weekly.py`（周度流水线） | 不存在 |
+| `cli/commands/trend.py` · `debate.py` | `placeholder_app()` 占位，调用抛 `NotImplementedError`；出现在 `--help` 里是刻意的 |
+| `configs/default.yaml::pipeline.weekly_debate_enabled` | 已留开关（`true`） |
+| `web/app.py` 的「趋势」「辩论」入口 | 置灰占位，M5 点亮 |
+
+**M5 验收要点（手册 §6 DoD，别做偏）**：trend 正文 2000+ 字且**必须引用真实的往期预言验证结果**（不许凭空写「复盘」）；debate 的四个 persona **必须 `asyncio.gather` 并行**（串行视为不合格）；证据包压缩到每条 ≤200 字、合计 ≤15 条；Web 的「趋势」「辩论」两个页面可访问；`debate` 收敛块必须含「什么证据会让我改变判断」。
+
+**阶段顺序是红线**（手册 §0.3 第 7 条）：M4 先于 M5，不得跨阶段实现，也不要在 M5 里回头重写已完成阶段的产物。开工前先按下方「改哪里 → 先跑什么」确认基线是绿的。
+
+## 开工前必读
+
 > **off 档跑得再久也覆盖不了 hybrid/full 路径。** 涉及 LLM 的改动，本地桩测试全绿不等于真实可用——必须配 key 实跑一次才算验证过。
 >
 > 依据：M4 的 `data/` 目录缺失、以及首跑 hybrid 连炸 5 个 bug（缺 `base_url` 崩溃、`AIPULSE_MODE` 被 yaml 字面量压掉、`llm.timeout_s` 是死配置、证据 id 幻觉、窗口只覆盖 7 小时），**全部只有真实运行才暴露**，桩测试一条都没抓到。
@@ -39,7 +58,8 @@ This file provides guidance to CodeBuddy Code when working with code in this rep
 环境：必须在 WSL2 原生 ext4 文件系统内（**不要放 `/mnt/c/`**：I/O 极慢、SQLite 锁异常、git 行为诡异）。
 
 ```bash
-uv sync                                   # 安装依赖（含 dev 组）
+uv sync                                   # 安装依赖（含 dev 组）；本地唯一的"构建"步骤（hatchling wheel，无需 uv build）
+uv sync --frozen                          # 严格按 uv.lock 安装，不改锁文件（CI 用这个）
 uv run aipulse --help                     # 命令树
 uv run aipulse init                       # 建库（alembic upgrade head）+ 目录骨架 + .env
 uv run aipulse doctor                     # 环境体检：Python/LLM key/代理/磁盘/DB/各源连通性
@@ -73,6 +93,12 @@ uv run aipulse serve --port 8000 --db data/aipulse.db --reports-dir data/reports
 uv run aipulse inbox add <url> --note "..."           # 手动投喂一条（v1.1 微信/X 唯一合规入口；抓不到也保留，标题退化为 URL）
 uv run aipulse inbox add-file notes.md                # 批量导入（每行一条 URL，行内其余内容为备注）
 uv run aipulse inbox list                             # 查看已投喂条目
+
+uv run aipulse knowledge items --query "agent"        # M6c：列出可记笔记的条目（item_id / 标题 / URL / 板块 / 日期）
+uv run aipulse knowledge note --url "<URL>" --note "..."   # 写 / 覆盖笔记；传空字符串即清空
+uv run aipulse knowledge mark --url "<URL>" --status read  # 阅读状态：read | unread | skipped
+uv run aipulse knowledge list                         # 按 updated_at 倒序
+uv run aipulse knowledge export                       # → data/knowledge/{index.md,my-notes.md,topics/*.md}
 ```
 ```bash
 # 自动化（需要 gh 已登录；daily.yml 也可在 Actions 页面手动触发）
@@ -86,7 +112,20 @@ scripts/cron_daily.sh                                 # 本地 cron 备份（日
 `brief.md` / `daily.json` / `meta.json` / **`scoreboard.md`（v1.10：daily 自动产出记分板）** / **`verdicts.md`（本次到期验证结果）** / **`predictions.md`（当日新生成的预言，被校验器拒收的草案也列出）** / **`signals.json`（指标快照 + 增速，Actions 无持久化时的跨天佐证）** / **`source_runs.json`（v1.19：每个源的 status/item_count/起止时间/error，含 `skipped_offline`）**。
 `meta.json` 里额外有 `predictions` / `prediction_generation` / `brief` / `signals` / `verify` / `collect` 摘要块；M6b 起还会把 `enhance_total` / `enhanced` / `enhance_skipped_count` / `enhance_cache_hit` / `enhance_cost_cny` 提到顶层，用于跨天核对增强覆盖率与花费。注意 `analysis.new_entity_mention_rows` 是**本次运行新增的实体提及行数**（同日重复提及已去重），不是当日实体总数。
 
-`data/` 布局（均在 `app.data_dir` 下，已 gitignore 部分产物）：`aipulse.db`（主库）/ `cache/http.sqlite`（`utils/http.py` 响应缓存）/ `inbox/`（手动投喂）/ `logs/` / `reports/`。
+`data/` 布局（均在 `app.data_dir` 下）：
+
+| 路径 | 内容 | 入库？ |
+|---|---|---|
+| `aipulse.db` | 主库（items / signals / topics / entities / predictions / … 共 10 表） | ✗（`.gitignore` 的 `data/*.db`） |
+| `user_data.db` | M6c 用户知识库（笔记 / 阅读状态），固定顶层，`create_all` 建表不走 alembic | ✗（同上） |
+| `cache/http.sqlite` | `utils/http.py` 的响应缓存 | ✗（`data/cache/`） |
+| `inbox/` | 手动投喂的 `*.md` | ✗（从未跟踪，本地工作区） |
+| `logs/` | cron 等日志 | ✗（`data/logs/`） |
+| `knowledge/` | `knowledge export` 产物（`index.md` / `my-notes.md` / `topics/*.md`） | ✗（`data/knowledge/`） |
+| `reports/YYYY/MM/DD/` | 每日报告，一天一个目录、**8 个文件**（早期 10-15/10-16 只有 7 个，尚无 `source_runs.json`） | **✓ 唯一入库的数据** |
+
+`data/reports/**` 是仓库里**唯一**公开的数据源；`.db` / 缓存 / 导出物一律不入库。判断"数据在哪"时先看这张表。
+
 手动投喂两条路：① `aipulse inbox add <url> --note "..."` / `aipulse inbox add-file <path>`（CLI 直接入库）；② 往 `data/inbox/*.md` 里写（每行一条 URL，行内其余内容当备注），常规采集 `collect --sources inbox` 自动扫描。**抓不到标题也保留条目**（标题退化为 URL）——这是 v1.1"外网全断仍能走完整链路"的兜底契约。
 
 ### 测试 / 质量门禁
@@ -97,6 +136,7 @@ CI（`.github/workflows/ci.yml`，无 secrets）实际只跑 4 步：`ruff check
 uv run pytest                             # 全量（当前 407 条，约 65s，无需网络、无需密钥）
 uv run pytest tests/unit/test_dedup.py                      # 单文件
 uv run pytest "tests/unit/test_dedup.py::test_l2_merges_arxiv_and_hf_same_paper" -q  # 单用例
+uv run pytest -k "dedup or cluster" -q                      # 按关键字筛（跨文件，最常用）
 uv run pytest -q --cov=aipulse --cov-report=term            # 覆盖率：collectors/ ≥80%、openai_compat ≥80%、TOTAL 90%
 
 uv run ruff check .                       # lint（line-length=100，select=E,F,I,UP,B,SIM）
@@ -105,6 +145,29 @@ uv run mypy src/aipulse                   # strict；migrations 目录已排除
 
 uv run pre-commit install                 # 钩子：ruff --fix + ruff-format + mypy + pytest
 ```
+
+### 改哪里 → 先跑什么
+
+改完别只跑全量再猜哪里挂了；按改动位置挑一行先跑（全量 60s，局部通常 <5s）：
+
+| 改动位置 | 先跑 |
+|---|---|
+| `collectors/` · `configs/sources.yaml` | `uv run python scripts/probe_sources.py`（新 URL 必跑）+ `pytest tests/unit/test_collectors_parse.py tests/unit/test_collectors_runtime.py tests/integration/test_fixtures.py` |
+| `normalize/` · `core/hashing.py` | `pytest tests/unit/test_dedup.py tests/unit/test_hashing.py` |
+| `analysis/score.py` · `configs/scoring.yaml` | `pytest tests/unit/test_score.py`（纯函数，直接构造 `Item`） |
+| `analysis/cluster.py` · `analysis/entities.py` · `analysis/signals.py` | 对应 `test_cluster.py` / `test_entities.py` / `test_signals.py` |
+| `analysis/stats.py` · `render/scoreboard.py` | `pytest tests/unit/test_stats.py tests/unit/test_web.py`（校准曲线在 web 侧） |
+| `reasoning/predictor.py` · `schema/prediction.py` · `prompts/predict/generate.j2` | `pytest tests/unit/test_prediction_schema.py tests/unit/test_predictor.py tests/unit/test_predict_cli.py` |
+| `reasoning/verifier.py` · `reasoning/criteria.py` · `prompts/predict/verify.j2` | `pytest tests/unit/test_verifier.py tests/unit/test_criteria_verdicts.py tests/unit/test_predict_verify_cli.py` |
+| `reasoning/brief.py` · `prompts/brief/*.j2` | `pytest tests/unit/test_brief.py tests/unit/test_brief_enhance.py` |
+| `pipeline/collect.py` · `pipeline/daily.py` | `pytest tests/unit/test_pipeline_collect.py tests/unit/test_daily.py` |
+| `web/` | `pytest tests/unit/test_web.py`（含 `mode=ro` 只读断言） |
+| `knowledge/` · `cli/commands/knowledge.py` | `pytest tests/unit/test_knowledge_store.py tests/unit/test_knowledge_cli.py tests/unit/test_daily_index.py tests/unit/test_export.py` |
+| `llm/` | `pytest tests/unit/test_llm.py tests/unit/test_openai_compat.py`（`respx` 拦截 `/chat/completions`） |
+| `store/models.py` | `uv run alembic revision --autogenerate -m "..."`（**只改模型不生成迁移 = 线上漂移**）+ `test_store.py` / `test_repo_items.py` |
+| `core/config.py` · `configs/default.yaml` | `pytest tests/unit/test_config.py` |
+| 任何 `cli/commands/*` | `pytest tests/unit/test_cli.py` + 该命令自己的测试 |
+| **任何涉及 LLM 路径的改动** | **上面全绿也不算数**——配 key 实跑 `uv run aipulse daily`（见文首「开工前必读」） |
 
 `mypy` 为全局 `strict = true`，但对 `aipulse.cli.*` / `aipulse.collectors.*` / `aipulse.pipeline.*` / `aipulse.web.*` 关闭了 `disallow_untyped_defs` 与 `disallow_untyped_calls`。`core/` `schema/` `analysis/` 必须完整通过 strict。
 
