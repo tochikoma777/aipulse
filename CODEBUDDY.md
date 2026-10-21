@@ -29,27 +29,63 @@ This file provides guidance to CodeBuddy Code when working with code in this rep
 
 `aipulse`（AI 脉搏）：每日采集 AI 领域热点，产出可回测的推演与预言。Python 3.11 + `uv`，SQLite 单文件存储，MIT。
 
-**里程碑状态（改动前先确认当前阶段）**：M0（骨架 + 数据源探测）、M1（6 采集器 + inbox + 三级去重）、M2（打分 / 聚类 / 实体 + LLM 抽象 + 简报）、**M3a / M3b（★ 预言生成 + 到期验证 + 命中率 / Brier / 校准度）**、**M4（Actions 自动化 + Web 看板 + README 发布）** 均已完成（tag `m0` / `m1` / `m2` / `m3a` / `m3b`）；**M6a（快照型源修复 + 简报格式规范化 + predict 截断修复）已于 2026-10-17 完成并真实运行验证**（`docs/文档维护日志.md` 记为 `m6a` / `4a12fa3`；`git tag` 现有 `m0`–`m4`、`m6a`（`4a12fa3`）、`star-tracking`（`cdcab79`）与 `m6b`（`11fb09a`）、`m6c`（`c9b2fa1`））。**P0「star 追踪」（★ 总数 / 增量两列、增速榜、`source_runs.json`）已实现（tag `star-tracking` / `cdcab79`）并在 Actions 环境实跑验证过（`data/reports/2026/10/17/` 由 `aipulse-bot` 提交，`generated_at 2026-10-17T14:55Z`，含 `source_runs.json`）**。M6b（日报条目 why/stance 全覆盖 + 中文要点）已于 2026-10-18 完成并 Actions 真跑验证（tag `m6b` / `11fb09a`，冷启动 0.011862 元/天）；**M6c（知识库：双库隔离 + 笔记 CLI + daily index + Markdown 导出 + `cron_knowledge.sh`）已于 2026-10-20 完成并打 tag `m6c` / `c9b2fa1`**；M5（周期长文 + 多角色辩论）继续后置。M5 的入口已留好：`prompts/trend/` 与 `prompts/debate/` 是空目录，`cli/commands/{trend,debate}.py` 是占位（`reasoning/` 下目前**没有** trend / debate 模块）。不要跨阶段实现。
+### 里程碑
 
-**当前 HEAD 与 tag 的关系**：HEAD 是 v1.22 SSOT 文档收口提交，位于 tag `m6c`（`c9b2fa1`）之后；代码基线仍是 `m6c`，不要把文档提交误当成新代码阶段。
+| 阶段 | 内容 | 状态 / tag |
+|---|---|---|
+| M0 | 骨架 + 数据源探测 | ✅ `m0` |
+| M1 | 6 采集器 + inbox + 三级去重 | ✅ `m1` |
+| M2 | 打分 / 聚类 / 实体 + LLM 抽象 + 简报 | ✅ `m2` |
+| M3a | ★ 预言生成 + 手写 + 不可证伪拦截 | ✅ `m3a` |
+| M3b | ★ 到期验证 + 命中率 / Brier / 校准度 | ✅ `m3b` |
+| M4 | Actions 自动化 + Web 看板 + README 发布 | ✅ `m4` |
+| M6a | 快照型源修复 + 简报格式规范化 + predict 截断修复（2026-10-17，真跑验证） | ✅ `m6a` / `4a12fa3` |
+| P0 | star 追踪：★ 总数 / 增量两列、增速榜、`source_runs.json` | ✅ `star-tracking` / `cdcab79` |
+| M6b | 日报条目 why/stance 全覆盖 + 中文要点（2026-10-18，冷启动 0.011862 元/天） | ✅ `m6b` / `11fb09a` |
+| M6c | 知识库：双库隔离 + 笔记 CLI + daily index + Markdown 导出 + `cron_knowledge.sh`（2026-10-20） | ✅ `m6c` / `c9b2fa1` |
+| **M5** | **周期趋势长文 + 多角色辩论** | **⬜ 未开工 —— 见文首「当前阶段」** |
 
-**文档版本基线**：SSOT 两份文档当前 v1.22（`docs/文档维护日志.md` 最新一条 v1.22 = tag `m6c` / `c9b2fa1`）。文件名固定为 `docs/AI_Pulse_设计方案.md` 与 `docs/AI_Pulse_Agent开发执行手册.md`，**版本由 git 管理，不再写进文件名**。`docs/文档维护日志.md` 的「维护记录」表按**倒序**维护（新的在上），**该表顶部第一行**的 tag 才是「文档对应哪次提交」的唯一锚点（注意不要读上半部分的格式示例，那里的 v1.20 只是样例）。新会话先读它确认基线。**SSOT 两份文档与 `docs/文档维护日志.md` 是 Agent 只读，不得修改**；文档维护必须「先提交代码 + 打 tag，再刷新文档」。
+`git tag` 全集就是上表这些，**没有 `m5` / `m6` 不是漏打**（`m6a`/`m6b`/`m6c` 是插在 M6 之前的修复与增量阶段）。P0 的 Actions 实跑证据：`data/reports/2026/10/17/` 由 `aipulse-bot` 提交，`generated_at 2026-10-17T14:55Z`，含 `source_runs.json`。M5 的落点（空目录 / 占位命令）见文首，**不要跨阶段实现**。
 
-**新会话开场顺序**：① `git log --oneline -5` + `git tag`（代码到哪）；② 读 `docs/文档维护日志.md` 的「维护记录」表顶部（不是文件末尾、也不是上面的格式示例）（文档基线）；③ `docs/开发日志.md` 末尾一章 + `CHANGELOG.md` 顶部（上一阶段的结论与坑）；④ 最新一天的 `data/reports/YYYY/MM/DD/meta.json` 的 `window` / `mode` / `llm` + `source_runs.json`——最快看出「系统是否真跑过、哪些源 `skipped_offline`、档位有没有生效」。
+### 当前 HEAD 与 tag 的关系
+
+HEAD 是 v1.22 SSOT 文档收口提交，位于 tag `m6c`（`c9b2fa1`）之后；代码基线仍是 `m6c`，不要把文档提交误当成新代码阶段。
+
+### 文档版本基线
+
+SSOT 两份文档当前 v1.22（`docs/文档维护日志.md` 最新一条 v1.22 = tag `m6c` / `c9b2fa1`）。文件名固定为 `docs/AI_Pulse_设计方案.md` 与 `docs/AI_Pulse_Agent开发执行手册.md`，**版本由 git 管理，不再写进文件名**。`docs/文档维护日志.md` 的「维护记录」表按**倒序**维护（新的在上），**该表顶部第一行**的 tag 才是「文档对应哪次提交」的唯一锚点（注意不要读上半部分的格式示例，那里的 v1.20 只是样例）。新会话先读它确认基线。**SSOT 两份文档与 `docs/文档维护日志.md` 是 Agent 只读，不得修改**；文档维护必须「先提交代码 + 打 tag，再刷新文档」。
+
+### 新会话开场顺序
+
+① `git log --oneline -5` + `git tag`（代码到哪）；② 读 `docs/文档维护日志.md` 的「维护记录」表顶部（不是文件末尾、也不是上面的格式示例）（文档基线）；③ `docs/开发日志.md` 末尾一章 + `CHANGELOG.md` 顶部（上一阶段的结论与坑）；④ 最新一天的 `data/reports/YYYY/MM/DD/meta.json` 的 `window` / `mode` / `llm` + `source_runs.json`——最快看出「系统是否真跑过、哪些源 `skipped_offline`、档位有没有生效」。
+
+### CLI 现状
 
 已实现的 CLI：`init` / `doctor` / `collect` / `analyze` / `brief` / `daily` / `predict`（`add` / `list` / `verify` / `review`）/ `stats`（`stats --predictions`）/ **`serve`（M4 只读看板）** / **`inbox`（`add` / `add-file` / `list`，v1.1 手动投喂通道）** / **`knowledge`（`mark` / `note` / `items` / `list` / `export`，M6c）**。
+
 `src/aipulse/cli/commands/` 下其余子应用（`normalize`/`debate`/`trend`/`topics`/`search`/`sources`）仍是 `placeholder_app()` 生成的占位，调用时抛 `NotImplementedError`。它们出现在 `--help` 里是刻意的，不是漏实现。其中 `sources` 占位**不影响加源**：增删 RSS/Atom 源改 `configs/sources.yaml` 即可（见「采集器六条约定」末段）。
 
-**M4 已落地的东西（改之前先看这里，别重复造）**：`src/aipulse/web/` 是完整的只读看板（FastAPI + Jinja2 + HTMX，见模块表）；`cli/commands/serve.py` 是真实现；`.github/workflows/` 三个工作流——`ci.yml`（push/PR：ruff + format + mypy + pytest）、`probe.yml`（手动数据源探测）、**`daily.yml`（每天 00:00 UTC = 北京 08:00 跑 `aipulse daily` 并 commit `data/reports`；提交前先 `fetch` + `soft reset`，同日重跑不会因历史分叉冲突）**。`scripts/cron_daily.sh` 是 WSL 本地 cron 备份入口。
+### M4 已落地的东西（改之前先看这里，别重复造）
 
-**Actions 没有持久化（改 daily.yml 前必读）**：runner 每次都是全新机器，靠三条对策续命——① **报告文件 commit 回仓库**（`data/reports/` 文本即数据库，`permissions: contents: write`，提交前 `fetch` + `reset --soft`）；② **`actions/cache` 恢复 `data/aipulse.db`**（key 必须每次 run 唯一 `aipulse-db-${{ run_number }}` + `restore-keys: aipulse-db-` 前缀，按周/月复用 key 会让本周运行命中旧 cache 而不再回写）；③ **star 增速落 `signals.json`**，cache 丢了也能从历史报告回溯。
+`src/aipulse/web/` 是完整的只读看板（FastAPI + Jinja2 + HTMX，见模块表）；`cli/commands/serve.py` 是真实现；`.github/workflows/` 三个工作流——`ci.yml`（push/PR：ruff + format + mypy + pytest）、`probe.yml`（手动数据源探测）、**`daily.yml`（每天 00:00 UTC = 北京 08:00 跑 `aipulse daily` 并 commit `data/reports`；提交前先 `fetch` + `soft reset`，同日重跑不会因历史分叉冲突）**。`scripts/cron_daily.sh` 是 WSL 本地 cron 备份入口。
+
+### Actions 没有持久化（改 daily.yml 前必读）
+
+runner 每次都是全新机器，靠三条对策续命——① **报告文件 commit 回仓库**（`data/reports/` 文本即数据库，`permissions: contents: write`，提交前 `fetch` + `reset --soft`）；② **`actions/cache` 恢复 `data/aipulse.db`**（key 必须每次 run 唯一 `aipulse-db-${{ run_number }}` + `restore-keys: aipulse-db-` 前缀，按周/月复用 key 会让本周运行命中旧 cache 而不再回写）；③ **star 增速落 `signals.json`**，cache 丢了也能从历史报告回溯。
+
 档位与密钥都在 workflow 里显式声明：`AIPULSE_MODE=hybrid` + `AIPULSE_ENV=actions`（**少了后者，`actions_only` 的 reddit / hf_papers 会被当成"本地"而跳过**）+ `AIPULSE_LLM__BASE_URL: ${{ vars.AIPULSE_LLM__BASE_URL || 'https://api.deepseek.com/v1' }}`（repo variable 不会自动注入 step env，缺它 base_url 被插值成空串 → 静默降级 off，表现为"配了 key 却什么都没生成"）。配 key：`gh secret set AIPULSE_LLM__API_KEY`；未配则自动降级 `off`，**记分板只会增长手写预言**。
 
-**知识库导出（M6c）**：主库 `data/aipulse.db` 全程只读，笔记写 `data/user_data.db`；`aipulse knowledge export` 扫描 committed `data/reports/**/daily.json` + 本地笔记，输出 `data/knowledge/{index.md,my-notes.md,topics/*.md}`，幂等、不调 LLM。`scripts/cron_knowledge.sh` 是方案 E 的独立导出入口：**不跑本地 daily**，只 `pull --ff-only` + export；工作区检查只看已跟踪改动（`git diff --quiet` / `git diff --cached --quiet`），避免 `data/inbox/` 等未跟踪文件永久阻断。
+### 知识库导出（M6c）
 
-**看板代码的三条铁律**：① `web/data.py` 用 `mode=ro` URI 打开 SQLite，写操作会直接抛错（红线 22 已变成可执行断言）；② 模板里取 dict 一律用**下标** `meta.analysis['items']`——Jinja 的 `foo.bar` 先取属性，`.items` 会命中 `dict.items` 方法本身（踩过）；③ 数据只读 SQLite 与 `data/reports/*.json`，不额外持久化任何东西。
+主库 `data/aipulse.db` 全程只读，笔记写 `data/user_data.db`；`aipulse knowledge export` 扫描 committed `data/reports/**/daily.json` + 本地笔记，输出 `data/knowledge/{index.md,my-notes.md,topics/*.md}`，幂等、不调 LLM。`scripts/cron_knowledge.sh` 是方案 E 的独立导出入口：**不跑本地 daily**，只 `pull --ff-only` + export；工作区检查只看已跟踪改动（`git diff --quiet` / `git diff --cached --quiet`），避免 `data/inbox/` 等未跟踪文件永久阻断。
 
-**对外承诺与不可动口径（改这些 = 改公共承诺，不是纯内部重构）**：README 的「★ 预言记分板」是项目唯一的护城河，数字由 `aipulse stats --predictions --markdown` 生成后**手工贴入、标注"请勿手改"**——`data/reports/.../scoreboard.md` 是每日自动生成物，README 里的是对外快照，两者都不要手改数字。手写预言（`origin=human`）与 LLM 预言（`origin=llm`）在记分板**完全同权**，因此可对比"人 vs 机器"校准度。统计口径不可动：`pending` / `unverifiable` 不入分母、`partial` 按 0.5 计、校准分桶必须保留低置信桶 `[0.05, 0.5)`；`unverifiable` **只由系统证据门槛产生**，LLM 不得输出。
+### 看板代码的三条铁律
+
+① `web/data.py` 用 `mode=ro` URI 打开 SQLite，写操作会直接抛错（红线 22 已变成可执行断言）；② 模板里取 dict 一律用**下标** `meta.analysis['items']`——Jinja 的 `foo.bar` 先取属性，`.items` 会命中 `dict.items` 方法本身（踩过）；③ 数据只读 SQLite 与 `data/reports/*.json`，不额外持久化任何东西。
+
+### 对外承诺与不可动口径
+
+改这些 = 改公共承诺，不是纯内部重构：README 的「★ 预言记分板」是项目唯一的护城河，数字由 `aipulse stats --predictions --markdown` 生成后**手工贴入、标注"请勿手改"**——`data/reports/.../scoreboard.md` 是每日自动生成物，README 里的是对外快照，两者都不要手改数字。手写预言（`origin=human`）与 LLM 预言（`origin=llm`）在记分板**完全同权**，因此可对比"人 vs 机器"校准度。统计口径不可动：`pending` / `unverifiable` 不入分母、`partial` 按 0.5 计、校准分桶必须保留低置信桶 `[0.05, 0.5)`；`unverifiable` **只由系统证据门槛产生**，LLM 不得输出。
 
 ---
 
