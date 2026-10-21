@@ -16,13 +16,16 @@ from aipulse.analysis.cross_period import (
     STATUS_OK,
     build_tracks,
     co_movement,
+    comparison_segment,
     compute_all,
     divergence,
     emergence,
     heat_migration,
+    homogeneous_segments,
     load_cross_period,
     persistence,
     prediction_review,
+    source_change_days,
     source_share,
     substitution,
     unrealized,
@@ -204,7 +207,7 @@ def test_heat_migration_reports_delta_pp(tmp_path: Path) -> None:
         [_item("it_a", "a", 25.0), _item("it_b", "b", 75.0)],
         sections=[_section("开源项目", ["it_a"]), _section("论文与研究", ["it_b"])],
     )
-    report = heat_migration(load_cross_period(tmp_path))
+    report = heat_migration(load_cross_period(tmp_path), homogeneous=False)
     assert report.status == STATUS_OK
     assert report.entry_count == 2
     by_section = {e["section"]: e for e in report.entries}
@@ -452,7 +455,7 @@ def test_source_share_counts_and_hot(tmp_path: Path) -> None:
             _item("it_c", "c", 60.0, source="hf_papers"),
         ],
     )
-    report = source_share(load_cross_period(tmp_path))
+    report = source_share(load_cross_period(tmp_path), homogeneous=False)
     assert report.entry_count == 3
     by_source = {e["source"]: e for e in report.entries}
     assert by_source["hackernews"]["count_delta_pp"] == pytest.approx(-16.67)
@@ -564,7 +567,8 @@ def test_single_day_makes_pairwise_structures_insufficient(tmp_path: Path) -> No
         unrealized(index),
     ):
         assert report.status == STATUS_INSUFFICIENT
-        assert report.required_days == 2
+        # ①⑦ 走同构区间，最少要 3 天；其余结构 2 天
+        assert report.required_days is not None and report.required_days >= 2
 
 
 def test_report_to_dict_is_json_serialisable(tmp_path: Path) -> None:
@@ -658,7 +662,7 @@ def test_heat_migration_zero_totals_and_unknown_t1(tmp_path: Path) -> None:
     )
     index = load_cross_period(tmp_path)
     assert heat_migration(index, t1="1999-01-01").status == STATUS_INSUFFICIENT
-    report = heat_migration(index)
+    report = heat_migration(index, homogeneous=False)
     assert report.status == STATUS_OK
     assert report.entries[0]["delta_pp"] == 0.0
 
@@ -951,7 +955,7 @@ def test_source_share_flags_collection_failure(tmp_path: Path) -> None:
         [_item("it_b", "b", 10.0, source="arxiv")],
         source_runs=[{"source": "arxiv", "status": "failed", "item_count": 0}],
     )
-    report = source_share(load_cross_period(tmp_path))
+    report = source_share(load_cross_period(tmp_path), homogeneous=False)
     entry = report.entries[0]
     assert entry["trend_usable"] is False
     assert entry["collection_failure_days"] == ["2026-10-21"]
@@ -972,5 +976,81 @@ def test_source_share_degraded_with_items_is_usable(tmp_path: Path) -> None:
         [_item("it_a", "a", 12.0, source="reddit")],
         source_runs=[{"source": "reddit", "status": "degraded", "item_count": 25}],
     )
-    report = source_share(load_cross_period(tmp_path))
+    report = source_share(load_cross_period(tmp_path), homogeneous=False)
     assert report.entries[0]["trend_usable"] is True
+
+
+# ── S2.6：源集合变更 → 同构区间 ────────────────────────────────────────────
+
+
+def _runs(*sources: str) -> list[dict[str, Any]]:
+    return [{"source": s, "status": "ok", "item_count": 5} for s in sources]
+
+
+def test_source_change_splits_into_homogeneous_segments(tmp_path: Path) -> None:
+    """前 2 天 2 个源、后 3 天 3 个源 → 只有后段满足 ≥3 天。"""
+    for day, sources in (
+        ("2026-10-15", ("github_trending", "hackernews")),
+        ("2026-10-16", ("github_trending", "hackernews")),
+        ("2026-10-17", ("github_trending", "hackernews", "reddit")),
+        ("2026-10-18", ("github_trending", "hackernews", "reddit")),
+        ("2026-10-19", ("github_trending", "hackernews", "reddit")),
+    ):
+        _day(
+            tmp_path,
+            day,
+            [_item("it_a", "a", 10.0, source="github_trending")],
+            sections=[_section("开源项目", ["it_a"])],
+            source_runs=_runs(*sources),
+        )
+    index = load_cross_period(tmp_path)
+    segments = homogeneous_segments(index, min_days=3)
+    assert segments == [("2026-10-17", "2026-10-18", "2026-10-19")]
+    assert comparison_segment(index, min_days=3) == segments[0]
+    assert source_change_days(index) == {"2026-10-17"}
+
+
+def test_comparison_segment_is_none_when_all_segments_too_short(tmp_path: Path) -> None:
+    """两个 2 天段：都 <3 天 → 不作趋势判断。"""
+    for day, sources in (
+        ("2026-10-15", ("a",)),
+        ("2026-10-16", ("a",)),
+        ("2026-10-17", ("a", "b")),
+        ("2026-10-18", ("a", "b")),
+    ):
+        _day(
+            tmp_path,
+            day,
+            [_item("it_a", "a", 10.0, source="a")],
+            sections=[_section("开源项目", ["it_a"])],
+            source_runs=_runs(*sources),
+        )
+    index = load_cross_period(tmp_path)
+    assert comparison_segment(index, min_days=3) is None
+    assert heat_migration(index).status == STATUS_INSUFFICIENT
+    assert heat_migration(index).required_days == 3
+
+
+def test_heat_migration_defaults_to_homogeneous_segment(tmp_path: Path) -> None:
+    """默认只在最后一段同构区间比较：comparison_start 必须晚于源变更日。"""
+    for day, sources in (
+        ("2026-10-15", ("github_trending", "hackernews")),
+        ("2026-10-16", ("github_trending", "hackernews")),
+        ("2026-10-17", ("github_trending", "hackernews", "reddit")),
+        ("2026-10-18", ("github_trending", "hackernews", "reddit")),
+        ("2026-10-19", ("github_trending", "hackernews", "reddit")),
+    ):
+        _day(
+            tmp_path,
+            day,
+            [_item("it_a", "a", 10.0, source="github_trending")],
+            sections=[_section("开源项目", ["it_a"])],
+            source_runs=_runs(*sources),
+        )
+    report = heat_migration(load_cross_period(tmp_path))
+    assert report.status == STATUS_OK
+    assert report.metrics["comparison_start"] == "2026-10-17"
+    assert report.metrics["comparison_days"] == 3
+    assert report.metrics["full_window_days"] == 5
+    assert report.metrics["source_change_days"] == ["2026-10-17"]
+    assert "跨源集合变更日" in report.notes

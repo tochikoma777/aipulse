@@ -55,6 +55,9 @@ __all__ = [
     "TrackPoint",
     "build_tracks",
     "collection_failures",
+    "comparison_segment",
+    "homogeneous_segments",
+    "source_change_days",
     "co_movement",
     "compute_all",
     "divergence",
@@ -749,31 +752,126 @@ def _section_sources(index: CrossPeriodIndex) -> dict[str, set[str]]:
     return out
 
 
+def _source_sets(index: CrossPeriodIndex) -> dict[str, frozenset[str]]:
+    """每天"启用了哪些源"。
+
+    优先用 `source_runs.json` 的 keys（配置层面的源集合）：
+    某源当天 0 条是采集异常，不该被误判成"源集合缩小"。
+    没有该文件的历史日报退化为"当天有條目的源集合"。
+    """
+    out: dict[str, frozenset[str]] = {}
+    for day in index.days:
+        snap = index.snapshots[day]
+        if snap.source_runs:
+            out[day] = frozenset(snap.source_runs)
+        else:
+            out[day] = frozenset(item.source for item in snap.items.values() if item.source)
+    return out
+
+
+def source_change_days(index: CrossPeriodIndex) -> set[str]:
+    """源集合相对前一天发生变化的日子（新增/移除数据源）。"""
+    sets = _source_sets(index)
+    changed: set[str] = set()
+    for prev, cur in zip(index.days, index.days[1:], strict=False):
+        if sets[prev] != sets[cur]:
+            changed.add(cur)
+    return changed
+
+
+def homogeneous_segments(index: CrossPeriodIndex, *, min_days: int = 3) -> list[tuple[str, ...]]:
+    """按源集合把窗口切成若干"同构区间"，只返回长度 ≥ min_days 的段。
+
+    理由：10-15/16 只有 3 个源，10-17 起 5 个源（多了 reddit/rss）。
+    跨变更点的份额对比会把"源扩容"读成"板块迁移"，必须分段；但整窗口封锁
+    会让 M5 无话可写，所以保留变更后的同构区间继续可比。
+    """
+    sets = _source_sets(index)
+    segments: list[tuple[str, ...]] = []
+    current: list[str] = []
+    for day in index.days:
+        if current and sets[day] != sets[current[-1]]:
+            segments.append(tuple(current))
+            current = []
+        current.append(day)
+    if current:
+        segments.append(tuple(current))
+    return [segment for segment in segments if len(segment) >= min_days]
+
+
+def comparison_segment(index: CrossPeriodIndex, *, min_days: int = 3) -> tuple[str, ...] | None:
+    """最近一段"源集合同构且 ≥min_days 天"的区间；没有则返回 None。"""
+    segments = homogeneous_segments(index, min_days=min_days)
+    return segments[-1] if segments else None
+
+
 # ══════════════════════════════════════════════════════════════════════════
 # ① 热度迁移矩阵
 # ══════════════════════════════════════════════════════════════════════════
 
 
+def _resolve_window(
+    index: CrossPeriodIndex,
+    t0: str | None,
+    t1: str | None,
+    *,
+    homogeneous: bool,
+    full_window: bool,
+    min_segment_days: int,
+) -> tuple[str, ...] | None:
+    """决定比较窗口：显式 t0/t1 > 全窗口 > 同构区间 > 最后两天。"""
+    if t0 is not None or t1 is not None:
+        return _resolve_pair(index, t0, t1)
+    if full_window:
+        return index.days or None
+    if homogeneous:
+        return comparison_segment(index, min_days=min_segment_days)
+    return _resolve_pair(index, None, None)
+
+
 def heat_migration(
-    index: CrossPeriodIndex, *, t0: str | None = None, t1: str | None = None
+    index: CrossPeriodIndex,
+    *,
+    t0: str | None = None,
+    t1: str | None = None,
+    homogeneous: bool = True,
+    full_window: bool = False,
+    min_segment_days: int = 3,
 ) -> StructureReport:
-    """按板块聚合，T0→T1 的热度份额变化（百分点），并补上全窗口轨迹斜率。
+    """按板块聚合，T0→T1 的热度份额变化（百分点），并补上同构区间斜率。
 
     份额而非绝对值：T0/T1 的条目总量与热度总量不同，绝对值不可比。
-    **斜率才是趋势方向**：两点差会被单日波动主导（榜单换血 70%），
-    斜率用整个窗口的最小二乘拟合，方向更可靠。
+    **默认只在最后一段"源集合同构且 ≥3 天"的区间上比较**：
+    跨源集合变更日（如 10-17 从 3 源扩到 5 源）的份额对比会把"源扩容"
+    读成"板块迁移"；但整窗口封锁又会让周报无话可写，所以按区间切。
+    `full_window=True` 仅用于对照与排查，不用于生成。
     """
     key, name = "heat_migration", "① 热度迁移矩阵"
-    pair = _resolve_pair(index, t0, t1)
-    if pair is None:
-        return _bad_report(key, name, 2, "至少需要 2 天日报")
-    a, b = index.snapshots[pair[0]], index.snapshots[pair[1]]
+    window = _resolve_window(
+        index,
+        t0,
+        t1,
+        homogeneous=homogeneous,
+        full_window=full_window,
+        min_segment_days=min_segment_days,
+    )
+    if window is None or len(window) < 2:
+        return _bad_report(
+            key,
+            name,
+            min_segment_days if homogeneous and not full_window else 2,
+            f"没有 ≥{min_segment_days} 天的源集合同构区间"
+            if homogeneous and not full_window
+            else "至少需要 2 天日报",
+        )
+    days_used = window
+    a, b = index.snapshots[days_used[0]], index.snapshots[days_used[-1]]
     ta, tb = _section_totals(a), _section_totals(b)
     if not ta or not tb:
         return _bad_report(key, name, 2, "T0/T1 至少一天没有板块归属（sections 为空）")
 
     sa, sb = _shares(ta), _shares(tb)
-    history = _section_share_history(index)
+    history = [_shares(_section_totals(index.snapshots[day])) for day in days_used]
     bad_days = _bad_days_by_section(index)
     section_sources = _section_sources(index)
     failures = _source_failure_days(index)
@@ -782,10 +880,10 @@ def heat_migration(
         delta_pp = (sb.get(section, 0.0) - sa.get(section, 0.0)) * 100
         series = [day_map.get(section, 0.0) * 100 for day_map in history]
         # ★ 斜率必须剔除"板块整块 0 条"的采集异常日，否则 0 会被当成"回落"
-        excluded = sorted(bad_days.get(section, set()))
+        excluded = sorted(bad_days.get(section, set()) & set(days_used))
         points = [
             (pos, series[pos])
-            for pos, day in enumerate(index.days)
+            for pos, day in enumerate(days_used)
             if day not in bad_days.get(section, set())
         ]
         # ★ 若该板块的供给源在窗口内"整源 0 条"，则整个板块的结构判断都不可信
@@ -822,6 +920,7 @@ def heat_migration(
     entries.sort(key=lambda e: abs(float(e["delta_pp"])), reverse=True)
     excluded_total = sum(len(e["excluded_days"]) for e in entries)
     tainted = [str(e["section"]) for e in entries if not e["trend_usable"]]
+    source_changes = sorted(source_change_days(index))
     return StructureReport(
         key=key,
         name=name,
@@ -829,12 +928,23 @@ def heat_migration(
         entry_count=len(entries),
         entries=tuple(entries),
         notes=(
-            f"T0={a.day} T1={b.day}；份额分母仅含已归板块的条目；"
+            f"对比区间 {a.day}→{b.day}（{len(days_used)} 天，源集合同构）；"
+            f"份额分母仅含已归板块的条目；"
             f"slope_pp_per_day = 剔除板块空日后、按真实日序号的最小二乘斜率"
             + (f"（共排除 {excluded_total} 个板块日）" if excluded_total else "")
             + (f"；采集失败、不可作趋势：{'/'.join(tainted)}" if tainted else "")
+            + (
+                f"；跨源集合变更日（{'/'.join(source_changes)}）的比较已禁用"
+                if source_changes
+                else ""
+            )
         ),
         metrics={
+            "comparison_start": a.day,
+            "comparison_end": b.day,
+            "comparison_days": len(days_used),
+            "full_window_days": len(index.days),
+            "source_change_days": source_changes,
             "excluded_section_days": excluded_total,
             "tainted_sections": tainted,
             "t0_items": len(a.items),
@@ -843,11 +953,6 @@ def heat_migration(
             "window_days": len(index.days),
         },
     )
-
-
-def _section_share_history(index: CrossPeriodIndex) -> list[dict[str, float]]:
-    """每天的板块份额（pp 前的 0-1 值）；当天没出现的板块记 0。"""
-    return [_shares(_section_totals(index.snapshots[day])) for day in index.days]
 
 
 def _slope_at(points: list[tuple[int, float]]) -> float:
@@ -1486,14 +1591,39 @@ def persistence(
 
 
 def source_share(
-    index: CrossPeriodIndex, *, t0: str | None = None, t1: str | None = None
+    index: CrossPeriodIndex,
+    *,
+    t0: str | None = None,
+    t1: str | None = None,
+    homogeneous: bool = True,
+    full_window: bool = False,
+    min_segment_days: int = 3,
 ) -> StructureReport:
-    """按 source 统计条目数与热度份额的 T0→T1 变化。"""
+    """按 source 统计条目数与热度份额的变化。
+
+    与 ① 同口径：默认只在最后一段"源集合同构且 ≥3 天"的区间两端比较，
+    否则源扩容本身会被读成"来源份额变化"。
+    """
     key, name = "source_share", "⑦ 来源份额变化"
-    pair = _resolve_pair(index, t0, t1)
-    if pair is None:
-        return _bad_report(key, name, 2, "至少需要 2 天日报")
-    a, b = index.snapshots[pair[0]], index.snapshots[pair[1]]
+    window = _resolve_window(
+        index,
+        t0,
+        t1,
+        homogeneous=homogeneous,
+        full_window=full_window,
+        min_segment_days=min_segment_days,
+    )
+    if window is None or len(window) < 2:
+        return _bad_report(
+            key,
+            name,
+            min_segment_days if homogeneous and not full_window else 2,
+            f"没有 ≥{min_segment_days} 天的源集合同构区间"
+            if homogeneous and not full_window
+            else "至少需要 2 天日报",
+        )
+    days_used = window
+    a, b = index.snapshots[days_used[0]], index.snapshots[days_used[-1]]
     if not a.items or not b.items:
         return _bad_report(key, name, 2, "T0/T1 有一天空榜")
 
@@ -1530,6 +1660,7 @@ def source_share(
         )
     entries.sort(key=lambda e: abs(float(e["count_delta_pp"])), reverse=True)
     suspect = [str(e["source"]) for e in entries if not e["trend_usable"]]
+    source_changes = sorted(source_change_days(index))
     return StructureReport(
         key=key,
         name=name,
@@ -1537,10 +1668,21 @@ def source_share(
         entry_count=len(entries),
         entries=tuple(entries),
         notes=(
-            f"T0={a.day} T1={b.day}；条目数与热度各算一次份额（pp=百分点）"
+            f"对比区间 {a.day}→{b.day}（{len(days_used)} 天，源集合同构）；"
+            f"条目数与热度各算一次份额（pp=百分点）"
             + (f"；采集失败、不可作趋势：{'/'.join(suspect)}" if suspect else "")
+            + (
+                f"；跨源集合变更日（{'/'.join(source_changes)}）的比较已禁用"
+                if source_changes
+                else ""
+            )
         ),
         metrics={
+            "comparison_start": a.day,
+            "comparison_end": b.day,
+            "comparison_days": len(days_used),
+            "full_window_days": len(index.days),
+            "source_change_days": source_changes,
             "unusable_sources": suspect,
             "t0_total": len(a.items),
             "t1_total": len(b.items),
