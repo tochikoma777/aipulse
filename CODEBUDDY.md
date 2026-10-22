@@ -2,22 +2,30 @@
 
 This file provides guidance to CodeBuddy Code when working with code in this repository.
 
-## ★ 当前阶段：M5（周期趋势长文 + 多角色辩论）—— 未开工
+## ★ 当前阶段：M5（周期趋势长文 + 多角色辩论）—— 长文与自验证已完成，辩论未开工
 
-**一句话**：M0–M4、M6a、M6b、M6c 全部完成并真跑验证（代码基线 = tag `m6c` / `c9b2fa1`）；**下一步就是 M5，目前零代码**。新会话不需要靠读文档推断进度，直接按 `docs/AI_Pulse_Agent开发执行手册.md` §6「M5 任务卡」从 S1 起步。
+**一句话**：M0–M4、M6a、M6b、M6c 全部完成并真跑验证；**M5 的趋势长文已跑通 S1 → S1.5 → S2（2a/2b）→ S2.5 → S2.6 → S3，下一步是 debate（多角色并行辩论）**。M5 整体未打 tag（辩论未做，不占 `m5` 编号）。
 
-| M5 落点 | 开工前的现状 |
+| M5 落点 | 现状 |
 |---|---|
-| `reasoning/trend.py` · `reasoning/debate.py` | **不存在**，要新建 |
-| `prompts/trend/{weekly,monthly}.j2` · `prompts/debate/{persona_bull,persona_bear,persona_engineer,persona_investor,moderator}.j2` | 目录为空 |
-| `pipeline/weekly.py`（周度流水线） | 不存在 |
-| `cli/commands/trend.py` · `debate.py` | `placeholder_app()` 占位，调用抛 `NotImplementedError`；出现在 `--help` 里是刻意的 |
-| `configs/default.yaml::pipeline.weekly_debate_enabled` | 已留开关（`true`） |
-| `web/app.py` 的「趋势」「辩论」入口 | 置灰占位，M5 点亮 |
+| `analysis/cross_period.py` | ✅ 9 个跨期结构 + 轨迹层 + 坏日/源集合变更归因 |
+| `reasoning/trend.py` · `schema/trend.py` · `prompts/trend/weekly.j2` | ✅ 7 节分段生成（每节一次调用） |
+| `reasoning/selfcheck.py` · `cli/commands/selfcheck.py` | ✅ L1–L4 自验证（离线，0 成本） |
+| `data/reports/trend/` | ✅ `weekly.md` / `selfcheck.{md,json}` / `watchlist.json` / `calibration.json` |
+| `reasoning/debate.py` · `prompts/debate/*.j2` | ⬜ **不存在，下一步就是它** |
+| `pipeline/weekly.py` | ⬜ 不存在（周报目前靠 `aipulse trend` 手动/cron 触发） |
+| `cli/commands/debate.py` | ⬜ 仍是 `placeholder_app()` 占位 |
+| `configs/default.yaml::pipeline.weekly_debate_enabled` | 已留开关（`true`），debate 落地后消费 |
+| `web/app.py` 的「趋势」「辩论」入口 | 「趋势」可读 `data/reports/trend/weekly.md`；「辩论」仍置灰 |
 
-**M5 验收要点（手册 §6 DoD，别做偏）**：trend 正文 2000+ 字且**必须引用真实的往期预言验证结果**（不许凭空写「复盘」）；debate 的四个 persona **必须 `asyncio.gather` 并行**（串行视为不合格）；证据包压缩到每条 ≤200 字、合计 ≤15 条；Web 的「趋势」「辩论」两个页面可访问；`debate` 收敛块必须含「什么证据会让我改变判断」。
+**debate 验收要点（手册 §6 DoD，别做偏）**：四个 persona **必须 `asyncio.gather` 并行**（串行视为不合格）；证据包每条 ≤200 字、合计 ≤15 条；收敛块必须含「什么证据会让我改变判断」。
 
-**阶段顺序是红线**（手册 §0.3 第 7 条）：M4 先于 M5，不得跨阶段实现，也不要在 M5 里回头重写已完成阶段的产物。开工前先按下方「改哪里 → 先跑什么」确认基线是绿的。
+**M5 里已经踩死、不要重犯的三条**（详见 `docs/开发日志.md` 的 M5「坑」）：
+1. `daily.json` 的 30 条是 **brief 渲染集（Top30）**，不是全量语料——「今天不在榜」只能写「跌出 Top30」。
+2. **采集失败 / 板块口径变更 / 源集合扩容都会伪装成趋势**。归因链已在 `cross_period` 里做好（`attribution` / `masked_days` / `source_change_days`），新结构必须复用，不要绕开自己算。
+3. **LLM 不负责"发现趋势"**，只负责解释代码算出来的结构。让模型自由挑选的路径已被 M6b（why 覆盖率 4%）和 M5（真新 66% 是单日闪现）各证伪一次。
+
+**阶段顺序是红线**（手册 §0.3 第 7 条）：不要跨阶段实现，也不要在 M5 里回头重写已完成阶段的产物。开工前先按下方「改哪里 → 先跑什么」确认基线是绿的。
 
 ## 开工前必读
 
@@ -43,9 +51,9 @@ This file provides guidance to CodeBuddy Code when working with code in this rep
 | P0 | star 追踪：★ 总数 / 增量两列、增速榜、`source_runs.json` | ✅ `star-tracking` / `cdcab79` |
 | M6b | 日报条目 why/stance 全覆盖 + 中文要点（2026-10-18，冷启动 0.011862 元/天） | ✅ `m6b` / `11fb09a` |
 | M6c | 知识库：双库隔离 + 笔记 CLI + daily index + Markdown 导出 + `cron_knowledge.sh`（2026-10-20） | ✅ `m6c` / `c9b2fa1` |
-| **M5** | **周期趋势长文 + 多角色辩论** | **⬜ 未开工 —— 见文首「当前阶段」** |
+| **M5** | **周期趋势长文 + 多角色辩论** | 🟡 长文（S1–S3）已真跑：`data/reports/trend/weekly.md` + `selfcheck.md`；**辩论未开工，未打 tag** |
 
-`git tag` 全集就是上表这些，**没有 `m5` / `m6` 不是漏打**（`m6a`/`m6b`/`m6c` 是插在 M6 之前的修复与增量阶段）。P0 的 Actions 实跑证据：`data/reports/2026/10/17/` 由 `aipulse-bot` 提交，`generated_at 2026-10-17T14:55Z`，含 `source_runs.json`。M5 的落点（空目录 / 占位命令）见文首，**不要跨阶段实现**。
+`git tag` 全集就是上表这些，**没有 `m5` / `m6` 不是漏打**（`m6a`/`m6b`/`m6c` 是插在 M6 之前的修复与增量阶段；M5 因辩论未做也还没打）。P0 的 Actions 实跑证据：`data/reports/2026/10/17/` 由 `aipulse-bot` 提交，`generated_at 2026-10-17T14:55Z`，含 `source_runs.json`。M5 的落点见文首表格，**debate 这一半不要跨阶段实现**。
 
 ### 当前 HEAD 与 tag 的关系
 
@@ -61,7 +69,7 @@ SSOT 两份文档当前 v1.22（`docs/文档维护日志.md` 最新一条 v1.22 
 
 ### CLI 现状
 
-已实现的 CLI：`init` / `doctor` / `collect` / `analyze` / `brief` / `daily` / `predict`（`add` / `list` / `verify` / `review`）/ `stats`（`stats --predictions`）/ **`serve`（M4 只读看板）** / **`inbox`（`add` / `add-file` / `list`，v1.1 手动投喂通道）** / **`knowledge`（`mark` / `note` / `items` / `list` / `export`，M6c）**。
+已实现的 CLI：`init` / `doctor` / `collect` / `analyze` / `brief` / `daily` / `predict`（`add` / `list` / `verify` / `review`）/ `stats`（`stats --predictions`）/ **`serve`（M4 只读看板）** / **`inbox`（`add` / `add-file` / `list`，v1.1 手动投喂通道）** / **`knowledge`（`mark` / `note` / `items` / `list` / `export`，M6c）** / **`trend`（`--range 7d` / `--json` / `--out` / `--segments`，M5）** / **`selfcheck`（L1–L4，M5）**。
 
 `src/aipulse/cli/commands/` 下其余子应用（`normalize`/`debate`/`trend`/`topics`/`search`/`sources`）仍是 `placeholder_app()` 生成的占位，调用时抛 `NotImplementedError`。它们出现在 `--help` 里是刻意的，不是漏实现。其中 `sources` 占位**不影响加源**：增删 RSS/Atom 源改 `configs/sources.yaml` 即可（见「采集器六条约定」末段）。
 
@@ -158,7 +166,8 @@ scripts/cron_daily.sh                                 # 本地 cron 备份（日
 | `inbox/` | 手动投喂的 `*.md` | ✗（从未跟踪，本地工作区） |
 | `logs/` | cron 等日志 | ✗（`data/logs/`） |
 | `knowledge/` | `knowledge export` 产物（`index.md` / `my-notes.md` / `topics/*.md`） | ✗（`data/knowledge/`） |
-| `reports/YYYY/MM/DD/` | 每日报告，一天一个目录、**8 个文件**（早期 10-15/10-16 只有 7 个，尚无 `source_runs.json`） | **✓ 唯一入库的数据** |
+| `reports/YYYY/MM/DD/` | 每日报告，一天一个目录、**8 个文件**（早期 10-15/10-16 只有 7 个，尚无 `source_runs.json`） | **✓ 唯一入库的日报数据** |
+| `reports/trend/` | 周报 `weekly.md` + 自检 `selfcheck.{md,json}` + 跨期状态 `watchlist.json` / `calibration.json`（M5） | **✓ 入库**（下期自检要读上一期状态） |
 
 `data/reports/**` 是仓库里**唯一**公开的数据源；`.db` / 缓存 / 导出物一律不入库。判断"数据在哪"时先看这张表。
 
@@ -169,7 +178,7 @@ scripts/cron_daily.sh                                 # 本地 cron 备份（日
 CI（`.github/workflows/ci.yml`，无 secrets）实际只跑 4 步：`ruff check .` → `ruff format --check .` → `mypy src/aipulse` → `pytest`（**没有覆盖率门禁**，覆盖率是本地基线，不达标不会挂 CI）。`.github/workflows/probe.yml` 是手动触发的探测，不在 CI 链上。
 
 ```bash
-uv run pytest                             # 全量（当前 407 条，约 65s，无需网络、无需密钥）
+uv run pytest                             # 全量（当前 498 条，约 65s，无需网络、无需密钥）
 uv run pytest tests/unit/test_dedup.py                      # 单文件
 uv run pytest "tests/unit/test_dedup.py::test_l2_merges_arxiv_and_hf_same_paper" -q  # 单用例
 uv run pytest -k "dedup or cluster" -q                      # 按关键字筛（跨文件，最常用）
@@ -199,6 +208,9 @@ uv run pre-commit install                 # 钩子：ruff --fix + ruff-format + 
 | `pipeline/collect.py` · `pipeline/daily.py` | `pytest tests/unit/test_pipeline_collect.py tests/unit/test_daily.py` |
 | `web/` | `pytest tests/unit/test_web.py`（含 `mode=ro` 只读断言） |
 | `knowledge/` · `cli/commands/knowledge.py` | `pytest tests/unit/test_knowledge_store.py tests/unit/test_knowledge_cli.py tests/unit/test_daily_index.py tests/unit/test_export.py` |
+| `analysis/cross_period.py` | `pytest tests/unit/test_cross_period.py`（轨迹 / 9 结构 / 坏日归因 / 同构区间；改结构口径必补例） |
+| `reasoning/trend.py` · `schema/trend.py` · `prompts/trend/*.j2` | `pytest tests/unit/test_trend.py tests/unit/test_selfcheck.py`；改 prompt 后**必须配 key 实跑一次** `aipulse trend --range 7d` |
+| `reasoning/selfcheck.py` | `pytest tests/unit/test_selfcheck.py`（L1–L4 各有用例；状态文件用 tmp_path） |
 | `llm/` | `pytest tests/unit/test_llm.py tests/unit/test_openai_compat.py`（`respx` 拦截 `/chat/completions`） |
 | `store/models.py` | `uv run alembic revision --autogenerate -m "..."`（**只改模型不生成迁移 = 线上漂移**）+ `test_store.py` / `test_repo_items.py` |
 | `core/config.py` · `configs/default.yaml` | `pytest tests/unit/test_config.py` |
