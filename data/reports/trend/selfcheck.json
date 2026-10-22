@@ -1,0 +1,252 @@
+{
+  "issue": "2026-10-22",
+  "comparison": [
+    "2026-10-17",
+    "2026-10-22"
+  ],
+  "layers": [
+    {
+      "layer": "L1",
+      "name": "硬判据",
+      "verdict": "pass",
+      "summary": "全文 2427 字（区间 2000-4000：在区间内），违规 0、套话 0、缺节 0。",
+      "metrics": {
+        "total_chars": 2427,
+        "in_range": true,
+        "violations": 0,
+        "boilerplate": 0,
+        "missing_segments": [],
+        "segments": {
+          "rising_topics": {
+            "title": "上升主题",
+            "chars": 337,
+            "ids": 2,
+            "violations": [],
+            "boilerplate": []
+          },
+          "falling_topics": {
+            "title": "降温主题",
+            "chars": 411,
+            "ids": 5,
+            "violations": [],
+            "boilerplate": []
+          },
+          "emerging_topics": {
+            "title": "新进榜",
+            "chars": 265,
+            "ids": 2,
+            "violations": [],
+            "boilerplate": []
+          },
+          "structural_changes": {
+            "title": "结构变化",
+            "chars": 563,
+            "ids": 2,
+            "violations": [],
+            "boilerplate": []
+          },
+          "second_order_effects": {
+            "title": "二阶影响",
+            "chars": 467,
+            "ids": 3,
+            "violations": [],
+            "boilerplate": []
+          },
+          "prediction_review": {
+            "title": "预言复盘",
+            "chars": 48,
+            "ids": 0,
+            "violations": [],
+            "boilerplate": []
+          },
+          "watchlist": {
+            "title": "下期观察",
+            "chars": 336,
+            "ids": 2,
+            "violations": [],
+            "boilerplate": []
+          }
+        }
+      },
+      "findings": []
+    },
+    {
+      "layer": "L2",
+      "name": "信息增量",
+      "verdict": "pass",
+      "summary": "较基线（Top10 榜单）新增结论 6 条（跨条目 0、结构 6、外部实体 0）；纯数值两两比较 0 条（不计入增量）。",
+      "metrics": {
+        "increments": 6,
+        "min_increments": 3,
+        "kinds": {
+          "cross_item": 0,
+          "structure": 6,
+          "external_entity": 0,
+          "substitution": 0,
+          "divergence": 0
+        },
+        "pairwise_numeric": 0,
+        "baseline_top": [
+          {
+            "rank": 1,
+            "item_id": "it_5dbb54a005401fc7",
+            "title": "Claude Duet",
+            "section": "社区舆论",
+            "hot": 86.7,
+            "delta": null
+          },
+          {
+            "rank": 2,
+            "item_id": "it_42565b5232096036",
+            "title": "DietrichGebert/ponytail",
+            "section": "开源项目",
+            "hot": 86.0,
+            "delta": null
+          },
+          {
+            "rank": 3,
+            "item_id": "it_77f9ddd43bbeeb71",
+            "title": "cloudflare/security-audit-skill",
+            "section": "开源项目",
+            "hot": 82.82,
+            "delta": null
+          },
+          {
+            "rank": 4,
+            "item_id": "it_532d82fae300522c",
+            "title": "mitmproxy adds --emudhra option",
+            "section": "社区舆论",
+            "hot": 81.32,
+            "delta": null
+          },
+          {
+            "rank": 5,
+            "item_id": "it_752e25023358d2db",
+            "title": "MadsLorentzen/ai-job-search",
+            "section": "开源项目",
+            "hot": 80.61,
+            "delta": -1.7
+          },
+          {
+            "rank": 6,
+            "item_id": "it_5d41f3374c717eac",
+            "title": "Airbnb bans making guests do dishes and take out the trash",
+            "section": "社区舆论",
+            "hot": 74.89,
+            "delta": null
+          },
+          {
+            "rank": 7,
+            "item_id": "it_2132166d14a053db",
+            "title": "Sage-A1.5: From Long-Horizon Execution to Scientific Exploration with Capability Composition",
+            "section": "论文与研究",
+            "hot": 72.39,
+            "delta": null
+          },
+          {
+            "rank": 8,
+            "item_id": "it_01d32fd68c2d717a",
+            "title": "Graphify-Labs/graphify",
+            "section": "开源项目",
+            "hot": 72.36,
+            "delta": null
+          },
+          {
+            "rank": 9,
+            "item_id": "it_91ca63d72279dde1",
+            "title": "Cache Engineering for Agents",
+            "section": "论文与研究",
+            "hot": 71.17,
+            "delta": null
+          },
+          {
+            "rank": 10,
+            "item_id": "it_1f2f25669b1202a1",
+            "title": "Focused Omni-Modal GUI Agents",
+            "section": "论文与研究",
+            "hot": 71.12,
+            "delta": null
+          }
+        ],
+        "baseline_overlap": "6/11",
+        "examples": [
+          {
+            "kind": "structure",
+            "segment": "rising_topics",
+            "clause": "相邻两日热度上升中，it_42565b5232096036 由 80.53 升至 86.00（+5.47），这是相邻两日、非整周份额的读数，意味着该条目的短窗口关注度出现一次性抬升，不能据此推成整周板块迁移",
+            "detail": "份额"
+          },
+          {
+            "kind": "structure",
+            "segment": "falling_topics",
+            "clause": "社区舆论在 10-17→10-22 同源区间份额 0.2689→0.2048（-6.42pp），it_5dbb54a005401fc7 所代表的该板块在 Top30 中占比收缩，说明讨论分布未继续向社区舆论集中",
+            "detail": "份额"
+          },
+          {
+            "kind": "structure",
+            "segment": "emerging_topics",
+            "clause": "`it_91ca63d72279dde1` 所在的论文与研究类在单日新进中占5/8，社区舆论类占3/8，占比差+25.0pp，意味着当日新进榜的板块构成偏向论文与研究",
+            "detail": "板块"
+          },
+          {
+            "kind": "structure",
+            "segment": "structural_changes",
+            "clause": "依据是社区舆论份额斜率 -2.33pp/天（6天）、热度份额 0.2048，代表条目 it_5dbb54a005401fc7",
+            "detail": "份额"
+          },
+          {
+            "kind": "structure",
+            "segment": "second_order_effects",
+            "clause": "推测：以 it_5dbb54a005401fc7 为代表的社区舆论条目在热度分配上承压，对应板块斜率 -2.33pp/天，0.2689→0.2048 的区间变化仅作幅度参照，这意味着舆论型内容即使仍在榜，单位条目的注意力获取效率也在下降",
+            "detail": "斜率"
+          }
+        ]
+      },
+      "findings": []
+    },
+    {
+      "layer": "L3",
+      "name": "跨期回检",
+      "verdict": "pass",
+      "summary": "预言 29 条无到期样本（最早到期 2026-11-16），不给命中率；本轮无新增核对项；历史已核对 2 条：仍在榜 1、跌出 1。",
+      "metrics": {
+        "predictions_total": 29,
+        "predictions_verified": 0,
+        "predictions_hit": 0,
+        "predictions_pending": 29,
+        "earliest_due": "2026-11-16",
+        "hit_rate": null,
+        "watchlist_created": [],
+        "watchlist_resolved": [],
+        "watchlist_pending": 2,
+        "state_file": "data/reports/trend/watchlist.json"
+      },
+      "findings": [
+        "本周没有到期预言：不给命中率，等最早到期日再算。"
+      ]
+    },
+    {
+      "layer": "L4",
+      "name": "校准追踪",
+      "verdict": "pass",
+      "summary": "最近回检 2026-10-21（2026-10-22）：67% 存活；本轮新回检 0 期",
+      "metrics": {
+        "claimed_ids": [
+          "it_532d82fae300522c",
+          "it_5d41f3374c717eac",
+          "it_5dbb54a005401fc7"
+        ],
+        "min_survival_rate": 0.5,
+        "resolved_issues": [
+          "2026-10-21"
+        ],
+        "resolved_this_run": [],
+        "state_file": "data/reports/trend/calibration.json"
+      },
+      "findings": [
+        "2026-10-21：存活率 67%",
+        "只隔 1 天，本轮存活率仅用于验证机制，不作质量判定。"
+      ]
+    }
+  ]
+}
