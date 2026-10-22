@@ -1,0 +1,953 @@
+{
+  "date": "2026-10-22",
+  "headline": "智能体从能跑任务转向可被审计、可被治理：安全审计技能与多用户权限控制同日登场，工具链开始为智能体的责任边界补课",
+  "headline_item_id": "it_77f9ddd43bbeeb71",
+  "overview_bullets": [
+    {
+      "icon": "🔐",
+      "topic": "智能体安全",
+      "text": "cloudflare 的 security-audit-skill 与 Alter 的多用户智能体访问控制同日出现，说明智能体落地的主要瓶颈已从能力转向权限与可验证性。"
+    },
+    {
+      "icon": "🛠️",
+      "topic": "编码智能体",
+      "text": "opencode、orca、graphify、ponytail 等一批面向编码智能体的开源工具密集上榜，竞争焦点从模型本身转向围绕模型的技能与编排层。"
+    },
+    {
+      "icon": "📄",
+      "topic": "长程与记忆",
+      "text": "Sage-A1.5、Cache Engineering、记忆中心持续学习等论文集中处理长程执行、KV 缓存成本与经验积累，智能体的工程瓶颈被学术化拆解。"
+    },
+    {
+      "icon": "📉",
+      "topic": "热度错位",
+      "text": "GitHub 工具类条目热度普遍高于同日的智能体论文，社区注意力明显偏向可直接上手的技能包而非方法论研究。"
+    },
+    {
+      "icon": "🏢",
+      "topic": "产业动向",
+      "text": "Launch HN 上的 Alter 与 agent-scale Git 基础设施讨论表明，围绕智能体的配套基础设施正在形成独立创业赛道。"
+    }
+  ],
+  "executive_summary": "今天的信息拼出一张清晰的图：智能体的能力叙事正在退潮，取而代之的是权限、审计、缓存与记忆这些让智能体真正可运营的底层工程问题。",
+  "editor_note": {
+    "core": "今天最该记住的是智能体开始被当作需要权限、审计与责任归属的生产系统来对待，cloudflare 的安全审计技能与 Alter 的访问控制是同一趋势的两面。原因很直接：当智能体能替多个用户执行动作，能力越强，越界成本越高，治理层不补齐就无法进入企业核心流程。",
+    "cross_signal": "开源板块的安全审计技能、产业板块的多用户访问控制、论文板块的记忆与持续学习，三者指向同一个结论——智能体的价值取决于它能否被约束和追溯，而非单次任务表现。HN 上关于减少代码攻击面的讨论与 agent-scale Git 基础设施，也在为同一套治理叙事提供实践注脚。",
+    "counterintuitive": "热度最高的开源条目多是轻量技能包和 GUI 工具，而真正决定智能体能否长期运行的缓存工程、持续记忆与权限模型，热度明显偏低。社区在为“更好用”投票，产业却在为“更可控”付费，两者并不同步。",
+    "risk": "最大的盲点是安全审计与权限控制目前多以单个技能、单个产品的形式出现，缺乏跨智能体、跨平台的统一标准；一旦企业按厂商各自方案拼接治理层，反而会制造新的碎片化攻击面。"
+  },
+  "contradictions": [
+    "开源社区热捧让智能体更自主、更少干预的工具（如 ponytail 的“最懒资深开发者”思路），而产业侧同时在加码对智能体的审计与访问控制，自主性与可控性两个方向被同时推高。",
+    "论文强调长程执行与持续记忆是智能体进化的关键，但当前热度更高的却是短平快的编码技能包，研究议程与社区注意力存在错位。"
+  ],
+  "underrated": [
+    "Cache Engineering for Agents：KV 缓存 I/O 与存储成本才是长程智能体的真实瓶颈，却远不如模型能力讨论受关注",
+    "Memory-Centric Continual Learning for AI Agents：指出外部记忆多为被动检索缓存，直击智能体无法从部署中持续学习的痛点",
+    "MMEnterprise-Bench：面向演化中的多模态企业记录评测智能体，比通用基准更贴近真实落地场景",
+    "Socratic Skill Learning：把技能迁移拆成教学与实践交替，是可复用智能体技能的关键方法论",
+    "AgenticRoboRL：把编码智能体的后训练方法迁移到机器人规划器，绕开对闭源强模型的依赖"
+  ],
+  "sections": [
+    {
+      "name": "开源项目",
+      "summary": "编码智能体的技能层与编排层成为开源最活跃的战场，安全审计、知识图谱、多智能体调度齐头并进。",
+      "item_ids": [
+        "it_42565b5232096036",
+        "it_77f9ddd43bbeeb71",
+        "it_752e25023358d2db",
+        "it_01d32fd68c2d717a",
+        "it_645a6cf2b3acc8ac",
+        "it_940ae4b9591d1f09",
+        "it_7ed7b72f04295c52",
+        "it_ba7f74ab3df8693a",
+        "it_7d0ed93b88de47b1"
+      ]
+    },
+    {
+      "name": "论文与研究",
+      "summary": "研究重心从单任务能力转向长程执行、缓存成本、持续记忆与技能迁移，智能体的工程约束被系统化建模。",
+      "item_ids": [
+        "it_2132166d14a053db",
+        "it_91ca63d72279dde1",
+        "it_1f2f25669b1202a1",
+        "it_caad28c1b5e89b9a",
+        "it_5a706687da8bb239",
+        "it_1b9bdf1cb5577897",
+        "it_5dafb371f38791ae",
+        "it_e316f0ca12c40e22",
+        "it_561a900ea0f49963",
+        "it_2a31dcf80a81c61c",
+        "it_ca5526b04a2a17ad",
+        "it_81d0790fb79eb500",
+        "it_a30765726ba5b041",
+        "it_625c8d07dbeecb64",
+        "it_3e5ae7dc897b754c"
+      ]
+    },
+    {
+      "name": "社区舆论",
+      "summary": "HN 讨论集中在智能体基础设施与安全实践，同时夹杂 Airbnb 规则这类与 AI 无关但高热度的社会话题。",
+      "item_ids": [
+        "it_5dbb54a005401fc7",
+        "it_532d82fae300522c",
+        "it_5d41f3374c717eac",
+        "it_341f11e78b1225e8",
+        "it_20a259028135abda",
+        "it_90e3466f8031ffa0"
+      ]
+    },
+    {
+      "name": "产业与新闻",
+      "summary": "面向多用户智能体的访问控制成为新的创业切口，智能体规模化后的权限治理被正式产品化。",
+      "item_ids": []
+    }
+  ],
+  "comments": [
+    {
+      "item_id": "it_42565b5232096036",
+      "one_liner": "一个让 AI agent 以「最懒的资深开发者」思路写代码的提示技能，主张能不写的代码就不写",
+      "why": "用「最懒的资深工程师」作为代理的行为约束，直接压低生成代码量，把代理的优化目标从产出更多转向少写，减少维护面。",
+      "stance": "这是对代理过度生成的一次有价值的反向校准，但懒惰若无边界会退化成该做的抽象也不做。"
+    },
+    {
+      "item_id": "it_77f9ddd43bbeeb71",
+      "one_liner": "Cloudflare 开源的 coding-agent 技能，用于分阶段执行安全审计并输出可独立验证的机器可读结果",
+      "why": "把安全审计拆成多阶段并输出可机器校验的结论，让编码代理的审计结果从「人读报告」变成可接入 CI 的判定信号，审计责任从人转移到流水线。",
+      "stance": "方向对，但审计结论一旦可自动化，误报就会被当成合规证据，必须保留人工复核闸门。"
+    },
+    {
+      "item_id": "it_752e25023358d2db",
+      "one_liner": "一个基于 Claude Code 的本地求职框架，可评估职位、定制简历、撰写求职信并准备面试",
+      "why": "求职流程被拆成可 fork 的本地框架，简历与求职信在用户机器上生成，投递数据不再经过第三方招聘平台。",
+      "stance": "求职者拿回数据主权是好事，但批量定制简历会把招聘方的筛选成本转嫁给 HR。"
+    },
+    {
+      "item_id": "it_01d32fd68c2d717a",
+      "one_liner": "把代码库连同文档、SQL schema、配置和 PDF 转成可查询知识图谱的 /graphify 技能，支持 Claude Code、Cursor、Codex 与 Gemini CLI，本地确定性 AST 解析且不依赖向量库",
+      "why": "用确定性 AST 解析替代向量库，把代码库、SQL、配置、PDF 统一成可解释边的知识图谱，检索结果可追溯到具体语法结构，降低代理在大型仓库里的幻觉定位。",
+      "stance": "拒绝向量库是正确取舍，可解释的边比相似度分数更适合工程场景。"
+    },
+    {
+      "item_id": "it_645a6cf2b3acc8ac",
+      "one_liner": "一个开源的编码 agent",
+      "why": "编码代理的开源实现把模型调用与工具编排暴露给用户自改，闭源产品的定价权被侵蚀。",
+      "stance": "开源编码代理会赢下重度开发者，但摘要只有一句话，说明项目成熟度还撑不起生产环境。"
+    },
+    {
+      "item_id": "it_940ae4b9591d1f09",
+      "one_liner": "一个用于管理多个 agent（如 Grok Bot、Claude Code）的协作平台，可用自己的订阅运行任意编码 agent，支持桌面、移动端和远程运行时",
+      "why": "把多个编码代理放进同一调度层并复用用户自有订阅，代理从单机工具变成可远程编排的机群。",
+      "stance": "多代理编排是真需求，但依赖用户订阅额度转用，随时会被上游厂商的条款收紧掐断。"
+    },
+    {
+      "item_id": "it_7ed7b72f04295c52",
+      "one_liner": "Supabase 是一个基于 Postgres 的开发平台，为 Web、移动端和 AI 应用提供专属数据库。",
+      "why": "把 Postgres 包装成开箱即用的后端，AI 应用开发者不必再自建数据库与鉴权层，云厂商的托管数据库收入被直接分流。",
+      "stance": "开源数据库即服务这条路已经跑通，闭源 BaaS 的溢价空间正在被吃掉。"
+    },
+    {
+      "item_id": "it_ba7f74ab3df8693a",
+      "one_liner": "一套覆盖前端、社区运营等多种角色的 AI agent 集合，每个 agent 带有人设、工作流程和交付物模板",
+      "why": "把代理按职能和人格打包成「完整机构」，卖点从能力转向角色分工，采购方会按岗位而非按模型来评估，定价与责任边界随之碎片化。",
+      "stance": "人格化包装是营销层，真正决定成败的是各角色间的交接协议，目前看不到。"
+    },
+    {
+      "item_id": "it_7d0ed93b88de47b1",
+      "one_liner": "ComfyUI 是一个模块化的扩散模型图形界面、API 与后端，采用图/节点式界面，主打本地推理。",
+      "why": "节点式图界面把扩散模型推理流程拆成可复用模块，本地推理速度成为卖点，云端生成服务的付费理由被削弱。",
+      "stance": "本地推理引擎的工程优化比模型本身更能决定谁掌握生成内容的入口。"
+    },
+    {
+      "item_id": "it_2132166d14a053db",
+      "one_liner": "Sage-A1.5：35B MoE agentic 模型，通过自适应能力组合提升长程任务求解与科学探索能力",
+      "why": "35B MoE 代理把重点放在组织工作与自我修正而非单任务得分，长程任务的评估口径从「答对」转向「会不会改计划」，直接影响代理产品的可靠性叙事。",
+      "stance": "能力组合比单点分数更接近真实工作，但自我修正若缺乏外部校验就是自我循环。"
+    },
+    {
+      "item_id": "it_91ca63d72279dde1",
+      "one_liner": "一篇研究 LLM agent 长轨迹下 KV cache 的 I/O 与存储开销及上下文超限问题的论文。",
+      "why": "智能体轨迹变长后 KV 缓存的读写与存储成为主要成本，缓存策略直接决定长任务智能体的单次运行开销与上下文上限。",
+      "stance": "智能体的成本瓶颈已经从算力转向缓存 I/O，谁先解决谁拿到长任务场景。"
+    },
+    {
+      "item_id": "it_1f2f25669b1202a1",
+      "one_liner": "研究 GUI agent 如何在截图、音频、视频等多模态流式观测中聚焦稀疏且时变的有效信息",
+      "why": "指出全量多模态上下文每步都喂给 GUI 代理是浪费，因为相关性稀疏且瞬时，这会把代理的算力预算从「看得全」转向「看得准」。",
+      "stance": "稀疏注意力是 GUI 代理落地的必要工程判断，全模态堆料路线该被质疑。"
+    },
+    {
+      "item_id": "it_caad28c1b5e89b9a",
+      "one_liner": "一篇提出以记忆为中心的持续学习框架、让 AI agent 长期积累经验的论文。",
+      "why": "固定权重加有限上下文让智能体无法在长期部署中积累经验，把外部记忆从被动检索升级为持续学习机制，改变了智能体的迭代方式。",
+      "stance": "只做检索缓存的记忆系统是伪学习，必须让记忆参与权重或策略更新。"
+    },
+    {
+      "item_id": "it_5a706687da8bb239",
+      "one_liner": "SolarRenderer：少步数生成式参考渲染方法，把游戏引擎或编码 agent 给出的场景结构补全为真实感视频",
+      "why": "让引擎或编码代理给出的粗结构直接生成写实视频，渲染器不再绑定单一引擎表示，游戏与影视的前期预览成本被压到几步采样。",
+      "stance": "少步渲染的价值在预览而非成片，宣称替代离线渲染是过度承诺。"
+    },
+    {
+      "item_id": "it_1b9bdf1cb5577897",
+      "one_liner": "SWIFT：用冻结的弱去噪器引导强扩散模型的自引导训练方法，不增加推理开销",
+      "why": "用冻结的弱去噪器引导强模型且不增加推理开销，把扩散模型的质量提升从采样阶段挪回训练阶段，推理成本曲线被改写。",
+      "stance": "训练期引导优于推理期堆采样，这条路线应成为默认选项。"
+    },
+    {
+      "item_id": "it_5dafb371f38791ae",
+      "one_liner": "一篇把编码 agent 的后训练方法迁移到 agentic robotics 规划器上的论文。",
+      "why": "现有机器人智能体依赖闭源强模型做规划器，自身能力不增长；把编码智能体的后训练方法迁移过来，让规划器可被训练而非仅被调用。",
+      "stance": "机器人智能体的护城河在自研规划器，靠调闭源 API 拼装的产品没有壁垒。"
+    },
+    {
+      "item_id": "it_e316f0ca12c40e22",
+      "one_liner": "一篇提出 Socratic Skill Learning、通过专家教学与练习交替训练可迁移 agent 技能的论文。",
+      "why": "一次成功尝试无法证明技能可迁移，交替教学与练习让智能体获得带适用条件的技能，跨会话复用才真正成立。",
+      "stance": "技能库不标注适用条件就是负债，苏格拉底式交替训练是对的方向。"
+    },
+    {
+      "item_id": "it_561a900ea0f49963",
+      "one_liner": "一篇研究自回归视频生成中如何建模场景未来演化的论文。",
+      "why": "教师强制下强时间冗余让模型靠局部视觉连续性走捷径，生成看似合理的续帧却学不到场景演化规律，长视频生成的质量评估标准被重新定义。",
+      "stance": "能续帧不等于懂演化，自回归视频模型需要新的反捷径训练目标。"
+    },
+    {
+      "item_id": "it_2a31dcf80a81c61c",
+      "one_liner": "MMEnterprise-Bench：面向不断演进的多模态企业记录，评测企业 agent 的问答能力",
+      "why": "企业记录会随协作不断修订、多版本并存，基准把「哪版为准」变成核心考点，代理的失败模式从检索不到转为引用过期信息。",
+      "stance": "版本演化才是企业场景的真问题，只测静态文档的基准已经失真。"
+    },
+    {
+      "item_id": "it_5dbb54a005401fc7",
+      "one_liner": "Hacker News 上关于 Claude Duet 的讨论帖。",
+      "why": "HN 上出现以双人协作命名的 Claude 相关条目，说明多智能体或人机配对工作流正在成为开发者讨论焦点，交互形态的竞争开始。",
+      "stance": "单轮对话的产品形态已经见顶，协作式交互才是下一轮差异化。"
+    },
+    {
+      "item_id": "it_532d82fae300522c",
+      "one_liner": "mitmproxy 新增 --emudhra 命令行选项。",
+      "why": "抓包工具加入印度 eMudhra 证书相关选项，意味着本地化电子签名与合规证书链被纳入调试链路，面向印度市场的应用集成门槛下降。",
+      "stance": "抓包工具跟进区域证书体系，是合规基础设施下沉到开发者工具层的信号。"
+    },
+    {
+      "item_id": "it_5d41f3374c717eac",
+      "one_liner": "Airbnb 取消要求房客洗碗和倒垃圾的规定。",
+      "why": "平台用规则禁止退房清洁杂务，把清洁成本从住客转回房东，短租定价与运营模式随之调整，房东侧的隐性人力被显性化。",
+      "stance": "把清洁费藏进住客劳动里的模式该结束了，平台规则纠偏来得太晚。"
+    },
+    {
+      "item_id": "it_341f11e78b1225e8",
+      "one_liner": "介绍如何借助 Claude 分析并缩小代码的攻击面",
+      "why": "把大模型从写代码工具转成审计工具，攻击面分析从人工逐行排查变成可批量、可重复的流程，安全团队在合并前的把关成本被压低。",
+      "stance": "方向对，但模型给出的攻击面结论必须由人复核，否则只是把漏报换了个包装。"
+    },
+    {
+      "item_id": "it_20a259028135abda",
+      "one_liner": "探讨面向 agent 规模负载的 Git 基础设施及其衔接方案",
+      "why": "当提交与分支由 agent 高频生成，现有 Git 托管在并发、权限与审计上的瓶颈会先于模型能力暴露，基础设施层因此成为 agent 落地的实际限速点。",
+      "stance": "这是被低估的硬骨头，谁先解决 agent 规模的版本控制语义，谁就握住下一层入口。"
+    },
+    {
+      "item_id": "it_90e3466f8031ffa0",
+      "one_liner": "YC S25 项目 Alter 发布，为可代表多用户执行操作的 agent 提供访问控制",
+      "why": "多用户共用同一个 agent 时，身份与授权边界会糊成一片，把每个用户的操作权限下沉到 agent 内部，企业才敢把有副作用的动作交给它。",
+      "stance": "切中了 agent 进企业最真实的卡点，但这类权限层最终会被云厂商与身份提供商吞并，独立窗口不长。"
+    }
+  ],
+  "stats": {},
+  "items": {
+    "it_5dbb54a005401fc7": {
+      "id": "it_5dbb54a005401fc7",
+      "source": "hackernews",
+      "title": "Claude Duet",
+      "url": "https://claude.com/product/claude-duet",
+      "summary": "",
+      "hot_score": 86.7004,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-21T19:14:01+00:00",
+      "last_seen_at": "2026-10-22T03:10:26.985531+00:00",
+      "metrics": {
+        "points": 325,
+        "num_comments": 289
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_42565b5232096036": {
+      "id": "it_42565b5232096036",
+      "source": "github_trending",
+      "title": "DietrichGebert/ponytail",
+      "url": "https://github.com/DietrichGebert/ponytail",
+      "summary": "Makes your AI agent think like the laziest senior dev in the room. The best code is the code you never wrote.",
+      "hot_score": 86.0001,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-21T03:11:29.651306+00:00",
+      "last_seen_at": "2026-10-22T03:10:27.061912+00:00",
+      "metrics": {
+        "stars_total": 171863,
+        "stars_in_window": 2079,
+        "forks": 9352,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "JavaScript"
+    },
+    "it_77f9ddd43bbeeb71": {
+      "id": "it_77f9ddd43bbeeb71",
+      "source": "github_trending",
+      "title": "cloudflare/security-audit-skill",
+      "url": "https://github.com/cloudflare/security-audit-skill",
+      "summary": "A coding-agent skill for multi-phase security audits with independently verified, machine-readable findings",
+      "hot_score": 82.8183,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-21T03:11:29.651293+00:00",
+      "last_seen_at": "2026-10-22T03:10:27.058030+00:00",
+      "metrics": {
+        "stars_total": 36806,
+        "stars_in_window": 2012,
+        "forks": 2298,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "JavaScript"
+    },
+    "it_532d82fae300522c": {
+      "id": "it_532d82fae300522c",
+      "source": "hackernews",
+      "title": "mitmproxy adds --emudhra option",
+      "url": "https://github.com/mitmproxy/mitmproxy/commit/169234499088fc2c414644a67efaed3d64ae2e3b",
+      "summary": "",
+      "hot_score": 81.3214,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-21T23:51:37+00:00",
+      "last_seen_at": "2026-10-22T03:10:27.094040+00:00",
+      "metrics": {
+        "points": 272,
+        "num_comments": 69
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_752e25023358d2db": {
+      "id": "it_752e25023358d2db",
+      "source": "github_trending",
+      "title": "MadsLorentzen/ai-job-search",
+      "url": "https://github.com/MadsLorentzen/ai-job-search",
+      "summary": "The job search that runs on your machine. AI job application framework built on Claude Code: evaluate postings, tailor CVs, write cover letters, prep interviews. Fork it and own it.",
+      "hot_score": 80.6136,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-16T15:44:39.424248+00:00",
+      "last_seen_at": "2026-10-21T03:12:27.597766+00:00",
+      "metrics": {
+        "stars_total": 60925,
+        "stars_in_window": 3861,
+        "forks": 18956,
+        "streak_days": 6
+      },
+      "streak_days": 6,
+      "language": "Python"
+    },
+    "it_5d41f3374c717eac": {
+      "id": "it_5d41f3374c717eac",
+      "source": "hackernews",
+      "title": "Airbnb bans making guests do dishes and take out the trash",
+      "url": "https://www.theverge.com/tech/1015844/airbnb-chores-house-rules-update",
+      "summary": "",
+      "hot_score": 74.8929,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-21T23:38:32+00:00",
+      "last_seen_at": "2026-10-22T03:10:26.988549+00:00",
+      "metrics": {
+        "points": 137,
+        "num_comments": 116
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_2132166d14a053db": {
+      "id": "it_2132166d14a053db",
+      "source": "hf_papers",
+      "title": "Sage-A1.5: From Long-Horizon Execution to Scientific Exploration with Capability Composition",
+      "url": "arxiv:2610.28578",
+      "summary": "In this report, we introduce Sage-A1.5, a 35B Mixture-of-Experts agentic model that builds on A1 to advance long-horizon problem solving through adaptive capability composition. Compared with A1, Sage-A1.5 learns not only to solve individual tasks, but also to organize work and revise its approach during execution. Sage-A1.5 highlights three improvements: agentic orchestration, verification, and open scientific discovery. First, agentic orchestration extends single-agent execution through task delegation and parallel collaboration among subagents with isolated contexts, enabling complex tasks to be decomposed and addressed concurrently and supporting efficient execution while reducing interference across concurrent subagents. Second, agentic verification strengthens long-horizon reliability through progress checking, evidence validation, and reflective strategy revision, allowing the agent to recognize unproductive search paths and pursue alternative approaches. Third, open scientific discovery extends agentic capabilities beyond answering predefined questions to conducting exploratory research, connecting scientific inquiry with interactive analysis and inspectable research artifacts. We showcase these capabilities through complicated agentic tasks and multidisciplinary scientific applications. Besides, we hope Sage-A1.5 provides the community with an accessible foundation for open scientific discovery, offering a practical path from long-horizon task execution to collaborative, verifiable, and inspectable scientific exploration.",
+      "hot_score": 72.3865,
+      "topic_id": "tp_36557e4374bd",
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-19T20:00:00+00:00",
+      "last_seen_at": "2026-10-21T03:12:27.611216+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 23
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_01d32fd68c2d717a": {
+      "id": "it_01d32fd68c2d717a",
+      "source": "github_trending",
+      "title": "Graphify-Labs/graphify",
+      "url": "https://github.com/Graphify-Labs/graphify",
+      "summary": "Turn any codebase, with its docs, SQL schemas, configs, and PDFs, into a queryable knowledge graph. A /graphify skill for Claude Code, Cursor, Codex, and Gemini CLI: local deterministic AST parsing, every edge explained, no vector store.",
+      "hot_score": 72.3637,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-21T03:11:29.651321+00:00",
+      "last_seen_at": "2026-10-22T03:10:27.067250+00:00",
+      "metrics": {
+        "stars_total": 131794,
+        "stars_in_window": 1433,
+        "forks": 12647,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "Python"
+    },
+    "it_91ca63d72279dde1": {
+      "id": "it_91ca63d72279dde1",
+      "source": "hf_papers",
+      "title": "Cache Engineering for Agents",
+      "url": "arxiv:2610.28577",
+      "summary": "Large Language Model (LLM) agents can handle increasingly complex tasks, navigating long trajectories of observations and actions. As these trajectories grow, key-value (KV) cache I/O and storage become the dominant cost. Trajectories can also exceed the LLM's maximum context length, requiring control over active cache growth. Prior work uses context engineering to reduce cache size by trimming or summarizing history. However, modifying the trajectory prefix invalidates subsequent cached states and triggers costly re-prefilling of retained context. Task accuracy can also suffer when too little context is retained to limit re-prefill costs. We propose cache engineering as a new scheme. It allows agents to directly control their active KV cache without modifying the trajectory or re-prefilling retained context. Specifically, agents can proactively use drop to exclude selected cache from future attention and repos to adjust retained keys' position encodings. We formalize these cache operations and identify history dependence as a serving challenge: identical token sequences can yield different cache states under different cache operation sequences, making prefix matching insufficient for correct cache reuse. Thus, we co-design the AKV serving engine. It provides a stateless interface compatible with existing serving APIs, while internally managing stateful cache reuse, eviction, and restoration. Experiments show that a tool-response rolling-drop cache policy improves average benchmark scores by 1.7 points and reduces average cost by 27.7%, compared with conventional threshold-triggered summarization. With AKV, it achieves up to 1.2x the output throughput and a 1.5x speedup in P95 request latency. Recursive self-improvement of cache policies further reduces cost by 7.1% over expert design. Our code is at https://github.com/thu-nics/AKV.",
+      "hot_score": 71.1703,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-19T20:00:00+00:00",
+      "last_seen_at": "2026-10-22T03:10:27.068173+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 20
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_1f2f25669b1202a1": {
+      "id": "it_1f2f25669b1202a1",
+      "source": "hf_papers",
+      "title": "Focused Omni-Modal GUI Agents",
+      "url": "arxiv:2610.26203",
+      "summary": "Graphical User Interface (GUI) agents increasingly act over streaming omni-modal observations spanning screenshots, audio, video, interaction history, and device states. However, exposing this complete context uniformly at every step ignores that relevance is transient and sparse: the signal determining one action can become clutter at the next. Because executed actions feed back into the context, these errors compound into Sequential Distraction, driving the agent into irreversible trajectory drift. We formulate the underlying requirement as Focused Perception: a representation that is step-adaptive, action-sufficient, and non-intrusive. We realize this in FocusGUI, a lightweight adapter that dynamically prioritizes multimodal channels against a step-specific decision reference. Instead of uniformly processing all inputs, it compresses the most relevant evidence into a compact latent and subtly injects it into the frozen decoder's embeddings, guiding the model's attention without altering its native parameter space. FocusGUI trains from action supervision alone, requiring neither modality-relevance labels nor backbone fine-tuning. Across four omni-modal backbones, it raises overall Type Match by +33.2 and Exact Match by 3.0 times over the frozen backbone on average, and Type Match by +30.1 over the strongest existing enhancement method.",
+      "hot_score": 71.1198,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-18T20:00:00+00:00",
+      "last_seen_at": "2026-10-21T03:12:27.610080+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 24
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_caad28c1b5e89b9a": {
+      "id": "it_caad28c1b5e89b9a",
+      "source": "hf_papers",
+      "title": "Memory-Centric Continual Learning for AI Agents",
+      "url": "arxiv:2610.29357",
+      "summary": "Autonomous agents powered by foundation models can reason, plan, and use tools, but their fixed weights and context limits hinder sustained learning from experience over long-term deployment. While external memory systems attempt to bridge this gap, they mostly act as passive retrieval caches, evaluated primarily by whether they can recall stored facts or past interactions. Whether memory can drive genuine continual learning remains an open question. In this paper, we introduce Memory-Centric Continual Learning (MCCL), arguing that memory should be judged by whether it improves future actions, not merely what it retrieves. MCCL has three main parts. First, a three-axis taxonomy organizes memory by where state is stored (substrates), what form it takes (assets), and how it is managed (policies). This defines a two-loop lifecycle that updates memory state in an inner loop while refining management policies in an outer loop based on task feedback. Second, an evaluation protocol measures retention under interference, adaptation to change, and task transfer to isolate genuine behavioral gains from simple context expansion. Third, a memory scaling framework models how agent performance scales with experience, storage capacity, and compute budgets across non-parametric and parametric memory. Together, these components reframe agent memory from passive lookup to continuous learning, offering a principled route toward self-improving autonomous agents.",
+      "hot_score": 70.5334,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-20T20:00:00+00:00",
+      "last_seen_at": "2026-10-22T03:10:27.071794+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 12
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_5a706687da8bb239": {
+      "id": "it_5a706687da8bb239",
+      "source": "hf_papers",
+      "title": "SolarRenderer: Few-Step Generative Reference Rendering",
+      "url": "arxiv:2610.28630",
+      "summary": "Game engines and coding agents can specify the layout, motion, and camera of a scene, yet turning such coarse structure into realistic video requires a renderer that follows the structure and completes the appearance it leaves open. Existing renderers are tied to the representation of one engine, need tens of denoising steps or a costly distillation of their own, and learn from conditions that are not aligned with their target videos. We present SolarRenderer, a structure-conditioned video renderer that adapts a frozen MiniMax-H3 33B backbone with two lightweight LoRAs. Structural videos enter the native reference pathway of the backbone at the positions of the frames they describe, without a type identifier and described only in plain text, so that a single control LoRA follows arbitrary structural representations. Starting from a pretrained four-step LoRA, structure-guided distribution matching renders in four steps, 12.3 times faster than 50-step sampling, while preserving the learned control. A block-causal variant extends the same design to streaming and renders 768p video in real time. To train the model, we build a frame-aligned corpus of 136K clips from game engines, simulators, and YouTube videos. Experiments on an in-distribution test set and a generalization benchmark of 16 structural representations show that SolarRenderer achieves state-of-the-art results across both, and generalizes to 11 unseen representations, including pose skeletons, drawings, and point clouds.",
+      "hot_score": 67.5217,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-19T20:00:00+00:00",
+      "last_seen_at": "2026-10-21T03:12:27.613640+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 17
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_645a6cf2b3acc8ac": {
+      "id": "it_645a6cf2b3acc8ac",
+      "source": "github_trending",
+      "title": "anomalyco/opencode",
+      "url": "https://github.com/anomalyco/opencode",
+      "summary": "The open source coding agent.",
+      "hot_score": 67.0769,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-17T14:54:44.860471+00:00",
+      "last_seen_at": "2026-10-21T03:12:27.604048+00:00",
+      "metrics": {
+        "stars_total": 219047,
+        "stars_in_window": 1414,
+        "forks": 29222,
+        "streak_days": 5
+      },
+      "streak_days": 5,
+      "language": "TypeScript"
+    },
+    "it_1b9bdf1cb5577897": {
+      "id": "it_1b9bdf1cb5577897",
+      "source": "hf_papers",
+      "title": "SWIFT: Self-guided Weak-to-strong dIFfusion models via Target extrapolation",
+      "url": "arxiv:2610.25844",
+      "summary": "Training high-quality diffusion models is computationally expensive, and inference-time guidance often adds further sampling cost. In this work, we introduce Swift, a simple yet effective self-guided training method that uses a frozen weak denoiser to improve a stronger model without adding inference overhead. For each noisy input, Swift extrapolates the clean regression target away from the weak denoiser's prediction, amplifying components that remain underfit. The weak guide can be an early training checkpoint, requires no backpropagation during main-model training, and is discarded afterward. The resulting model retains the original sampler and supports both conditional and unconditional generation without label dropout or an unconditional branch. We explain this mechanism through a spectral analysis of finite-time population gradient flow in an RKHS. With an early-stopped weak guide, we prove that a nonempty range of extrapolation strengths yields strictly lower posterior-mean error than matched standard training, despite shifting the regression target away from the posterior mean. Experiments on CIFAR-10 and ImageNet-256 demonstrate improvements across model scales and representations. In one ImageNet-256 configuration, Swift surpasses the baseline's best FID using roughly half the total training compute, including guide preparation and training overhead. On RAEv2, it achieves FID 1.15 without inference-time guidance and 0.99 with guidance. These results establish target extrapolation as an effective approach to weak-to-strong diffusion training with efficient single-model inference.",
+      "hot_score": 66.8631,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-18T20:00:00+00:00",
+      "last_seen_at": "2026-10-21T03:12:27.612441+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 18
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_940ae4b9591d1f09": {
+      "id": "it_940ae4b9591d1f09",
+      "source": "github_trending",
+      "title": "stablyai/orca",
+      "url": "https://github.com/stablyai/orca",
+      "summary": "Orca is the place for working with a fleet of agents (e.g. Grok Bot, Claude Code). Run any coding agent with your own subscription. Available on desktop, mobile and remote runtime.",
+      "hot_score": 65.7133,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-17T14:54:44.860455+00:00",
+      "last_seen_at": "2026-10-22T03:10:27.060091+00:00",
+      "metrics": {
+        "stars_total": 101501,
+        "stars_in_window": 1590,
+        "forks": 6419,
+        "streak_days": 6
+      },
+      "streak_days": 6,
+      "language": "TypeScript"
+    },
+    "it_5dafb371f38791ae": {
+      "id": "it_5dafb371f38791ae",
+      "source": "hf_papers",
+      "title": "AgenticRoboRL: Bringing Coding-Agent Post-Training to Agentic Robotics",
+      "url": "arxiv:2610.28589",
+      "summary": "Agentic robotics systems combine planners with robot harnesses to perform complex manipulation tasks. Recent work improves these systems through better harnesses and external memory, but relies on powerful closed-source models as planners and does not improve the planners' own capabilities. In contrast, coding agents have improved substantially by post-training the model itself. We therefore investigate whether post-training can also improve robot planners. However, applying it across robot harnesses requires accommodating different execution mechanisms, including VLA skill invocation and control-code generation. To this end, we introduce AgenticRoboRL, a framework for post-training robot planners across different harnesses. The training recipe combines supervised fine-tuning with multi-turn reinforcement learning. To accommodate different execution mechanisms, harness-specific adapters connect recorded planner interactions with task outcomes, enabling a common RL training pipeline while keeping execution components fixed. On LIBERO-PRO, AgenticRoboRL raises the success rate of a 9B-parameter planner from 18.1% to 71.0% without external memory, approaching the 72.1% achieved by Codex (GPT-5.5) with external memory. These results demonstrate post-training as an effective approach for improving robot planners. We will release the framework and trained planner checkpoints.",
+      "hot_score": 65.6974,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-19T20:00:00+00:00",
+      "last_seen_at": "2026-10-22T03:10:27.070597+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 12
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_e316f0ca12c40e22": {
+      "id": "it_e316f0ca12c40e22",
+      "source": "hf_papers",
+      "title": "Socratic Skill Learning: Interleaving Teaching and Practice for Transferable Agent Skills",
+      "url": "arxiv:2610.17860",
+      "summary": "Agent Skills improve LLM agents by making task knowledge reusable across sessions. Learning transferable Skills requires evidence about a procedure and its conditions of use, which a successful task attempt can leave untested. We introduce Socratic Skill Learning (SSL), which interleaves expert teaching with Student practice. An Educator guides investigation while the Student remains the sole environment operator and Skill author, able to question, test, and adapt advice. To test reuse beyond the learning task, we construct SkillTransferBench, with 35 task families and 408 executable cases, pairing public variation specifications with held-out evaluation in fresh solver sessions. On the main 22-family, 155-case cohort, Fixed-Window SSL reaches 0.801 utility, versus 0.723 without a Skill, 0.761 for adapted Trace2Skill (trajectory distillation), and 0.751 for adapted SKILL-KD (contrastive distillation). Across three model pairs on shared families, interleaved guidance outperforms expert authoring and post-hoc teaching. Process analysis links guidance to Student writing and package revision; a case study shows the Student testing and refining a proposed procedure for later reuse. As demand for new lessons falls, the cost of fixed-window review grows. Issue-Guided SSL tracks unresolved questions across Skill revisions to select and focus review, reaching 0.805 utility with 61.7% fewer Educator tokens and 16.9% fewer total acquisition tokens than Fixed-Window SSL on the main cohort.",
+      "hot_score": 64.2912,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-12T20:00:00+00:00",
+      "last_seen_at": "2026-10-22T03:10:27.069270+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 18
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_561a900ea0f49963": {
+      "id": "it_561a900ea0f49963",
+      "source": "hf_papers",
+      "title": "Looking Ahead: Modeling Future Evolution in Autoregressive Video Generation",
+      "url": "arxiv:2610.29989",
+      "summary": "Autoregressive video diffusion models generate videos chunk by chunk, yet producing plausible continuations does not guarantee that they capture how scenes evolve. Under teacher forcing, strong temporal redundancy may allow local visual continuity to serve as a shortcut for current-chunk denoising, reducing the pressure to model visual evolution. We introduce Future Chunk Prediction (FCP), an auxiliary objective jointly optimized with teacher-forced denoising that predicts temporally separated chunks without access to the intervening visual context. Drawing supervision directly from training videos, FCP requires no additional pretrained visual encoder and leaves autoregressive inference unchanged. Our method achieves superior physical plausibility over standard teacher-forced autoregressive training with a lower overall training compute budget, highlighting the effectiveness and efficiency of future-chunk supervision for modeling visual evolution. Intriguingly, our visualizations suggest that FCP fosters a more structured representation space, which may be valuable for building autoregressive world models.",
+      "hot_score": 63.8442,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-20T20:00:00+00:00",
+      "last_seen_at": "2026-10-22T03:10:27.072971+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 8
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_2a31dcf80a81c61c": {
+      "id": "it_2a31dcf80a81c61c",
+      "source": "hf_papers",
+      "title": "MMEnterprise-Bench: Evaluating Enterprise Agents over Evolving Multimodal Records",
+      "url": "arxiv:2610.27911",
+      "summary": "Enterprise agents answer questions over workplace records that evolve through team collaboration. As information is shared, corrected, and revised across documents, chats, and figures, multiple versions of the same information accumulate in the workspace. Reliable question answering therefore requires agents to reason over sufficient evidence, resolve cross-source and temporal conflicts, and recognize when the available evidence is insufficient to establish an answer. To systematically evaluate these capabilities, we introduce MMEnterprise-Bench, a benchmark comprising 1,613 questions grounded in evolving multimodal records from simulated collaboration projects, covering three categories: Evidence Reasoning, Conflict Resolution, and Unanswerability. We evaluate 10 proprietary and open-source multimodal LLMs and find that even the strongest models struggle when evidence contains cross-source or temporal conflicts or spans multiple images. Moreover, increasing the retrieval budget or employing a larger retriever improves evidence recall but does not consistently translate into higher answer accuracy. These findings highlight the persistent challenges of reasoning over evolving workplace records and establish MMEnterprise-Bench as a testbed for developing more reliable enterprise agents. Code and data are available at https://mlvlab.github.io/MMEnterprise-Bench/.",
+      "hot_score": 63.2649,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-19T20:00:00+00:00",
+      "last_seen_at": "2026-10-21T03:12:27.615968+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 10
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_7ed7b72f04295c52": {
+      "id": "it_7ed7b72f04295c52",
+      "source": "github_trending",
+      "title": "supabase/supabase",
+      "url": "https://github.com/supabase/supabase",
+      "summary": "The Postgres development platform. Supabase gives you a dedicated Postgres database to build your web, mobile, and AI applications.",
+      "hot_score": 62.5,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-22T03:09:54.791445+00:00",
+      "last_seen_at": "2026-10-22T03:10:27.063659+00:00",
+      "metrics": {
+        "stars_total": 113078,
+        "stars_in_window": 504,
+        "forks": 16953,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "TypeScript"
+    },
+    "it_ba7f74ab3df8693a": {
+      "id": "it_ba7f74ab3df8693a",
+      "source": "github_trending",
+      "title": "msitarzewski/agency-agents",
+      "url": "https://github.com/msitarzewski/agency-agents",
+      "summary": "A complete AI agency at your fingertips - From frontend wizards to Reddit community ninjas, from whimsy injectors to reality checkers. Each agent is a specialized expert with personality, processes, and proven deliverables.",
+      "hot_score": 62.1365,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-21T03:11:29.651335+00:00",
+      "last_seen_at": "2026-10-21T03:12:27.604761+00:00",
+      "metrics": {
+        "stars_total": 162443,
+        "stars_in_window": 562,
+        "forks": 26237,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Shell"
+    },
+    "it_ca5526b04a2a17ad": {
+      "id": "it_ca5526b04a2a17ad",
+      "source": "hf_papers",
+      "title": "PhysSkin++: Real-Time and Generalizable Physics-Based Animation via Self-Supervised Neural Skinning",
+      "url": "arxiv:2610.26067",
+      "summary": "Generalizing real-time physics-based animation across diverse 3D shapes and spatial discretizations remains challenging. In this paper, we introduce PhysSkin++, a physics-informed framework that learns continuous neural skinning fields from static geometries to construct compact deformation subspaces. Specifically, we propose a Neural Skinning Fields Autoencoder that predicts shape-dependent deformation subspaces without per-object network training. To learn these subspaces without simulation trajectories, we develop a Physics-Informed Self-Supervised Learning strategy that combines skinning-field normalization with conflict-aware gradient correction, stabilizing joint optimization under physical and orthogonality constraints. The learned representation supports efficient reduced dynamics with user control and contact interactions, together with direct animation binding to meshes, point clouds, and 3D Gaussians. For prescribed rig animation, we further introduce a self-supervised complementarity objective to learn complementary elastic responses without enforcing complementarity constraints at runtime. Experiments demonstrate cross-shape generalization of the learned skinning fields, real-time reduced simulation, and applications to controllable, collision-aware, and rig-complementary animation.",
+      "hot_score": 60.782,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-18T20:00:00+00:00",
+      "last_seen_at": "2026-10-21T03:12:27.614807+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 10
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_341f11e78b1225e8": {
+      "id": "it_341f11e78b1225e8",
+      "source": "hackernews",
+      "title": "Using Claude to reduce the attack surface of code",
+      "url": "https://www.anthropic.com/research/attack-surface-reduction",
+      "summary": "",
+      "hot_score": 60.7433,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-21T03:36:43+00:00",
+      "last_seen_at": "2026-10-22T03:10:26.990461+00:00",
+      "metrics": {
+        "points": 131,
+        "num_comments": 86
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_81d0790fb79eb500": {
+      "id": "it_81d0790fb79eb500",
+      "source": "hf_papers",
+      "title": "From Short Clips to Real-Time Streams: Identity-Aware Supervision and Context-Efficient Generation for Video Face Swapping",
+      "url": "arxiv:2610.26681",
+      "summary": "Video face swapping transfers the reference identity to a target video while preserving its other attributes and motion. Despite recent progress in reference-guided flow-based methods, jointly achieving faithful identity transfer, high fidelity, and real-time generation over long video streams remains challenging. To address this challenge, we rethink the task-specific structure of reference-guided video face swapping. First, face swapping changes only identity while preserving most visual content, yet flow-matching supervision is weakly sensitive to these changes. We therefore develop Joint Rec-ID Loss, which balances explicit identity supervision and latent reconstruction according to the noise level. Second, the target video already provides non-edited attributes and temporal dynamics, enabling generation with fewer spatial tokens and shorter temporal contexts through Face-RoI Generation and Short-Context Rollout Training. By integrating these designs, we propose StreamingSwap, a reference-guided flow-matching framework for real-time streaming video face swapping. We also introduce HumanFaceVid, comprising 1,000 hours of cinematic training data and evaluation sets of 200 short and 200 long videos. Experiments demonstrate that our method achieves competitive identity transfer and visual quality at 20 FPS on a single NVIDIA RTX 4090 GPU, with stable generation over videos up to 10 minutes long. Project webpage: https://aim-uofa.github.io/StreamingSwap/",
+      "hot_score": 58.3496,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-18T20:00:00+00:00",
+      "last_seen_at": "2026-10-21T03:12:27.618226+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 9
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_a30765726ba5b041": {
+      "id": "it_a30765726ba5b041",
+      "source": "hf_papers",
+      "title": "Building AI Research Teams for Autonomous Discovery of Linear Attention Architectures",
+      "url": "arxiv:2610.28887",
+      "summary": "Autonomous agents can increasingly propose ideas, modify code, and run experiments, creating an opportunity to accelerate scientific discovery using teams of collaborative AI researchers. To escape local minima in the discovery, we propose to encourage orthogonal exploration by constructing the team using agents with varying expertise. However, realizing this design requires more than diverse backgrounds. When experiments are costly, a team can test only a limited number of ideas, thereby creating the need to balance exploration and exploitation when selecting a subset of researchers to propose and execute new experiments. Furthermore, each result should shape what the team tries next. We therefore ask how AI researchers with different scientific backgrounds can build on one another's findings and sustain progress under a limited experimental budget. To address these challenges, we build a team of persistent AI researchers, each grounded in a different discipline, who keep private research histories, share experimental evidence, and receive research opportunities through adaptive allocation. We demonstrate the effectiveness of this design by deploying the team to search for linear attention architectures, where it outperforms GDN2 at 1.3B scale on language modeling, common-sense reasoning, and synthetic and real-world retrieval tasks. In controlled comparisons, removing any single organizational component from our design yields markedly weaker discoveries: without disciplinary backgrounds, the search plateaus early; without private histories, researchers make less progress despite identical shared evidence; and uniform selection falls short of adaptive allocation within the same budget. These results suggest that sustained autonomous discovery depends not only on stronger agents, but also on who explores, what they remember, and how research effort is allocated.",
+      "hot_score": 57.792,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-19T20:00:00+00:00",
+      "last_seen_at": "2026-10-22T03:10:27.074118+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 7
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_7d0ed93b88de47b1": {
+      "id": "it_7d0ed93b88de47b1",
+      "source": "github_trending",
+      "title": "Comfy-Org/ComfyUI",
+      "url": "https://github.com/Comfy-Org/ComfyUI",
+      "summary": "The most powerful and modular diffusion model GUI, api and backend with a graph/nodes interface. The fastest local inference engine in the world.",
+      "hot_score": 57.2843,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-19T03:07:38.381715+00:00",
+      "last_seen_at": "2026-10-22T03:10:27.062721+00:00",
+      "metrics": {
+        "stars_total": 141608,
+        "stars_in_window": 1206,
+        "forks": 16733,
+        "streak_days": 4
+      },
+      "streak_days": 4,
+      "language": "Python"
+    },
+    "it_625c8d07dbeecb64": {
+      "id": "it_625c8d07dbeecb64",
+      "source": "hf_papers",
+      "title": "Correction Training for Diffusion Models",
+      "url": "arxiv:2610.14136",
+      "summary": "Iterative sampling in diffusion models can lead to error accumulation due to exposure bias. The denoiser is trained on real images interpolated with noise, but at inference its inputs are constructed from its own imperfect predictions from the earlier steps, something it has never seen at training time. This might be one reason diffusion models often struggle without additional help, such as CFG. We introduce a correction step for diffusion models which attempts to reduce this training-inference gap. The corrector takes the base model's prediction as input and is trained against the same ground-truth target. This makes correction an explicit learning task, with training inputs provided by the base model. During sampling, at each denoising step, we iteratively refine the denoiser's clean-sample prediction. This allows us to correct predictions at intermediate denoising steps, preventing early artifacts from persisting into the final sample. Although the corrector is trained only on predictions from the base denoiser, it can be applied repeatedly to its own outputs at inference for better results. This simple framework leads to substantial improvement in sample quality while largely preserving diversity. We evaluate our method across DiT, SiT, and JiT. Our method substantially improves upon previously reported FID scores for unguided generation and, notably, unconditional generation, where producing high-quality samples without guidance has been particularly challenging. Our method achieves performance competitive with classifier-free guidance (CFG), and combining correction with CFG further improves diversity and reduces oversaturation typical of CFG. Finally, we show that the additional inference cost of correction can be amortized by distilling the refined predictions back into the base diffusion model, retaining the quality gains without additional inference-time overhead.",
+      "hot_score": 55.8232,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-13T20:00:00+00:00",
+      "last_seen_at": "2026-10-21T03:12:27.617057+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 9
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_90e3466f8031ffa0": {
+      "id": "it_90e3466f8031ffa0",
+      "source": "hackernews",
+      "title": "Launch HN: Alter (YC S25) – Access control for multi-user agents",
+      "url": "https://alterauth.com/",
+      "summary": "Hi HN! We’re Srikar and Kevan, founders of Alter – https://alterauth.com/ . We’re building access control for agents that can take actions on behalf of multiple users. If you’ve built an internal agent people use through Slack, you may have experienced this scenario: everyone signs in with their own account, but the agent connects to the CRM or billing system with one shared API key, so the agent can do anything that the key can do. User-level authentication in Slack does nothing to control what",
+      "hot_score": 55.4157,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-21T06:42:12+00:00",
+      "last_seen_at": "2026-10-22T03:10:26.991940+00:00",
+      "metrics": {
+        "points": 54,
+        "num_comments": 22
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_3e5ae7dc897b754c": {
+      "id": "it_3e5ae7dc897b754c",
+      "source": "hf_papers",
+      "title": "Real In, Real Out: What If We Only Use Real Data for Scene Text Editing?",
+      "url": "arxiv:2610.27592",
+      "summary": "Aiming to modify textual content while preserving the original style, Scene Text Editing (STE) has significant practical value in many applications. STE typically requires paired images before and after editing for training. However, recent approaches rely heavily on synthetic paired data and complex disentanglement strategies. They struggle to faithfully capture the diversity and complexity of natural scenes, often producing artifacts or hallucinations. In this work, we challenge the common practice and investigate whether STE can be driven by turning each real sample into its own paired supervision. Concretely, we explore multiple ways to disrupt the original image (e.g., Crop, Shuffle, Mask) to construct self-paired training data, and build a strong baseline (TextRIRO}) upon a conditional diffusion architecture. Our experiments show that combining character-column shuffling with image cropping (Shuffle&Crop) effectively destroys text semantics while preserving key style cues, enabling the model to learn editing behaviors directly from the real text image. With this concise yet real-oriented design, TextRIRO achieves promising performance in both accuracy and visual realism across real-world benchmarks, substantially mitigating the synthetic-to-real domain gap. Furthermore, we leverage TextRIRO to build TextRIRO-3M, a large-scale realistic dataset for long-text recognition by concatenating edited and original images. Experimental results show that training recognition models with TextRIRO-3M significantly improves recognition accuracy, demonstrating that TextRIRO provides highly useful training resources for downstream tasks. Overall, TextRIRO lifts STE to realistic, reliable, and widely applicable new levels. Code is available at https://github.com/YesianRohn/TextRIRO.",
+      "hot_score": 54.1433,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-19T20:00:00+00:00",
+      "last_seen_at": "2026-10-22T03:10:27.075283+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 4
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_20a259028135abda": {
+      "id": "it_20a259028135abda",
+      "source": "hackernews",
+      "title": "The bridge to agent-scale Git infrastructure",
+      "url": "https://github.blog/engineering/architecture-optimization/the-bridge-to-agent-scale-git-infrastructure",
+      "summary": "",
+      "hot_score": 53.0057,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-21T16:09:28+00:00",
+      "last_seen_at": "2026-10-22T03:10:26.991191+00:00",
+      "metrics": {
+        "points": 59,
+        "num_comments": 15
+      },
+      "streak_days": 0,
+      "language": "en"
+    }
+  },
+  "meta": {
+    "mode": "hybrid",
+    "day": "2026-10-22",
+    "generated_at": "2026-10-22T03:11:10.977596+00:00",
+    "window": {
+      "since": "2026-10-21T03:09:52.892549+00:00",
+      "until": "2026-10-22T03:10:27.124123+00:00",
+      "hours": 24.0,
+      "since_local": "2026-10-21T11:09+08:00",
+      "until_local": "2026-10-22T11:10+08:00",
+      "tz": "Asia/Shanghai"
+    },
+    "analysis": {
+      "items": 120,
+      "scored": 120,
+      "topics": 3,
+      "new_entity_mention_rows": 189,
+      "state_items": 12
+    },
+    "llm": {
+      "degraded": false,
+      "degraded_reason": "",
+      "calls": 1
+    },
+    "collect": {
+      "ok_sources": 6,
+      "failed_sources": 1,
+      "skipped": 0,
+      "total_items": 97
+    },
+    "verify": {
+      "verified": 0,
+      "unverifiable": 0,
+      "deferred": 0,
+      "failed": 0,
+      "llm_calls": 0
+    },
+    "predictions": {
+      "total": 59,
+      "verified": 0,
+      "pending": 59,
+      "unverifiable": 0,
+      "hit_rate": null,
+      "weighted_score": null,
+      "brier": null
+    },
+    "prediction_generation": {
+      "mode": "hybrid",
+      "generated": 5,
+      "inserted": 5,
+      "dropped": [],
+      "llm_calls": 1,
+      "candidate_pool": 20,
+      "degraded": false,
+      "degraded_reason": ""
+    },
+    "brief": {
+      "max_items_per_section": 10,
+      "velocity_board_enabled": true,
+      "velocity_board_top_n": 5
+    },
+    "signals": {
+      "entities": 279,
+      "points": 906,
+      "with_velocity": 38,
+      "insufficient": 112,
+      "cold_start": 129,
+      "min_window_hours": 6.0
+    },
+    "enhance_total": 25,
+    "enhanced": 25,
+    "enhance_skipped_count": 0,
+    "enhance_cache_hit": 12,
+    "enhance_cost_cny": 0.006592
+  }
+}
