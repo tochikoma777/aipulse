@@ -146,23 +146,32 @@ def _heat_lines(
     report = reports.get("heat_migration")
     if report is None or not report.entries:
         return ["- 无板块份额数据"]
+    want = "up" if positive else "down"
     rows = [
         e
         for e in report.entries
-        if e.get("trend_usable", True) and (float(e["delta_pp"]) > 0) == positive
+        if e.get("trend_usable", True) and str(e.get("direction", "")) == want
     ]
     if not rows:
-        return ["- 无可用板块（无符合方向的条目，或相关板块采集异常已剔除）"]
+        return [
+            "- 无可用板块（按斜率判定的方向为空；走平或采集异常的板块已剔除，"
+            "不要把首末差为正的板块写成上升）"
+        ]
     out: list[str] = []
     for entry in rows[:limit]:
         ids = _ids(entry.get("t1_top_items"), 3)
         excluded = entry.get("excluded_days") or []
         note = f"；已排除 {len(excluded)} 个板块空日" if excluded else ""
+        conflict = (
+            "；⚠ 首末差与斜率方向不一致，必须同时给出两个数字并说明拐点"
+            if entry.get("signal_conflict")
+            else ""
+        )
         out.append(
             f"- {entry['section']}：份额 {entry['t0_share']}→{entry['t1_share']}"
-            f"（{float(entry['delta_pp']):+.2f}pp）；"
-            f"窗口斜率 {float(entry['slope_pp_per_day']):+.2f}pp/天"
-            f"（基于 {entry['slope_days']} 天）{note}；代表 {ids}"
+            f"（首末差 {float(entry['delta_pp']):+.2f}pp，仅作幅度参照）"
+            f"；斜率 {float(entry['slope_pp_per_day']):+.2f}pp/天"
+            f"（{entry['slope_days']} 天，方向以此为准）{note}{conflict}；代表 {ids}"
         )
     return out
 
@@ -386,6 +395,7 @@ def build_evidence(
         _append_taint()
         _append_failures()
     elif key == "emerging_topics":
+        blocks.append("### 对比区间（源集合同构）\n" + "\n".join(_comparison_line(reports)))
         blocks.append(
             "### 今日新进榜（单日，不构成趋势）\n" + "\n".join(_event_lines(reports, ("new",)))
         )
@@ -455,6 +465,24 @@ def _claims_correlation(body: str) -> bool:
             continue
         return True
     return False
+
+
+def segment_violations(body: str, key: str, evidence: Evidence, *, weak_corr: bool) -> list[str]:
+    """按节规则校验一段正文；生成时与事后自检（S3 L1）共用同一套判据。"""
+    return violations(
+        body,
+        evidence,
+        requires_speculation=key in _SPECULATION_SEGMENTS,
+        weak_corr=weak_corr,
+        max_chars=SEGMENT_MAX_CHARS.get(key),
+        # 预言复盘本来就是计数类结论，没有条目级事实可引用
+        require_item_id=key != "prediction_review",
+    )
+
+
+def weak_correlation_present(reports: dict[str, StructureReport]) -> bool:
+    """是否所有共动组都 <5 天（外部需要复用同一判定时用）。"""
+    return _has_weak_correlation(reports)
 
 
 def violations(
@@ -562,24 +590,24 @@ async def generate_trend(
         segment.char_count = char_count(body)
         segment.cited_item_ids = sorted(set(_ITEM_ID_RE.findall(body)))
         segment.boilerplate_hits = boilerplate_hits(body)
-        segment.violations = violations(
-            body,
-            evidence,
-            requires_speculation=key in _SPECULATION_SEGMENTS,
-            weak_corr=weak_corr,
-            max_chars=SEGMENT_MAX_CHARS.get(key),
-            # 预言复盘本来就是计数类结论，没有条目级事实可引用
-            require_item_id=key != "prediction_review",
-        )
+        segment.violations = segment_violations(body, key, evidence, weak_corr=weak_corr)
         segment.llm_calls = 1
         segment.prompt_tokens = result.prompt_tokens
         segment.completion_tokens = result.completion_tokens
         segments.append(segment)
 
+    heat = reports.get("heat_migration")
+    comp_start = str(heat.metrics.get("comparison_start") or "") if heat else ""
+    comp_end = str(heat.metrics.get("comparison_end") or "") if heat else ""
+    comp_days = int(heat.metrics.get("comparison_days") or 0) if heat else 0
+
     return TrendReport(
         window_start=sliced.days[0],
         window_end=sliced.days[-1],
         window_days=len(sliced.days),
+        comparison_start=comp_start,
+        comparison_end=comp_end,
+        comparison_days=comp_days,
         segments=segments,
         llm_calls=calls,
         attempts=attempts,

@@ -219,7 +219,22 @@ def test_markdown_has_seven_numbered_sections() -> None:
     assert markdown.count("## ") == 7
     assert "## 1. 节0" in markdown
     assert "## 7. 节6" in markdown
-    assert "周度趋势（2026-10-15 → 2026-10-21，7 天）" in markdown
+    assert "周度趋势（取数 2026-10-15 → 2026-10-21，7 天）" in markdown
+
+
+def test_markdown_marks_comparison_interval_separately() -> None:
+    """取数窗口与比较区间不同时必须分别写明，避免读者把 7 天和 5 天混为一谈。"""
+    report = TrendReport(
+        window_start="2026-10-16",
+        window_end="2026-10-22",
+        window_days=7,
+        comparison_start="2026-10-17",
+        comparison_end="2026-10-22",
+        comparison_days=6,
+    )
+    markdown = report.to_markdown()
+    assert "比较区间 2026-10-17 → 2026-10-22（6 天，源集合同构）" in markdown
+    assert "跨源集合变更日的对比已禁用" in markdown
 
 
 def test_summary_is_json_serialisable() -> None:
@@ -255,6 +270,17 @@ def test_cli_refuses_off_mode(monkeypatch) -> None:  # noqa: ANN001
     assert "off 档" in result.output
 
 
+def test_parse_range_rejects_bad_value() -> None:
+    """直接测解析函数：CLI 输出会被 rich 按终端宽度换行，断言字符串在 CI 上不可靠。"""
+    import typer
+
+    from aipulse.cli.commands.trend import _parse_range
+
+    with pytest.raises(typer.BadParameter, match="--range"):
+        _parse_range("week")
+    assert _parse_range("7d") == 7
+
+
 def test_cli_rejects_bad_range(monkeypatch) -> None:  # noqa: ANN001
     from typer.testing import CliRunner
 
@@ -262,8 +288,8 @@ def test_cli_rejects_bad_range(monkeypatch) -> None:  # noqa: ANN001
 
     monkeypatch.setattr(trend_cli, "load_settings", lambda: _fake_settings("off"))
     result = CliRunner().invoke(trend_cli.app, ["--range", "week"])
+    # 只断言"非零退出"：错误框的具体排版随终端宽度变化（CI 上会把 --range 折断）
     assert result.exit_code != 0
-    assert "--range" in result.output
 
 
 class _TruncatingClient:

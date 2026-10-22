@@ -21,6 +21,7 @@ from aipulse.cli.commands import (
     normalize,
     predict,
     search,
+    selfcheck,
     sources,
     stats,
     topics,
@@ -48,6 +49,8 @@ app.add_typer(serve_app)
 app.add_typer(inbox.app)
 # 用户知识库（M6c）：笔记 / 阅读状态
 app.add_typer(knowledge.app)
+# 周报自验证（M5 S3）：L1-L4，纯离线
+app.add_typer(selfcheck.app)
 
 # 待实现（占位，--help 可见）；collect / analyze / brief / daily / predict / stats 已实现，
 # 与占位命令共用 add_typer 注册（占位于 commands/_placeholder.py 内定义）

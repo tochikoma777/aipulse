@@ -31,6 +31,11 @@ class TrendReport(BaseModel):
     window_start: str = ""
     window_end: str = ""
     window_days: int = 0
+    # 份额/斜率实际使用的比较区间（源集合同构）；与取数窗口不同时必须显式标注，
+    # 否则读者会把"7 天窗口"和"5 天比较"混为一谈。
+    comparison_start: str = ""
+    comparison_end: str = ""
+    comparison_days: int = 0
     segments: list[TrendSegment] = Field(default_factory=list)
     llm_calls: int = 0
     attempts: int = 0
@@ -42,10 +47,17 @@ class TrendReport(BaseModel):
 
     def to_markdown(self) -> str:
         lines = [
-            f"# AI 脉搏 · 周度趋势（{self.window_start} → {self.window_end}，"
+            f"# AI 脉搏 · 周度趋势（取数 {self.window_start} → {self.window_end}，"
             f"{self.window_days} 天）",
             "",
         ]
+        if self.comparison_start and self.comparison_days:
+            lines.append(
+                f"> 比较区间 {self.comparison_start} → {self.comparison_end}"
+                f"（{self.comparison_days} 天，源集合同构）。份额与斜率只在比较区间内计算，"
+                "跨源集合变更日的对比已禁用。"
+            )
+            lines.append("")
         for index, segment in enumerate(self.segments, 1):
             lines.append(f"## {index}. {segment.title}")
             lines.append("")
@@ -64,6 +76,9 @@ class TrendReport(BaseModel):
             "window_start": self.window_start,
             "window_end": self.window_end,
             "window_days": self.window_days,
+            "comparison_start": self.comparison_start,
+            "comparison_end": self.comparison_end,
+            "comparison_days": self.comparison_days,
             "llm_calls": self.llm_calls,
             "attempts": self.attempts,
             "truncated_segments": self.truncated_segments,

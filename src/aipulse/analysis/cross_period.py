@@ -85,6 +85,9 @@ DEFAULT_FLAT_DELTA = 5.0
 DEFAULT_TRACK_MIN_DAYS = 2
 DEFAULT_TRACK_MIN_OVERLAP = 3
 DEFAULT_TRACK_CORRELATION = 0.7
+# ① 的方向判定阈值（pp/天）：斜率绝对值低于它视为「基本走平」。
+# 5 天窗口下 0.5pp/天 ≈ 累计 2.5pp，小于日报单日份额波动。
+DEFAULT_DIRECTION_EPS = 0.5
 DEFAULT_MIN_EDGE_CORRELATION = 0.8
 
 # 每个源的"互动指标"：背离检测要拿它跟 hot_score 比方向。
@@ -889,6 +892,11 @@ def heat_migration(
         # ★ 若该板块的供给源在窗口内"整源 0 条"，则整个板块的结构判断都不可信
         taint_sources = sorted(s for s in section_sources.get(section, set()) if failures.get(s))
         taint_days = sorted({day for source in taint_sources for day in failures[source]})
+        slope = _slope_at(points)
+        direction = (
+            "flat" if abs(slope) < DEFAULT_DIRECTION_EPS else ("up" if slope > 0 else "down")
+        )
+        conflict = (direction == "up" and delta_pp < 0) or (direction == "down" and delta_pp > 0)
         entries.append(
             {
                 "section": section,
@@ -897,8 +905,12 @@ def heat_migration(
                 "t0_share": _round(sa.get(section, 0.0)),
                 "t1_share": _round(sb.get(section, 0.0)),
                 "delta_pp": _round(delta_pp, 2),
-                "slope_pp_per_day": _round(_slope_at(points), 2),
+                "slope_pp_per_day": _round(slope, 2),
                 "slope_days": len(points),
+                # 方向以斜率为准（两点差会被首末两天主导），但幅度仍报首末差。
+                # 两者不一致时必须显式标出，禁止只挑一个数字下结论。
+                "direction": direction,
+                "signal_conflict": conflict,
                 "excluded_days": excluded,
                 "slope_note": (
                     f"已排除 {len(excluded)} 个板块空日（{'/'.join(excluded)}）" if excluded else ""
@@ -920,6 +932,7 @@ def heat_migration(
     entries.sort(key=lambda e: abs(float(e["delta_pp"])), reverse=True)
     excluded_total = sum(len(e["excluded_days"]) for e in entries)
     tainted = [str(e["section"]) for e in entries if not e["trend_usable"]]
+    conflicts = [str(e["section"]) for e in entries if e["signal_conflict"]]
     source_changes = sorted(source_change_days(index))
     return StructureReport(
         key=key,
@@ -930,8 +943,9 @@ def heat_migration(
         notes=(
             f"对比区间 {a.day}→{b.day}（{len(days_used)} 天，源集合同构）；"
             f"份额分母仅含已归板块的条目；"
-            f"slope_pp_per_day = 剔除板块空日后、按真实日序号的最小二乘斜率"
-            + (f"（共排除 {excluded_total} 个板块日）" if excluded_total else "")
+            f"direction 以斜率（阈值 ±{DEFAULT_DIRECTION_EPS}pp/天）为准，"
+            f"delta_pp 只作幅度参照"
+            + (f"；首末差与斜率方向不一致：{'/'.join(conflicts)}" if conflicts else "")
             + (f"；采集失败、不可作趋势：{'/'.join(tainted)}" if tainted else "")
             + (
                 f"；跨源集合变更日（{'/'.join(source_changes)}）的比较已禁用"
@@ -947,6 +961,7 @@ def heat_migration(
             "source_change_days": source_changes,
             "excluded_section_days": excluded_total,
             "tainted_sections": tainted,
+            "conflicting_sections": conflicts,
             "t0_items": len(a.items),
             "t1_items": len(b.items),
             "overlap_items": len(_common(a, b)),
