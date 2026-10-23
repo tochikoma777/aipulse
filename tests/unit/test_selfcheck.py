@@ -258,3 +258,20 @@ def test_run_selfcheck_returns_four_layers(tmp_path: Path) -> None:
     assert [layer.layer for layer in report.layers] == ["L1", "L2", "L3", "L4"]
     assert report.to_dict()["layers"][0]["metrics"]["total_chars"] > 0
     assert "自验证" in report.to_markdown()
+
+
+def test_selfcheck_reads_machine_json(tmp_path: Path) -> None:
+    """S5 起 L1-L4 读机器层 weekly.json：sections 与 Markdown 解析结果一致。"""
+    from aipulse.reasoning.selfcheck import sections_from_machine
+
+    bodies = _full_bodies()
+    payload = {
+        "schema_version": 2,
+        "segments": [
+            {"key": key, "title": title, "body": bodies.get(key, ""), "cited_item_ids": []}
+            for key, title, _ in SEGMENTS
+        ],
+    }
+    sections = sections_from_machine(payload)
+    assert set(sections) == {key for key, _, _ in SEGMENTS}
+    assert sections == parse_markdown(_report_text(bodies))

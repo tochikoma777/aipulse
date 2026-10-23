@@ -218,7 +218,14 @@ _PERSONA_JSON = json.dumps(
 _CROSS_JSON = json.dumps(
     {
         "persona": "optimist",
-        "challenges": ["怀疑派忽略了 it_0000000000000002 的连续在榜"],
+        "challenges": [
+            {
+                "target": "怀疑派",
+                "point": "用被质疑的指标去验真，等于没验",
+                "outcome": "部分让步",
+                "cited_item_ids": ["it_0000000000000002"],
+            }
+        ],
         "concessions": ["承认样本只有三天"],
         "revised_stance": "维持，但降低强度",
         "cited_item_ids": ["it_0000000000000002"],
@@ -488,7 +495,8 @@ def test_debate_cli_writes_report(tmp_path: Path, monkeypatch: pytest.MonkeyPatc
         cli_app, ["debate", "--topic", "Agent 议题", "--reports-dir", str(reports)]
     )
     assert result.exit_code == 0, result.output
-    written = root / "reports" / "debate" / "debate-Agent-议题.md"
+    # 产物按窗口末日分目录（不再用固定名覆盖，跨期历史才留得住）
+    written = root / "reports" / "debate" / "2026-10-22" / "debate-Agent-议题.md"
     assert written.exists()
     assert written.with_suffix(".json").exists()
     assert "关键分歧" in written.read_text(encoding="utf-8")

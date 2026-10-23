@@ -51,12 +51,34 @@ class _ScriptedClient:
         self.purposes.append(purpose)
         if self.fail_at is not None and index == self.fail_at:
             raise LLMError("模拟失败：finish_reason=length")
+        # 第 8 次调用（三句话）走结构化输出，正文脚本对它没意义
+        body = (
+            HEADLINES_JSON
+            if purpose == "trend_headlines"
+            else self.bodies[index % len(self.bodies)]
+        )
         return LLMResult(
-            content=self.bodies[index % len(self.bodies)],
+            content=body,
             model=f"fake/{model_tier}",
             prompt_tokens=100,
             completion_tokens=50,
         )
+
+
+HEADLINES_JSON = json.dumps(
+    {
+        "headlines": ["社区舆论份额收缩最明显", "论文板块本周不作判断", "榜单换血依然剧烈"],
+        "judgements": [
+            {
+                "key": "rising_topics",
+                "title": "上升主题",
+                "claim": "上升集中在开源项目，社区舆论在收缩",
+                "cited_item_ids": ["it_d56bf7f0d55e498a"],
+            }
+        ],
+    },
+    ensure_ascii=False,
+)
 
 
 GOOD_BODY = (
@@ -80,15 +102,18 @@ async def test_generate_trend_runs_seven_segments(tmp_path) -> None:  # noqa: AN
 
     assert len(report.segments) == 7
     assert [s.key for s in report.segments] == [key for key, _, _ in SEGMENTS]
-    assert report.llm_calls == 7
-    assert len(client.calls) == 7
-    assert set(client.purposes) == {"trend_weekly"}
+    # 7 节 + 第 8 次「三句话」调用
+    assert report.llm_calls == 8
+    assert len(client.calls) == 8
+    assert set(client.purposes) == {"trend_weekly", "trend_headlines"}
+    assert len(report.headlines) == 3
+    assert report.judgements
     assert all(segment.llm_calls == 1 for segment in report.segments)
     assert all(segment.char_count == char_count(GOOD_BODY) for segment in report.segments)
     assert "it_d56bf7f0d55e498a" in report.segments[0].cited_item_ids
     assert report.window_start == "2026-10-19"
     assert report.window_end == "2026-10-21"
-    assert report.cost_cny == pytest.approx((100 + 50) * 7 * 4.0 / 1_000_000)
+    assert report.cost_cny == pytest.approx((100 + 50) * 8 * 4.0 / 1_000_000)
 
 
 @pytest.mark.asyncio
@@ -97,7 +122,7 @@ async def test_segment_failure_is_isolated(tmp_path) -> None:  # noqa: ANN001
     report = await generate_trend(_index(tmp_path), client)
     failed = report.segments[2]
     assert failed.skipped_reason.startswith("LLM 调用失败")
-    assert report.llm_calls == 6
+    assert report.llm_calls == 7  # 6 节正文 + 三句话
     assert sum(1 for s in report.segments if s.body) == 6
 
 
@@ -115,7 +140,7 @@ async def test_each_segment_prompt_is_isolated(tmp_path) -> None:  # noqa: ANN00
     """每段 prompt 必须带自己的节名，而不是同一份上下文复用 7 次。"""
     client = _ScriptedClient([GOOD_BODY])
     await generate_trend(_index(tmp_path), client)
-    for (_, title, _), prompt in zip(SEGMENTS, client.calls, strict=True):
+    for (_, title, _), prompt in zip(SEGMENTS, client.calls[:7], strict=True):
         assert title in prompt
 
 
@@ -373,3 +398,69 @@ def test_correlation_negation_is_not_a_violation() -> None:
         weak_corr=True,
     )
     assert out == []
+
+
+# ── S5 人类层渲染 ─────────────────────────────────────────────────────────
+
+
+def test_render_weekly_has_no_bare_ids_in_body() -> None:
+    """正文（数据溯源区之前）不得出现裸 item_id；ID 只在文末溯源区。"""
+    from aipulse.render.weekly import render_weekly
+
+    report = TrendReport(
+        window_start="2026-10-19",
+        window_end="2026-10-21",
+        window_days=3,
+        headlines=["社区舆论份额收缩最明显", "论文板块本周不作判断", "榜单换血依然剧烈"],
+        judgements=[],
+        caveats=["份额只在 10-20→10-21 区间计算"],
+        segments=[
+            TrendSegment(
+                key="rising_topics",
+                title="上升主题",
+                body="it_d56bf7f0d55e498a 与 it_2132166d14a053db 同步上升。",
+                cited_item_ids=["it_d56bf7f0d55e498a"],
+            )
+        ],
+    )
+    markdown = render_weekly(report, _index_for_render())
+    body = markdown.split("## 数据溯源")[0]
+    assert "it_d56bf7f0d55e498a" not in body, body
+    assert "📌 本周三句话" in markdown
+    assert "🎯 下期观察" in markdown  # 表格由 cross_period 确定性渲染
+    assert "<details>" in markdown and "份额只在" in markdown
+    assert "it_d56bf7f0d55e498a" in markdown.split("## 数据溯源")[1]
+
+
+def _index_for_render():
+    import tempfile
+    from pathlib import Path
+
+    tmp = Path(tempfile.mkdtemp())
+    _day(tmp, "2026-10-19", [_item("it_a", "alpha", 10.0)])
+    _day(tmp, "2026-10-20", [_item("it_a", "alpha", 20.0)])
+    _day(tmp, "2026-10-21", [_item("it_a", "alpha", 30.0), _item("it_b", "beta", 40.0)])
+    return load_cross_period(tmp)
+
+
+def test_machine_json_keeps_bodies_and_ids_for_l1() -> None:
+    """机器层必须保留 L1-L4 依赖的全部数据（7 节正文 + 裸 ID + 免责）。"""
+    report = TrendReport(
+        window_end="2026-10-21",
+        caveats=["比较区间 10-20 → 10-21"],
+        segments=[
+            TrendSegment(
+                key="rising_topics",
+                title="上升主题",
+                body="it_d56bf7f0d55e498a 上升",
+                cited_item_ids=["it_d56bf7f0d55e498a"],
+                violations=["超字数"],
+            )
+        ],
+    )
+    payload = report.to_machine_json()
+    assert payload["schema_version"] == 2
+    assert payload["segments"][0]["body"] == "it_d56bf7f0d55e498a 上升"
+    assert payload["segments"][0]["cited_item_ids"] == ["it_d56bf7f0d55e498a"]
+    assert payload["segments"][0]["violations"] == ["超字数"]
+    assert payload["caveats"] == ["比较区间 10-20 → 10-21"]

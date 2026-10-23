@@ -1,0 +1,132 @@
+"""M5 S5 人类层渲染单测：纯离线，用 tmp_path 造日报。"""
+
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+from aipulse.analysis.cross_period import load_cross_period
+from aipulse.render.weekly import linkify, render_weekly
+from aipulse.schema.trend import Judgement, TrendReport, TrendSegment
+
+_SECTIONS = {
+    "社区舆论": ["it_1111111111111111", "it_2222222222222222"],
+    "开源项目": ["it_3333333333333333"],
+}
+_TITLES = {
+    "it_1111111111111111": ("话题 A1", "https://example.com/a1"),
+    "it_2222222222222222": ("话题 A2", "https://example.com/a2"),
+    "it_3333333333333333": ("仓库 B1", "https://example.com/b1"),
+}
+_URLS = {k: v[1] for k, v in _TITLES.items()}
+
+
+def _daily(day: str, scores: dict[str, float]) -> dict[str, object]:
+    items = {
+        item_id: {
+            "title": _TITLES[item_id][0],
+            "url": _TITLES[item_id][1],
+            "source": "hackernews",
+            "hot_score": score,
+            "summary": "摘要正文，不该出现在证据包里",
+        }
+        for item_id, score in scores.items()
+    }
+    return {
+        "date": day,
+        "items": items,
+        "sections": [{"name": k, "item_ids": v} for k, v in _SECTIONS.items()],
+    }
+
+
+def _index(tmp_path: Path):  # noqa: ANN201
+    days = {
+        "2026-10-19": {
+            "it_1111111111111111": 40.0,
+            "it_2222222222222222": 30.0,
+            "it_3333333333333333": 20.0,
+        },
+        "2026-10-20": {
+            "it_1111111111111111": 60.0,
+            "it_2222222222222222": 25.0,
+            "it_3333333333333333": 30.0,
+        },
+        "2026-10-21": {
+            "it_1111111111111111": 80.0,
+            "it_2222222222222222": 20.0,
+            "it_3333333333333333": 50.0,
+        },
+    }
+    for day, scores in days.items():
+        target = tmp_path.joinpath(*day.split("-"))
+        target.mkdir(parents=True, exist_ok=True)
+        (target / "daily.json").write_text(json.dumps(_daily(day, scores)), encoding="utf-8")
+    return load_cross_period(tmp_path)
+
+
+def _report() -> TrendReport:
+    return TrendReport(
+        window_start="2026-10-19",
+        window_end="2026-10-21",
+        window_days=3,
+        headlines=["社区舆论热度抬升", "开源项目份额稳定", "榜单换血依然剧烈"],
+        judgements=[
+            Judgement(
+                key="rising_topics",
+                title="上升主题",
+                claim="注意力集中在话题 A1",
+                cited_item_ids=["it_1111111111111111"],
+            )
+        ],
+        caveats=["份额只在 2026-10-19→2026-10-21 区间计算"],
+        segments=[
+            TrendSegment(
+                key="rising_topics",
+                title="上升主题",
+                body="it_1111111111111111 与 it_3333333333333333 同步上升。",
+                cited_item_ids=["it_1111111111111111", "it_3333333333333333"],
+            )
+        ],
+    )
+
+
+def test_share_table_is_rendered_from_structures(tmp_path: Path) -> None:
+    """板块份额表由 cross_period 确定性渲染，不经模型。"""
+    markdown = render_weekly(_report(), _index(tmp_path))
+    assert "## 📊 板块份额变化" in markdown
+    assert "社区舆论" in markdown
+    assert "pp" in markdown
+    assert "█" in markdown  # Unicode 条形图
+
+
+def test_judgements_render_as_links_without_bare_ids(tmp_path: Path) -> None:
+    markdown = render_weekly(_report(), _index(tmp_path))
+    assert "依据 [话题 A1](https://example.com/a1)" in markdown
+
+
+def test_linkify_replaces_bare_ids(tmp_path: Path) -> None:
+    index = _index(tmp_path)
+    out = linkify(index, "it_1111111111111111 很热，it_3333333333333333 也在榜")
+    assert "it_1111111111111111" not in out
+    assert "[话题 A1](https://example.com/a1)" in out
+    assert "[仓库 B1](https://example.com/b1)" in out
+
+
+def test_linkify_keeps_unknown_ids(tmp_path: Path) -> None:
+    """窗口内没有的 id 不能被凭空编成链接。"""
+    index = _index(tmp_path)
+    out = linkify(index, "it_ffffffffffffffff 不在窗口内")
+    assert "（条目已不在窗口内）" in out
+
+
+def test_caveats_go_into_details(tmp_path: Path) -> None:
+    markdown = render_weekly(_report(), _index(tmp_path))
+    assert "<details>" in markdown
+    assert "份额只在 2026-10-19→2026-10-21 区间计算" in markdown
+    body = markdown.split("<details>")[0]
+    assert "份额只在" not in body
+
+
+def test_empty_report_still_renders(tmp_path: Path) -> None:
+    markdown = render_weekly(TrendReport(window_end="2026-10-21"), _index(tmp_path))
+    assert markdown.startswith("# AI 脉搏 · 周度趋势")

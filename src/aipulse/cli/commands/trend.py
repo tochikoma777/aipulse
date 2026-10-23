@@ -1,7 +1,12 @@
 """trend 命令（M5）：周度趋势长文。
 
-`aipulse trend --range 7d`  → Markdown 到 stdout
+`aipulse trend --range 7d`  → 人类版 Markdown 到 stdout
 `aipulse trend --range 7d --json` → 分段指标（字数/锚定 id/套话/违规）到 stdout
+
+产物按**窗口结束日**建目录，不再用固定名覆盖（跨期历史是 L3/L4 的输入）：
+
+    data/reports/trend/<window_end>/weekly.md    人类层（三句话 + 表格 + 折叠免责）
+    data/reports/trend/<window_end>/weekly.json  机器层（7 节正文 + id + 免责，供 L1-L4）
 
 只读 `data/reports/**`；LLM 用量走内存记账（engine=None），**不写主库**，
 所以跑一次 trend 不会改变 `data/aipulse.db` 的 sha256。
@@ -20,6 +25,7 @@ from aipulse.core.config import load_settings
 from aipulse.core.logging import configure_logging
 from aipulse.llm.base import build_client
 from aipulse.reasoning.trend import SEGMENTS, generate_trend
+from aipulse.render.weekly import render_weekly
 
 app = typer.Typer(
     name="trend",
@@ -93,11 +99,17 @@ def main(
         )
     )
 
-    markdown = report.to_markdown()
-    if out:
-        target = Path(out)
-        target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_text(markdown, encoding="utf-8")
+    # 人类层：三句话 + 表格 + 折叠免责；机器层：7 节正文 + id + 免责（供 L1-L4）
+    markdown = render_weekly(report, index)
+    machine = report.to_machine_json()
+    issue = report.window_end or "unknown"
+    default_dir = (Path(settings.app.data_dir) / "reports") / "trend" / issue
+    md_path = Path(out) if out else default_dir / "weekly.md"
+    md_path.parent.mkdir(parents=True, exist_ok=True)
+    md_path.write_text(markdown, encoding="utf-8")
+    md_path.with_suffix(".json").write_text(
+        json.dumps(machine, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
 
     if json_output:
         typer.echo(json.dumps(report.summary(), ensure_ascii=False, indent=2))
@@ -111,6 +123,10 @@ def main(
         f"截断 {len(report.truncated_segments)} 段，"
         f"tokens {report.prompt_tokens}+{report.completion_tokens}，"
         f"成本 ¥{report.cost_cny:.4f}",
+        err=True,
+    )
+    typer.echo(
+        f"[trend] 落盘 {md_path}（人类层）+ {md_path.with_suffix('.json')}（机器层）",
         err=True,
     )
     for segment in report.segments:

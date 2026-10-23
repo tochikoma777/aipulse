@@ -2,16 +2,17 @@
 
 This file provides guidance to CodeBuddy Code when working with code in this repository.
 
-## ★ 当前阶段：M5（周期趋势长文 + 多角色辩论）—— S1–S4 全部跑通，未打 tag
+## ★ 当前阶段：M5（趋势长文 + 多角色辩论 + 产物可读化）—— S1–S5 全部跑通，未打 tag
 
-**一句话**：M0–M4、M6a、M6b、M6c 完成并真跑验证；**M5 的趋势长文（S1→S3）与多角色辩论（S4）都已实跑通过**。M5 整体未打 tag（等 SSOT v1.23 同步后再打 `m5`）。
+**一句话**：M0–M4、M6a、M6b、M6c 完成并真跑验证；**M5 的趋势长文（S1→S3）、多角色辩论（S4）、产物可读化（S5）都已实跑通过**。M5 整体未打 tag（等 SSOT v1.23 同步后再打 `m5`）。
 
 | M5 落点 | 现状 |
 |---|---|
 | `analysis/cross_period.py` | ✅ 9 个跨期结构 + 轨迹层 + 坏日/源集合变更归因 |
 | `reasoning/trend.py` · `schema/trend.py` · `prompts/trend/weekly.j2` | ✅ 7 节分段生成（每节一次调用） |
-| `reasoning/selfcheck.py` · `cli/commands/selfcheck.py` | ✅ L1–L4 自验证（离线，0 成本） |
-| `data/reports/trend/` | ✅ `weekly.md` / `selfcheck.{md,json}` / `watchlist.json` / `calibration.json` |
+| `reasoning/selfcheck.py` · `cli/commands/selfcheck.py` | ✅ L1–L4 自验证（离线，0 成本；**读 `weekly.json` 机器层**，状态合并各期目录） |
+| `data/reports/trend/<窗口末日>/` | ✅ `weekly.md`（人类层）/ `weekly.json`（机器层）/ `selfcheck.{md,json}` / `watchlist.json` / `calibration.json` |
+| `render/weekly.py` · `render/debate.py` · `prompts/trend/headlines.j2` | ✅ S5 人类层渲染（三句话 / 表格 / 交锋矩阵 / 折叠免责 / 文末溯源） |
 | `schema/debate.py` · `reasoning/debate.py` · `prompts/debate/{round1,round2,moderator}.j2` | ✅ 四方并行 → 交叉质证 → 主持人收敛（实跑 9/9 调用，¥0.18） |
 | `data/reports/debate/` | ✅ `debate-<slug>.{md,json}`（不入库，只落盘） |
 | `pipeline/weekly.py` | ⬜ 不存在（周报靠 `aipulse trend` 手动/cron 触发） |
@@ -21,7 +22,10 @@ This file provides guidance to CodeBuddy Code when working with code in this rep
 
 **debate 验收要点（手册 §6 DoD，别做偏）**：四个 persona **必须 `asyncio.gather` 并行**（串行视为不合格）；证据包每条 ≤60 字、合计 ≤15 条、**绝不回显摘要原文**；收敛块必须含「什么证据会让我改变判断」。
 
-**★ 证伪条件必须可判定（本轮最重要的一条，跨 trend/debate 通用）**：必须是**单一二元可观测状态**（如「10-23 是否仍在 Top30」），禁止数值阈值、禁止两个独立问句合取（4 种组合状态对 2 个分支必然覆盖不全）。校验器在 `schema/debate.py::falsification_violations`。不合格的条件**只标记不可用、不判整场失败**——只有可用数为 0 才是真的没有可判定结论（与 S2.6 拒绝「斜率唯一」同一理由：不用过度保守换掉有效结论）。
+**★ 双层分离（S5，跨 trend/debate 通用）**：机器层看过程，人类层看结论。`weekly.json` 保留 7 节正文 + 裸 ID + violations + caveats，**L1-L4 读它**；`weekly.md` 只给结论（三句话 + 判断 + 表格），**正文零裸 ID**，免责进 `<details>`，ID 收进文末「数据溯源」。
+★ 红线：不得为了排版好看而删掉 L1-L4 依赖的数据——数据是**移位**，不是删除。
+
+**★ 证伪条件必须可判定（跨 trend/debate 通用）**：必须是**单一二元可观测状态**（如「10-23 是否仍在 Top30」），禁止数值阈值、禁止两个独立问句合取（4 种组合状态对 2 个分支必然覆盖不全）。校验器在 `schema/debate.py::falsification_violations`。不合格的条件**只标记不可用、不判整场失败**——只有可用数为 0 才是真的没有可判定结论（与 S2.6 拒绝「斜率唯一」同一理由：不用过度保守换掉有效结论）。
 
 **M5 里已经踩死、不要重犯的四条**（详见 `docs/开发日志.md` 的 M5「坑」）：
 1. `daily.json` 的 30 条是 **brief 渲染集（Top30）**，不是全量语料——「今天不在榜」只能写「跌出 Top30」。

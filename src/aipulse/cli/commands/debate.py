@@ -4,10 +4,10 @@
 `aipulse debate --topic "…" --json`      → 只吐指标 JSON（正文不刷屏）
 `aipulse debate --topic "…" --out X.md`  → 指定落盘路径
 
-产物落 `data/reports/debate/debate-<slug>.{md,json}`（与 `data/reports/trend/` 同构）：
-**不入库**，只落盘。注意产物一旦被 commit，本地重跑产生 diff 会让
-`scripts/cron_knowledge.sh` 的 `git diff --quiet` 判定为脏工作区而跳过 pull/export——
-这与 `weekly.md` 的现状是同一级别，未做特殊处理。
+产物落 `data/reports/debate/<窗口末日>/debate-<slug>.{md,json}`（与 `data/reports/trend/` 同构）：
+**不入库**，只落盘。按窗口末日分目录，同一天的多个话题并存，跨期历史也不会被覆盖。
+
+该目录已被 `scripts/cron_knowledge.sh` 的脏树检查排除（生成物重跑即脏，不应阻断导出）。
 
 TODO(auto)：从 `data/reports/trend/weekly.md` 的分歧度自动挑本周最大争议话题。
 需要先把"分歧度"定义成可计算的量（候选：同一 item 在不同段被给出相反方向、
@@ -28,6 +28,7 @@ from aipulse.core.config import load_settings
 from aipulse.core.logging import configure_logging
 from aipulse.llm.base import build_client
 from aipulse.reasoning.debate import run_debate
+from aipulse.render.debate import render_debate
 
 app = typer.Typer(
     name="debate",
@@ -107,8 +108,9 @@ def main(
         )
     )
 
-    markdown = report.to_markdown()
-    default_dir = (Path(settings.app.data_dir) / "reports") / "debate"
+    markdown = render_debate(report, index)
+    issue = report.window_end or "unknown"
+    default_dir = (Path(settings.app.data_dir) / "reports") / "debate" / issue
     target = Path(out) if out else default_dir / f"debate-{slugify(topic)}.md"
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(markdown, encoding="utf-8")

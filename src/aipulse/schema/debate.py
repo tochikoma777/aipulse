@@ -119,6 +119,25 @@ class Falsification(BaseModel):
         return not self.violations
 
 
+class Challenge(BaseModel):
+    """Round 2 的一条质证：点名对象 + 核心一击 + 结果。
+
+    结构化是为了能渲染成交锋矩阵（谁质疑谁 / 要点 / 是否让步）——
+    纯文本列表做不到"按对被分组"。
+    """
+
+    target: str = ""
+    """被质疑方（persona key 或中文名）。"""
+
+    point: str = ""
+    """核心一击：一句话，不带 ID（ID 放 cited_item_ids）。"""
+
+    outcome: str = ""
+    """结果：让步 / 部分让步 / 坚持。"""
+
+    cited_item_ids: list[str] = Field(default_factory=list)
+
+
 class PersonaStatement(BaseModel):
     """Round 1：某个 persona 的独立陈述。"""
 
@@ -126,6 +145,9 @@ class PersonaStatement(BaseModel):
     persona_label: str = ""
     stance: str = ""
     """一句话立场。"""
+
+    key_points: list[str] = Field(default_factory=list)
+    """核心论据 3 条（人类层）；论述全文留在 `reasoning`，进折叠块。"""
 
     reasoning: str = ""
     """论述正文。"""
@@ -152,7 +174,7 @@ class CrossResponse(BaseModel):
 
     persona: str = ""
     persona_label: str = ""
-    challenges: list[str] = Field(default_factory=list)
+    challenges: list[Challenge] = Field(default_factory=list)
     """对他方观点的质证；每条必须点名 persona 并引用 item_id。"""
 
     concessions: list[str] = Field(default_factory=list)
@@ -300,8 +322,8 @@ class DebateReport(BaseModel):
                 lines.append(f"> 本方质证无效：{cr.invalid_reason}")
                 lines.append("")
                 continue
-            for item in cr.challenges:
-                lines.append(f"- 质证：{item.strip()}")
+            for ch in cr.challenges:
+                lines.append(f"- 质证（→ {ch.target}）：{ch.point.strip()}（{ch.outcome}）")
             for item in cr.concessions:
                 lines.append(f"- 让步：{item.strip()}")
             lines.append("")
@@ -374,6 +396,7 @@ class DebateReport(BaseModel):
                 {
                     "persona": s.persona,
                     "invalid_reason": s.invalid_reason,
+                    "key_points": len(s.key_points),
                     "cited_item_ids": len(s.cited_item_ids),
                     "char_count": s.char_count,
                     "falsification_violations": s.falsification.violations,
@@ -405,6 +428,7 @@ class DebateReport(BaseModel):
 
 
 __all__ = [
+    "Challenge",
     "CrossResponse",
     "DebateReport",
     "Falsification",

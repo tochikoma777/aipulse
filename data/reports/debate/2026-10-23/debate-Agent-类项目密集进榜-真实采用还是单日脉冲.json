@@ -1,0 +1,89 @@
+{
+  "topic": "Agent 类项目密集进榜：真实采用还是单日脉冲",
+  "window_start": "2026-10-17",
+  "window_end": "2026-10-23",
+  "window_days": 7,
+  "evidence_count": 15,
+  "llm_calls": 9,
+  "attempts": 9,
+  "truncated": [],
+  "prompt_tokens": 23474,
+  "completion_tokens": 18601,
+  "cost_cny": 0.1683,
+  "failures": [],
+  "falsification_usable": 9,
+  "falsification_total": 9,
+  "statements": [
+    {
+      "persona": "optimist",
+      "invalid_reason": "",
+      "key_points": 3,
+      "cited_item_ids": 5,
+      "char_count": 589,
+      "falsification_violations": []
+    },
+    {
+      "persona": "skeptic",
+      "invalid_reason": "",
+      "key_points": 3,
+      "cited_item_ids": 10,
+      "char_count": 624,
+      "falsification_violations": []
+    },
+    {
+      "persona": "engineer",
+      "invalid_reason": "",
+      "key_points": 3,
+      "cited_item_ids": 8,
+      "char_count": 484,
+      "falsification_violations": []
+    },
+    {
+      "persona": "investor",
+      "invalid_reason": "",
+      "key_points": 3,
+      "cited_item_ids": 6,
+      "char_count": 496,
+      "falsification_violations": []
+    }
+  ],
+  "cross": [
+    {
+      "persona": "optimist",
+      "invalid_reason": "",
+      "challenges": 4,
+      "concessions": 2,
+      "cited_item_ids": 6
+    },
+    {
+      "persona": "skeptic",
+      "invalid_reason": "",
+      "challenges": 5,
+      "concessions": 3,
+      "cited_item_ids": 12
+    },
+    {
+      "persona": "engineer",
+      "invalid_reason": "",
+      "challenges": 4,
+      "concessions": 2,
+      "cited_item_ids": 7
+    },
+    {
+      "persona": "investor",
+      "invalid_reason": "",
+      "challenges": 6,
+      "concessions": 2,
+      "cited_item_ids": 13
+    }
+  ],
+  "moderator": {
+    "invalid_reason": "",
+    "consensus": 6,
+    "key_disagreements": 4,
+    "actionable_conclusions": 5,
+    "overall_confidence": 0.44,
+    "falsifications": 5,
+    "falsification_violations": []
+  }
+}

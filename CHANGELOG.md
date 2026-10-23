@@ -8,6 +8,45 @@
 
 ---
 
+## [m5-readable] — 产物可读化（S5，未打 tag）
+
+> 项目总原则：**专业的结构化数据要保留，但给人看的要符合人类阅读习惯**。
+> 不是"为易读而丢数据"，而是**两层都保留、分层呈现**：
+> 机器层看过程，人类层看结论。红线：不得为排版删掉 L1-L4 依赖的数据。
+
+### Added
+
+- **双层分离**：`weekly.md`（人类层）与 `weekly.json`（机器层）并存。
+  机器层保留 7 节正文 + 裸 ID + violations + 免责口径，**L1-L4 改读它**（`sections_from_machine`），
+  四层判定逻辑一行未改。
+- **weekly.md 人类版**（`render/weekly.py`）：📌 本周三句话 → 🧭 本周判断 → 📊 板块份额表
+  （Unicode 条形图 `███░░`）→ 🔥 跌出 Top30 → 🎯 下期观察 → 折叠免责 → 文末数据溯源。
+  **正文零裸 ID**，条目一律 `[标题](url)`。
+- **debate 人类版**（`render/debate.py`）：结论卡片（**置信度置顶**）+ 四方「立场一句 + 3 条核心论据 + 折叠全文」
+  + **交锋矩阵**（质疑方→被质疑方｜核心一击｜结果）+ **证伪条件表格** + 折叠的让步与不可用项。
+- **第 8 次调用**（`prompts/trend/headlines.j2`）：把 7 节正文压成三句话（≤40 字/句，禁免责措辞、禁裸 ID）
+  与各节判断性结论。表格数字由 `cross_period` 确定性渲染，不经模型。
+
+### Changed
+
+- **产物按窗口结束日分目录**，不再用固定名覆盖：
+  `data/reports/trend/<窗口末日>/{weekly.md,weekly.json,selfcheck.*,watchlist,calibration}`、
+  `data/reports/debate/<窗口末日>/<slug>.{md,json}`。跨期历史是 L3/L4 的输入，覆盖即丢。
+- **状态文件合并读取**：`_load_state()` 合并各期目录的 `watchlist.json` / `calibration.json`，
+  否则分目录后跨期回检会失去历史。
+- **`cron_knowledge.sh` 脏树检查限定范围**：`git diff --quiet -- . ':!data/reports/trend' ':!data/reports/debate'`
+  ——生成物重跑即脏，不该永久阻断知识库导出。
+- **`aipulse selfcheck` 默认读 `weekly.json`**；`--file` 仍可指定旧格式 Markdown。
+
+### 实测
+
+- trend：窗口 2026-10-17→10-23，8/8 调用、0 截断、token 11578+33236、**¥0.1793**
+- debate：窗口同上，9/9 调用、0 截断、token 23474+18601、**¥0.1661**、可用证伪 9/9、分歧 4 条
+- `weekly.md` 正文裸 ID **0**（全文 9 个，全在文末溯源区）
+- 主库 sha256 保持 `dbc4b2ae…d847`
+
+---
+
 ## [m5-debate] — 多角色辩论（S4，未打 tag）
 
 > 目标：让四个立场不同的角色就同一议题互相质证，把「单一视角的自信」压成

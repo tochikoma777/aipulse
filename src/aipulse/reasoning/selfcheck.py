@@ -155,6 +155,25 @@ def parse_markdown(text: str) -> dict[str, str]:
     return out
 
 
+def sections_from_machine(payload: Any) -> dict[str, str]:
+    """从机器层 `weekly.json` 取出 7 节正文——与 `parse_markdown` 同构。
+
+    S5 之后人类层 `weekly.md` 不再包含 7 节正文（正文零裸 ID、只给结论），
+    L1-L4 因此改读机器层。**四层的判定逻辑一行没改**，只是输入源换成了 JSON。
+    """
+    if not isinstance(payload, dict):
+        return {}
+    out: dict[str, str] = {}
+    for segment in payload.get("segments") or []:
+        if not isinstance(segment, dict):
+            continue
+        key = str(segment.get("key") or "")
+        body = str(segment.get("body") or "")
+        if key and key not in out:
+            out[key] = body
+    return out
+
+
 def _clauses(text: str) -> list[str]:
     return [c.strip() for c in re.split(r"[。；;！？\n]", text) if c.strip()]
 
@@ -405,14 +424,44 @@ def check_l2(
 # ══════════════════════════════════════════════════════════════════════════
 
 
-def _load_state(path: Path) -> dict[str, Any]:
-    if not path.exists():
-        return {}
-    try:
-        data = json.loads(path.read_text(encoding="utf-8"))
-    except (json.JSONDecodeError, OSError):
-        return {}
-    return data if isinstance(data, dict) else {}
+def _state_files(state_dir: Path, name: str) -> list[Path]:
+    """本期状态文件 + 各期目录下的同名文件（按目录名 = 窗口末日排序）。
+
+    ★ S5 起产物按窗口末日分目录，如果只读本期文件，跨期历史就丢了——
+    而 L3（watchlist 核对）与 L4（存活率）要的正是跨期。
+    """
+    files = {state_dir / name}
+    parent = state_dir.parent
+    if parent.exists():
+        files.update(parent.glob(f"*/{name}"))
+    return sorted(p for p in files if p.is_file())
+
+
+def _load_state(state_dir: Path, name: str) -> dict[str, Any]:
+    """合并各期状态；`entries` 按 (issue, item_id) 去重，`issues` 按 key 去重。"""
+    merged: dict[str, Any] = {}
+    entries: dict[tuple[str, str], dict[str, Any]] = {}
+    issues: dict[str, Any] = {}
+    for path in _state_files(state_dir, name):
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            continue
+        if not isinstance(data, dict):
+            continue
+        for entry in data.get("entries") or []:
+            if not isinstance(entry, dict):
+                continue
+            key = (str(entry.get("issue") or ""), str(entry.get("item_id") or ""))
+            entries.setdefault(key, entry)
+        for issue in data.get("issues") or []:
+            if isinstance(issue, dict):
+                issues.setdefault(str(issue.get("issue") or ""), issue)
+    if entries:
+        merged["entries"] = [entries[k] for k in sorted(entries)]
+    if issues:
+        merged["issues"] = [issues[k] for k in sorted(issues)]
+    return merged
 
 
 def _save_state(path: Path, payload: dict[str, Any]) -> None:
@@ -446,7 +495,7 @@ def check_l3(
     earliest = min((p.due_date for p in pending if p.due_date), default="")
 
     path = state_dir / "watchlist.json"
-    state = _load_state(path)
+    state = _load_state(state_dir, "watchlist.json")
     entries: list[dict[str, Any]] = list(state.get("entries") or [])
     latest = index.days[-1] if index.days else ""
     tracks = build_tracks(index)
@@ -565,7 +614,7 @@ def check_l4(
 ) -> LayerResult:
     """上期"结构性变化"声称的条目，本期存活率；低于阈值即为过度声称。"""
     path = state_dir / "calibration.json"
-    state = _load_state(path)
+    state = _load_state(state_dir, "calibration.json")
     issues: list[dict[str, Any]] = list(state.get("issues") or [])
     latest = index.days[-1] if index.days else ""
 
@@ -669,19 +718,23 @@ def check_l4(
 
 
 def run_selfcheck(
-    markdown: str,
+    source: str | dict[str, Any],
     index: CrossPeriodIndex,
     *,
     state_dir: str | Path,
     window_days: int = 7,
     write_state: bool = True,
 ) -> SelfCheckReport:
-    """对一份已生成的周报跑完 L1-L4。纯离线，不调 LLM。"""
+    """对一份已生成的周报跑完 L1-L4。纯离线，不调 LLM。
+
+    `source` 可以是机器层 `weekly.json` 的 dict（S5 起的默认），
+    也可以是旧格式 Markdown 文本——两条路都归约成同一个 `sections`。
+    """
     sliced = slice_index(index, window_days)
     if not sliced.days:
         return SelfCheckReport(issue="", comparison_start="", comparison_end="", layers=())
     reports = {report.key: report for report in _compute(sliced)}
-    sections = parse_markdown(markdown)
+    sections = sections_from_machine(source) if isinstance(source, dict) else parse_markdown(source)
     heat = reports.get("heat_migration")
     start = str(heat.metrics.get("comparison_start") or sliced.days[0]) if heat else sliced.days[0]
     end = str(heat.metrics.get("comparison_end") or sliced.days[-1]) if heat else sliced.days[-1]

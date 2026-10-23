@@ -36,7 +36,12 @@ def _parse_window(value: str) -> int:
 def main(
     ctx: typer.Context,
     file: str = typer.Option(
-        "data/reports/trend/weekly.md", "--file", help="待验证的周报 Markdown"
+        "",
+        "--file",
+        help=(
+            "待验证的周报（默认 data/reports/trend/<窗口末日>/weekly.json，机器层）。"
+            "S5 起 L1-L4 读机器层：7 节正文与裸 ID 都在那里，人类层 weekly.md 只给结论"
+        ),
     ),
     reports_dir: str | None = typer.Option(
         None, "--reports-dir", help="日报目录（默认 data/reports）"
@@ -52,11 +57,6 @@ def main(
     if ctx.invoked_subcommand is not None:  # 未来加子命令时的保护
         return
 
-    target = Path(file)
-    if not target.exists():
-        typer.echo(f"找不到周报：{target}", err=True)
-        raise typer.Exit(code=2)
-
     settings = load_settings()
     root = Path(reports_dir) if reports_dir else (Path(settings.app.data_dir) / "reports")
     index = load_cross_period(root)
@@ -64,16 +64,41 @@ def main(
         typer.echo(f"没有找到任何日报：{root}", err=True)
         raise typer.Exit(code=2)
 
+    # 产物按窗口末日分目录：weekly/selfcheck/watchlist/calibration 都跟着走
+    issue = index.days[-1]
+    issue_dir = root / "trend" / issue
+    target = Path(file) if file else issue_dir / "weekly.json"
+    if not target.exists():
+        typer.echo(
+            f"找不到周报：{target}（先跑 `aipulse trend`；或 --file 指定机器层 weekly.json）",
+            err=True,
+        )
+        raise typer.Exit(code=2)
+
+    source: str | dict[str, object]
+    if target.suffix == ".json":
+        try:
+            source = json.loads(target.read_text(encoding="utf-8"))
+        except json.JSONDecodeError as exc:
+            typer.echo(f"机器层 JSON 解析失败：{exc}", err=True)
+            raise typer.Exit(code=2) from exc
+    else:
+        source = target.read_text(encoding="utf-8")
+
     report = run_selfcheck(
-        target.read_text(encoding="utf-8"),
+        source,
         index,
-        state_dir=root / "trend",
+        state_dir=issue_dir,
         window_days=_parse_window(window),
         write_state=write_state,
     )
 
     markdown = report.to_markdown()
     payload = json.dumps(report.to_dict(), ensure_ascii=False, indent=2)
+    # selfcheck 报告与状态都落在窗口末日目录下
+    issue_dir.mkdir(parents=True, exist_ok=True)
+    (issue_dir / "selfcheck.md").write_text(markdown, encoding="utf-8")
+    (issue_dir / "selfcheck.json").write_text(payload, encoding="utf-8")
     if out:
         out_path = Path(out)
         out_path.parent.mkdir(parents=True, exist_ok=True)
@@ -84,6 +109,7 @@ def main(
 
     for layer in report.layers:
         typer.echo(f"[selfcheck] {layer.layer} {layer.name}: {layer.verdict}", err=True)
+    typer.echo(f"[selfcheck] 落盘 {issue_dir}/selfcheck.{{md,json}}", err=True)
 
     if any(layer.verdict == FAIL for layer in report.layers):
         raise typer.Exit(code=1)

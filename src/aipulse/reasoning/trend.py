@@ -26,7 +26,8 @@ from aipulse.core.errors import LLMError, LLMTruncationError
 from aipulse.core.logging import get_logger
 from aipulse.llm.base import ChatMessage, LLMClient
 from aipulse.llm.prompt import render_prompt
-from aipulse.schema.trend import TrendReport, TrendSegment
+from aipulse.llm.structured import generate_structured
+from aipulse.schema.trend import HeadlinesPayload, Judgement, TrendReport, TrendSegment
 
 log = get_logger(__name__)
 
@@ -515,6 +516,88 @@ def violations(
 
 
 # ══════════════════════════════════════════════════════════════════════════
+# S5 人类层：口径免责 + 三句话 / 判断性结论
+# ══════════════════════════════════════════════════════════════════════════
+
+
+def build_caveats(index: CrossPeriodIndex, reports: dict[str, StructureReport]) -> list[str]:
+    """口径与免责：全部收进机器层与 `<details>`，不占正文。"""
+    lines: list[str] = []
+    lines.extend(_comparison_line(reports))
+    lines.extend(_taint_lines(reports))
+    lines.extend(_failure_lines(index))
+    co = reports.get("co_movement")
+    if co is not None and co.entries:
+        days = {int(e.get("n_days") or 0) for e in co.entries if isinstance(e, dict)}
+        days.discard(0)
+        if days:
+            lines.append(f"同步变化组 n_days={min(days)}~{max(days)}，未做显著性检验，不作同向解读")
+    # 上游 _taint_lines / _failure_lines 带自己的 "- " 前缀，这里统一剥掉，
+    # 由渲染器决定用什么列表符号（否则会渲染成 "- - …"）
+    out: list[str] = []
+    for line in lines:
+        text = line.strip()
+        while text.startswith("- "):
+            text = text[2:].strip()
+        if text:
+            out.append(text)
+    return out
+
+
+async def generate_headlines(
+    index: CrossPeriodIndex,
+    segments: list[TrendSegment],
+    client: LLMClient,
+    *,
+    max_tokens: int,
+) -> tuple[list[str], list[Judgement], int, int]:
+    """第 8 次调用：把 7 节正文压成「三句话 + 各节判断性结论」。
+
+    机器层看过程（7 节正文），人类层看结论（三句话）。
+    返回 `(headlines, judgements, prompt_tokens, completion_tokens)`；
+    失败只降级为空，绝不拖垮周报。
+    """
+    bodies = "\n\n".join(
+        f"### {seg.title}\n{seg.body.strip()}" for seg in segments if seg.body.strip()
+    )
+    if not bodies.strip():
+        return [], [], 0, 0
+
+    prompt, template = render_prompt(
+        "trend/headlines",
+        window_start=index.days[0] if index.days else "",
+        window_end=index.days[-1] if index.days else "",
+        window_days=len(index.days),
+        sections=bodies,
+        segments=[(key, title) for key, title, _ in SEGMENTS],
+    )
+    try:
+        parsed, result = await generate_structured(
+            client,
+            [ChatMessage(role="user", content=prompt)],
+            response_model=HeadlinesPayload,
+            temperature=template.temperature,
+            max_tokens=max_tokens,
+            purpose=template.purpose,
+            model_tier=template.model_tier or "strong",
+        )
+    except LLMTruncationError as exc:
+        log.warning("trend.headlines_truncated", error=str(exc))
+        return [], [], exc.prompt_tokens, exc.completion_tokens
+    except LLMError as exc:
+        log.warning("trend.headlines_failed", error=str(exc))
+        return [], [], 0, 0
+
+    if parsed is None or result is None:
+        return [], [], result.prompt_tokens if result else 0, 0
+
+    assert isinstance(parsed, HeadlinesPayload)
+    headlines = [h.strip() for h in parsed.headlines if h.strip()][:3]
+    judgements = [j for j in parsed.judgements if j.claim.strip()]
+    return headlines, judgements, result.prompt_tokens, result.completion_tokens
+
+
+# ══════════════════════════════════════════════════════════════════════════
 # 主流程
 # ══════════════════════════════════════════════════════════════════════════
 
@@ -601,6 +684,19 @@ async def generate_trend(
     comp_end = str(heat.metrics.get("comparison_end") or "") if heat else ""
     comp_days = int(heat.metrics.get("comparison_days") or 0) if heat else 0
 
+    # ── 第 8 次调用：三句话 + 各节判断性结论（人类层）──────────────
+    headlines: list[str] = []
+    judgements: list[Judgement] = []
+    if any(segment.body.strip() for segment in segments):
+        attempts += 1
+        headlines, judgements, h_prompt, h_completion = await generate_headlines(
+            sliced, segments, client, max_tokens=max_tokens
+        )
+        prompt_tokens += h_prompt
+        completion_tokens += h_completion
+        if headlines or judgements:
+            calls += 1
+
     return TrendReport(
         window_start=sliced.days[0],
         window_end=sliced.days[-1],
@@ -609,6 +705,9 @@ async def generate_trend(
         comparison_end=comp_end,
         comparison_days=comp_days,
         segments=segments,
+        headlines=headlines,
+        judgements=judgements,
+        caveats=build_caveats(sliced, reports),
         llm_calls=calls,
         attempts=attempts,
         truncated_segments=truncated,
@@ -626,8 +725,10 @@ __all__ = [
     "WORD_BUDGET",
     "Evidence",
     "boilerplate_hits",
+    "build_caveats",
     "build_evidence",
     "char_count",
+    "generate_headlines",
     "generate_trend",
     "slice_index",
     "violations",

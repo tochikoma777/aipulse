@@ -337,6 +337,7 @@ async def _round1(
 
     parsed: PersonaStatement = outcome.parsed  # type: ignore[assignment]
     stmt.stance = parsed.stance
+    stmt.key_points = [p.strip() for p in parsed.key_points if p.strip()][:3]
     stmt.reasoning = parsed.reasoning
     stmt.falsification = parsed.falsification
     stmt.cited_item_ids = _cited_ids(
@@ -391,11 +392,15 @@ async def _round2(
         return resp
 
     parsed: CrossResponse = outcome.parsed  # type: ignore[assignment]
-    resp.challenges = [c.strip() for c in parsed.challenges if c.strip()]
+    resp.challenges = [c for c in parsed.challenges if c.point.strip() or c.target.strip()]
     resp.concessions = [c.strip() for c in parsed.concessions if c.strip()]
     resp.revised_stance = parsed.revised_stance
-    resp.cited_item_ids = _cited_ids(*resp.challenges, *resp.concessions, allowed=allowed)
-    resp.char_count = char_count(" ".join(resp.challenges) + " " + resp.revised_stance)
+    cited_source = [c.point for c in resp.challenges]
+    cited_source.extend(i for c in resp.challenges for i in c.cited_item_ids)
+    cited_source.extend(resp.concessions)
+    cited_source.extend(parsed.cited_item_ids)
+    resp.cited_item_ids = _cited_ids(*cited_source, allowed=allowed)
+    resp.char_count = char_count(" ".join(cited_source) + " " + resp.revised_stance)
 
     if not resp.cited_item_ids:
         resp.invalid_reason = "质证未引用任何证据包内的 item_id"
@@ -443,7 +448,7 @@ def _cross_text(cross: list[CrossResponse]) -> str:
         if not resp.valid:
             blocks.append(f"【{resp.persona_label or resp.persona}】无效：{resp.invalid_reason}")
             continue
-        body = "\n".join(f"- {c}" for c in resp.challenges)
+        body = "\n".join(f"- 对【{c.target}】：{c.point}（{c.outcome}）" for c in resp.challenges)
         concede = "\n".join(f"- {c}" for c in resp.concessions) or "- （无让步）"
         blocks.append(
             f"【{resp.persona_label or resp.persona}】\n"

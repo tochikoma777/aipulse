@@ -32,7 +32,11 @@ fi
 
 # 只检查已跟踪/已暂存改动；data/inbox、未跟踪日志等不应长期阻断导出。
 # 本地提交不在此判断内，由下面的 pull --ff-only 负责失败退出。
-if ! git diff --quiet || ! git diff --cached --quiet; then
+#
+# ★ S5：trend / debate 产物是**生成物**（每周重跑会改写），它们变脏不该阻断导出——
+#   否则重跑一次周报，知识库导出就永久停摆。只忽略这两个目录，其余路径照常检查。
+if ! git diff --quiet -- . ':!data/reports/trend' ':!data/reports/debate' ||
+  ! git diff --cached --quiet -- . ':!data/reports/trend' ':!data/reports/debate'; then
   echo "$(date -Is) 工作区有已跟踪改动，跳过 pull/export" >>"$LOG"
   exit 0
 fi
