@@ -1,0 +1,918 @@
+{
+  "date": "2026-10-23",
+  "headline": "智能体的安全与运行时基建正成为今日最密集的投入方向，从审计技能到隔离运行时，行业开始为「能自主行动的模型」补上护栏。",
+  "headline_item_id": "it_77f9ddd43bbeeb71",
+  "overview_bullets": [
+    {
+      "icon": "🔐",
+      "topic": "智能体护栏",
+      "text": "Cloudflare 开源多阶段安全审计技能、OpenShell 提供智能体安全运行时，加上 EpiSEM-Bench 与 SCOPE 等研究，安全正从模型层下沉到智能体执行层。"
+    },
+    {
+      "icon": "🛠️",
+      "topic": "代码知识化",
+      "text": "graphify 把代码库、SQL、配置与 PDF 转成可查询知识图谱，ponytail 则主张「少写代码」，工具链在给编码智能体做减法与结构化两件事上同时发力。"
+    },
+    {
+      "icon": "📄",
+      "topic": "视频世界模型",
+      "text": "今日论文密集围绕视频生成与世界模型：MLLM 潜变量、LaLa-World 语言动作、Code2Video-Compass 基准，视频正被当作世界建模的统一接口。"
+    },
+    {
+      "icon": "📉",
+      "topic": "公众信任",
+      "text": "HN 上「多数美国人认为 AI 对社会有害、反对新建数据中心」热度不低，与产业侧加速部署形成明显张力。"
+    },
+    {
+      "icon": "💬",
+      "topic": "内核漏洞外泄",
+      "text": "多个 Linux 内核漏洞被误发到公开邮件列表，提醒 AI 之外的基础设施安全同样在漏。"
+    }
+  ],
+  "executive_summary": "今天的主线不是模型更强，而是围绕「让智能体安全地动手」的护栏、审计与结构化工具在快速补齐，而公众情绪与内核漏洞外泄则从两侧提醒这套加速并不稳固。",
+  "editor_note": {
+    "core": "今天最该记住的是「智能体护栏」开始产品化：Cloudflare 的审计技能与 OpenShell 运行时说明，安全不再是模型对齐的附属品，而是智能体落地的前置条件——因为能自主调用工具的模型一旦出错，代价从「说错话」变成「做错事」。",
+    "cross_signal": "论文侧的 EpiSEM-Bench（缺失证据下的安全）与 SCOPE（把自然语言策略编译成谓词程序）和开源侧的审计技能、隔离运行时指向同一件事：业界正在把「智能体该不该做这个动作」变成可验证、可审计的工程问题，而非提示词技巧。",
+    "counterintuitive": "热度最高的开源条目多是给编码智能体「加能力」的工具，但 ponytail 这类主张「最好的代码是没写的代码」的减法思路反而更接近真实工程收益；同时视频世界模型论文扎堆，却几乎没有一条进入社区热榜，学术热度与工程关注度明显错位。",
+    "risk": "最大的盲点是安全工具本身的可信度：审计技能与运行时若由同一批模型驱动，可能形成「自己审自己」的闭环；而 Linux 内核漏洞误发公开列表说明，最基础的披露流程仍在漏，AI 护栏再密也挡不住底层基础设施的人为失误。"
+  },
+  "contradictions": [
+    "产业侧在加速部署智能体与数据中心，而 HN 热帖显示多数美国人认为 AI 对社会有害并反对新建数据中心，供需两端的社会许可出现背离。",
+    "编码智能体工具一边在加功能（审计、知识图谱），一边有项目主张少写代码，工具价值取向自相矛盾。"
+  ],
+  "underrated": [
+    "EpiSEM-Bench: Evaluating Safety and Evidence Recovery in LLM Agents under Missing Evidence",
+    "SCOPE: Compiling Natural-Language Policies into Neurosymbolic Predicate Programs",
+    "Meta Expert: Cross-Layer Expert Sharing for Storage- and Retrieval-Efficient MoE",
+    "Several Linux kernel vulnerabilities accidentally posted to public mailing list",
+    "LLMs are making formal software verification feasible at a much larger scale"
+  ],
+  "sections": [
+    {
+      "name": "开源项目",
+      "summary": "编码智能体的周边工具链最活跃：安全审计、知识图谱、安全运行时与 Claude Code 教程齐发。",
+      "item_ids": [
+        "it_77f9ddd43bbeeb71",
+        "it_42565b5232096036",
+        "it_01d32fd68c2d717a",
+        "it_a7519c6ce55f34ab",
+        "it_c9cdc26758b48a34",
+        "it_fdf7de3aa15def01",
+        "it_7ed7b72f04295c52",
+        "it_873c35a344852ac9",
+        "it_00b5d16e5263ed2a"
+      ]
+    },
+    {
+      "name": "论文与研究",
+      "summary": "视频/世界模型与智能体安全评估是两大簇，另有 MoE 存储效率与推理时剪枝等效率向工作。",
+      "item_ids": [
+        "it_93bbd6e7c3469d05",
+        "it_98169d606489bb04",
+        "it_463277c6c46271fe",
+        "it_9f7804a9217e63d1",
+        "it_41ec37365e67af16",
+        "it_8ea6ea906fb17117",
+        "it_593011f7fe1bce84",
+        "it_c8222c7454357e3f",
+        "it_85d1f4c49996c4cd",
+        "it_881f1bc73eeff363",
+        "it_091e7bc4c3efeccf",
+        "it_b38d2721ea3f7afc",
+        "it_c748c2919d746d52",
+        "it_78c303603ddcd3ed",
+        "it_a01018f7624db353",
+        "it_77c097ed1b755364",
+        "it_6042148bfdefd707"
+      ]
+    },
+    {
+      "name": "社区舆论",
+      "summary": "HN 讨论集中在 AI 的社会评价、LLM 推动形式化验证、以及内核漏洞误发三件事。",
+      "item_ids": [
+        "it_bf00b37e101a93d7",
+        "it_b7046e0a16faea27",
+        "it_1360bd8eb5a8e67e",
+        "it_72972368be1f96c8"
+      ]
+    },
+    {
+      "name": "产业与新闻",
+      "summary": "今日无独立产业新闻条目，相关信号散见于开源与社区板块。",
+      "item_ids": []
+    }
+  ],
+  "comments": [
+    {
+      "item_id": "it_77f9ddd43bbeeb71",
+      "one_liner": "Cloudflare 开源的 coding-agent 技能，用于分阶段执行安全审计并输出可独立验证的机器可读结果",
+      "why": "把安全审计拆成多阶段并输出可机器校验的结论，让编码代理的审计结果从「人读报告」变成可接入 CI 的判定信号，审计责任从人转移到流水线。",
+      "stance": "方向对，但审计结论一旦可自动化，误报就会被当成合规证据，必须保留人工复核闸门。"
+    },
+    {
+      "item_id": "it_42565b5232096036",
+      "one_liner": "一个让 AI agent 以「最懒的资深开发者」思路写代码的提示技能，主张能不写的代码就不写",
+      "why": "用「最懒的资深工程师」作为代理的行为约束，直接压低生成代码量，把代理的优化目标从产出更多转向少写，减少维护面。",
+      "stance": "这是对代理过度生成的一次有价值的反向校准，但懒惰若无边界会退化成该做的抽象也不做。"
+    },
+    {
+      "item_id": "it_01d32fd68c2d717a",
+      "one_liner": "把代码库连同文档、SQL schema、配置和 PDF 转成可查询知识图谱的工具，以 /graphify 技能形式接入 Claude Code、Cursor、Codex 和 Gemini CLI，采用本地确定性 AST 解析，不使用向量库。",
+      "why": "把代码库、SQL schema、配置和 PDF 统一解析成可查询知识图谱，且用确定性 AST 解析、每条边可解释、不依赖向量库，直接绕开 RAG 的召回不可控与黑箱问题。",
+      "stance": "对需要审计代码上下文的团队，确定性图谱比向量检索更值得押注。"
+    },
+    {
+      "item_id": "it_a7519c6ce55f34ab",
+      "one_liner": "一份面向 Claude Code 的图文示例教程，从基础概念讲到进阶 agent，附可直接复制的模板。",
+      "why": "把 Claude Code 从零散技巧整理成可视化、可复制的模板，降低了 agent 工作流的入门门槛，也让最佳实践从个人经验变成可传播资产。",
+      "stance": "教程类项目会加速工具普及，但模板化容易掩盖真实工程复杂度。"
+    },
+    {
+      "item_id": "it_c9cdc26758b48a34",
+      "one_liner": "Anthropic 开源的插件仓库，主要面向知识工作者在 Claude Cowork 中使用。",
+      "why": "官方亲自下场做知识工作者的插件仓库，意味着 Claude 生态从通用对话转向垂直场景技能包，第三方插件的分层与准入标准随之被官方定义。",
+      "stance": "官方收编插件是平台化信号，第三方技能包将被迫分层。"
+    },
+    {
+      "item_id": "it_fdf7de3aa15def01",
+      "one_liner": "PHP 语言的官方解释器源码仓库。",
+      "why": "PHP 解释器本体持续出现在趋势榜，说明存量 Web 生态的维护需求依然庞大，语言运行时层面的改动会直接波及大量线上服务。",
+      "stance": "老牌运行时的热度是存量市场的体温计，不该被新框架叙事掩盖。"
+    },
+    {
+      "item_id": "it_7ed7b72f04295c52",
+      "one_liner": "Supabase 是一个基于 Postgres 的开发平台，为 Web、移动端和 AI 应用提供专属数据库。",
+      "why": "把 Postgres 包装成开箱即用的后端，AI 应用开发者不必再自建数据库与鉴权层，云厂商的托管数据库收入被直接分流。",
+      "stance": "开源数据库即服务这条路已经跑通，闭源 BaaS 的溢价空间正在被吃掉。"
+    },
+    {
+      "item_id": "it_873c35a344852ac9",
+      "one_liner": "FastAPI 高性能 Python Web 框架的官方仓库，主打易学、开发快、可直接上生产。",
+      "why": "FastAPI 长期占据趋势位，反映 Python 后端默认选型已高度收敛，类型提示加自动文档的组合成为 API 服务的基线预期。",
+      "stance": "选型收敛是好事，但生态过度集中会让框架决策绑架架构决策。"
+    },
+    {
+      "item_id": "it_00b5d16e5263ed2a",
+      "one_liner": "Minecraft 启动器 Plain Craft Launcher（PCL）的源码仓库。",
+      "why": "Minecraft 启动器属于典型的民间客户端工具，其热度说明游戏分发与账号体系之外的第三方入口仍有强需求，也意味着合规与安全风险长期存在。",
+      "stance": "第三方启动器是玩家用脚投票的结果，官方体验不改就赶不走。"
+    },
+    {
+      "item_id": "it_93bbd6e7c3469d05",
+      "one_liner": "提出 Factor-Aware 预测学习方法，让 MLLM 的隐表示用于电影级视频生成中的角色、场景、动作与镜头控制。",
+      "why": "把 MLLM 的隐表示真正用于电影级视频生成的因素解耦控制，针对的是稀疏引导下角色、场景、动作、镜头难以分别调节的痛点。",
+      "stance": "因素感知控制是视频生成从炫技走向可用的关键一步。"
+    },
+    {
+      "item_id": "it_98169d606489bb04",
+      "one_liner": "提出 Meta Expert 跨层专家共享方案，降低 MoE 模型的存储与检索开销。",
+      "why": "发现不同层专家虽拓扑独立却高度相似，据此做跨层共享，直接压缩 MoE 的存储与检索开销，影响的是大模型推理的部署成本结构。",
+      "stance": "跨层专家共享是对 MoE 参数冗余的正面开刀，方向正确。"
+    },
+    {
+      "item_id": "it_463277c6c46271fe",
+      "one_liner": "LaLa-World 让 JEPA 式隐空间世界模型借助自然语言动作接口跨领域学习，用于想象式规划与下游策略。",
+      "why": "让 JEPA 式隐世界模型借用视频生成的语言条件接口，从而跨域跨数据源学习，为想象式规划与下游策略提供统一基座。",
+      "stance": "用自然语言当动作接口，是打通世界模型与通用智能体的务实路径。"
+    },
+    {
+      "item_id": "it_9f7804a9217e63d1",
+      "one_liner": "Code2Video-Compass 是一个覆盖 T2V、I2V、V2V 的通用代码生成视频评测基准。",
+      "why": "把代码生成视频拆成 T2V、I2V、V2V 三类并建立统一评测，填补了可编辑、可复用视频生成缺乏可比基准的空白，直接影响模型选型依据。",
+      "stance": "没有统一基准的代码生成视频只是演示，这个基准来得正是时候。"
+    },
+    {
+      "item_id": "it_41ec37365e67af16",
+      "one_liner": "提出以视频为中心的深度研究报告生成基准，考察 agent 围绕源视频提出研究问题并检索外部资料撰写长报告的能力",
+      "why": "现有深度研究基准只考核网页文本证据，视频作为研究起点被排除在外，导致以视频为源头的多模态调研能力无法被量化比较。",
+      "stance": "把视频纳入研究型 agent 的评测轴是必要补课，但先要解决视频证据可溯源与引用核验，否则只是换了个输入模态。"
+    },
+    {
+      "item_id": "it_8ea6ea906fb17117",
+      "one_liner": "提出 Policy-Mask，在预算约束下为判别任务自适应选取冻结 diffusion 模型的时间步、模块与通道特征",
+      "why": "冻结扩散模型的可判别信号散落在时间步、网络深度与通道三个维度，选点成本直接决定下游任务能否低成本复用生成模型。",
+      "stance": "预算感知的特征选择比再训一个专用编码器更务实，这类工作会压缩生成模型转判别任务的迁移成本。"
+    },
+    {
+      "item_id": "it_593011f7fe1bce84",
+      "one_liner": "综述视频基础模型与视频世界模型在读写、分享和交互世界方面的关联与统一视角",
+      "why": "视频理解/生成模型与世界模型目标不同却共享同一套视频-世界关系假设，把两者并置会改变研究者划分问题边界的方式。",
+      "stance": "统一视角有价值，但把生成质量等同于世界动态建模是当前最容易被滥用的偷换，需要明确区分。"
+    },
+    {
+      "item_id": "it_c8222c7454357e3f",
+      "one_liner": "提出以骨架为条件的 latent action 模型，将机器人运动与物体响应解耦以改进机器人世界模型",
+      "why": "重建驱动的隐动作把机器人自身运动与物体响应混在同一潜变量里，导致世界模型学到的动作语义不可控，骨架先验把二者解耦。",
+      "stance": "解耦机器人运动与场景变化是机器人世界模型走向可用的前提，方向正确，代价是依赖骨架估计的鲁棒性。"
+    },
+    {
+      "item_id": "it_85d1f4c49996c4cd",
+      "one_liner": "提出 SCOPE，将自然语言策略编译为神经符号谓词程序，用于多轮对话与工具调用轨迹上的 agent 策略执行",
+      "why": "LLM agent 的策略约束已从单轮内容审核变成跨多轮与工具调用轨迹的复合规则，微调护栏在复合策略上退化，判定式方案又太贵。",
+      "stance": "把自然语言策略编译成可执行谓词程序是唯一能同时兼顾成本与可审计性的路线，护栏模型该退居为组件而非方案。"
+    },
+    {
+      "item_id": "it_881f1bc73eeff363",
+      "one_liner": "基于 Platonic Representation Hypothesis 提出传感器运动对齐指标，作为具身策略成功率的离线代理评估",
+      "why": "机器人基础模型靠闭环 rollout 评估，成本高到无法做模型筛选；用表征对齐做离线代理能把评估从实机搬到表征空间。",
+      "stance": "离线代理指标必须先在多任务上与真实成功率对齐再谈替代，否则只是把昂贵评估换成了好看的假信号。"
+    },
+    {
+      "item_id": "it_bf00b37e101a93d7",
+      "one_liner": "OpenShell：面向大规模自主 AI agent 集群的安全私有运行时",
+      "why": "自主 agent 规模化部署后，运行时隔离与权限边界成为运维方的实际采购门槛，而非模型能力问题。",
+      "stance": "agent 的安全叙事正从提示词防护转向进程级沙箱，谁先把运行时做扎实，谁就拿到企业部署的入场券。"
+    },
+    {
+      "item_id": "it_b7046e0a16faea27",
+      "one_liner": "调查显示多数美国人认为 AI 对社会有害，并反对新建更多数据中心",
+      "why": "公众对 AI 的负面评价与对数据中心的抵制合流，会直接抬高算力基础设施的选址与审批成本，进而传导到模型训练节奏。",
+      "stance": "把民意当成公关问题处理是误判，数据中心的水电与土地账单才是真正的约束条件。"
+    },
+    {
+      "item_id": "it_1360bd8eb5a8e67e",
+      "one_liner": "讨论 LLM 如何让形式化软件验证在更大规模上变得可行",
+      "why": "形式化验证长期卡在人工写规格与证明的成本上，LLM 承担这部分劳动后，验证能覆盖的代码规模从示范项目扩到真实系统。",
+      "stance": "这是 LLM 少有的、收益可被机器检验的应用方向，比代码补全更值得投入，但证明正确性仍需独立检查器兜底。"
+    },
+    {
+      "item_id": "it_72972368be1f96c8",
+      "one_liner": "多个 Linux 内核漏洞被误发到公开邮件列表",
+      "why": "内核漏洞误发到公开邮件列表意味着披露窗口被提前打开，未修补系统的暴露时间从协调披露变成零日。",
+      "stance": "这是流程事故而非技术事故，邮件列表的发送前审核与延迟投递机制比事后补救更该被强制。"
+    }
+  ],
+  "stats": {},
+  "items": {
+    "it_77f9ddd43bbeeb71": {
+      "id": "it_77f9ddd43bbeeb71",
+      "source": "github_trending",
+      "title": "cloudflare/security-audit-skill",
+      "url": "https://github.com/cloudflare/security-audit-skill",
+      "summary": "A coding-agent skill for multi-phase security audits with independently verified, machine-readable findings",
+      "hot_score": 86.2159,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-21T03:11:29.651293+00:00",
+      "last_seen_at": "2026-10-23T03:15:42.529412+00:00",
+      "metrics": {
+        "stars_total": 39781,
+        "stars_in_window": 2979,
+        "forks": 2482,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "JavaScript"
+    },
+    "it_bf00b37e101a93d7": {
+      "id": "it_bf00b37e101a93d7",
+      "source": "hackernews",
+      "title": "OpenShell – A safe, private runtime for fleets of autonomous AI agents",
+      "url": "https://github.com/NVIDIA/OpenShell",
+      "summary": "",
+      "hot_score": 85.8836,
+      "topic_id": "tp_9dc72a6e8c43",
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-22T17:44:06+00:00",
+      "last_seen_at": "2026-10-23T03:15:42.575528+00:00",
+      "metrics": {
+        "points": 319,
+        "num_comments": 165
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_93bbd6e7c3469d05": {
+      "id": "it_93bbd6e7c3469d05",
+      "source": "hf_papers",
+      "title": "Making MLLM Latents Matter: Factor-Aware Predictive Learning for Cinematic Video Generation",
+      "url": "arxiv:2610.30926",
+      "summary": "Cinematic video generation requires both temporal inference from limited inputs (i.e., sparse rather than frame-by-frame guidance) and factor-aware control of character, scene, action, and camera. Multimodal large language models (MLLMs) offer useful priors for both capabilities, but their representations are not automatically actionable for video generation: a Video Diffusion Transformer (DiT) may bypass them through native conditioning pathways, and using them does not ensure either factor-aware control or generation-compatible temporal prediction. We propose Factor-Aware Predictive Learning (FAPL), which establishes effective MLLM latent use as a shared prerequisite and then targets the two capabilities with complementary learning signals. First, latent-only generator grounding trains the DiT with a frozen MLLM and connector, strengthening the DiT's use of MLLM latents for generation. Second, for factor-aware control, paired videos specify a target-factor change and non-target preservation, and factor-span replacement trains the DiT to realize this relationship in its output. Third, for temporal inference, text-only and text-plus-complete-video observations share a video target, and the trained DiT is then frozen while the MLLM and connector are optimized through it. This final stage trains limited-input representations for generation while retaining complete-observation reconstruction as a complementary training mode. Extensive experiments demonstrate our consistently better performance on three cinematic video generation tasks (i.e., sparse-to-video, factor-aware editing, and multi-shot generation) over baselines and validate FAPL's contributions to MLLM feature use, temporal control, and factor coordination.",
+      "hot_score": 76.1356,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-22T04:43:48+00:00",
+      "last_seen_at": "2026-10-23T03:15:42.570652+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 11
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_42565b5232096036": {
+      "id": "it_42565b5232096036",
+      "source": "github_trending",
+      "title": "DietrichGebert/ponytail",
+      "url": "https://github.com/DietrichGebert/ponytail",
+      "summary": "Makes your AI agent think like the laziest senior dev in the room. The best code is the code you never wrote.",
+      "hot_score": 75.5909,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-21T03:11:29.651306+00:00",
+      "last_seen_at": "2026-10-23T03:15:42.528384+00:00",
+      "metrics": {
+        "stars_total": 173682,
+        "stars_in_window": 2079,
+        "forks": 9453,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "JavaScript"
+    },
+    "it_98169d606489bb04": {
+      "id": "it_98169d606489bb04",
+      "source": "hf_papers",
+      "title": "Meta Expert: Cross-Layer Expert Sharing for Storage- and Retrieval-Efficient MoE",
+      "url": "arxiv:2610.27598",
+      "summary": "As model parameters scale up, sparsely activated Mixture-of-Experts (MoE) approaches have become essential for model scaling. However, mainstream models currently adopt hierarchical architectures, where experts in different layers, although topologically independent, exhibit substantial similarity and redundancy in their stored content. Compared to the hierarchically arranged Local Expert in existing mainstream models, we hypothesize that inter-layer shared Meta Expert hold greater potential. To this end, we conduct a multi-dimensional empirical comparison between Local and Meta Experts, and find that models incorporating Meta Experts exhibit lower parameter redundancy, together with lower cross-entropy loss and higher downstream task accuracy. With the activated quantity and the expert granularity held fixed, our model matches the performance of Vanilla MoE using only 70--80\\% of the experts, substantially improving the model's scaling potential. Beyond removing inter-layer redundancy among experts and improving information storage efficiency, our theoretical analysis further shows that, compared with Local Experts, Meta Experts provide hidden states with more flexible residual pathways, thereby improving information retrieval efficiency.",
+      "hot_score": 71.1135,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-19T20:00:00+00:00",
+      "last_seen_at": "2026-10-23T03:15:42.570071+00:00",
+      "metrics": {
+        "num_comments": 2,
+        "upvotes": 15
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_72972368be1f96c8": {
+      "id": "it_72972368be1f96c8",
+      "source": "hackernews",
+      "title": "Several Linux kernel vulnerabilities accidentally posted to public mailing list",
+      "url": "https://www.phoronix.com/news/LKML-New-Trend-Vulnerabilities",
+      "summary": "",
+      "hot_score": 67.8776,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-22T11:12:37+00:00",
+      "last_seen_at": "2026-10-23T03:15:42.485388+00:00",
+      "metrics": {
+        "points": 240,
+        "num_comments": 87
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_01d32fd68c2d717a": {
+      "id": "it_01d32fd68c2d717a",
+      "source": "github_trending",
+      "title": "Graphify-Labs/graphify",
+      "url": "https://github.com/Graphify-Labs/graphify",
+      "summary": "Turn any codebase, with its docs, SQL schemas, configs, and PDFs, into a queryable knowledge graph. A /graphify skill for Claude Code, Cursor, Codex, and Gemini CLI: local deterministic AST parsing, every edge explained, no vector store.",
+      "hot_score": 64.9659,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-21T03:11:29.651321+00:00",
+      "last_seen_at": "2026-10-23T03:15:42.529925+00:00",
+      "metrics": {
+        "stars_total": 133093,
+        "stars_in_window": 1433,
+        "forks": 12730,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "Python"
+    },
+    "it_fdf7de3aa15def01": {
+      "id": "it_fdf7de3aa15def01",
+      "source": "github_trending",
+      "title": "php/php-src",
+      "url": "https://github.com/php/php-src",
+      "summary": "The PHP Interpreter",
+      "hot_score": 61.875,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-23T03:15:27.781246+00:00",
+      "last_seen_at": "2026-10-23T03:15:42.527492+00:00",
+      "metrics": {
+        "stars_total": 41232,
+        "stars_in_window": 287,
+        "forks": 8320,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "C"
+    },
+    "it_463277c6c46271fe": {
+      "id": "it_463277c6c46271fe",
+      "source": "hf_papers",
+      "title": "LaLa-World: Scaling Latent World Models with Natural Language Actions",
+      "url": "arxiv:2610.27851",
+      "summary": "This paper shows that JEPA-style latent world models (LWMs) can learn across diverse domains and data sources by adopting the language-conditioned interface of video generation models. We establish this approach as an effective and efficient basis for planning with imagination and downstream policy fine-tuning. To this end, we introduce LaLa-World, a Language-conditioned Latent World model that learns from simulation and robot trajectories together with broader image and video data. Two designs make this work. First, we describe both numerical actions and visual changes in language, enabling joint training of a single future predictor across heterogeneous datasets. Second, we build the predictor on a language model, allowing it to interpret language conditions while predicting future latent states. The resulting predictor achieves higher average MPC planning performance than existing LWMs trained separately for each domain or task. Adding image and video data further improves average planning performance and robustness to action phrasing. In a matched comparison with an RAEv2-based video generation model baseline, LaLa-World reaches comparable planning performance with 6times less training cost and 13.9times faster planning. Beyond planning, the pretrained LaLa-World serves as an initialization for LaLa-Policy, which jointly predicts actions and future visual representations. LaLa-Policy performs competitively with Cosmos Policy on LIBERO and RoboCasa, with up to 5.5times faster inference.",
+      "hot_score": 61.0904,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-20T20:00:00+00:00",
+      "last_seen_at": "2026-10-23T03:15:42.571273+00:00",
+      "metrics": {
+        "num_comments": 2,
+        "upvotes": 6
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_7ed7b72f04295c52": {
+      "id": "it_7ed7b72f04295c52",
+      "source": "github_trending",
+      "title": "supabase/supabase",
+      "url": "https://github.com/supabase/supabase",
+      "summary": "The Postgres development platform. Supabase gives you a dedicated Postgres database to build your web, mobile, and AI applications.",
+      "hot_score": 60.2231,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-22T03:09:54.791445+00:00",
+      "last_seen_at": "2026-10-23T03:15:42.530484+00:00",
+      "metrics": {
+        "stars_total": 113534,
+        "stars_in_window": 693,
+        "forks": 17007,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "TypeScript"
+    },
+    "it_9f7804a9217e63d1": {
+      "id": "it_9f7804a9217e63d1",
+      "source": "hf_papers",
+      "title": "Code2Video-Compass: A Comprehensive Benchmark for General-Purpose Code-Based Video Generation across T2V, I2V, and V2V",
+      "url": "arxiv:2610.28416",
+      "summary": "Code-based video generation offers fine-grained control, targeted editing, and component reuse compared with direct video generation. This approach requires multimodal large language models (MLLMs) to translate visual and temporal requirements into executable programs that produce complete videos. However, existing code-based benchmarks primarily target specialized tasks, leaving complete video creation across diverse creative categories and input modalities insufficiently evaluated. We introduce Code2Video-Compass, a general-purpose benchmark for code-based video generation across text-to-video (T2V), image-to-video (I2V), and video-to-video (V2V) settings. Code2Video-Compass comprises 2,104 tasks spanning 10 categories, 24 subtypes, and three complexity dimensions covering construction, dynamic animation, and state dependency. It combines tasks curated from textual instructions and visual references with corresponding T2V, I2V, and V2V tasks derived from complete professional and user-created videos. We propose a dual-level evaluation framework combining 12 objective metrics and five subjective metrics. Objective evaluation covers operational performance, video quality, text-video alignment, and reference fidelity, while subjective evaluation uses an MLLM judge to evaluate instruction following and holistic video quality. Extensive evaluation of 15 recent proprietary and open-weight MLLMs from nine families reveals that even leading models face challenges in reliably generating high-quality complete videos aligned with textual and visual requirements, with performance generally declining as construction, dynamic animation, and state-dependency complexity increases. We anticipate that Code2Video-Compass will advance reliable, coherent, and controllable code-based video generation and inspire broader progress in programmatic visual creation.",
+      "hot_score": 58.6135,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-19T20:00:00+00:00",
+      "last_seen_at": "2026-10-23T03:15:42.571889+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 6
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_1360bd8eb5a8e67e": {
+      "id": "it_1360bd8eb5a8e67e",
+      "source": "hackernews",
+      "title": "LLMs are making formal software verification feasible at a much larger scale",
+      "url": "https://www.anthropic.com/research/formal-verification",
+      "summary": "",
+      "hot_score": 57.75,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-22T22:54:43+00:00",
+      "last_seen_at": "2026-10-23T03:15:42.488974+00:00",
+      "metrics": {
+        "points": 164,
+        "num_comments": 79
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_a7519c6ce55f34ab": {
+      "id": "it_a7519c6ce55f34ab",
+      "source": "github_trending",
+      "title": "luongnv89/claude-howto",
+      "url": "https://github.com/luongnv89/claude-howto",
+      "summary": "A visual, example-driven guide to Claude Code — from basic concepts to advanced agents, with copy-paste templates that bring immediate value.",
+      "hot_score": 56.25,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-23T03:15:27.781286+00:00",
+      "last_seen_at": "2026-10-23T03:15:42.531323+00:00",
+      "metrics": {
+        "stars_total": 43351,
+        "stars_in_window": 177,
+        "forks": 5398,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_41ec37365e67af16": {
+      "id": "it_41ec37365e67af16",
+      "source": "hf_papers",
+      "title": "Beyond Watching and Searching: Benchmarking Agents for Video-centered Deep Research Reports",
+      "url": "arxiv:2610.31158",
+      "summary": "Deep research agents synthesize open-web evidence into long reports, but current benchmarks do not evaluate research centered on a source video. We introduce Video-Centered Deep Research Report Generation. Given a video and user request, an agent identifies research questions, retrieves external multimodal evidence, and produces an interactive report linked to relevant video moments. This task has direct practical value because it helps users locate relevant moments, verify claims, reproduce demonstrated procedures, and make informed decisions from video content. We present a skill-based workflow and OmniDR-Bench for this task. For evaluation, we propose Omni Atomic Rubric Trees (Omni-ARTs). Each tree contains three dimensions, 23 shared directions, and task-specific atomic binary criteria. The directions test audiovisual grounding, multimodal evidence use, and interactive presentation. Audited Rubric Construction (ARC) builds these trees through independent evidence collection, automated checks, behavioral calibration, and iterative human review. OmniDR-Bench contains 50 Chinese and English tasks across 19 realworld subcategories. It includes 6,414 criteria. Across 18 agent configurations, the best system scores 63.3 out of 100. Current agents still need broader content coverage, stronger causal and logical analysis across modalities, and more accurate citation support. We further analyze models, harnesses, skill configurations, video categories, and research trajectories. The code and data are released at https://github.com/marinero4972/OmniDR-Bench.",
+      "hot_score": 53.4147,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-21T20:00:00+00:00",
+      "last_seen_at": "2026-10-23T03:15:42.573125+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 3
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_8ea6ea906fb17117": {
+      "id": "it_8ea6ea906fb17117",
+      "source": "hf_papers",
+      "title": "Policy-Mask: Budget-Aware Adaptation of Diffusion Features to Discriminative Tasks",
+      "url": "arxiv:2610.28889",
+      "summary": "Selecting intermediate features from a frozen diffusion model for discriminative tasks is non-trivial because the useful signal is distributed across the denoising trajectory, network depth, and channels. In practice, this requires choosing a timestep, a block, and a channel subset. Existing methods either fix these choices by hand or optimize only a few extraction hyperparameters, most often the timestep, then reuse the same rule across inputs and budgets. We introduce Policy-Mask, a budget-conditioned policy trained on the downstream objective that jointly selects all three under a prescribed channel budget. Without normalization, the channel-score contribution grows with the number of selected channels and dominates the timestep and block updates. We normalize it by subset cardinality, keeping the three policy heads on comparable scales and stabilizing joint training. At matched budgets, Policy-Mask improves over fixed extraction and feature-filter baselines across segmentation, classification, and semantic correspondence, reaching 38.9 mIoU on ADE20K, 75.4% top-1 on CIFAR-100 at 128 dimensions, and 76.3 PCK@0.1 on SPair-71k. Component-wise ablations show that block selection materially affects downstream accuracy, and the highest recorded channel-budget score occurs at 256 retained channels, identifying a practical operating point for compact diffusion representations. We further adapt Policy-Mask to diffusion transformers, including PixArt-Σ and SD3.5 MMDiT, by replacing U-Net channels with image-token hidden dimensions.",
+      "hot_score": 51.1135,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-19T20:00:00+00:00",
+      "last_seen_at": "2026-10-23T03:15:42.572484+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 5
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_873c35a344852ac9": {
+      "id": "it_873c35a344852ac9",
+      "source": "github_trending",
+      "title": "fastapi/fastapi",
+      "url": "https://github.com/fastapi/fastapi",
+      "summary": "FastAPI framework, high performance, easy to learn, fast to code, ready for production",
+      "hot_score": 50.625,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-23T03:15:27.781280+00:00",
+      "last_seen_at": "2026-10-23T03:15:42.530933+00:00",
+      "metrics": {
+        "stars_total": 103827,
+        "stars_in_window": 101,
+        "forks": 10093,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_593011f7fe1bce84": {
+      "id": "it_593011f7fe1bce84",
+      "source": "hf_papers",
+      "title": "Reading, Writing, Sharing, and Interacting with the World through Video",
+      "url": "arxiv:2610.31668",
+      "summary": "Video foundation models have advanced rapidly in understanding and generating visual sequences, while video world models seek to capture the underlying dynamics of the world they depict. Despite their different objectives, both concern the relationship between video observations and an evolving world. This survey adopts world modeling as a unifying lens for examining these developments. Viewing an observed video as a partial, lossy, and temporally ordered projection of a latent temporal world, we organize the literature around four complementary operations: reading infers world properties from observed video; writing synthesizes video from specified or learned world conditions; sharing integrates understanding and generation through common modeling mechanisms; and interacting predicts and updates world states under actions and evolving observations. This perspective distinguishes temporal coherence in observed or generated sequences from consistency in the underlying world state. Across tasks, representations, models, datasets, and benchmarks, we trace a shift in emphasis from clip-level recognition and perceptual fidelity toward persistent state, controllable evolution, physical and causal validity, and evaluation grounded in interaction and downstream decisions, and we distill the open challenges that follow.",
+      "hot_score": 48.4147,
+      "topic_id": null,
+      "seen_in": [
+        "arxiv",
+        "hf_papers"
+      ],
+      "published_at": "2026-10-21T20:00:00+00:00",
+      "last_seen_at": "2026-10-23T03:15:42.532821+00:00",
+      "metrics": {
+        "num_comments": 0,
+        "upvotes": 1
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_00b5d16e5263ed2a": {
+      "id": "it_00b5d16e5263ed2a",
+      "source": "github_trending",
+      "title": "Meloong-Git/PCL",
+      "url": "https://github.com/Meloong-Git/PCL",
+      "summary": "Minecraft 启动器 Plain Craft Launcher（PCL）。",
+      "hot_score": 45.0,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-23T03:15:27.781290+00:00",
+      "last_seen_at": "2026-10-23T03:15:42.531798+00:00",
+      "metrics": {
+        "stars_total": 8743,
+        "stars_in_window": 119,
+        "forks": 1209,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Visual Basic .NET"
+    },
+    "it_c9cdc26758b48a34": {
+      "id": "it_c9cdc26758b48a34",
+      "source": "github_trending",
+      "title": "anthropics/knowledge-work-plugins",
+      "url": "https://github.com/anthropics/knowledge-work-plugins",
+      "summary": "Open source repository of plugins primarily intended for knowledge workers to use in Claude Cowork",
+      "hot_score": 43.7159,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-21T03:11:29.651346+00:00",
+      "last_seen_at": "2026-10-23T03:15:42.527855+00:00",
+      "metrics": {
+        "stars_total": 31694,
+        "stars_in_window": 303,
+        "forks": 3538,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_c8222c7454357e3f": {
+      "id": "it_c8222c7454357e3f",
+      "source": "hf_papers",
+      "title": "Skeleton-Grounded Latent Action Model for Robot World Models",
+      "url": "arxiv:2610.31474",
+      "summary": "Robot world models simulate how environments evolve in response to robot actions. Latent action models enable learning dynamics from videos by encoding visual transitions as proxy actions. However, reconstruction-driven latent actions mix robot motion with object responses and other scene changes, complicating their correspondence with robot controls. We propose SkeLAM, a skeleton-guided latent action model for controllable robot world modeling. SkeLAM decomposes latent actions into a kinematic component grounded by robot skeleton supervision and a residual component retaining complementary visual dynamics. Cross-modal swap reconstruction encourages RGB-derived and skeleton-derived kinematic representations to be interchangeable during video reconstruction. The world model incorporates both components through separate conditioning pathways, while branch dropout reduces its dependence on future-derived residual information. A lightweight adapter maps robot actions to the kinematic space, and subsequent world-model fine-tuning adapts generation to these predicted conditions. At inference, the model generates future observations from the current observation and robot actions. On DROID, SkeLAM reduces end-effector ADE by 19.5% and LPIPS by 11.1% compared with DreamDojo. Motion probing supports kinematic specialization, while qualitative results demonstrate zero-shot human-to-robot motion transfer in generated rollouts. Policy evaluation shows agreement between predicted success rates and those measured in real robot executions.",
+      "hot_score": 43.4147,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-21T20:00:00+00:00",
+      "last_seen_at": "2026-10-23T03:15:42.573735+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 1
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_85d1f4c49996c4cd": {
+      "id": "it_85d1f4c49996c4cd",
+      "source": "hf_papers",
+      "title": "SCOPE: Compiling Natural-Language Policies into Neurosymbolic Predicate Programs",
+      "url": "arxiv:2610.31062",
+      "summary": "Policy enforcement for LLM agents has shifted from single-turn content moderation to compound, application-specific policies evaluated over multi-turn transcripts and tool-call trajectories. Fine-tuned guardrail models are efficient but degrade on compound policies, and while LLM-as-a-judge approaches achieve higher accuracy, they incur high inference cost and tend to produce unstable predictions. Neurosymbolic methods offer a natural alternative, decomposing the policy into narrow neural decisions composed under explicit logic. However, existing symbolic layers lack the required expressiveness and are optimized against fixed data rather than the policy itself. To address this, we introduce SCOPE, which compiles a policy into an executable program of neural predicates executed by small models, deterministic extractors, and code that composes their outputs. The program is optimized jointly with its training data, using adversarial generation of counterexamples that target where the program deviates from the policy. We evaluate SCOPE on a benchmark of real-world policy tasks against prompt optimization, task decomposition, and workflow generation methods, achieving the highest average accuracy across tasks and models. Programs optimized with the weakest executor transfer to other models without further optimization. This allows them to be deployed in production on inexpensive models, where they reach accuracy comparable to frontier reasoning models. Unlike these monolithic models, SCOPE produces substantially more stable predictions, and each verdict is interpretable through the predicate outputs that produced it. Additionally, we validate the key components of our method through an ablation study. SCOPE thus enables reliable, interpretable, and efficient policy enforcement at production scale.",
+      "hot_score": 43.4147,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-21T20:00:00+00:00",
+      "last_seen_at": "2026-10-23T03:15:42.574332+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 1
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_b7046e0a16faea27": {
+      "id": "it_b7046e0a16faea27",
+      "source": "hackernews",
+      "title": "Most Americans Say AI Is Bad for Society, Oppose More Data Centers",
+      "url": "https://abcnews.com/Politics/americans-ai-bad-society-oppose-data-centers-abcpostipsos/story?id=137414085",
+      "summary": "",
+      "hot_score": 42.526,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-22T20:51:23+00:00",
+      "last_seen_at": "2026-10-23T03:15:42.490481+00:00",
+      "metrics": {
+        "points": 60,
+        "num_comments": 38
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_881f1bc73eeff363": {
+      "id": "it_881f1bc73eeff363",
+      "source": "arxiv",
+      "title": "Sensorimotor Alignment: A Platonic Proxy for Embodied Policy Success",
+      "url": "arxiv:2610.31670",
+      "summary": "Robotic foundation models are typically evaluated through costly closed-loop rollouts, which motivates cheap offline proxies for model capability. The Platonic Representation Hypothesis (PRH) suggests that as representations improve, different modalities such as vision and language converge toward a shared statistical model of reality. We ask whether motion trajectories form another such modality: as embodied models become more capable, should their sensory representations converge toward the structure of physical motion? To examine this, we propose Sensorimotor Alignment ($S^2$), a training-free offline metric that measures how well a model's sensory representation aligns with the geometry of physical motion. We find that $S^2$ correlates positively with downstream robot task success across embodied model families, making it a low-cost offline proxy for prioritizing models before closed-loop evaluation. $S^2$ can also identify promising vision-language model (VLM) backbones even before costly fine-tuning into vision-language-action models (VLAs). Beyond this correlation, $S^2$ offers representation-level explanations for phenomena observed in VLAs and world action models (WAMs). With $S^2$, we extend PRH to embodied models and make sensorimotor alignment empirically measurable, offering insight into why an embodied model succeeds beyond its closed-loop success rate.",
+      "hot_score": 40.2663,
+      "topic_id": null,
+      "seen_in": [
+        "arxiv"
+      ],
+      "published_at": "2026-10-22T17:59:51+00:00",
+      "last_seen_at": "2026-10-23T03:15:42.532189+00:00",
+      "metrics": {},
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_091e7bc4c3efeccf": {
+      "id": "it_091e7bc4c3efeccf",
+      "source": "arxiv",
+      "title": "Direct Pass@$k$ Optimization for Thought Pruning: Balancing Quality and Diversity in Test-Time Reasoning",
+      "url": "arxiv:2610.31667",
+      "summary": "Test-time scaling has emerged as a key inference strategy for reasoning models, where a model generates a large number of candidate solutions in the hope of finding at least one correct solution. Running all candidate solutions to completion can be computationally demanding, so recent work prunes the candidate pool after generating only a short prefix, committing further computation only to the surviving candidates. Existing pruning strategies divide broadly into two categories: Quality-based methods assign a score to each partial solution and discard those predicted to ultimately lead to an incorrect final solution, while diversity-based methods select partial solutions that follow different reasoning trajectories and are therefore likely to cover different final solutions. The tension between these two objectives is an instance of exploration versus exploitation, yet little to no prior work on pruning exposes this trade-off directly, let alone optimizes it. In this paper, we introduce a pruning procedure that addresses this trade-off directly by optimizing pass@$k$ over the selected solution pool. In particular, it chooses the pool to maximize the probability that at least one of its partial solutions, when continued to completion, yields a correct answer. Because this objective simultaneously rewards high-quality partial solutions and penalizes redundancy among them, quality and diversity are naturally balanced by the criterion itself rather than through separate ad-hoc design choices. On eight open-weight reasoning models, our method outperforms existing quality-based and diversity-based pruning strategies. The gains are particularly pronounced when the pruning procedure keeps a moderate number of partial solutions for continued generation, highlighting the value of directly balancing quality and diversity during pruning.",
+      "hot_score": 40.2658,
+      "topic_id": null,
+      "seen_in": [
+        "arxiv"
+      ],
+      "published_at": "2026-10-22T17:59:48+00:00",
+      "last_seen_at": "2026-10-23T03:15:42.533478+00:00",
+      "metrics": {},
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_b38d2721ea3f7afc": {
+      "id": "it_b38d2721ea3f7afc",
+      "source": "arxiv",
+      "title": "Reliable AI-Assisted Decisions via Selective Auditing",
+      "url": "arxiv:2610.31662",
+      "summary": "We consider online monitoring of an AI system that produces a sequence of decisions. At each round, the system outputs a proposed decision together with a confidence score estimating the trustworthiness of the decision. The decision and confidence score need not be produced by the same model: for example, one agent may propose a decision, while a separate verifier agent evaluates it and outputs a correctness or safety score. Based on this information, we must decide whether to accept the AI decision automatically or consult an expert, such as a human auditor, who reviews the proposal and either accepts or corrects it. We formulate this task as an online constrained optimization problem in which the goal is to minimize the frequency of expert auditing while guaranteeing that the fraction of AI errors that go unaudited stays below a user-defined threshold. We derive a family of algorithms with provable error-control guarantees with no assumptions, including a method that is optimally efficient: it asymptotically attains the best achievable auditing rate for both adversarial and i.i.d. data streams. Experiments on screening harmful requests to large language models, qualitative text annotation, and data labeling show that our methods achieve valid error control in practice while substantially reducing the need for human auditing compared to baselines.",
+      "hot_score": 40.2622,
+      "topic_id": null,
+      "seen_in": [
+        "arxiv"
+      ],
+      "published_at": "2026-10-22T17:59:22+00:00",
+      "last_seen_at": "2026-10-23T03:15:42.534208+00:00",
+      "metrics": {},
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_c748c2919d746d52": {
+      "id": "it_c748c2919d746d52",
+      "source": "arxiv",
+      "title": "Cost-Aware Abstention for LLM-Based IT Ticket Classification",
+      "url": "arxiv:2610.31657",
+      "summary": "Wrong automatic routing of an IT support ticket can cost more than human triage. We evaluate cost-aware abstention as an offline, cost-conditional readiness assessment: select a routing policy on calibration data under explicit costs, then evaluate that frozen policy once on held-out test data. On a public 47,837-ticket, eight-class corpus, we compare four trained non-LLM classifiers with four large language models under zero- and few-shot prompting. Under the illustrative cost model (c_ok, c_triage, c_wrong) = (0, 1, 5), TF-IDF with logistic regression and a threshold of 0.60 selected on calibration reduces test cost from 0.763 to 0.472, a 38.1% relative reduction (paired ratio-bootstrap 95% CI [35.7%, 40.4%]), while lowering wrong routes from 15.3% to 3.5%. Frozen calibration-selected policies also beat both always-route and always-defer on held-out test data in 14 of 16 settings in a post-hoc cost-parameter analysis. The strongest prompted configuration reaches 0.477 accuracy on a stratified 1,000-ticket test subset, versus 0.879 for fine-tuned DistilBERT on the same tickets. Isotonic lowers expected calibration error without reliably improving discrimination: GPT-4o-mini few-shot has one confidence value before and after recalibration and correctness AUROC 0.500. We therefore report correctness AUROC and tie-aware risk-coverage area alongside ECE. At the analytically derived break-even probability 0.80, seven prompted configurations defer all tickets; Haiku few-shot routes only 19/1,000. An LLM-only agreement control and margin/entropy rejection baselines further separate calibration from discrimination. The findings are scoped to this dataset, prompt design, model endpoints, and illustrative costs; the work is an evaluation framework, not a new abstention algorithm or universal deployment certification.",
+      "hot_score": 40.258,
+      "topic_id": null,
+      "seen_in": [
+        "arxiv"
+      ],
+      "published_at": "2026-10-22T17:58:52+00:00",
+      "last_seen_at": "2026-10-23T03:15:42.534886+00:00",
+      "metrics": {},
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_78c303603ddcd3ed": {
+      "id": "it_78c303603ddcd3ed",
+      "source": "arxiv",
+      "title": "METTA: Memory-Enhanced Test-Time Adaptation for Meta-Reinforcement Learning",
+      "url": "arxiv:2610.31656",
+      "summary": "Meta-reinforcement learning aims to train agents that adapt quickly to unseen tasks from limited interaction, but this requires representing task evidence over long interaction histories. Classical recurrent agents compress experience into hidden states, while transformer-based agents retrieve from past trajectories at quadratic memory and computation cost. In this work, we propose Memory-Enhanced Test-Time Adaptation (METTA) for meta-reinforcement learning. It decomposes the fast adaptation phase into two temporal scales: a causal neural memory performs fine-grained within-episode adaptation with linear sequence complexity, while compact episode-level summaries support long-range cross-episode task inference without attending over the full interaction history. Moreover, equipping agents with neural memory provides sufficient expressive capacity and test-time training capability, enabling effective adaptation to unseen held-out tasks and task families at meta-test time. On unseen held-out Meta-World ML10/45 test environments, METTA achieves a success rate over $50\\%$ while maintaining a low training budget and short wall-clock time. On long-context sparse-reward PointMaze tasks, it outperforms transformer-based baselines by exhibiting more structured exploration behavior. These results show that METTA provides an efficient path toward more adaptive and scalable long-context meta-RL.",
+      "hot_score": 40.2544,
+      "topic_id": null,
+      "seen_in": [
+        "arxiv"
+      ],
+      "published_at": "2026-10-22T17:58:27+00:00",
+      "last_seen_at": "2026-10-23T03:15:42.535551+00:00",
+      "metrics": {},
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_a01018f7624db353": {
+      "id": "it_a01018f7624db353",
+      "source": "arxiv",
+      "title": "BrickWright: Agentic Creation of Physically Feasible Brick Builds",
+      "url": "arxiv:2610.31651",
+      "summary": "Frontier coding agents are becoming increasingly adept at 3D modeling. Yet, they still face challenges when building objects meant to be assembled in the physical world, often creating invalid assemblies with floating, colliding, or disconnected parts. We argue that providing agents with tools for assembling builds and verifying their physical feasibility is sufficient for them to produce physically valid assemblies that still adhere to input prompts. Focusing on the domain of LEGO brick builds, we present BrickWright, a framework for generating physically feasible brick builds from text or image prompts using pre-trained agents, where a build is physically feasible if it uses only real parts, has no colliding or floating parts, and forms a connected structure if possible. BrickWright guides agents to create builds by writing code with BrickLayer, a Python toolkit with two main components: an ergonomic brick assembly API that halves inference cost compared to working in raw LDraw, and a validator that provides feedback on physical feasibility. Whereas baseline agents achieve physical validity rates ranging from only 9% (GPT-6 Luna) to 69% (GPT-6 Astra), BrickWright-guided agents achieve 100% validity on a sample of 512 prompts, while improving prompt adherence for lightweight agents and maintaining it for stronger agents. Additionally, they outperform specialized models on the text-to-brick task. Code is available on our project page: https://avalovelace1.github.io/brickwright/",
+      "hot_score": 40.245,
+      "topic_id": null,
+      "seen_in": [
+        "arxiv"
+      ],
+      "published_at": "2026-10-22T17:57:20+00:00",
+      "last_seen_at": "2026-10-23T03:15:42.536190+00:00",
+      "metrics": {},
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_77c097ed1b755364": {
+      "id": "it_77c097ed1b755364",
+      "source": "arxiv",
+      "title": "EpiSEM-Bench: Evaluating Safety and Evidence Recovery in LLM Agents under Missing Evidence",
+      "url": "arxiv:2610.31650",
+      "summary": "Tool-using language model agents rely on environmental facts to decide whether an action is permitted. When a tool response omits a safety-relevant fact, an agent may carry out a prohibited action even though the user request is benign and every returned statement is true. We introduce \\bench{}, an executable benchmark for evaluating unsafe execution, safety boundaries, and evidence recovery in LLM agents under missing evidence. It contains 300 matched unsafe/safe task pairs across six domains. By systematically suppressing critical facts, the benchmark measures unsafe execution under critical evidence omission and determines the minimum observed failure cardinality, including failures with full evidence and cases with no observed failure after exhaustive testing. An independent audit tool tests whether agents seek missing facts and then withhold prohibited actions while completing permissible tasks. The benchmark reveals substantial variation across the ten models in omission robustness, evidence acquisition, and appropriate action. Resistance to missing evidence does not necessarily translate into useful recovery. Recovery access reduces unsafe execution for all ten models, but agents differ in whether they actively obtain the missing facts and use them to act appropriately in both worlds.",
+      "hot_score": 40.2427,
+      "topic_id": null,
+      "seen_in": [
+        "arxiv"
+      ],
+      "published_at": "2026-10-22T17:57:04+00:00",
+      "last_seen_at": "2026-10-23T03:15:42.536804+00:00",
+      "metrics": {},
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_6042148bfdefd707": {
+      "id": "it_6042148bfdefd707",
+      "source": "arxiv",
+      "title": "Gate3DGen: A Pre-processing Model that Selectively Purifies Real-World Images for 3D Generation",
+      "url": "arxiv:2610.31649",
+      "summary": "Single-image 3D generation has achieved high fidelity on curated benchmarks, yet degrades sharply on real-world images with uneven illumination, blur, and occlusions. Purifying such inputs requires deciding when to intervene and preserving the visual cues needed for 3D generation, while leaving clean inputs unchanged. We introduce Gate3DGen, a selective pre-processing model that gates image inputs to existing 3D generators without retraining them. A degradation-aware router bypasses inputs classified as clean and extracts features to guide purification of the remaining inputs. Conditioned on these features, a 3D-oriented one-step purifier purifies degraded inputs with spatial losses that encourage preservation of object identity, contours, and textural cues. To provide paired supervision, we construct a synthetic data engine that renders clean views of 3D assets and synthesises composite degradations. On the synthetic benchmark, the purifier improves image fidelity and downstream 3D geometry in only 2.3s on average, reducing TRELLIS.2 mesh distance by 61.5% relative to degraded inputs. VLM evaluation and human preferences on real photographs further support identity preservation and degradation correction. More demos and code are available at https://supra-3d.github.io/gate3dgen.",
+      "hot_score": 40.2425,
+      "topic_id": null,
+      "seen_in": [
+        "arxiv"
+      ],
+      "published_at": "2026-10-22T17:57:02+00:00",
+      "last_seen_at": "2026-10-23T03:15:42.537467+00:00",
+      "metrics": {},
+      "streak_days": 0,
+      "language": "en"
+    }
+  },
+  "meta": {
+    "mode": "hybrid",
+    "day": "2026-10-23",
+    "generated_at": "2026-10-23T03:16:50.725738+00:00",
+    "window": {
+      "since": "2026-10-22T03:15:26.285002+00:00",
+      "until": "2026-10-23T03:15:42.590098+00:00",
+      "hours": 24.0,
+      "since_local": "2026-10-22T11:15+08:00",
+      "until_local": "2026-10-23T11:15+08:00",
+      "tz": "Asia/Shanghai"
+    },
+    "analysis": {
+      "items": 141,
+      "scored": 141,
+      "topics": 5,
+      "new_entity_mention_rows": 178,
+      "state_items": 9
+    },
+    "llm": {
+      "degraded": false,
+      "degraded_reason": "",
+      "calls": 1
+    },
+    "collect": {
+      "ok_sources": 7,
+      "failed_sources": 0,
+      "skipped": 0,
+      "total_items": 141
+    },
+    "verify": {
+      "verified": 0,
+      "unverifiable": 0,
+      "deferred": 0,
+      "failed": 0,
+      "llm_calls": 0
+    },
+    "predictions": {
+      "total": 64,
+      "verified": 0,
+      "pending": 64,
+      "unverifiable": 0,
+      "hit_rate": null,
+      "weighted_score": null,
+      "brier": null
+    },
+    "prediction_generation": {
+      "mode": "hybrid",
+      "generated": 5,
+      "inserted": 5,
+      "dropped": [],
+      "llm_calls": 1,
+      "candidate_pool": 20,
+      "degraded": false,
+      "degraded_reason": ""
+    },
+    "brief": {
+      "max_items_per_section": 10,
+      "velocity_board_enabled": true,
+      "velocity_board_top_n": 5
+    },
+    "signals": {
+      "entities": 297,
+      "points": 929,
+      "with_velocity": 40,
+      "insufficient": 112,
+      "cold_start": 145,
+      "min_window_hours": 6.0
+    },
+    "enhance_total": 23,
+    "enhanced": 23,
+    "enhance_skipped_count": 0,
+    "enhance_cache_hit": 3,
+    "enhance_cost_cny": 0.008836
+  }
+}
