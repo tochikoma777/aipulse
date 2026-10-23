@@ -16,7 +16,7 @@ import typer
 
 from aipulse.analysis.cross_period import load_cross_period
 from aipulse.core.config import load_settings
-from aipulse.reasoning.selfcheck import FAIL, run_selfcheck
+from aipulse.reasoning.selfcheck import FAIL, build_admission, run_selfcheck
 
 app = typer.Typer(
     name="selfcheck",
@@ -99,6 +99,11 @@ def main(
     issue_dir.mkdir(parents=True, exist_ok=True)
     (issue_dir / "selfcheck.md").write_text(markdown, encoding="utf-8")
     (issue_dir / "selfcheck.json").write_text(payload, encoding="utf-8")
+    # L4 → 下期准入（反馈闭环）：trend 下次启动时读最近一期 admission.json
+    admission = build_admission(index, state_dir=issue_dir)
+    (issue_dir / "admission.json").write_text(
+        json.dumps(admission, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
     if out:
         out_path = Path(out)
         out_path.parent.mkdir(parents=True, exist_ok=True)
@@ -110,6 +115,11 @@ def main(
     for layer in report.layers:
         typer.echo(f"[selfcheck] {layer.layer} {layer.name}: {layer.verdict}", err=True)
     typer.echo(f"[selfcheck] 落盘 {issue_dir}/selfcheck.{{md,json}}", err=True)
+    limit = admission["max_structure_claims"]
+    typer.echo(
+        f"[selfcheck] 下期准入 {admission['level']}（上限 {limit} 条）：{admission['reason']}",
+        err=True,
+    )
 
     if any(layer.verdict == FAIL for layer in report.layers):
         raise typer.Exit(code=1)

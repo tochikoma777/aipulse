@@ -4,21 +4,21 @@
 
 > ### 📌 本周三句话
 >
-> 1. **社区舆论热度份额从约27%降到16%，讨论型内容边际贡献收窄**
-> 2. **github_trending 份额升至33%，注意力向可验证的项目型内容集中**
-> 3. **上升方向为空，仅单条热度小幅抬升，板块级未形成共振**
+> 1. **社区舆论份额从26.9%降至15.6%，讨论型内容让位**
+> 2. **hackernews 来源条目8条减到4条，份额降13.3pp**
+> 3. **新增供给147条仅在榜1-2天，3天以上只有11条**
 
 ---
 
 ## 🧭 本周判断
 
-- **上升主题**：板块级上升方向为空，唯一上行迹象来自单条相邻两日热度抬升 3.40。 — 依据 [cloudflare/security-audit-skill](https://github.com/cloudflare/security-audit-skill)、[anomalyco/opencode](https://github.com/anomalyco/opencode)、[MadsLorentzen/ai-job-search](https://github.com/MadsLorentzen/ai-job-search)
-- **降温主题**：长榜条目走满 6 天后跌出 Top30，另一条热度单次回落 10.41，降温有读数支撑。 — 依据 [MadsLorentzen/ai-job-search](https://github.com/MadsLorentzen/ai-job-search)、[DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail)
-- **新进榜**：单日新进榜 8 条中研究类占一半，但再次进榜条目仅维持 1 天，延续性偏短。 — 依据 [Making MLLM Latents Matter: Factor-Awar…](arxiv:2610.30926)、[anthropics/knowledge-work-plugins](https://github.com/anthropics/knowledge-work-plugins)、[php/php-src](https://github.com/php/php-src)
-- **结构变化**：结构主线是社区舆论权重收缩，供给与份额同降，且周转集中在 1-2 天短档。 — 依据 [OpenShell – A safe, private runtime for…](https://github.com/NVIDIA/OpenShell)、[Several Linux kernel vulnerabilities ac…](https://www.phoronix.com/news/LKML-New-Trend-Vulnerabilities)
-- **二阶影响**：讨论型供给排期权重下降，项目型内容获得曝光溢价，下一步看两者份额阈值能否守住。 — 依据 [OpenShell – A safe, private runtime for…](https://github.com/NVIDIA/OpenShell)
-- **预言复盘**：34 条预言最早 11-16 到期，本周无到期样本，命中率与 Brier 尚不可估。
-- **下期观察**：下期验两条：长榜条目连续天数能否 6→7，单日条目能否由 1→2 天转为连续曝光。 — 依据 [MadsLorentzen/ai-job-search](https://github.com/MadsLorentzen/ai-job-search)、[OpenShell – A safe, private runtime for…](https://github.com/NVIDIA/OpenShell)
+- **上升主题**：本周没有上升板块，可核验的上升只有单条热度两日抬升3.40。 — 依据 [cloudflare/security-audit-skill](https://github.com/cloudflare/security-audit-skill)、[anomalyco/opencode](https://github.com/anomalyco/opencode)
+- **降温主题**：社区舆论份额一周内从26.9%收缩到15.6%，斜率3.21pp/天，非单日抖动。 — 依据 [OpenShell – A safe, private runtime for…](https://github.com/NVIDIA/OpenShell)、[MadsLorentzen/ai-job-search](https://github.com/MadsLorentzen/ai-job-search)
+- **新进榜**：单日新进8条，研究类占4条，回榜条目热度43.72落在尾部。 — 依据 [Making MLLM Latents Matter: Factor-Awar…](arxiv:2610.30926)、[anthropics/knowledge-work-plugins](https://github.com/anthropics/knowledge-work-plugins)、[OpenShell – A safe, private runtime for…](https://github.com/NVIDIA/OpenShell)
+- **结构变化**：讨论板块让位，来源端条目减半，项目型靠热度集中把份额抬到33.5%。 — 依据 [OpenShell – A safe, private runtime for…](https://github.com/NVIDIA/OpenShell)、[Several Linux kernel vulnerabilities ac…](https://www.phoronix.com/news/LKML-New-Trend-Vulnerabilities)、[LLMs are making formal software verific…](https://www.anthropic.com/research/formal-verification)
+- **二阶影响**：冲击先落在供给结构：讨论型供给变薄，可执行链接型项目位先受益。 — 依据 [OpenShell – A safe, private runtime for…](https://github.com/NVIDIA/OpenShell)、[Several Linux kernel vulnerabilities ac…](https://www.phoronix.com/news/LKML-New-Trend-Vulnerabilities)
+- **预言复盘**：34条预言全部待验证，最早到期11月16日，本周零样本可算命中率。
+- **下期观察**：下期只验两条：在榜6天能否到7天，单日高热能否留下第2天。 — 依据 [MadsLorentzen/ai-job-search](https://github.com/MadsLorentzen/ai-job-search)、[OpenShell – A safe, private runtime for…](https://github.com/NVIDIA/OpenShell)
 
 ## 📊 板块份额变化
 
@@ -69,12 +69,17 @@
 
 | item_id | 标题 |
 |---|---|
-| `it_42565b5232096036` | DietrichGebert/ponytail |
+| `it_1360bd8eb5a8e67e` | LLMs are making formal software verification feasible at a … |
+| `it_1f28a16c9fe19cbe` | HKUDS/CLI-Anything |
 | `it_645a6cf2b3acc8ac` | anomalyco/opencode |
 | `it_72972368be1f96c8` | Several Linux kernel vulnerabilities accidentally posted to… |
 | `it_752e25023358d2db` | MadsLorentzen/ai-job-search |
 | `it_77f9ddd43bbeeb71` | cloudflare/security-audit-skill |
+| `it_7d0ed93b88de47b1` | Comfy-Org/ComfyUI |
+| `it_8374e30db02abb47` | anthropics/claude-plugins-official |
+| `it_85ee7a3aef761044` | ruvnet/ruflo |
 | `it_93bbd6e7c3469d05` | Making MLLM Latents Matter: Factor-Aware Predictive Learnin… |
+| `it_940ae4b9591d1f09` | stablyai/orca |
 | `it_bf00b37e101a93d7` | OpenShell – A safe, private runtime for fleets of autonomou… |
 | `it_c9cdc26758b48a34` | anthropics/knowledge-work-plugins |
-| `it_fdf7de3aa15def01` | php/php-src |
+| `it_db643b160f4cefa8` | debpalash/VoiceStudio |

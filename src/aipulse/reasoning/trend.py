@@ -544,12 +544,85 @@ def build_caveats(index: CrossPeriodIndex, reports: dict[str, StructureReport]) 
     return out
 
 
+def build_headline_candidates(index: CrossPeriodIndex, reports: dict[str, StructureReport]) -> str:
+    """三句话的候选池：全部 9 个结构里**已经发生的具体变化**。
+
+    ★ 议题不能只说"份额"：S5 首跑三句话全在板块份额上，第 3 句还写成
+    "上升方向为空"——那是把"没观察到"当结论，既不好读，也容易被误当成免责。
+    候选池给全 9 个结构，模型只需挑三个最重要的**已发生事实**。
+    """
+    lines: list[str] = []
+    heat = reports.get("heat_migration")
+    if heat is not None:
+        usable = [e for e in heat.entries if isinstance(e, dict) and e.get("trend_usable")]
+        usable.sort(key=lambda e: -abs(float(e.get("delta_pp") or 0.0)))
+        for entry in usable[:3]:
+            lines.append(
+                f"板块份额变化：{entry.get('section')} {float(entry.get('delta_pp') or 0):+.2f}pp"
+            )
+    co = reports.get("co_movement")
+    if co is not None and co.entries:
+        lines.append(f"同步变化组：{len(co.entries)} 组条目同向变动")
+    emergence = reports.get("emergence")
+    if emergence is not None:
+        dropped = [
+            e
+            for e in emergence.entries
+            if isinstance(e, dict) and e.get("kind") == "dropped" and e.get("trend_eligible")
+        ]
+        dropped.sort(key=lambda e: -int(e.get("days_on") or 0))
+        for entry in dropped[:2]:
+            lines.append(
+                f"连续在榜 {int(entry.get('days_on') or 0)} 天后跌出 Top30：{entry.get('title')}"
+            )
+        fresh = int(emergence.metrics.get("new") or 0) if emergence.metrics else 0
+        if fresh:
+            lines.append(f"新进榜 {fresh} 条")
+    persistence = reports.get("persistence")
+    if persistence is not None:
+        buckets = {
+            str(e.get("bucket")): int(e.get("count") or 0)
+            for e in persistence.entries
+            if isinstance(e, dict)
+        }
+        if buckets:
+            short = sum(v for k, v in buckets.items() if k in {"1-2", "1", "2"})
+            longest = persistence.metrics.get("max_longest_run")
+            lines.append(f"只在榜 1-2 天的条目 {short} 条（最长连续 {longest} 天）")
+    share = reports.get("source_share")
+    if share is not None:
+        usable_share = [e for e in share.entries if isinstance(e, dict) and e.get("trend_usable")]
+        usable_share.sort(key=lambda e: -abs(float(e.get("count_delta_pp") or 0.0)))
+        for entry in usable_share[:2]:
+            lines.append(
+                f"来源份额变化：{entry.get('source')} "
+                f"{float(entry.get('count_delta_pp') or 0):+.2f}pp"
+            )
+    review = reports.get("prediction_review")
+    if review is not None:
+        lines.append(
+            f"预言：{review.metrics.get('total', 0)} 条，"
+            f"到期 {review.metrics.get('verified', 0)} 条"
+        )
+    unusable = [
+        str(e.get("section"))
+        for e in (heat.entries if heat is not None else [])
+        if isinstance(e, dict) and not e.get("trend_usable")
+    ]
+    if unusable:
+        lines.append(
+            f"被封锁、不可作趋势判断的板块：{'、'.join(unusable)}（只能作限制说明，不能当作三句话之一）"
+        )
+    return "\n".join(f"- {line}" for line in lines)
+
+
 async def generate_headlines(
     index: CrossPeriodIndex,
     segments: list[TrendSegment],
     client: LLMClient,
     *,
     max_tokens: int,
+    candidates: str = "",
 ) -> tuple[list[str], list[Judgement], int, int]:
     """第 8 次调用：把 7 节正文压成「三句话 + 各节判断性结论」。
 
@@ -569,6 +642,7 @@ async def generate_headlines(
         window_end=index.days[-1] if index.days else "",
         window_days=len(index.days),
         sections=bodies,
+        candidates=candidates or "（无）",
         segments=[(key, title) for key, title, _ in SEGMENTS],
     )
     try:
@@ -611,6 +685,7 @@ async def generate_trend(
     purpose: str = "trend_weekly",
     price_strong_cny_per_1m: float = 4.0,
     segment_keys: tuple[str, ...] | None = None,
+    admission_rule: str = "",
 ) -> TrendReport:
     """按 7 节分段生成；单节失败只跳过该节。"""
     sliced = slice_index(index, window_days)
@@ -639,6 +714,7 @@ async def generate_trend(
             window_days=len(sliced.days),
             evidence=evidence.text,
             word_budget=WORD_BUDGET.get(key, "300-600 字"),
+            admission_rule=admission_rule,
         )
         segment = TrendSegment(key=key, title=title)
         attempts += 1
@@ -690,7 +766,11 @@ async def generate_trend(
     if any(segment.body.strip() for segment in segments):
         attempts += 1
         headlines, judgements, h_prompt, h_completion = await generate_headlines(
-            sliced, segments, client, max_tokens=max_tokens
+            sliced,
+            segments,
+            client,
+            max_tokens=max_tokens,
+            candidates=build_headline_candidates(sliced, reports),
         )
         prompt_tokens += h_prompt
         completion_tokens += h_completion
@@ -727,6 +807,7 @@ __all__ = [
     "boilerplate_hits",
     "build_caveats",
     "build_evidence",
+    "build_headline_candidates",
     "char_count",
     "generate_headlines",
     "generate_trend",

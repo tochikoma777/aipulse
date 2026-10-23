@@ -10,7 +10,7 @@ This file provides guidance to CodeBuddy Code when working with code in this rep
 |---|---|
 | `analysis/cross_period.py` | ✅ 9 个跨期结构 + 轨迹层 + 坏日/源集合变更归因 |
 | `reasoning/trend.py` · `schema/trend.py` · `prompts/trend/weekly.j2` | ✅ 7 节分段生成（每节一次调用） |
-| `reasoning/selfcheck.py` · `cli/commands/selfcheck.py` | ✅ L1–L4 自验证（离线，0 成本；**读 `weekly.json` 机器层**，状态合并各期目录） |
+| `reasoning/selfcheck.py` · `cli/commands/selfcheck.py` | ✅ L1–L4 自验证（离线，0 成本；**读 `weekly.json` 机器层**，状态合并各期目录）。**L4 检验的是上期结构方向是否延续**（不是条目存活），间隔 <7 天或样本 <5 判 `insufficient`；结论写 `admission.json` 供下期 `trend` 收紧门槛 |
 | `data/reports/trend/<窗口末日>/` | ✅ `weekly.md`（人类层）/ `weekly.json`（机器层）/ `selfcheck.{md,json}` / `watchlist.json` / `calibration.json` |
 | `render/weekly.py` · `render/debate.py` · `prompts/trend/headlines.j2` | ✅ S5 人类层渲染（三句话 / 表格 / 交锋矩阵 / 折叠免责 / 文末溯源） |
 | `schema/debate.py` · `reasoning/debate.py` · `prompts/debate/{round1,round2,moderator}.j2` | ✅ 四方并行 → 交叉质证 → 主持人收敛（实跑 9/9 调用，¥0.18） |
@@ -21,6 +21,8 @@ This file provides guidance to CodeBuddy Code when working with code in this rep
 | debate 的 auto 模式（从 trend 挑本周最大争议话题） | ⬜ TODO：需先把「分歧度」定义成可计算的量 |
 
 **debate 验收要点（手册 §6 DoD，别做偏）**：四个 persona **必须 `asyncio.gather` 并行**（串行视为不合格）；证据包每条 ≤60 字、合计 ≤15 条、**绝不回显摘要原文**；收敛块必须含「什么证据会让我改变判断」。
+
+**★ L4 判据（别改回去）**：主判据 = 上期记录的**结构方向**（`heat_migration.direction` / `source_share.count_delta_pp` 符号）在本期是否同向；前置门 = 间隔 <7 天或可判样本 <5 → `insufficient`（**不是 fail**）；条目存活率只是辅助指标，**不单独触发 fail**（板块结构≠条目在榜）。反馈闭环：`admission.json` → `trend` 的 `admission_rule`。
 
 **★ 双层分离（S5，跨 trend/debate 通用）**：机器层看过程，人类层看结论。`weekly.json` 保留 7 节正文 + 裸 ID + violations + caveats，**L1-L4 读它**；`weekly.md` 只给结论（三句话 + 判断 + 表格），**正文零裸 ID**，免责进 `<details>`，ID 收进文末「数据溯源」。
 ★ 红线：不得为了排版好看而删掉 L1-L4 依赖的数据——数据是**移位**，不是删除。

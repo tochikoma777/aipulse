@@ -24,6 +24,7 @@ from aipulse.analysis.cross_period import load_cross_period
 from aipulse.core.config import load_settings
 from aipulse.core.logging import configure_logging
 from aipulse.llm.base import build_client
+from aipulse.reasoning.selfcheck import admission_rule_for, load_admission
 from aipulse.reasoning.trend import SEGMENTS, generate_trend
 from aipulse.render.weekly import render_weekly
 
@@ -88,6 +89,10 @@ def main(
     # 每段 300-600 字，但 strong 档的思维链也吃 completion 额度；
     # 2000 会让 reasoner 在写出正文前就撞长度（实测 7/7 段被截断）。
     budget_tokens = max_tokens or settings.llm.max_tokens_strong
+    # L4 反馈闭环：上一期自检若判了过度声称，本期就收紧结构判断的准入
+    trend_dir = root / "trend"
+    admission = load_admission(trend_dir)
+    rule = admission_rule_for(admission)
     report = asyncio.run(
         generate_trend(
             index,
@@ -96,6 +101,7 @@ def main(
             max_tokens=budget_tokens,
             price_strong_cny_per_1m=settings.budget.price_strong_cny_per_1m,
             segment_keys=keys,
+            admission_rule=rule,
         )
     )
 
@@ -129,6 +135,8 @@ def main(
         f"[trend] 落盘 {md_path}（人类层）+ {md_path.with_suffix('.json')}（机器层）",
         err=True,
     )
+    if rule:
+        typer.echo(f"[trend] 准入收紧：{admission.get('reason', '')}", err=True)
     for segment in report.segments:
         status = "skip" if segment.skipped_reason else f"{segment.char_count} 字"
         typer.echo(

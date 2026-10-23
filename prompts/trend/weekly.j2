@@ -15,6 +15,12 @@ purpose: trend_weekly
 
 {{ segment_goal }}
 
+{% if admission_rule %}
+# 本期准入约束（硬，来自上期自检反馈）
+
+{{ admission_rule }}
+
+{% endif %}
 # 硬规则（违反即不合格）
 
 1. **不许复述条目**：不要抄标题、不要抄摘要。每条判断都必须同时出现

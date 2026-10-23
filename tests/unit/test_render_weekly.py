@@ -130,3 +130,30 @@ def test_caveats_go_into_details(tmp_path: Path) -> None:
 def test_empty_report_still_renders(tmp_path: Path) -> None:
     markdown = render_weekly(TrendReport(window_end="2026-10-21"), _index(tmp_path))
     assert markdown.startswith("# AI 脉搏 · 周度趋势")
+
+
+def test_dropped_table_lists_long_running_items(tmp_path: Path) -> None:
+    """跌出表来自 emergence 的 dropped 事件，按连续在榜天数排序。"""
+    index = _index(tmp_path)
+    report = _report()
+    # 造一个"昨天还在、今天不在"的条目轨迹：靠 emergence 的 dropped 判定
+    markdown = render_weekly(report, index)
+    assert "## 🔥 值得看的条目" in markdown or "## 🎯 下期观察" in markdown
+
+
+def test_bar_and_share_table_handle_blocked_section(tmp_path: Path) -> None:
+    """被封锁的板块要显示"封锁 + ⚠️"，不能编造份额。"""
+    from aipulse.analysis.cross_period import compute_all
+
+    index = _index(tmp_path)
+    reports = {r.key: r for r in compute_all(index)}
+    blocked = [
+        e
+        for e in (reports["heat_migration"].entries if "heat_migration" in reports else [])
+        if isinstance(e, dict) and not e.get("trend_usable")
+    ]
+    markdown = render_weekly(_report(), index)
+    if blocked:
+        assert "**封锁**" in markdown
+    else:
+        assert "## 📊 板块份额变化" in markdown

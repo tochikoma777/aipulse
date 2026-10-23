@@ -47,6 +47,17 @@ WARN = "warn"
 FAIL = "fail"
 NO_DATA = "no_data"
 BASELINE_ONLY = "baseline_only"
+INSUFFICIENT = "insufficient"
+"""样本/间隔不足以判定。**不是 fail**——L4 宁可不判，也不冤枉。
+
+L4 的判据修正（2026-10-23 项目负责人裁决）：
+
+- 前置门：回检间隔 <7 天、或可判样本 <5 → `insufficient`，不判 fail。
+  依据：榜单日换血 70%+、66% 条目只出现 1 天，**1 天内跌出是常态基线**（S3 已约定）。
+- 检验对象改为**结构性判断的方向是否延续**，条目存活率降为辅助指标。
+  依据：结构判断是关于板块/来源结构的，板块份额上升不代表代表条目必须在榜；
+  三条全跌出也证伪不了「社区舆论在收缩」——那是拿条目存活检验板块结构，量错了对象。
+"""
 
 # SSOT 对周报正文的要求
 TOTAL_MIN_CHARS = 2000
@@ -55,6 +66,13 @@ TOTAL_MAX_CHARS = 4000
 MIN_INCREMENTS = 3
 # L4：存活率低于这个值说明系统在过度声称
 MIN_SURVIVAL_RATE = 0.5
+# L4 前置门：回检间隔不足 7 天、或可判样本不足 5 条 → insufficient（不判 fail）
+L4_MIN_INTERVAL_DAYS = 7
+L4_MIN_SAMPLE = 5
+# L4 主判据：上期结构方向在本期的延续率
+MIN_STRUCTURE_CONTINUITY = 0.5
+# 条目存活率（辅助指标）低于这个值 → 收紧下期准入门槛
+ADMISSION_TIGHT_SURVIVAL = 0.34
 
 _SECTION_RE = re.compile(r"^##\s+(\d+)\.\s*(.+)$", re.M)
 _ITEM_ID_RE = re.compile(r"it_[0-9a-f]{6,}")
@@ -453,10 +471,12 @@ def _load_state(state_dir: Path, name: str) -> dict[str, Any]:
             if not isinstance(entry, dict):
                 continue
             key = (str(entry.get("issue") or ""), str(entry.get("item_id") or ""))
-            entries.setdefault(key, entry)
+            # ★ 后写的文件优先：本期文件里带着最新一次回检的 resolved，
+            #   用 setdefault 会被旧文件的历史版本盖掉（L4 会读到过期的 verdict）
+            entries[key] = entry
         for issue in data.get("issues") or []:
             if isinstance(issue, dict):
-                issues.setdefault(str(issue.get("issue") or ""), issue)
+                issues[str(issue.get("issue") or "")] = issue
     if entries:
         merged["entries"] = [entries[k] for k in sorted(entries)]
     if issues:
@@ -605,6 +625,59 @@ def check_l3(
 # ══════════════════════════════════════════════════════════════════════════
 
 
+def _structural_claims(index: CrossPeriodIndex) -> list[dict[str, Any]]:
+    """本期"结构性判断"的机器可读形式：板块方向 + 来源方向。
+
+    ★ 只有机器可读才判得了"方向是否延续"。散文式结构判断没法自动核对。
+    """
+    reports = {report.key: report for report in _compute(index)}
+    claims: list[dict[str, Any]] = []
+    heat = reports.get("heat_migration")
+    if heat is not None:
+        for entry in heat.entries:
+            if not isinstance(entry, dict) or not entry.get("trend_usable"):
+                continue
+            direction = str(entry.get("direction") or "")
+            if direction not in {"up", "down"}:
+                continue
+            claims.append(
+                {
+                    "scope": "section",
+                    "name": str(entry.get("section") or ""),
+                    "direction": direction,
+                    "value": entry.get("delta_pp"),
+                }
+            )
+    share = reports.get("source_share")
+    if share is not None:
+        for entry in share.entries:
+            if not isinstance(entry, dict) or not entry.get("trend_usable"):
+                continue
+            delta = entry.get("count_delta_pp")
+            if not isinstance(delta, (int, float)) or float(delta) == 0.0:
+                continue
+            claims.append(
+                {
+                    "scope": "source",
+                    "name": str(entry.get("source") or ""),
+                    "direction": "up" if float(delta) > 0 else "down",
+                    "value": float(delta),
+                }
+            )
+    return claims
+
+
+def _direction_map(index: CrossPeriodIndex) -> dict[tuple[str, str], str]:
+    return {(c["scope"], c["name"]): c["direction"] for c in _structural_claims(index)}
+
+
+def _days_between(start: str, end: str) -> int | None:
+    try:
+        return (date.fromisoformat(end) - date.fromisoformat(start)).days
+    except ValueError:
+        return None
+
+
 def check_l4(
     sections: dict[str, str],
     index: CrossPeriodIndex,
@@ -612,7 +685,16 @@ def check_l4(
     state_dir: Path,
     write_state: bool = True,
 ) -> LayerResult:
-    """上期"结构性变化"声称的条目，本期存活率；低于阈值即为过度声称。"""
+    """上期「结构性判断」的方向是否在本期延续。
+
+    判据（2026-10-23 裁决）：
+
+    - **主判据**：上期记录的结构方向（板块/来源）在本期是否同向 → 延续率。
+    - **前置门**：回检间隔 <7 天 或 可判样本 <5 条 → `insufficient`（不判 fail）。
+      1 天内跌出是常态基线（日换血 70%+），拿它判过度声称等于用噪声定罪。
+    - **辅助指标**：条目存活率——只进 metrics 与 feedback，**不单独触发 fail**。
+      （结构判断是板块/来源层面的；板块份额上升不代表代表条目必须在榜。）
+    """
     path = state_dir / "calibration.json"
     state = _load_state(state_dir, "calibration.json")
     issues: list[dict[str, Any]] = list(state.get("issues") or [])
@@ -622,6 +704,8 @@ def check_l4(
     for key in ("structural_changes", "second_order_effects"):
         claimed.extend(_ITEM_ID_RE.findall(sections.get(key, "")))
     claimed_ids = sorted(set(claimed))
+    claims_now = _structural_claims(index) if index.days else []
+    dir_now = _direction_map(index) if index.days else {}
 
     resolutions: list[dict[str, Any]] = []
     for issue in issues:
@@ -637,64 +721,124 @@ def check_l4(
             seen = any(item_id in index.snapshots[d].items for d in later)
             (survived if seen else dropped).append(str(item_id))
         total = len(survived) + len(dropped)
-        rate = len(survived) / total if total else None
+
+        continued = 0
+        judged = 0
+        for claim in issue.get("claims") or []:
+            if not isinstance(claim, dict):
+                continue
+            claim_key = (str(claim.get("scope") or ""), str(claim.get("name") or ""))
+            now_direction = dir_now.get(claim_key)
+            if now_direction is None:
+                continue
+            judged += 1
+            if now_direction == claim.get("direction"):
+                continued += 1
+
         issue["resolved"] = {
             "checked_on": latest,
+            "interval_days": _days_between(window_end, latest),
             "survived": survived,
             "dropped": dropped,
-            "survival_rate": rate,
+            "survival_rate": (len(survived) / total) if total else None,
+            "structure_judged": judged,
+            "structure_continued": continued,
+            "structure_continuity": (continued / judged) if judged else None,
+            "verdict": None,
         }
         resolutions.append(issue)
 
-    if claimed_ids and not any(str(i.get("issue")) == latest for i in issues):
-        issues.append(
-            {
-                "issue": latest,
-                "window_end": latest,
-                "claimed_ids": claimed_ids,
-                "resolved": None,
-            }
-        )
+    if latest:
+        current = next((i for i in issues if str(i.get("issue")) == latest), None)
+        if current is None:
+            issues.append(
+                {
+                    "issue": latest,
+                    "window_end": latest,
+                    "claimed_ids": claimed_ids,
+                    "claims": claims_now,
+                    "resolved": None,
+                }
+            )
+        elif not current.get("claims"):
+            # ★ 回填：旧版本写下的条目只有 claimed_ids，没有可判方向的结构 claims。
+            #   不回填的话，L4 永远停在「可判样本 0 条」，判据等于没生效。
+            current["claims"] = claims_now
+            current["claimed_ids"] = sorted(
+                set(current.get("claimed_ids") or []) | set(claimed_ids)
+            )
 
     if write_state:
         _save_state(path, {"issues": issues})
 
     history = [i for i in issues if i.get("resolved")]
+    findings: list[str] = []
     if history:
-        # 重跑同一期时，本轮可能没有新回检；仍要报出最近一次结论，
-        # 否则第二次运行会退化成"首期基线"，看起来像机制没生效。
         recent = history[-1]
-        recent_rate = recent["resolved"].get("survival_rate")
-        rates = [
-            float(i["resolved"]["survival_rate"])
-            for i in history
-            if i["resolved"].get("survival_rate") is not None
-        ]
-        avg = sum(rates) / len(rates) if rates else None
-        verdict = PASS if (avg is None or avg >= MIN_SURVIVAL_RATE) else FAIL
-        latest_note = (
-            f"最近回检 {recent['issue']}（{recent['resolved'].get('checked_on')}）："
-            f"{(recent_rate if recent_rate is not None else 0):.0%} 存活；"
-            f"本轮新回检 {len(resolutions)} 期"
-        )
-        summary = latest_note
-        findings = tuple(
-            f"{i['issue']}：存活率 {float(i['resolved']['survival_rate']):.0%}"
-            for i in history[-3:]
-            if i["resolved"].get("survival_rate") is not None
-        )
-        if len(history) == 1 and recent["resolved"].get("checked_on") == _next_day(
-            str(recent.get("issue"))
-        ):
-            findings += ("只隔 1 天，本轮存活率仅用于验证机制，不作质量判定。",)
-        if avg is not None and avg < MIN_SURVIVAL_RATE:
-            findings += ("存活率低于 50%：结构声称偏多，下期应提高准入门槛",)
+        resolved = recent["resolved"]
+        interval = resolved.get("interval_days")
+        judged = int(resolved.get("structure_judged") or 0)
+        continuity = resolved.get("structure_continuity")
+        survival = resolved.get("survival_rate")
+
+        # ── 前置门：间隔与样本 ────────────────────────────────────
+        reasons: list[str] = []
+        if interval is None:
+            reasons.append("回检间隔无法解析")
+        elif int(interval) < L4_MIN_INTERVAL_DAYS:
+            reasons.append(
+                f"间隔仅 {interval} 天（<{L4_MIN_INTERVAL_DAYS} 天，日换血 70%+ 属常态）"
+            )
+        if judged < L4_MIN_SAMPLE:
+            reasons.append(f"可判样本 {judged} 条（<{L4_MIN_SAMPLE}，无统计意义）")
+
+        if reasons:
+            verdict = INSUFFICIENT
+            summary = f"{recent['issue']} 的回检不足以判定：" + "；".join(reasons)
+            findings.append("样本/间隔不足 → 不判 fail，也不当作结论；本期记录为观测点。")
+        elif continuity is not None and float(continuity) < MIN_STRUCTURE_CONTINUITY:
+            verdict = FAIL
+            summary = (
+                f"{recent['issue']} 结构方向延续率 "
+                f"{float(continuity):.0%}（{resolved['structure_continued']}/{judged}），"
+                f"低于 {MIN_STRUCTURE_CONTINUITY:.0%}：上期结构判断没有延续，属过度声称"
+            )
+        else:
+            verdict = PASS
+            summary = (
+                f"{recent['issue']} 结构方向延续率 "
+                f"{(float(continuity) if continuity is not None else 1.0):.0%}"
+                f"（{resolved.get('structure_continued', 0)}/{judged}）"
+            )
+
+        resolved["verdict"] = verdict
+        if write_state:
+            _save_state(path, {"issues": issues})
+
+        if survival is not None:
+            survived_n = len(resolved.get("survived") or [])
+            total_n = survived_n + len(resolved.get("dropped") or [])
+            findings.append(
+                f"辅助指标·条目存活率 {float(survival):.0%}（{survived_n}/{total_n}）"
+                "——只作参考，不单独触发 fail"
+            )
+        for item in history[-3:]:
+            payload = item["resolved"]
+            rate = payload.get("survival_rate")
+            interval_text = payload.get("interval_days")
+            findings.append(
+                f"{item['issue']}：间隔 {'—' if interval_text is None else interval_text} 天，"
+                f"结构延续 {payload.get('structure_continued', 0)}"
+                f"/{payload.get('structure_judged', 0)}，"
+                f"存活率 {'—' if rate is None else format(float(rate), '.0%')}"
+            )
     else:
         verdict = BASELINE_ONLY
         summary = (
-            f"首期基线已建立（本期声称 {len(claimed_ids)} 个条目），尚无下期数据，不足以校准。"
+            f"首期基线已建立（本期记录 {len(claims_now)} 条结构方向、"
+            f"{len(claimed_ids)} 个声称条目），尚无下期数据，不足以校准。"
         )
-        findings = ("机制已生效：下期会自动回检这些条目的存活率。",)
+        findings = ["机制已生效：下期会核对结构方向的延续率。"]
 
     return LayerResult(
         layer="L4",
@@ -703,12 +847,111 @@ def check_l4(
         summary=summary,
         metrics={
             "claimed_ids": claimed_ids,
+            "claims_recorded": len(claims_now),
+            "min_structure_continuity": MIN_STRUCTURE_CONTINUITY,
+            "min_interval_days": L4_MIN_INTERVAL_DAYS,
+            "min_sample": L4_MIN_SAMPLE,
             "min_survival_rate": MIN_SURVIVAL_RATE,
             "resolved_issues": [i["issue"] for i in history],
             "resolved_this_run": [r["issue"] for r in resolutions],
+            "recent_survival_rate": (
+                history[-1]["resolved"].get("survival_rate") if history else None
+            ),
+            "recent_structure_continuity": (
+                history[-1]["resolved"].get("structure_continuity") if history else None
+            ),
+            "recent_structure_judged": (
+                history[-1]["resolved"].get("structure_judged") if history else 0
+            ),
             "state_file": str(path),
         },
-        findings=findings,
+        findings=tuple(findings),
+    )
+
+
+def build_admission(index: CrossPeriodIndex, *, state_dir: Path) -> dict[str, Any]:
+    """L4 → 下期准入参数（反馈闭环）。
+
+    原设计只检测不反馈，L4 报了也没用。这里把回检结论转成**下一期
+    structural_changes / second_order_effects 的准入约束**，由 `trend` 消费。
+
+    - `insufficient` → normal（没有证据，不下调门槛，避免用噪声收紧）
+    - `fail`         → strict（下期只允许下 1 条结构判断）
+    - 条目存活率 < 34% → tight（辅助指标触发，下期最多 2 条）
+    """
+    state = _load_state(state_dir, "calibration.json")
+    issues = [i for i in state.get("issues") or [] if isinstance(i, dict) and i.get("resolved")]
+    if not issues:
+        return {
+            "level": "normal",
+            "max_structure_claims": 0,
+            "reason": "尚无回检样本",
+            "based_on": "",
+        }
+    recent = issues[-1]
+    resolved = recent["resolved"]
+    verdict = str(resolved.get("verdict") or "")
+    survival = resolved.get("survival_rate")
+
+    level = "normal"
+    max_claims = 0
+    reason = "结构与条目判断均正常"
+    if verdict == FAIL:
+        level, max_claims = "strict", 1
+        reason = "上期结构方向未延续（过度声称），下期只允许 1 条结构判断"
+    elif verdict == INSUFFICIENT:
+        return {
+            "level": "normal",
+            "max_structure_claims": 0,
+            "reason": f"上期回检不可判定（{resolved.get('structure_judged', 0)} 条可判样本），"
+            "没有证据就不下调门槛",
+            "based_on": str(recent.get("issue") or ""),
+            "verdict": verdict,
+        }
+    elif isinstance(survival, (int, float)) and float(survival) < ADMISSION_TIGHT_SURVIVAL:
+        level, max_claims = "tight", 2
+        reason = (
+            f"上期声称条目存活率 {float(survival):.0%}"
+            f"（<{ADMISSION_TIGHT_SURVIVAL:.0%}），下期最多 2 条结构判断"
+        )
+    return {
+        "level": level,
+        "max_structure_claims": max_claims,
+        "reason": reason,
+        "based_on": str(recent.get("issue") or ""),
+        "verdict": verdict,
+    }
+
+
+def load_admission(trend_dir: Path) -> dict[str, Any]:
+    """读各期 `admission.json`，取最新一期的准入参数。"""
+    latest: dict[str, Any] = {}
+    latest_name = ""
+    if trend_dir.is_dir():
+        for path in sorted(trend_dir.glob("*/admission.json")):
+            if path.parent.name < latest_name:
+                continue
+            try:
+                data = json.loads(path.read_text(encoding="utf-8"))
+            except (json.JSONDecodeError, OSError):
+                continue
+            if isinstance(data, dict):
+                latest, latest_name = data, path.parent.name
+    return latest
+
+
+def admission_rule_for(admission: dict[str, Any]) -> str:
+    """把准入参数翻成一句 prompt 约束；normal / 空 → 空串。"""
+    if not admission or admission.get("level") in {"", "normal", None}:
+        return ""
+    limit = int(admission.get("max_structure_claims") or 0)
+    if limit <= 0:
+        return ""
+    return (
+        f"本期准入收紧（依据 {admission.get('based_on', '上期')} 的回检："
+        f"{admission.get('reason', '')}）："
+        f"「结构变化」与「二阶影响」两节合计最多给出 {limit} 条结构判断；"
+        "证据不够就只写观察到的具体变化，不要凑数下判断。"
     )
 
 
@@ -765,8 +1008,13 @@ __all__ = [
     "NO_DATA",
     "PASS",
     "WARN",
+    "INSUFFICIENT",
     "LayerResult",
     "SelfCheckReport",
+    "admission_rule_for",
+    "build_admission",
+    "load_admission",
+    "sections_from_machine",
     "check_l1",
     "check_l2",
     "check_l3",

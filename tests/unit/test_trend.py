@@ -464,3 +464,18 @@ def test_machine_json_keeps_bodies_and_ids_for_l1() -> None:
     assert payload["segments"][0]["cited_item_ids"] == ["it_d56bf7f0d55e498a"]
     assert payload["segments"][0]["violations"] == ["超字数"]
     assert payload["caveats"] == ["比较区间 10-20 → 10-21"]
+
+
+def test_headline_candidates_cover_all_structures(tmp_path) -> None:  # noqa: ANN001
+    """三句话的候选池要覆盖 9 个结构，而不是只有板块份额。"""
+    from aipulse.analysis.cross_period import compute_all
+    from aipulse.reasoning.trend import build_headline_candidates
+
+    index = _index_for_render()
+    reports = {r.key: r for r in compute_all(index)}
+    text = build_headline_candidates(index, reports)
+    # 至少覆盖三类不同结构（份额 / 持续性 / 预言），而不是只有板块份额
+    assert "只在榜 1-2 天的条目" in text
+    assert "来源份额变化" in text
+    assert "预言" in text
+    assert text.startswith("- ")

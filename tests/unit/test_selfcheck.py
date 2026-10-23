@@ -5,15 +5,21 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 from typing import Any
+
+import pytest
 
 from aipulse.analysis.cross_period import compute_all, load_cross_period
 from aipulse.reasoning.selfcheck import (
     BASELINE_ONLY,
     FAIL,
+    INSUFFICIENT,
     NO_DATA,
     PASS,
+    admission_rule_for,
+    build_admission,
     check_l1,
     check_l2,
     check_l3,
@@ -207,7 +213,12 @@ def test_l4_first_issue_only_builds_baseline(tmp_path: Path) -> None:
     assert result.metrics["claimed_ids"] == ["it_abc123def456"]
 
 
-def test_l4_computes_survival_rate_on_next_issue(tmp_path: Path) -> None:
+def test_l4_survival_rate_is_auxiliary_not_decisive(tmp_path: Path) -> None:
+    """★ 条目全跌出不再判 fail：1 天间隔 + 3 条样本 → insufficient。
+
+    结构判断是板块/来源层面的；板块份额上升不代表代表条目必须在榜。
+    拿"三条全跌出"证伪"社区舆论在收缩"，是量错了对象。
+    """
     first = _index(tmp_path, ("2026-10-20", "2026-10-21"))
     sections = parse_markdown(
         _report_text(
@@ -219,19 +230,82 @@ def test_l4_computes_survival_rate_on_next_issue(tmp_path: Path) -> None:
     )
     check_l4(sections, first, state_dir=tmp_path / "state")
 
-    _day(
-        tmp_path,
-        "2026-10-22",
-        [_item("it_abc123def456", "alpha topic", 85.0)],
-        sections=[_section("开源项目", ["it_abc123def456"])],
-    )
+    _day(tmp_path, "2026-10-22", [_item("it_zzz999yyy888", "other", 10.0)])
     second = load_cross_period(tmp_path)
     result = check_l4(sections, second, state_dir=tmp_path / "state")
-    assert result.verdict == PASS  # 50% 存活，刚好达阈值
-    assert "50%" in result.summary
+
+    assert result.verdict == INSUFFICIENT
+    assert result.metrics["recent_survival_rate"] == 0.0  # 观测点保留，不丢
+    assert any("辅助指标" in f for f in result.findings)
+    # 0/3 没有被当作结论，也没有被丢弃
 
 
-def test_l4_flags_overclaiming_when_nothing_survives(tmp_path: Path) -> None:
+def test_l4_insufficient_when_interval_too_short(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """间隔 <7 天 → insufficient（即使样本足够）。"""
+    from aipulse.reasoning import selfcheck as sc_mod
+
+    claims = [{"scope": "section", "name": f"板块{i}", "direction": "up"} for i in range(6)]
+    monkeypatch.setattr(sc_mod, "_structural_claims", lambda index: claims)
+    state = tmp_path / "state"
+    state.mkdir()
+    (state / "calibration.json").write_text(
+        json.dumps(
+            {
+                "issues": [
+                    {
+                        "issue": "2026-10-21",
+                        "window_end": "2026-10-21",
+                        "claimed_ids": [],
+                        "claims": [{**c, "direction": "down"} for c in claims],
+                        "resolved": None,
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+    index = _index(tmp_path / "data", ("2026-10-20", "2026-10-21", "2026-10-22"))
+    result = check_l4({}, index, state_dir=state)
+    assert result.verdict == INSUFFICIENT
+    assert "间隔仅 1 天" in result.summary
+
+
+def test_l4_fails_when_continuity_low_and_sample_enough(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """间隔 ≥7 天 + 样本 ≥5 + 方向延续率 <50% → 这才是 fail。"""
+    from aipulse.reasoning import selfcheck as sc_mod
+
+    claims = [{"scope": "section", "name": f"板块{i}", "direction": "up"} for i in range(6)]
+    monkeypatch.setattr(sc_mod, "_structural_claims", lambda index: claims)
+    state = tmp_path / "state"
+    state.mkdir()
+    (state / "calibration.json").write_text(
+        json.dumps(
+            {
+                "issues": [
+                    {
+                        "issue": "2026-10-21",
+                        "window_end": "2026-10-21",
+                        "claimed_ids": [],
+                        "claims": [{**c, "direction": "down"} for c in claims],
+                        "resolved": None,
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+    index = _index(tmp_path / "data", ("2026-10-20", "2026-10-21", "2026-10-28"))
+    result = check_l4({}, index, state_dir=state)
+    assert result.verdict == FAIL
+    assert "结构方向延续率 0%" in result.summary
+
+
+def test_admission_is_normal_when_insufficient(tmp_path: Path) -> None:
+    """证据不足时**不得**收紧门槛（避免用噪声定罪）。"""
     first = _index(tmp_path, ("2026-10-20", "2026-10-21"))
     sections = parse_markdown(
         _report_text(
@@ -239,12 +313,72 @@ def test_l4_flags_overclaiming_when_nothing_survives(tmp_path: Path) -> None:
         )
     )
     check_l4(sections, first, state_dir=tmp_path / "state")
-
     _day(tmp_path, "2026-10-22", [_item("it_zzz999yyy888", "other", 10.0)])
     second = load_cross_period(tmp_path)
-    result = check_l4(sections, second, state_dir=tmp_path / "state")
-    assert result.verdict == FAIL
-    assert any("提高准入门槛" in f for f in result.findings)
+    check_l4(sections, second, state_dir=tmp_path / "state")
+
+    admission = build_admission(second, state_dir=tmp_path / "state")
+    assert admission["level"] == "normal"
+    assert admission_rule_for(admission) == ""
+
+
+def test_admission_is_strict_after_fail(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """fail → strict（下期只允许 1 条结构判断），并翻成 prompt 约束。"""
+    from aipulse.reasoning import selfcheck as sc_mod
+
+    claims = [{"scope": "section", "name": f"板块{i}", "direction": "up"} for i in range(6)]
+    monkeypatch.setattr(sc_mod, "_structural_claims", lambda index: claims)
+    state = tmp_path / "state"
+    state.mkdir()
+    (state / "calibration.json").write_text(
+        json.dumps(
+            {
+                "issues": [
+                    {
+                        "issue": "2026-10-21",
+                        "window_end": "2026-10-21",
+                        "claimed_ids": [],
+                        "claims": [{**c, "direction": "down"} for c in claims],
+                        "resolved": None,
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+    index = _index(tmp_path / "data", ("2026-10-20", "2026-10-21", "2026-10-28"))
+    check_l4({}, index, state_dir=state)
+
+    admission = build_admission(index, state_dir=state)
+    assert admission["level"] == "strict"
+    assert admission["max_structure_claims"] == 1
+    rule = admission_rule_for(admission)
+    assert "最多给出 1 条结构判断" in rule
+
+
+def test_old_calibration_without_claims_is_insufficient(tmp_path: Path) -> None:
+    """历史 calibration 只有 claimed_ids 没有 claims → 无法判方向 → insufficient。"""
+    state = tmp_path / "state"
+    state.mkdir()
+    (state / "calibration.json").write_text(
+        json.dumps(
+            {
+                "issues": [
+                    {
+                        "issue": "2026-10-21",
+                        "window_end": "2026-10-21",
+                        "claimed_ids": ["it_abc123def456"],
+                        "resolved": None,
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+    index = _index(tmp_path / "data", ("2026-10-20", "2026-10-21", "2026-10-28"))
+    result = check_l4({}, index, state_dir=state)
+    assert result.verdict == INSUFFICIENT
+    assert "可判样本 0 条" in result.summary
 
 
 # ── 端到端 ─────────────────────────────────────────────────────────────────
@@ -275,3 +409,62 @@ def test_selfcheck_reads_machine_json(tmp_path: Path) -> None:
     sections = sections_from_machine(payload)
     assert set(sections) == {key for key, _, _ in SEGMENTS}
     assert sections == parse_markdown(_report_text(bodies))
+
+
+# ── CLI（S5：读机器层、落盘、写准入）──────────────────────────────────────
+
+
+def test_selfcheck_cli_reads_machine_json_and_writes_reports(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from typer.testing import CliRunner
+
+    from aipulse.cli.commands import selfcheck as sc_cli
+    from aipulse.cli.main import app as cli_app
+    from aipulse.core.config import Settings
+
+    index = _index(tmp_path, ("2026-10-20", "2026-10-21"))
+    issue = "2026-10-21"
+    issue_dir = tmp_path / "trend" / issue
+    issue_dir.mkdir(parents=True)
+    bodies = _full_bodies()
+    (issue_dir / "weekly.json").write_text(
+        json.dumps(
+            {
+                "schema_version": 2,
+                "segments": [
+                    {"key": key, "title": title, "body": bodies.get(key, "")}
+                    for key, title, _ in SEGMENTS
+                ],
+            },
+            ensure_ascii=False,
+        ),
+        encoding="utf-8",
+    )
+    assert index.days
+
+    settings = Settings(app={"data_dir": str(tmp_path)}, mode="off")
+    monkeypatch.setattr(sc_cli, "load_settings", lambda *a, **k: settings)
+    result = CliRunner().invoke(cli_app, ["selfcheck", "--reports-dir", str(tmp_path)])
+
+    assert result.exit_code in (0, 1), result.output
+    assert (issue_dir / "selfcheck.md").exists()
+    assert (issue_dir / "selfcheck.json").exists()
+    assert (issue_dir / "admission.json").exists()
+
+
+def test_selfcheck_cli_reports_missing_machine_layer(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from typer.testing import CliRunner
+
+    from aipulse.cli.commands import selfcheck as sc_cli
+    from aipulse.cli.main import app as cli_app
+    from aipulse.core.config import Settings
+
+    _index(tmp_path, ("2026-10-20", "2026-10-21"))
+    settings = Settings(app={"data_dir": str(tmp_path)}, mode="off")
+    monkeypatch.setattr(sc_cli, "load_settings", lambda *a, **k: settings)
+    result = CliRunner().invoke(cli_app, ["selfcheck", "--reports-dir", str(tmp_path)])
+    assert result.exit_code == 2
+    assert "先跑" in result.output
