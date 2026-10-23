@@ -1,0 +1,85 @@
+{
+  "topic": "Agent 类项目密集进榜：真实采用还是单日脉冲",
+  "window_start": "2026-10-16",
+  "window_end": "2026-10-22",
+  "window_days": 7,
+  "evidence_count": 15,
+  "llm_calls": 9,
+  "attempts": 9,
+  "truncated": [],
+  "prompt_tokens": 26671,
+  "completion_tokens": 18478,
+  "cost_cny": 0.180596,
+  "failures": [],
+  "falsification_usable": 9,
+  "falsification_total": 9,
+  "statements": [
+    {
+      "persona": "optimist",
+      "invalid_reason": "",
+      "cited_item_ids": 7,
+      "char_count": 548,
+      "falsification_violations": []
+    },
+    {
+      "persona": "skeptic",
+      "invalid_reason": "",
+      "cited_item_ids": 12,
+      "char_count": 657,
+      "falsification_violations": []
+    },
+    {
+      "persona": "engineer",
+      "invalid_reason": "",
+      "cited_item_ids": 6,
+      "char_count": 611,
+      "falsification_violations": []
+    },
+    {
+      "persona": "investor",
+      "invalid_reason": "",
+      "cited_item_ids": 9,
+      "char_count": 558,
+      "falsification_violations": []
+    }
+  ],
+  "cross": [
+    {
+      "persona": "optimist",
+      "invalid_reason": "",
+      "challenges": 4,
+      "concessions": 3,
+      "cited_item_ids": 5
+    },
+    {
+      "persona": "skeptic",
+      "invalid_reason": "",
+      "challenges": 5,
+      "concessions": 2,
+      "cited_item_ids": 9
+    },
+    {
+      "persona": "engineer",
+      "invalid_reason": "",
+      "challenges": 6,
+      "concessions": 2,
+      "cited_item_ids": 8
+    },
+    {
+      "persona": "investor",
+      "invalid_reason": "",
+      "challenges": 6,
+      "concessions": 2,
+      "cited_item_ids": 7
+    }
+  ],
+  "moderator": {
+    "invalid_reason": "",
+    "consensus": 4,
+    "key_disagreements": 4,
+    "actionable_conclusions": 7,
+    "overall_confidence": 0.34,
+    "falsifications": 5,
+    "falsification_violations": []
+  }
+}

@@ -2,9 +2,9 @@
 
 This file provides guidance to CodeBuddy Code when working with code in this repository.
 
-## ★ 当前阶段：M5（周期趋势长文 + 多角色辩论）—— 长文与自验证已完成，辩论未开工
+## ★ 当前阶段：M5（周期趋势长文 + 多角色辩论）—— S1–S4 全部跑通，未打 tag
 
-**一句话**：M0–M4、M6a、M6b、M6c 全部完成并真跑验证；**M5 的趋势长文已跑通 S1 → S1.5 → S2（2a/2b）→ S2.5 → S2.6 → S3，下一步是 debate（多角色并行辩论）**。M5 整体未打 tag（辩论未做，不占 `m5` 编号）。
+**一句话**：M0–M4、M6a、M6b、M6c 完成并真跑验证；**M5 的趋势长文（S1→S3）与多角色辩论（S4）都已实跑通过**。M5 整体未打 tag（等 SSOT v1.23 同步后再打 `m5`）。
 
 | M5 落点 | 现状 |
 |---|---|
@@ -12,18 +12,22 @@ This file provides guidance to CodeBuddy Code when working with code in this rep
 | `reasoning/trend.py` · `schema/trend.py` · `prompts/trend/weekly.j2` | ✅ 7 节分段生成（每节一次调用） |
 | `reasoning/selfcheck.py` · `cli/commands/selfcheck.py` | ✅ L1–L4 自验证（离线，0 成本） |
 | `data/reports/trend/` | ✅ `weekly.md` / `selfcheck.{md,json}` / `watchlist.json` / `calibration.json` |
-| `reasoning/debate.py` · `prompts/debate/*.j2` | ⬜ **不存在，下一步就是它** |
-| `pipeline/weekly.py` | ⬜ 不存在（周报目前靠 `aipulse trend` 手动/cron 触发） |
-| `cli/commands/debate.py` | ⬜ 仍是 `placeholder_app()` 占位 |
-| `configs/default.yaml::pipeline.weekly_debate_enabled` | 已留开关（`true`），debate 落地后消费 |
+| `schema/debate.py` · `reasoning/debate.py` · `prompts/debate/{round1,round2,moderator}.j2` | ✅ 四方并行 → 交叉质证 → 主持人收敛（实跑 9/9 调用，¥0.18） |
+| `data/reports/debate/` | ✅ `debate-<slug>.{md,json}`（不入库，只落盘） |
+| `pipeline/weekly.py` | ⬜ 不存在（周报靠 `aipulse trend` 手动/cron 触发） |
+| `configs/default.yaml::pipeline.weekly_debate_enabled` | ⬜ 已留开关（`true`），**仍无消费方**——debate 是手动触发 |
 | `web/app.py` 的「趋势」「辩论」入口 | 「趋势」可读 `data/reports/trend/weekly.md`；「辩论」仍置灰 |
+| debate 的 auto 模式（从 trend 挑本周最大争议话题） | ⬜ TODO：需先把「分歧度」定义成可计算的量 |
 
-**debate 验收要点（手册 §6 DoD，别做偏）**：四个 persona **必须 `asyncio.gather` 并行**（串行视为不合格）；证据包每条 ≤200 字、合计 ≤15 条；收敛块必须含「什么证据会让我改变判断」。
+**debate 验收要点（手册 §6 DoD，别做偏）**：四个 persona **必须 `asyncio.gather` 并行**（串行视为不合格）；证据包每条 ≤60 字、合计 ≤15 条、**绝不回显摘要原文**；收敛块必须含「什么证据会让我改变判断」。
 
-**M5 里已经踩死、不要重犯的三条**（详见 `docs/开发日志.md` 的 M5「坑」）：
+**★ 证伪条件必须可判定（本轮最重要的一条，跨 trend/debate 通用）**：必须是**单一二元可观测状态**（如「10-23 是否仍在 Top30」），禁止数值阈值、禁止两个独立问句合取（4 种组合状态对 2 个分支必然覆盖不全）。校验器在 `schema/debate.py::falsification_violations`。不合格的条件**只标记不可用、不判整场失败**——只有可用数为 0 才是真的没有可判定结论（与 S2.6 拒绝「斜率唯一」同一理由：不用过度保守换掉有效结论）。
+
+**M5 里已经踩死、不要重犯的四条**（详见 `docs/开发日志.md` 的 M5「坑」）：
 1. `daily.json` 的 30 条是 **brief 渲染集（Top30）**，不是全量语料——「今天不在榜」只能写「跌出 Top30」。
 2. **采集失败 / 板块口径变更 / 源集合扩容都会伪装成趋势**。归因链已在 `cross_period` 里做好（`attribution` / `masked_days` / `source_change_days`），新结构必须复用，不要绕开自己算。
 3. **LLM 不负责"发现趋势"**，只负责解释代码算出来的结构。让模型自由挑选的路径已被 M6b（why 覆盖率 4%）和 M5（真新 66% 是单日闪现）各证伪一次。
+4. **证据包不能只按热度取**。S4 首跑 15 条里 14 条是「论文与研究」，四方被锁进同一个"论文 vs 非论文"框架，分歧是假的。现在按板块轮转取材（每板块 Top 3-4）。
 
 **阶段顺序是红线**（手册 §0.3 第 7 条）：不要跨阶段实现，也不要在 M5 里回头重写已完成阶段的产物。开工前先按下方「改哪里 → 先跑什么」确认基线是绿的。
 
@@ -143,6 +147,12 @@ uv run aipulse knowledge note --url "<URL>" --note "..."   # 写 / 覆盖笔记�
 uv run aipulse knowledge mark --url "<URL>" --status read  # 阅读状态：read | unread | skipped
 uv run aipulse knowledge list                         # 按 updated_at 倒序
 uv run aipulse knowledge export                       # → data/knowledge/{index.md,my-notes.md,topics/*.md}
+
+uv run aipulse trend --range 7d                       # M5：7 节分段生成周报 → data/reports/trend/weekly.md（需 key，7 次调用）
+uv run aipulse trend --segments rising_topics,watchlist  # 只跑指定段（调试；段名见 reasoning/trend.py::SEGMENTS）
+uv run aipulse trend --json --out /tmp/weekly.md      # 分段指标 JSON / 指定落盘；--max-tokens 覆盖每段输出上限
+uv run aipulse selfcheck                              # L1–L4 离线自验证 → data/reports/trend/selfcheck.{md,json}（零 LLM）
+uv run aipulse selfcheck --file <weekly.md> --no-write-state  # 只读检查，不更新 watchlist/calibration
 ```
 ```bash
 # 自动化（需要 gh 已登录；daily.yml 也可在 Actions 页面手动触发）
@@ -301,6 +311,7 @@ configs/*.yaml ──> collectors/ ──> RawItem ──> normalize/dedup ─�
 | `analysis/score.py` | 热度打分（见下节）。`compute_hot_scores()` 是纯函数（可脱离 DB 单测），`score_items()` 才碰库 |
 | `analysis/cluster.py` | jieba + TF-IDF + 余弦 → 连通分量聚类；排除 `skip_cluster`；单点簇不落库 |
 | `analysis/entities.py` | 词典 + 正则抽实体（`configs/entities.yaml` 驱动，加实体不改代码），`matcher()` 按 `project_root()` 缓存；`count_entities()` 聚合同日实体频次 |
+| `analysis/cross_period.py` | M5 跨期层（**纯计算，零 LLM，只读 `data/reports/**`**，不碰主库）：`load_cross_period()` 把日报解析成 `CrossPeriodIndex`（`DaySnapshot` 按天）→ `build_tracks()` 出条目轨迹 → `compute_all()` 按固定顺序算 **9 个结构**（`heat_migration` / `co_movement` / `divergence` / `substitution` / `emergence` / `persistence` / `source_share` / `prediction_review` / `unrealized`），任一算不出不影响其余。归因三件套是后续一切比较的前提：`collection_failures()` / `source_change_days()` / `homogeneous_segments(min_days=3)`——**跨坏日或跨源集合变更的比较都是假趋势** |
 | `llm/base.py` | `LLMClient` Protocol + `NullLLM`（off 档零网络）+ `FakeLLM`（测试用）+ `build_client()`（按 `effective_mode()` 选实现，hybrid/full 才懒加载 `OpenAICompatClient`） |
 | `llm/structured.py` | `generate_structured()`：response_model → JSON Schema → 校验 → **一次**修复重试 → 再失败返回 `None`（降级，绝不 raise 到 pipeline） |
 | `llm/prompt.py` | 加载 `prompts/**.j2`，解析 front-matter（`model_tier` / `temperature` / `purpose`），`version_hash` = 全文 sha256 前 8 位 |
@@ -309,8 +320,11 @@ configs/*.yaml ──> collectors/ ──> RawItem ──> normalize/dedup ─�
 | `reasoning/brief.py` | `generate_brief()`：Top N 上下文组装（token 预算裁剪）→ LLM → 失败降级为 `_data_brief()` 数据版。**M6b**：`_render_ids()` 取渲染集 → `_enhance_comments()` 条目级缓存（`content_hash` + 双 prompt 版本 + TTL + 热度差）→ 分批调 `item_comment` / `item_enhance`，写 `item_enhance` 表；off 只读 / hybrid 补缺 / full 全刷 |
 | `reasoning/predictor.py` | `generate_predictions()`：Top N + 主题 + 实体频次组装上下文 → `prompts/predict/generate.j2` → 结构化 `PredictionBatch` → 硬校验 → **一次**语义重写 → 仍不合法丢弃记账（任何 LLM 异常都降级为空，绝不 raise 到 pipeline） |
 | `reasoning/criteria.py` | 量化判据模板库（`configs/criteria.yaml`）的加载/渲染：`criteria_names` / `render_criteria` / `coerce_param` / `parse_param_assignments`。M3b 的 verifier 将复用同一套模板定义 |
+| `schema/trend.py` | `TrendSegment`（key/title/body/char_count/cited_item_ids/boilerplate_hits/violations/token 与花费）+ `TrendReport`（窗口 + **比较区间** `comparison_*` / `truncated_segments` / `cost_cny`）。每段自带违规与截断记账，`--json` 直接吐它 |
 | `schema/prediction.py` | `Prediction` / `PredictionBatch` / `Verdict` + `find_vague_phrases`（模糊措辞黑名单，"可能"用负向断言排除"不可能"）+ `validate_prediction`（可证伪红线校验） |
 | `reasoning/verifier.py` | M3b 到期验证：**双路径**——`judge_criteria()` 量化判据查表（6 模板 + `custom` 受限 AST 求值，**零 LLM**）/ 语义路径 `retrieve_evidence()`（TF-IDF+余弦，窗口 `[生成日, due_date+3]`）→ 充分度门槛 → `generate_structured(Verdict)`。`verify_due_predictions()` 编排；**unverifiable 只由证据门槛产生**，LLM 失败保持 pending |
+| `reasoning/trend.py` | M5 生成层：`build_evidence()` 把 9 个结构 + 轨迹压成**每节独立证据包**（≤200 字/条、合计 ≤15 条，含 `item_id`），`generate_trend()` 按 `SEGMENTS` 7 节**每段一次 strong 调用**串行生成（段名见常量：`rising_topics` / `falling_topics` / `emerging_topics` / `structural_changes` / `second_order_effects` / `prediction_review` / `watchlist`），逐段走 `segment_violations()` 校验字数与套话后落 `TrendReport`，**单段失败只跳该段**。`SEGMENT_MAX_CHARS` 是硬上限，`WORD_BUDGET` 是 prompt 里的软区间 |
+| `reasoning/selfcheck.py` | M5 验证层（**离线零成本**）：`parse_markdown()` 回读 `weekly.md` → `check_l1` 硬判据（结构/字数/cited id 存在性）→ `check_l2` 信息增量（对比基线 Top，防复述日报）→ `check_l3` 跨期回检（`watchlist.json` 对照上期）→ `check_l4` 校准（`calibration.json`）；`run_selfcheck()` 汇总，任一层 FAIL 则 `selfcheck` 退出码 1 |
 | `analysis/stats.py` | `compute_prediction_stats()`：命中率 / 加权分 / Brier（`partial=0.5`）/ 校准分桶（含 `[0.05,0.5)`）/ 按 category·horizon·origin·model·prompt_version 分组；`unverifiable`+`pending` 不入分母 |
 | `render/scoreboard.py` | `render_scoreboard_markdown()`：可直接贴 README 的预言记分板（总览 + 校准表 + 分组），0 样本时优雅空态 |
 | `render/markdown.py` / `render/json_out.py` | 简报渲染；`brief.md` / `daily.json` |
@@ -394,6 +408,23 @@ hot_score = 100 * clamp( w_engagement*engagement_norm        # Σ coeff*log1p(me
 
 **编排接入**：`pipeline/daily.py` 在 brief 之后按 `pipeline.auto_verify` 调 `_auto_verify()`（异常只降级写 meta，绝不拖垮日报）。off 档下量化判据可完成"生成→到期→自动验证→记分板"全闭环，零 LLM。
 
+### M5 周期趋势：S1 → S3（长文已跑通，debate 未开工）
+
+```
+data/reports/**/daily.json ──> analysis/cross_period（纯计算，零 LLM）
+      │  load_cross_period → CrossPeriodIndex → build_tracks → compute_all（9 结构 + 归因）
+      ▼
+reasoning/trend.build_evidence()   ← 证据带 attribution / masked_days / 同构比较区间
+      │  每节独立证据包（≤200 字/条，合计 ≤15 条，带 item_id）
+      ▼  generate_trend()：7 节 × 每节 1 次 strong 调用，逐段校验
+data/reports/trend/weekly.md ──> reasoning/selfcheck（L1–L4，离线零成本）
+      │
+      ▼
+selfcheck.{md,json} + watchlist.json / calibration.json（下期 L3/L4 回读）
+```
+
+三条读图要点：① **数据入口是已 commit 的日报 JSON，不是主库**——M5 全程不碰 `aipulse.db`，也读不到 db 里才有字段；② LLM 只负责解释 `cross_period` 算出的结构，**不负责"发现趋势"**（让模型自由挑的路子已被 M6b 与 M5 各证伪一次）；③ `trend` 目前只能手动/CI 触发（`pipeline/weekly.py` 不存在），`daily` 不会自动跑周报。
+
 ---
 
 ## 配置与环境
@@ -419,7 +450,7 @@ hot_score = 100 * clamp( w_engagement*engagement_norm        # Σ coeff*log1p(me
 
 | 文件 | 段 | 消费方 |
 |---|---|---|
-| `default.yaml` | `app` / `mode`（**必须是 `${AIPULSE_MODE:-full}` 占位符**，写死字面量会压掉环境变量）/ `llm`（`json_schema: auto`、`timeout_s`/`timeout_strong_s`、**`max_tokens_fast` 4000 / `max_tokens_strong` 8000**——reasoner 思维链会吃掉输出预算）/ `budget`（含 `price_*_cny_per_1m`）/ `pipeline`（`daily_top_n` `brief_sections` `predictions_per_day` `prediction_horizons`（默认 `[7,30,90]`，`180` 虽合法但未启用）**`predict_candidate_top_n`（20，候选池只给 id+标题）** `auto_verify` `weekly_debate_enabled`）/ **`brief`（`max_items_per_section` + `velocity_board_enabled` / `velocity_board_top_n` + M6b 增强六项：`enhance_top_n` 30 / `enhance_batch_size` 10 / `enhance_budget_cny` 0.15 / `enhance_ttl_days` 30 / `enhance_refresh_hot_delta` 10.0 / `enhance_refresh_on_new_signals` false）** / `verify`（`grace_days` `evidence_window_grace_days` `evidence_top_k` `similarity_threshold` `strong_similarity` `min_evidence` `partial_tolerance` `max_context_tokens`）/ **`signals`（`min_velocity_window_hours` + `repo_lookback_days`，M4/v1.19）** / `output` / `notify` / `http` | `Settings` |
+| `default.yaml` | `app` / `mode`（**必须是 `${AIPULSE_MODE:-full}` 占位符**，写死字面量会压掉环境变量）/ `llm`（`json_schema: auto`、`timeout_s`/`timeout_strong_s`、**`max_tokens_fast` 4000 / `max_tokens_strong` 10000**——reasoner 思维链会吃掉输出预算）/ `budget`（含 `price_*_cny_per_1m`）/ `pipeline`（`daily_top_n` `brief_sections` `predictions_per_day` `prediction_horizons`（默认 `[7,30,90]`，`180` 虽合法但未启用）**`predict_candidate_top_n`（20，候选池只给 id+标题）** `auto_verify` `weekly_debate_enabled`）/ **`brief`（`max_items_per_section` + `velocity_board_enabled` / `velocity_board_top_n` + M6b 增强六项：`enhance_top_n` 30 / `enhance_batch_size` 10 / `enhance_budget_cny` 0.15 / `enhance_ttl_days` 30 / `enhance_refresh_hot_delta` 10.0 / `enhance_refresh_on_new_signals` false）** / `verify`（`grace_days` `evidence_window_grace_days` `evidence_top_k` `similarity_threshold` `strong_similarity` `min_evidence` `partial_tolerance` `max_context_tokens`）/ **`signals`（`min_velocity_window_hours` + `repo_lookback_days`，M4/v1.19）** / `output` / `notify` / `http` | `Settings` |
 | `sources.yaml` | 每源的端点、权重、`availability`、`rate_limit`、`title_only`、`fallback_endpoints` | `collectors/` + `analysis/score.py` |
 | `scoring.yaml` | `weights` / `freshness` / `cross_source_bonus` / `engagement`（每源指标系数）/ `cold_start` / `title_only_weight` / `cluster` | `analysis/score.py` `analysis/cluster.py` |
 | `entities.yaml` | `entities.{model,framework,company,hardware,concept,person}`（name + aliases） | `analysis/entities.py` |
@@ -452,7 +483,7 @@ hot_score = 100 * clamp( w_engagement*engagement_norm        # Σ coeff*log1p(me
 
 1. 不一次性生成整个项目——分阶段，DoD 全勾再进下一张卡。
 2. **不凭想象写字段解析**——必须基于 `tests/fixtures/` 的真实响应快照。
-3. **prompt 不写进 `.py`**——一律 `prompts/**.j2`，头部必须有 YAML front-matter（`model_tier` / `temperature` / `purpose`）。已实现：`brief/daily_brief.j2`、`brief/item_comment.j2`、`brief/item_enhance.j2`、`predict/generate.j2`、`predict/verify.j2`；`debate/` `trend/` 仍为空，等 M5。
+3. **prompt 不写进 `.py`**——一律 `prompts/**.j2`，头部必须有 YAML front-matter（`model_tier` / `temperature` / `purpose`）。已实现：`brief/daily_brief.j2`、`brief/item_comment.j2`、`brief/item_enhance.j2`、`predict/generate.j2`、`predict/verify.j2`、`trend/weekly.j2`（M5）；`debate/` 仍为空，是 M5 下一半的落点。
 4. LLM 输出不直接 `json.loads`——必须 response_model + 校验 + 一次修复重试 + 再失败降级跳过。
 5. 单源异常不得导致整条流水线崩溃。
 6. **不实现任何微信 / X（Twitter）相关的采集器、配置段、环境变量或 RSS 桥**——v1.1 已彻底移除，相关内容只能走 inbox 手动投喂（`aipulse inbox add` / `add-file`，或往 `data/inbox/*.md` 写 URL）。
@@ -506,6 +537,7 @@ hot_score = 100 * clamp( w_engagement*engagement_norm        # Σ coeff*log1p(me
 - M6b 单测：`test_brief_enhance.py`（缓存命中 0 次 LLM 调用 / prompt 版本失效 / TTL 过期 / full 档忽略缓存 / 单批失败不影响其他批 / 渲染集与板块切片一致）。
 - M6c 单测：`test_knowledge_store.py`（用户库建表/CRUD/主库 checksum 三不变/只读守卫）、`test_knowledge_cli.py`（mark/note/items/list/export、URL/query 定位、候选不自动选、`--allow-unknown`）、`test_daily_index.py`（四种历史结构/why 优先合并/URL 查询）、`test_export.py`（协议/回退/501 条与 200KB 分片/幂等）。
 - inbox CLI 单测（`test_inbox_cli.py`）：`add` 正常入库 / **抓不到标题也保留条目**（标题退化为 URL，断网契约）/ 重复投喂幂等 / `add-file` 批量导入 / `list` 空态与展示。
+- M5 单测：`test_cross_period.py`（50 例：9 结构 / 轨迹 / 坏日与源集合变更归因 / `homogeneous_segments` 同构切分；改结构口径必须补例）、`test_trend.py`（证据包裁剪 / 分段字数与套话校验 / 单段失败只跳该段）、`test_selfcheck.py`（L1–L4 各层 pass/fail、状态文件用 `tmp_path`）。三者都是**纯离线**，用 `tmp_path` 造日报目录，不读仓库里的 `data/reports`
 - 覆盖率基线（M6c 实测）：`web/app` 95% / `web/data` 92% / `web/charts` 100% / `render/verdicts`·`render/predictions` 100% / `render/markdown` 93% / `pipeline/daily` 92% / `reasoning/brief` 88% / `cli/commands/inbox` 98% / `cli/commands/knowledge` 93% / `knowledge/export` 99% / `knowledge/daily_index` 92% / `knowledge/store` 94% / `collectors/` 88% / **TOTAL 90%**。
 
 ---
@@ -528,7 +560,7 @@ hot_score = 100 * clamp( w_engagement*engagement_norm        # Σ coeff*log1p(me
 | `docs/images/dashboard.png` | 看板截图（README「看板预览」引用，取自 2026-10-17 真实日报）|
 | `scripts/probe_sources.py` · `scripts/cron_daily.sh` | 数据源探测（加源/改 URL 前必跑）与 WSL 本地 daily cron 备份入口（crontab：`35 7 * * * /home/<you>/projects/aipulse/scripts/cron_daily.sh`，北京 07:35，避开 Actions 的 08:00）|
 | `scripts/cron_knowledge.sh` | M6c 知识库导出 cron（方案 E）：不跑本地 daily，只 `git pull --ff-only` + `knowledge export`；工作区检查只看已跟踪改动；日志 `data/logs/cron_knowledge.log` |
-| `prompts/{brief,predict,debate,trend}/` | Jinja2 模板落点。`brief/` 有 `daily_brief.j2` + `item_comment.j2`（v2，顶层键 `one_liners`，只产中文要点）+ `item_enhance.j2`（顶层键 `comments`，产 why/stance）；`predict/` 有 `generate.j2` + `verify.j2`；`debate/` `trend/` 待 M5 |
+| `prompts/{brief,predict,debate,trend}/` | Jinja2 模板落点。`brief/` 有 `daily_brief.j2` + `item_comment.j2`（v2，顶层键 `one_liners`，只产中文要点）+ `item_enhance.j2`（顶层键 `comments`，产 why/stance）；`predict/` 有 `generate.j2` + `verify.j2`；`trend/weekly.j2` 已落地（M5，7 节分段，front-matter 走 strong）；`debate/` 待 M5 下半 |
 
 `configs/scoring.yaml` 的打分权重与 `cluster` 段已被 M2 实际读取（engagement / freshness / velocity / source_weight / cold_start / title_only_weight / cluster），调权重改配置即可，不要改代码。
 
