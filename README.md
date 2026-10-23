@@ -8,7 +8,7 @@
 > **每日自动采集 AI 领域热点，不只整理，还给出可回测的推演与预言。**
 
 > ✅ **状态**：M0–M4 已完成，**M6a（简报格式 + 快照源修复 + predict 截断修复）、P0 star 追踪、M6b（条目 why/stance 全覆盖 + 中文要点）、M6c（知识库：本地笔记 + Markdown 导出）均已落地**——**系统每天自动跑**（Actions 定时流水线），产出日报 + **预言记分板**。
-> **M5 的周期趋势长文已落地**（`aipulse trend` + `aipulse selfcheck`，S1–S3 全部真跑验证）；多角色辩论待做。历史报告见 [`data/reports/`](data/reports/)，首篇周报在 [`data/reports/trend/weekly.md`](data/reports/trend/weekly.md)。
+> **M5 已落地**（`aipulse trend` + `aipulse selfcheck` + `aipulse debate`，S1–S4 全部真跑验证）。历史报告见 [`data/reports/`](data/reports/)，首篇周报在 [`data/reports/trend/weekly.md`](data/reports/trend/weekly.md)，首场辩论在 [`data/reports/debate/`](data/reports/debate/)。
 >
 > 完整变更见 [CHANGELOG](CHANGELOG.md) · 开发踩坑见 [踩坑实录](docs/踩坑实录.md)
 
@@ -39,6 +39,7 @@ aipulse 多做了一件难得多的事：**每天给出 3-5 条可证伪的预�
 | 自动化 | GitHub Actions 每日 08:00（北京时间）跑一次（`hybrid` 档：自动生成预言 + 主编点评），报告 commit 回仓库；本地 cron 作为备份；知识库导出由 `scripts/cron_knowledge.sh` 独立执行（方案 E） |
 | **★ 周度趋势长文** | `aipulse trend --range 7d`：9 个跨期结构（热度迁移 / 共动 / 背离 / 替代对 / 涌现断档 / 持续性 / 来源份额 / 预言复盘 / 未发生预期）先由代码算出来，再分 7 段交给模型解释。**采集失败日、源集合变更日会被自动排除**，不会把「数据缺陷」写成「趋势」 |
 | **★ 自验证** | `aipulse selfcheck`：L1 硬判据（字数 / 套话 / 违规 / 锚定 id）、L2 信息增量（是否超出「直接列 Top10」）、L3 跨期回检（预言命中率 + watchlist 在榜核对）、L4 校准追踪（上期结构声称的存活率）。纯离线，0 成本 |
+| **★ 多角色辩论** | `aipulse debate --topic "…"`：乐观 / 怀疑 / 工程 / 投资四方 `asyncio.gather` 并行陈述 → 交叉质证 → 主持人收敛为「共识 / 关键分歧 / 可执行结论 / 置信度 / 什么证据会让我改变判断」。证据包 ≤15 条、每条 ≤60 字、**绝不回显摘要原文**；证伪条件必须是单一二元可观测状态（禁数值阈值、禁合取），不合格的只标记不可用、不判整场失败 |
 | **★ 知识库** | 给日报条目写本地笔记 / 阅读状态；`knowledge export` 生成 `index.md` / `my-notes.md` / `topics/*.md`，可直接喂给任意 AI 工具。主库只读，笔记存独立 `data/user_data.db` |
 | 零 API 也能用 | 三档模式，未配置 key 自动降级，**采集 / 打分 / 聚类 / 手写预言 / 自动验证 / 统计全链路可用** |
 
@@ -48,7 +49,7 @@ aipulse 多做了一件难得多的事：**每天给出 3-5 条可证伪的预�
 |---|---|---|
 | `off` | **零次** | 采集 / 打分 / 聚类 / **手写预言** / **自动验证量化判据** / **命中率与校准统计** |
 | `hybrid` | 约 7 次/日 | off 全部 + 自动生成预言 + 主编点评 + **条目增强（只补缺失，复用缓存）** |
-| `full`（默认） | 全部 | off + hybrid 全部 + **增强全刷（忽略条目缓存）**；多角色辩论尚未实现（趋势长文 `trend` 已可用，需手动或 cron 触发） |
+| `full`（默认） | 全部 | off + hybrid 全部 + **增强全刷（忽略条目缓存）**；趋势长文 `trend`、多角色辩论 `debate` 均需手动或 cron 触发（周报不会由 `daily` 自动带出） |
 
 **没有 API key 也能用**：未配置时自动降级到 `off` 档，只提示一次，不报错退出。
 手写预言与模型生成的预言在记分板上**完全同权**——都进命中率、都进 Brier、都进校准曲线，因此还能对比"人 vs 机器"的校准度。
@@ -225,6 +226,11 @@ uv run aipulse trend --range 7d --json --out data/reports/trend/weekly.md
 uv run aipulse trend --range 7d --segments structural_changes   # 只重跑某一段
 uv run aipulse selfcheck                                # L1-L4 自验证（纯离线，0 成本）
 uv run aipulse selfcheck --json --no-write-state         # 只看结论，不更新观察清单
+
+# 多角色辩论（M5 S4，需要 API key）
+uv run aipulse debate --topic "Agent 类项目密集进榜：真实采用还是单日脉冲"
+uv run aipulse debate --topic "…" --json                # 只吐指标（含 可用证伪 N/M）
+uv run aipulse debate --topic "…" --out /tmp/d.md       # 指定落盘（默认 data/reports/debate/）
 ```
 
 ## 数据源
@@ -258,7 +264,7 @@ uv run aipulse selfcheck --json --no-write-state         # 只看结论，不更
 | **P0** | star 追踪：★ 总数 / 增量 + 增速榜 + `source_runs.json` | ✅（Actions 实跑验证 2026-10-17） |
 | **M6b** | 日报条目「为什么重要 / 立场」全覆盖 + 中文要点（`one_liner`） | ✅（tag `m6b`） |
 | **M6c** | 知识库：本地笔记 + 阅读状态 + Markdown 导出 | ✅（tag `m6c`） |
-| **M5** | 周期趋势长文（S1–S3 完成）+ 多角色辩论 | 🟡 长文与自验证已真跑；辩论待做 |
+| **M5** | 周期趋势长文（S1–S3）+ 多角色辩论（S4） | 🟡 S1–S4 全部真跑通过；未打 tag（等 SSOT v1.23） |
 
 ## 开发
 
