@@ -79,7 +79,7 @@ tag `m5`）、T9（trend/debate 自动触发 + `aipulse watchlist`，tag `t9`）
 
 HEAD 在 tag `m5`（`4244cae`）之后约 30 个提交，包含 post-m5 收口（数据健康 banner /
 README 三类部署形态 / `cron_daily.sh` 口径订正 / CI 修复）与 T9（自动触发）。
-T9 已打 tag `t9`（指向 `5b2fad2`）。
+T9 已打 tag `t9`。
 
 ### 文档版本基线
 
