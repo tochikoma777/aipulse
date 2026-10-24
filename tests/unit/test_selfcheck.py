@@ -569,3 +569,35 @@ def test_selfcheck_cli_falls_back_to_latest_weekly(
     assert result.exit_code in (0, 1), result.output
     assert "回退到 2026-10-21" in result.output
     assert (issue_dir / "selfcheck.json").exists()
+
+
+# ── L3 / watchlist：expectation 按 id 取自己的分句（C4）────────────────────
+
+
+def test_watchlist_expectation_is_per_item_clause(tmp_path: Path) -> None:
+    """一句里两个 id 时，不能把整句同时存给两条记录。"""
+    index = _index(tmp_path)
+    state = tmp_path / "state"
+    sections = {
+        "watchlist": (
+            "看 it_abc123def456 能否守住 0.35 的份额，"
+            "另一条 it_def456abc123 若下期跌出 Top30 则视为脉冲。"
+        )
+    }
+    check_l3(sections, index, state_dir=state)
+    entries = json.loads((state / "watchlist.json").read_text(encoding="utf-8"))["entries"]
+    by_id = {e["item_id"]: e["expectation"] for e in entries}
+    assert len(by_id) == 2
+    assert by_id["it_abc123def456"] != by_id["it_def456abc123"]
+    assert "it_abc123def456" in by_id["it_abc123def456"]
+    assert "it_abc123def456" not in by_id["it_def456abc123"]
+
+
+def test_watchlist_expectation_keeps_context_when_clause_is_bare_id(tmp_path: Path) -> None:
+    """分句里只剩裸 id 时保留整句上下文，别退化成一句 id。"""
+    index = _index(tmp_path)
+    state = tmp_path / "state"
+    sections = {"watchlist": "it_abc123def456，下期看它能否守住"}
+    check_l3(sections, index, state_dir=state)
+    entries = json.loads((state / "watchlist.json").read_text(encoding="utf-8"))["entries"]
+    assert entries[0]["expectation"] == "it_abc123def456，下期看它能否守住"

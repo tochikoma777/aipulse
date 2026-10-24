@@ -201,6 +201,25 @@ def _clauses(text: str) -> list[str]:
     return [c.strip() for c in re.split(r"[。；;！？\n]", text) if c.strip()]
 
 
+def _own_clause(text: str, item_id: str) -> str:
+    """取 item 自己的那一小句，而不是整句。
+
+    一句里同时出现两个 id 时，旧实现会把整句存给两个条目，
+    watchlist 里就出现两条内容完全一样、指向不同 item 的记录——
+    回检时无法回答"这条到底在说什么"。
+    """
+    for clause in _clauses(text):
+        if item_id not in clause:
+            continue
+        parts = [p.strip() for p in re.split(r"[，,、：:]", clause)]
+        hit = next((p for p in parts if item_id in p), "")
+        # 只剩一个裸 id 时不如保留整句上下文
+        if hit and len(hit) >= len(item_id) + 4:
+            return hit[:120]
+        return clause[:120]
+    return ""
+
+
 # ══════════════════════════════════════════════════════════════════════════
 # L1 硬判据
 # ══════════════════════════════════════════════════════════════════════════
@@ -566,12 +585,11 @@ def check_l3(
             str(e.get("item_id")) == item_id and str(e.get("issue")) == window_end for e in entries
         ):
             continue
-        clause = next((c for c in _clauses(sections.get("watchlist", "")) if item_id in c), "")
         entry = {
             "issue": window_end,
             "item_id": item_id,
             "check_on": _next_day(window_end),
-            "expectation": clause[:120],
+            "expectation": _own_clause(sections.get("watchlist", ""), item_id),
             "status": "pending",
         }
         entries.append(entry)
