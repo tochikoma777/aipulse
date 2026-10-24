@@ -8,6 +8,48 @@
 
 ---
 
+## [post-m5-cleanup] — 遗留清理 10 项（2026-10-24）
+
+### Added
+
+- **`aipulse debate` 自动选题**（C2）：省略 `--topic` 且 `pipeline.weekly_debate_enabled=true` 时，
+  从最新 trend 产物挑争议度最高的板块，打印 `已自动选题：<topic>（来源：trend/<日期>）` 与逐条依据。
+  争议度 = 4 个可观测信号（份额 |Δ|≥3pp +3 / 上期周报下过判断 +2 / 本期有 dropped +2 / 有未到期条目 +1）。
+- **`aipulse doctor` 数据源健康**（C1）：读最近 7 天 `source_runs.json`，连续 ≥2 天整源 0 条 ⚠️、≥3 天 ❌；
+  排除手动通道 `inbox` 与 `--no-collect` 日报。
+- **30 天窗口**（C5）：`--range 30d` 可跑通；数据不足时明确报「请求 30 天，实际 N 天，还需再攒 M 天」，
+  并写入 `weekly.json` 的 `caveats`。
+
+### Changed
+
+- **`DEFAULT_DIRECTION_EPS` 随窗口缩放**（C5）：`eps(N) = 0.5 * sqrt(5/N)`
+  （5 天为原始锚点；7 天 0.423、30 天 0.204）。固定阈值会让长窗口对慢漂移过度迟钝。
+- **L2「跨条目 = 0」降为 warn**（C3）：不再 pass；正文须显式回答「本期有无替代/背离」，
+  缺失则在 findings 里点出「沉默略过」。
+- **arxiv 错误可见性**（C1）：错误信息补异常类型名（超时类 `str()` 为空）；
+  429 附「arXiv 要求 3 秒 1 次」提示；`rate_limit` 由 `3/s` 改为官方的 `1/3s`。
+- **watchlist expectation 按 id 取分句**（C4）：一句两个 id 时不再重复存整句。
+- **CI actions 升级**（C8）：`actions/checkout@v7`、`astral-sh/setup-uv@v10.3.2`（消除 Node.js 20 弃用提示）。
+
+### Fixed
+
+- **`aipulse selfcheck` 回退到最近一期周报**：日报每天有、周报按周产，最新一天通常没有 trend 产物，
+  原先直接退出 2；现在回退并提示。
+- **doctor 的 CLI 用例随仓库数据时红时绿**：改为 `tmp_path` 隔离。
+
+### 核实（未改动）
+
+- **死代码 `_item_comments()` / `ItemComments`**（C7）：全仓零引用，且早已不存在（只剩单数 `ItemComment`，仍在用）。
+- **alembic 迁移漂移**（C9）：全新库 `alembic upgrade head` 后 `alembic check` → `No new upgrade operations detected.`，
+  无模型漂移；本地 `data/aipulse.db` 停在 `d5a2c9b81e34`（落后一版）是历史状态，按约束不动。
+
+### 实测
+
+- CLI 覆盖率：`commands/trend.py` 40% → **97%**、`commands/debate.py` 86% → **99%**，`aipulse.cli` 合计 77% → **81%**
+- 全量 **586 passed**，覆盖率 91%，主库 sha256 未变
+
+---
+
 ## [post-m5] — 收口：数据健康 banner + 部署形态文档（2026-10-24）
 
 ### Added

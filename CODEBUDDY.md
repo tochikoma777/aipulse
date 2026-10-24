@@ -14,6 +14,7 @@ This file provides guidance to CodeBuddy Code when working with code in this rep
 | `data/reports/trend/<窗口末日>/` | ✅ `weekly.md`（人类层）/ `weekly.json`（机器层）/ `selfcheck.{md,json}` / `watchlist.json` / `calibration.json` |
 | `render/weekly.py` · `render/debate.py` · `prompts/trend/headlines.j2` | ✅ S5 人类层渲染（三句话 / 表格 / 交锋矩阵 / 折叠免责 / 文末溯源） |
 | `schema/debate.py` · `reasoning/debate.py` · `prompts/debate/{round1,round2,moderator}.j2` | ✅ 四方并行 → 交叉质证 → 主持人收敛（实跑 9/9 调用，¥0.18） |
+| `reasoning/auto_topic.py` | ✅ 无 `--topic` 时按 4 个可观测信号打争议度，选题依据逐条打印（`weekly_debate_enabled` 的唯一消费点） |
 | `data/reports/debate/` | ✅ `debate-<slug>.{md,json}`（不入库，只落盘） |
 | `pipeline/weekly.py` | ⬜ 不存在（周报靠 `aipulse trend` 手动/cron 触发） |
 | `configs/default.yaml::pipeline.weekly_debate_enabled` | ⬜ 已留开关（`true`），**仍无消费方**——debate 是手动触发 |
@@ -23,6 +24,10 @@ This file provides guidance to CodeBuddy Code when working with code in this rep
 **debate 验收要点（手册 §6 DoD，别做偏）**：四个 persona **必须 `asyncio.gather` 并行**（串行视为不合格）；证据包每条 ≤60 字、合计 ≤15 条、**绝不回显摘要原文**；收敛块必须含「什么证据会让我改变判断」。
 
 **★ L4 判据（别改回去）**：主判据 = 上期记录的**结构方向**（`heat_migration.direction` / `source_share.count_delta_pp` 符号）在本期是否同向；前置门 = 间隔 <7 天或可判样本 <5 → `insufficient`（**不是 fail**）；条目存活率只是辅助指标，**不单独触发 fail**（板块结构≠条目在榜）。反馈闭环：`admission.json` → `trend` 的 `admission_rule`。
+
+**★ L2 判据（C3）**：跨条目关系 = 0 **不算 pass**（降 warn）——结构/实体增量再多也没回答「谁替代了谁」；正文必须显式回答「本期有无替代/背离」，缺失即判「沉默略过」。「跨条目=0 + 明说无可验证」仍是 warn，不是 pass。
+
+**★ 方向阈值随窗口缩放（C5）**：`direction_eps(N) = 0.5 * sqrt(5/N)`（5 天为锚点）。**不要写死 0.5**——固定阈值会让 30 天窗口对慢漂移过度迟钝。
 
 **★ 双层分离（S5，跨 trend/debate 通用）**：机器层看过程，人类层看结论。`weekly.json` 保留 7 节正文 + 裸 ID + violations + caveats，**L1-L4 读它**；`weekly.md` 只给结论（三句话 + 判断 + 表格），**正文零裸 ID**，免责进 `<details>`，ID 收进文末「数据溯源」。
 ★ 红线：不得为了排版好看而删掉 L1-L4 依赖的数据——数据是**移位**，不是删除。
