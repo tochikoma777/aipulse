@@ -63,11 +63,11 @@ This file provides guidance to CodeBuddy Code when working with code in this rep
 | M6c | 知识库：双库隔离 + 笔记 CLI + daily index + Markdown 导出 + `cron_knowledge.sh`（2026-10-20） | ✅ `m6c` / `c9b2fa1` |
 | **M5** | **周期趋势长文 + 多角色辩论 + 产物可读化** | ✅ `m5`（S1–S5 全部真跑；产物在 `data/reports/trend/<末日>/` 与 `data/reports/debate/<末日>/`） |
 
-`git tag` 全集就是上表这些，**没有 `m6` 不是漏打**（`m6a`/`m6b`/`m6c` 是插在 M6 之前的修复与增量阶段）。P0 的 Actions 实跑证据：`data/reports/2026/10/17/` 由 `aipulse-bot` 提交，`generated_at 2026-10-17T14:55Z`，含 `source_runs.json`。M5 的落点见文首表格，**debate 这一半不要跨阶段实现**。
+`git tag` 全集就是上表这些，**没有 `m6` 不是漏打**（`m6a`/`m6b`/`m6c` 是插在 M6 之前的修复与增量阶段）。P0 的 Actions 实跑证据：`data/reports/2026/10/17/` 由 `aipulse-bot` 提交，`generated_at 2026-10-17T14:55Z`，含 `source_runs.json`。M5 的落点在文首表格，**S1–S5 已全部实现完毕**（trend / selfcheck / debate 都可直接跑）。
 
 ### 当前 HEAD 与 tag 的关系
 
-HEAD 是 v1.22 SSOT 文档收口提交，位于 tag `m6c`（`c9b2fa1`）之后；代码基线仍是 `m6c`，不要把文档提交误当成新代码阶段。
+HEAD 在 tag `m5`（`4244cae`）之后，是 post-m5 收口提交（数据健康 banner / README 三类部署形态 / `cron_daily.sh` 权威副本口径订正 / CI 两处修复）。tag `m5` 划的是 M5 功能边界，之后的提交都是收口与修复，不构成新阶段。
 
 ### 文档版本基线
 
