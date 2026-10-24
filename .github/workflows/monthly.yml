@@ -50,7 +50,7 @@ jobs:
 
       # ── §14.1 对策②：SQLite 走 Actions cache「尽力而为」 ──────────────
       - name: Restore SQLite history
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: data/aipulse.db
           key: aipulse-db-${{ github.run_number }}

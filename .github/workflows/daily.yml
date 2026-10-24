@@ -52,7 +52,7 @@ jobs:
       # 注意：key 若按周/月复用，本周内的运行会命中旧 cache 而不再回写，
       #       signals 序列会出现空档，故必须用"每次 run 一个 key"。
       - name: Restore SQLite history
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: data/aipulse.db
           key: aipulse-db-${{ github.run_number }}

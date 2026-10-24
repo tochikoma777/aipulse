@@ -60,6 +60,23 @@
 - **`_state_files` 真 bug**：`state_dir` 传 trend 根目录时 `parent` 是 `data/reports`，
   glob 不到各期文件 → 合并结果为空。改为同时看 `state_dir/*/` 与 `state_dir.parent/*/`。
 
+### Verified（monthly.yml 实跑，run 40097659576）
+
+手动触发一次真实跑通（CI 绿只证明测试过，不证明 workflow 能跑）：
+
+| 验证项 | 结果 |
+|---|---|
+| ① cron 表达式 | `0 1 1 * *` = 每月 1 日 01:00 UTC = **北京 09:00** |
+| ② 串行顺序 | Trend → Selfcheck → Debate → Commit，selfcheck 确实在中间 |
+| ③ 退出码分级 | **真触发了一次 exit 1**：L1 fail（`second_order_effects` 614 > 600 字）→ `::warning::selfcheck 有层 fail`，**job 仍绿** |
+| ④ secret | `AIPULSE_LLM__API_KEY: ***`（已接）、`AIPULSE_LLM__BASE_URL: https://api.deepseek.com/v1` |
+| ⑤ 产物回传 | `e3c268d chore(reports): 2026-10-24 月度趋势与辩论`，5 个文件（selfcheck / calibration / watchlist / admission） |
+| ⑥ 时效守卫 | `跳过辩论：trend/2026-10-24 不属于本期 2026-09-01 → 2026-09-30`，exit 0 |
+
+★ **边界实测（第 3 项）**：10-24 触发时本期=9 月（项目 10-15 才有数据）。
+改前 trend **exit 2** → workflow 标红 = "任何上月无数据的月份都红"。
+已改为 **exit 0 + 两句明确说明**（数据不足不是错误，只有真错误才 exit 2）。
+
 ### 实测
 
 | 项 | 值 |
