@@ -5,7 +5,7 @@ This file provides guidance to CodeBuddy Code when working with code in this rep
 ## ★ 当前阶段：已结项（M0–M6c + M5 + T9 全部完成）
 
 **一句话**：M0–M4、M6a/b/c、M5（趋势长文 S1–S3 / 多角色辩论 S4 / 产物可读化 S5，
-tag `m5`）、T9（trend/debate 自动触发 + `aipulse watchlist`，**未打 tag**）全部完成并真跑验证。
+tag `m5`）、T9（trend/debate 自动触发 + `aipulse watchlist`，tag `t9`）全部完成并真跑验证。
 系统每天自动跑（Actions `daily`），每月 1 日自动跑趋势与辩论（Actions `monthly`，
 实跑验证 run 40097659576）。
 
@@ -79,7 +79,7 @@ tag `m5`）、T9（trend/debate 自动触发 + `aipulse watchlist`，**未打 ta
 
 HEAD 在 tag `m5`（`4244cae`）之后约 30 个提交，包含 post-m5 收口（数据健康 banner /
 README 三类部署形态 / `cron_daily.sh` 口径订正 / CI 修复）与 T9（自动触发）。
-**T9 未打 tag**——这是项目负责人的决策域，Agent 不打。
+T9 已打 tag `t9`（指向 `5b2fad2`）。
 
 ### 文档版本基线
 

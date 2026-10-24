@@ -290,7 +290,7 @@ uv run aipulse debate                                   # 省略 --topic → 按
 | **M6b** | 日报条目「为什么重要 / 立场」全覆盖 + 中文要点（`one_liner`） | ✅（tag `m6b`） |
 | **M6c** | 知识库：本地笔记 + 阅读状态 + Markdown 导出 | ✅（tag `m6c`） |
 | **M5** | 周期趋势长文（S1–S3）+ 多角色辩论（S4）+ 产物可读化（S5） | ✅（tag `m5`） |
-| **T9** | trend / debate 自动触发（日历月 + 退出码分级 + watchlist 日核对） | ✅ 已实跑验证（未打 tag） |
+| **T9** | trend / debate 自动触发（日历月 + 退出码分级 + watchlist 日核对） | ✅（tag `t9`） |
 
 ## 开发
 
