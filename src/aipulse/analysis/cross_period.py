@@ -95,6 +95,7 @@ DIRECTION_EPS_ANCHOR_DAYS = 5
 DEFAULT_DIRECTION_EPS = 0.5
 DEFAULT_MIN_EDGE_CORRELATION = 0.8
 
+
 # 每个源的"互动指标"：背离检测要拿它跟 hot_score 比方向。
 # rss 只有 rank_score（榜单位次），github 的 stars_in_window 是增量——都偏弱，
 # 但它们是该源唯一可用的量，宁可标注来源也不要用别的源的字段硬套。
