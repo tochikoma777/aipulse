@@ -96,9 +96,14 @@ class EvidenceItem:
         return head + tail
 
 
-def _candidates(index: CrossPeriodIndex, window_days: int) -> tuple[PeriodItem, ...]:
+def _candidates(
+    index: CrossPeriodIndex, window_days: int, window_range: tuple[str, str] | None = None
+) -> tuple[PeriodItem, ...]:
     """窗口内按"最近一次出现"去重后的条目集合。"""
-    days = index.days[-window_days:] if window_days > 0 else index.days
+    if window_range is not None:
+        days = [d for d in index.days if window_range[0] <= d <= window_range[1]]
+    else:
+        days = list(index.days[-window_days:] if window_days > 0 else index.days)
     seen: dict[str, PeriodItem] = {}
     for day in reversed(days):
         snapshot = index.snapshots.get(day)
@@ -110,7 +115,12 @@ def _candidates(index: CrossPeriodIndex, window_days: int) -> tuple[PeriodItem, 
 
 
 def build_evidence(
-    index: CrossPeriodIndex, topic: str, *, window_days: int = 7, limit: int = EVIDENCE_LIMIT
+    index: CrossPeriodIndex,
+    topic: str,
+    *,
+    window_days: int = 7,
+    limit: int = EVIDENCE_LIMIT,
+    window_range: tuple[str, str] | None = None,
 ) -> tuple[EvidenceItem, ...]:
     """按板块轮转取 ≤limit 条证据（每板块 Top 3-4，议题相关者优先）。
 
@@ -121,7 +131,7 @@ def build_evidence(
     只带 id / 标题 / 热度 / 板块——**绝不把 summary 塞进 prompt**。
     """
     keywords = _keywords(topic)
-    items = _candidates(index, window_days)
+    items = _candidates(index, window_days, window_range)
     scored = sorted(
         items,
         key=lambda it: (-_relevance(it.title, keywords), -it.hot_score, it.item_id),
@@ -470,13 +480,22 @@ async def run_debate(
     max_tokens: int = 0,
     price_strong_cny_per_1m: float = 4.0,
     window_days: int = 7,
+    window_range: tuple[str, str] | None = None,
 ) -> DebateReport:
-    """跑一场完整辩论。单环节失败只判该环节无效，不影响其余环节。"""
+    """跑一场完整辩论。单环节失败只判该环节无效，不影响其余环节。
+
+    `window_range`：显式分析范围（T9 自动模式用——必须与所辩论的那期 trend 产物
+    同一个窗口，否则会出现"辩的是月度结论、取材却只有最近 7 天"的错位）。
+    """
     if not index.days:
         return DebateReport(topic=topic, failures=["没有任何日报可取材"])
 
-    days = index.days[-window_days:] if window_days > 0 else index.days
-    evidence = build_evidence(index, topic, window_days=window_days)
+    days: list[str]
+    if window_range is not None:
+        days = [d for d in index.days if window_range[0] <= d <= window_range[1]]
+    else:
+        days = list(index.days[-window_days:] if window_days > 0 else index.days)
+    evidence = build_evidence(index, topic, window_days=len(days) or 1, window_range=window_range)
     evidence_text = render_evidence(evidence)
     allowed = {item.item_id for item in evidence}
     budget_tokens = max_tokens if max_tokens > 0 else DEFAULT_MAX_TOKENS

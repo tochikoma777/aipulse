@@ -608,6 +608,8 @@ def test_debate_cli_auto_topic(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) 
         app={"data_dir": str(tmp_path / "root")},
         mode="hybrid",
         llm={"api_key": "sk-test-key"},
+        # 合成数据只能凑到 4 分（判断 +2、dropped +2），把门槛降到 4 才能过
+        pipeline={"debate": {"min_controversy": 4}},
     )
     monkeypatch.setattr(debate_cmd, "load_settings", lambda *a, **k: settings)
     monkeypatch.setattr(
@@ -622,11 +624,16 @@ def test_debate_cli_auto_topic(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) 
         ),
     )
 
+    from datetime import date as _date
+
+    monkeypatch.setattr(debate_cmd, "today_local", lambda *a, **k: _date(2026, 11, 1))
     result = CliRunner().invoke(cli_app, ["debate", "--reports-dir", str(reports)])
     assert result.exit_code == 0, result.output
     assert "已自动选题" in result.output
     assert "来源：trend/2026-10-22" in result.output
     assert "选择依据" in result.output
+    # 取材窗口跟随 trend 产物，而不是默认的最近 7 天
+    assert "取材窗口跟随 trend 产物：2026-10-16 → 2026-10-22" in result.output
     written = list((reports / "debate").glob("*/debate-*.md"))
     assert len(written) == 1
     assert "论文与研究" in written[0].name
@@ -650,9 +657,10 @@ def test_debate_cli_auto_topic_without_trend_errors(
     )
     monkeypatch.setattr(debate_cmd, "load_settings", lambda *a, **k: settings)
     result = CliRunner().invoke(cli_app, ["debate", "--reports-dir", str(reports)])
-    assert result.exit_code == 2
-    assert "自动选题失败" in result.output
-    assert "aipulse trend" in result.output
+    # 没有可辩的输入 = 跳过，不是错误（P0-1：只有真错误才非 0）
+    assert result.exit_code == 0, result.output
+    assert "跳过辩论" in result.output
+    assert "没有可用的 trend 产物" in result.output
 
 
 def test_pick_auto_topic_maps_dropped_item_from_earlier_day(tmp_path: Path) -> None:
@@ -741,3 +749,148 @@ def test_debate_cli_missing_reports(tmp_path: Path, monkeypatch: pytest.MonkeyPa
     )
     assert result.exit_code == 2
     assert "没有找到任何日报" in result.output
+
+
+def _seed_trend_window(reports: Path, issue: str, cited_id: str, start: str, end: str) -> None:
+    target = reports / "trend" / issue
+    target.mkdir(parents=True, exist_ok=True)
+    (target / "weekly.json").write_text(
+        json.dumps(
+            {
+                "schema_version": 2,
+                "window": {"start": start, "end": issue, "days": 3},
+                "judgements": [
+                    {
+                        "key": "structural_changes",
+                        "title": "结构变化",
+                        "claim": "开源项目份额上升，社区舆论收缩",
+                        "cited_item_ids": [cited_id],
+                    }
+                ],
+            },
+            ensure_ascii=False,
+        ),
+        encoding="utf-8",
+    )
+    (target / "watchlist.json").write_text(
+        json.dumps(
+            {
+                "entries": [
+                    {
+                        "issue": issue,
+                        "item_id": cited_id,
+                        "check_on": issue,
+                        "expectation": "下期是否仍在榜",
+                        "status": "dropped",
+                        "resolved_on": issue,
+                    }
+                ]
+            },
+            ensure_ascii=False,
+        ),
+        encoding="utf-8",
+    )
+
+
+def test_debate_cli_skips_when_trend_artifact_is_stale(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """P0-2 时效守卫：trend 产物不属于本期 → 跳过，不拿过期结论当本期输入。"""
+    from datetime import date as _date
+
+    from aipulse.cli.commands import debate as debate_cmd
+    from aipulse.cli.main import app as cli_app
+    from aipulse.core.config import Settings
+
+    reports = _seed_reports(tmp_path / "root")
+    _write_trend(reports, "2026-09-20", "it_0000000000000000")
+    settings = Settings(
+        app={"data_dir": str(tmp_path / "root")},
+        mode="hybrid",
+        llm={"api_key": "sk-test-key"},
+    )
+    monkeypatch.setattr(debate_cmd, "load_settings", lambda *a, **k: settings)
+    monkeypatch.setattr(debate_cmd, "today_local", lambda *a, **k: _date(2026, 11, 1))
+
+    result = CliRunner().invoke(cli_app, ["debate", "--reports-dir", str(reports)])
+    assert result.exit_code == 0, result.output
+    assert "跳过辩论" in result.output
+    assert "不属于本期 2026-10-01 → 2026-10-31" in result.output
+    assert "候选（按争议度排序）" in result.output  # 人工想跑可以照着 --topic
+
+
+def test_debate_cli_skips_when_controversy_below_threshold(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """P1-5 争议度门槛：低于阈值不硬产出没人看的辩论。"""
+    from datetime import date as _date
+
+    from aipulse.cli.commands import debate as debate_cmd
+    from aipulse.cli.main import app as cli_app
+    from aipulse.core.config import Settings
+
+    reports = _seed_reports(tmp_path / "root")
+    _write_trend(reports, "2026-10-22", "it_0000000000000000")
+    settings = Settings(
+        app={"data_dir": str(tmp_path / "root")},
+        mode="hybrid",
+        llm={"api_key": "sk-test-key"},
+        pipeline={"debate": {"min_controversy": 99}},
+    )
+    monkeypatch.setattr(debate_cmd, "load_settings", lambda *a, **k: settings)
+    monkeypatch.setattr(debate_cmd, "today_local", lambda *a, **k: _date(2026, 11, 1))
+
+    result = CliRunner().invoke(cli_app, ["debate", "--reports-dir", str(reports)])
+    assert result.exit_code == 0, result.output
+    assert "低于门槛 99 分" in result.output
+
+
+def test_debate_cli_manual_mode_requires_topic(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """trigger_mode=manual：命令可用，但不自动选题（承接 weekly_debate_enabled:false）。"""
+    from datetime import date as _date
+
+    from aipulse.cli.commands import debate as debate_cmd
+    from aipulse.cli.main import app as cli_app
+    from aipulse.core.config import Settings
+
+    reports = _seed_reports(tmp_path / "root")
+    _write_trend(reports, "2026-10-22", "it_0000000000000000")
+    settings = Settings(
+        app={"data_dir": str(tmp_path / "root")},
+        mode="hybrid",
+        llm={"api_key": "sk-test-key"},
+        pipeline={"debate": {"trigger_mode": "manual"}},
+    )
+    monkeypatch.setattr(debate_cmd, "load_settings", lambda *a, **k: settings)
+    monkeypatch.setattr(debate_cmd, "today_local", lambda *a, **k: _date(2026, 11, 1))
+
+    result = CliRunner().invoke(cli_app, ["debate", "--reports-dir", str(reports)])
+    assert result.exit_code == 2
+    assert "trigger_mode=manual" in result.output
+
+
+def test_debate_cli_legacy_flag_maps_to_manual(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """deprecated 别名：weekly_debate_enabled=false → manual（不自动选题）。"""
+    from datetime import date as _date
+
+    from aipulse.cli.commands import debate as debate_cmd
+    from aipulse.cli.main import app as cli_app
+    from aipulse.core.config import Settings
+
+    reports = _seed_reports(tmp_path / "root")
+    settings = Settings(
+        app={"data_dir": str(tmp_path / "root")},
+        mode="hybrid",
+        llm={"api_key": "sk-test-key"},
+        pipeline={"weekly_debate_enabled": False},
+    )
+    monkeypatch.setattr(debate_cmd, "load_settings", lambda *a, **k: settings)
+    monkeypatch.setattr(debate_cmd, "today_local", lambda *a, **k: _date(2026, 11, 1))
+
+    result = CliRunner().invoke(cli_app, ["debate", "--reports-dir", str(reports)])
+    assert result.exit_code == 2
+    assert "trigger_mode=manual" in result.output

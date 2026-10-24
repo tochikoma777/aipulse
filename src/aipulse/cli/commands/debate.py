@@ -24,11 +24,14 @@ from pathlib import Path
 import typer
 
 from aipulse.analysis.cross_period import load_cross_period
-from aipulse.core.config import load_settings
+from aipulse.core.config import debate_trigger_mode, load_settings
 from aipulse.core.logging import configure_logging
+from aipulse.core.schedule import TRIGGER_AUTO, TRIGGER_DISABLED
+from aipulse.core.timeutil import today_local
 from aipulse.llm.base import build_client
-from aipulse.reasoning.auto_topic import pick_auto_topic
+from aipulse.reasoning.auto_topic import current_period, select_debate_topic
 from aipulse.reasoning.debate import run_debate
+from aipulse.reasoning.trend import calendar_days
 from aipulse.render.debate import render_debate
 
 app = typer.Typer(
@@ -45,6 +48,20 @@ def _parse_range(value: str) -> int:
     if not text.isdigit() or int(text) <= 0:
         raise typer.BadParameter("--range 只接受 `7d` 这类格式")
     return int(text)
+
+
+def _trend_window(reports_root: Path, window_end: str) -> tuple[str, str] | None:
+    """读某期 trend 产物的分析窗口（weekly.json 的 window 字段）。"""
+    path = reports_root / "trend" / window_end / "weekly.json"
+    if not window_end or not path.exists():
+        return None
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return None
+    window = data.get("window") or {}
+    start, end = str(window.get("start") or ""), str(window.get("end") or "")
+    return (start, end) if start and end else None
 
 
 def slugify(topic: str) -> str:
@@ -91,23 +108,43 @@ def main(
         raise typer.Exit(code=2)
 
     topic_text = topic.strip()
+    debate_window: tuple[str, str] | None = None
     if not topic_text:
-        if not settings.pipeline.weekly_debate_enabled:
+        mode = debate_trigger_mode(settings.pipeline)
+        if mode != TRIGGER_AUTO:
+            hint = "该阶段已停用" if mode == TRIGGER_DISABLED else "不自动选题"
             typer.echo(
-                "必须给 --topic，或把 pipeline.weekly_debate_enabled 设为 true 让程序自动选题。",
+                f"必须给 --topic：pipeline.debate.trigger_mode={mode}（{hint}）。",
                 err=True,
             )
             raise typer.Exit(code=2)
-        auto = pick_auto_topic(index, root)
-        if auto is None:
+
+        trigger = settings.pipeline.debate
+        period = current_period(trigger.interval, today_local())
+        selection = select_debate_topic(
+            index,
+            root,
+            min_controversy=trigger.min_controversy,
+            period=period,
+        )
+        typer.echo(f"[debate] {selection.announcement()}", err=True)
+        if not selection.ok:
+            # 没有值得辩的话题 / trend 产物过期：跳过不是错误
+            # （P0-1：数据不足与"无争议"都走 exit 0，只有真错误才非 0）
+            raise typer.Exit(code=0)
+        picked = selection.picked
+        assert picked is not None  # ok 为真时必有 picked
+        topic_text = picked.topic
+        # 辩论窗口必须与所辩论的那期 trend 产物一致，否则"辩月度结论、取材 7 天"
+        trend_window = _trend_window(root, picked.window_end)
+        if trend_window is not None:
+            debate_window = trend_window
+            window_days = calendar_days(*trend_window)
             typer.echo(
-                "自动选题失败：没有可用的 trend 产物。先跑 `aipulse trend --range 7d`，"
-                "或显式给 --topic。",
+                f"[debate] 取材窗口跟随 trend 产物：{trend_window[0]} → {trend_window[1]}"
+                f"（{window_days} 天）",
                 err=True,
             )
-            raise typer.Exit(code=2)
-        topic_text = auto.topic
-        typer.echo(f"[debate] {auto.announcement()}", err=True)
 
     window_days = _parse_range(range_)
     client = build_client(settings)  # engine=None：不写主库
@@ -120,6 +157,7 @@ def main(
             max_tokens=budget_tokens,
             price_strong_cny_per_1m=settings.budget.price_strong_cny_per_1m,
             window_days=window_days,
+            window_range=debate_window,
         )
     )
 
