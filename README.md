@@ -7,7 +7,7 @@
 
 > **每日自动采集 AI 领域热点，不只整理，还给出可回测的推演与预言。**
 
-> ✅ **状态**：M0–M4 已完成，**M6a（简报格式 + 快照源修复 + predict 截断修复）、P0 star 追踪、M6b（条目 why/stance 全覆盖 + 中文要点）、M6c（知识库：本地笔记 + Markdown 导出）均已落地**——**系统每天自动跑**（Actions 定时流水线），产出日报 + **预言记分板**。
+> ✅ **状态**：M0–M6c 与 **M5（周度趋势长文 + 多角色辩论 + 产物可读化）** 均已落地并真跑验证（tag `m5`）——**系统每天自动跑**（Actions 定时流水线），产出日报 + **预言记分板**；周报与辩论需手动触发（`aipulse trend` / `aipulse debate`）。
 > **M5 已落地**（`aipulse trend` + `aipulse selfcheck` + `aipulse debate`，S1–S5 全部真跑验证）。产物按**窗口结束日**分目录：周报在 [`data/reports/trend/2026-10-23/weekly.md`](data/reports/trend/2026-10-23/weekly.md)，辩论在 [`data/reports/debate/2026-10-23/`](data/reports/debate/2026-10-23/)。每份都分两层：`weekly.md` 给人看（结论 + 表格 + 折叠免责），`weekly.json` 给校验看（7 节正文 + 裸 ID + 口径）。
 >
 > 完整变更见 [CHANGELOG](CHANGELOG.md) · 开发踩坑见 [踩坑实录](docs/踩坑实录.md)
@@ -53,6 +53,28 @@ aipulse 多做了一件难得多的事：**每天给出 3-5 条可证伪的预�
 
 **没有 API key 也能用**：未配置时自动降级到 `off` 档，只提示一次，不报错退出。
 手写预言与模型生成的预言在记分板上**完全同权**——都进命中率、都进 Brier、都进校准曲线，因此还能对比"人 vs 机器"的校准度。
+
+## 三种部署形态（先看这一节，能省掉三个误解）
+
+这个项目**不需要服务器、不需要数据库服务、不需要 GitHub** 也能跑。按你的条件选一种：
+
+| 形态 | 适合谁 | 怎么用 | 需要什么 |
+|---|---|---|---|
+| **① 纯本地** | 只想在自己机器上跑一次 / 每天手动跑 | `uv sync` → 在 `.env` 填 `AIPULSE_LLM__API_KEY` → `uv run aipulse daily` | 本机能访问外网（采集 + LLM） |
+| **② Actions 托管** | 想让它每天自动跑、自己不用开机 | fork 仓库 → 配 `AIPULSE_LLM__API_KEY` secret → 开启 workflow | 什么都不用，云端每天 08:00（北京）自动跑并把日报 commit 回仓库 |
+| **③ 只读 · 知识库** | 只是**读**已有日报 / 写笔记 / 导出给 AI 用 | `uv sync` → `uv run aipulse knowledge list` / `knowledge export` / `aipulse serve` | **不需要网络、不需要 API key** |
+
+### 三句必须说清的纠偏
+
+1. **cron 只管"自动定时"，不管"能不能用"。** 没装 cron ≠ 软件不能用——
+   装 cron 只是让 `daily` 每天自己跑一次；不装就手动 `uv run aipulse daily`，功能一模一样。
+2. **GitHub 只是托管代码的地方，不是运行依赖。** 克隆到本地、不 fork、不 push，照样能跑；
+   Actions 只是"帮你每天自动跑"的可选通道，不是运行前提。
+3. **没有外网也不等于全都不能用。** 当前本地 WSL 若访问不了外网 → **采集跑不了**，
+   但 `knowledge export` / `aipulse serve` / 渲染已有日报**都不需要网络**，随时可用。
+
+> 判断标准很简单：**要从网上抓新东西**（collect / daily / trend / debate）才需要外网 + API key；
+> **只处理已经 commit 在 `data/reports/` 里的东西**（knowledge / serve / selfcheck）什么都不需要。
 
 ## 5 分钟快速开始
 
@@ -264,7 +286,7 @@ uv run aipulse debate --topic "…" --out /tmp/d.md       # 指定落盘（默�
 | **P0** | star 追踪：★ 总数 / 增量 + 增速榜 + `source_runs.json` | ✅（Actions 实跑验证 2026-10-17） |
 | **M6b** | 日报条目「为什么重要 / 立场」全覆盖 + 中文要点（`one_liner`） | ✅（tag `m6b`） |
 | **M6c** | 知识库：本地笔记 + 阅读状态 + Markdown 导出 | ✅（tag `m6c`） |
-| **M5** | 周期趋势长文（S1–S3）+ 多角色辩论（S4）+ 产物可读化（S5） | 🟡 S1–S5 全部真跑通过；未打 tag（等 SSOT v1.23） |
+| **M5** | 周期趋势长文（S1–S3）+ 多角色辩论（S4）+ 产物可读化（S5） | ✅（tag `m5`） |
 
 ## 开发
 

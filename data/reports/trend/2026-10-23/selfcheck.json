@@ -9,9 +9,9 @@
       "layer": "L1",
       "name": "硬判据",
       "verdict": "pass",
-      "summary": "全文 2450 字（区间 2000-4000：在区间内），违规 0、套话 0、缺节 0。",
+      "summary": "全文 2767 字（区间 2000-4000：在区间内），违规 0、套话 0、缺节 0。",
       "metrics": {
-        "total_chars": 2450,
+        "total_chars": 2767,
         "in_range": true,
         "violations": 0,
         "boilerplate": 0,
@@ -19,49 +19,49 @@
         "segments": {
           "rising_topics": {
             "title": "上升主题",
-            "chars": 310,
-            "ids": 2,
+            "chars": 366,
+            "ids": 6,
             "violations": [],
             "boilerplate": []
           },
           "falling_topics": {
             "title": "降温主题",
-            "chars": 460,
-            "ids": 9,
+            "chars": 559,
+            "ids": 11,
             "violations": [],
             "boilerplate": []
           },
           "emerging_topics": {
             "title": "新进榜",
-            "chars": 257,
-            "ids": 3,
+            "chars": 339,
+            "ids": 9,
             "violations": [],
             "boilerplate": []
           },
           "structural_changes": {
             "title": "结构变化",
-            "chars": 461,
+            "chars": 578,
             "ids": 3,
             "violations": [],
             "boilerplate": []
           },
           "second_order_effects": {
             "title": "二阶影响",
-            "chars": 526,
+            "chars": 505,
             "ids": 3,
             "violations": [],
             "boilerplate": []
           },
           "prediction_review": {
             "title": "预言复盘",
-            "chars": 69,
+            "chars": 48,
             "ids": 0,
             "violations": [],
             "boilerplate": []
           },
           "watchlist": {
             "title": "下期观察",
-            "chars": 367,
+            "chars": 372,
             "ids": 2,
             "violations": [],
             "boilerplate": []
@@ -74,16 +74,16 @@
       "layer": "L2",
       "name": "信息增量",
       "verdict": "pass",
-      "summary": "较基线（Top10 榜单）新增结论 6 条（跨条目 0、结构 5、外部实体 1）；纯数值两两比较 1 条（不计入增量）。",
+      "summary": "较基线（Top10 榜单）新增结论 6 条（跨条目 1、结构 4、外部实体 1）；纯数值两两比较 1 条（不计入增量）。",
       "metrics": {
         "increments": 6,
         "min_increments": 3,
         "kinds": {
-          "cross_item": 0,
-          "structure": 5,
+          "cross_item": 1,
+          "structure": 4,
           "external_entity": 1,
           "substitution": 0,
-          "divergence": 0
+          "divergence": 1
         },
         "pairwise_numeric": 1,
         "baseline_top": [
@@ -168,42 +168,42 @@
             "delta": null
           }
         ],
-        "baseline_overlap": "4/14",
+        "baseline_overlap": "7/18",
         "examples": [
+          {
+            "kind": "cross_item",
+            "segment": "rising_topics",
+            "clause": "开源项目同步组（成员 it_645a6cf2b3acc8ac、it_752e25023358d2db、it_940ae4b9591d1f09、it_7d0ed93b88de47b1、it_1f28a16c9fe19cbe）n_days=3~6，mean r=0.958、min r=-0.9，最低值与均值方向背离说明组内出现分化，不作同向解读",
+            "detail": "背离"
+          },
           {
             "kind": "external_entity",
             "segment": "rising_topics",
-            "clause": "组内 mean r=0.958 与 min r=-0.9 的正负跨度意味着组内出现分化，不作同向解读，coherent=False 也不支持把该组当作同向上升证据",
+            "clause": "该组 coherent=False 且未做显著性检验，不能把组内部分成员的变化写成同步上升，也不能据此确认板块级上升",
             "detail": "False"
           },
           {
             "kind": "structure",
-            "segment": "falling_topics",
-            "clause": "社区舆论板块（it_bf00b37e101a93d7）份额 0.2689→0.1561，意味着该板块在对比区间内份额收缩",
+            "segment": "structural_changes",
+            "clause": "以 it_bf00b37e101a93d7 为代表的社区舆论，在本周同构区间内的份额由0.2689降至0.1561，斜率-3.21pp/天，方向以斜率而非首末差为准",
             "detail": "份额"
           },
           {
             "kind": "structure",
             "segment": "structural_changes",
-            "clause": "以 it_bf00b37e101a93d7 为代表的社区舆论份额在对比区间内从0.2689降至0.1561，推测该板块正在让出结构位，依据是下降侧斜率-3.21pp/天，说明这是连续7天的方向而非单日波动",
-            "detail": "份额"
+            "clause": "it_72972368be1f96c8、it_1360bd8eb5a8e67e 仅用于定位同一板块样本，说明上述收缩发生在该代表组内，而非单条目的孤立变化",
+            "detail": "板块"
           },
           {
             "kind": "structure",
             "segment": "structural_changes",
-            "clause": "与社区舆论代表 it_72972368be1f96c8 对照，hackernews 条目8→4（-13.33pp），推测条目供给收缩与上述份额下行同向，依据是条目降幅与板块份额降幅接近，结构上更像来源端收缩推动的板块降温",
+            "clause": "来源构成上，以 it_72972368be1f96c8 为同窗口样本，github_trending 的热度份额由0.3019升至0.3346，条目数维持9条",
             "detail": "份额"
-          },
-          {
-            "kind": "structure",
-            "segment": "structural_changes",
-            "clause": "以 it_1360bd8eb5a8e67e 为观察锚点，持续性分布为1-2天147条对3-4天8条，推测本周新增供给以短周期为主，依据是3天以上仅11条、占总158条的6.96%，结构重心没有落在长周期",
-            "detail": "持续性"
           }
         ]
       },
       "findings": [
-        "引用条目只有 4/14 落在基线 Top10 内，其余来自榜单尾部"
+        "引用条目只有 7/18 落在基线 Top10 内，其余来自榜单尾部"
       ]
     },
     {

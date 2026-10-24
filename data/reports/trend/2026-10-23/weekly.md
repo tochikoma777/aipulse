@@ -1,24 +1,26 @@
 # AI 脉搏 · 周度趋势
 
+⚠️ 本周 arxiv 连续 4 天整源 0 条、hf_papers 连续 2 天整源 0 条、可判结构方向仅 2 条（<5），结论置信度有限
+
 **取数 2026-10-17 → 2026-10-23** ｜ 比较区间 **2026-10-17 → 2026-10-23**（7 天，源集合同构）
 
 > ### 📌 本周三句话
 >
-> 1. **社区舆论份额从26.9%降至15.6%，讨论型内容让位**
-> 2. **hackernews 来源条目8条减到4条，份额降13.3pp**
-> 3. **新增供给147条仅在榜1-2天，3天以上只有11条**
+> 1. **社区舆论板块份额由26.9%收缩到15.6%，三条代表条目同步降温**
+> 2. **连续在榜6天的3条开源条目同时跌出Top30，热度达80.6**
+> 3. **hackernews 条目由8条减到4条，来源份额降13.3pp**
 
 ---
 
 ## 🧭 本周判断
 
-- **上升主题**：本周没有上升板块，可核验的上升只有单条热度两日抬升3.40。 — 依据 [cloudflare/security-audit-skill](https://github.com/cloudflare/security-audit-skill)、[anomalyco/opencode](https://github.com/anomalyco/opencode)
-- **降温主题**：社区舆论份额一周内从26.9%收缩到15.6%，斜率3.21pp/天，非单日抖动。 — 依据 [OpenShell – A safe, private runtime for…](https://github.com/NVIDIA/OpenShell)、[MadsLorentzen/ai-job-search](https://github.com/MadsLorentzen/ai-job-search)
-- **新进榜**：单日新进8条，研究类占4条，回榜条目热度43.72落在尾部。 — 依据 [Making MLLM Latents Matter: Factor-Awar…](arxiv:2610.30926)、[anthropics/knowledge-work-plugins](https://github.com/anthropics/knowledge-work-plugins)、[OpenShell – A safe, private runtime for…](https://github.com/NVIDIA/OpenShell)
-- **结构变化**：讨论板块让位，来源端条目减半，项目型靠热度集中把份额抬到33.5%。 — 依据 [OpenShell – A safe, private runtime for…](https://github.com/NVIDIA/OpenShell)、[Several Linux kernel vulnerabilities ac…](https://www.phoronix.com/news/LKML-New-Trend-Vulnerabilities)、[LLMs are making formal software verific…](https://www.anthropic.com/research/formal-verification)
-- **二阶影响**：冲击先落在供给结构：讨论型供给变薄，可执行链接型项目位先受益。 — 依据 [OpenShell – A safe, private runtime for…](https://github.com/NVIDIA/OpenShell)、[Several Linux kernel vulnerabilities ac…](https://www.phoronix.com/news/LKML-New-Trend-Vulnerabilities)
-- **预言复盘**：34条预言全部待验证，最早到期11月16日，本周零样本可算命中率。
-- **下期观察**：下期只验两条：在榜6天能否到7天，单日高热能否留下第2天。 — 依据 [MadsLorentzen/ai-job-search](https://github.com/MadsLorentzen/ai-job-search)、[OpenShell – A safe, private runtime for…](https://github.com/NVIDIA/OpenShell)
+- **上升主题**：上升只到条目级：单条热度两日由82.8抬到86.2，开源同步组内部已分化。 — 依据 [cloudflare/security-audit-skill](https://github.com/cloudflare/security-audit-skill)、[anomalyco/opencode](https://github.com/anomalyco/opencode)
+- **降温主题**：社区舆论份额收缩至15.6%，开源连榜3–6天的8条仍跌出Top30。 — 依据 [OpenShell – A safe, private runtime for…](https://github.com/NVIDIA/OpenShell)、[MadsLorentzen/ai-job-search](https://github.com/MadsLorentzen/ai-job-search)、[debpalash/VoiceStudio](https://github.com/debpalash/VoiceStudio)
+- **新进榜**：单日8条新进中4条归入论文与研究，占一半，新进结构偏研究类。 — 依据 [Making MLLM Latents Matter: Factor-Awar…](arxiv:2610.30926)、[OpenShell – A safe, private runtime for…](https://github.com/NVIDIA/OpenShell)、[anthropics/knowledge-work-plugins](https://github.com/anthropics/knowledge-work-plugins)
+- **结构变化**：同等9条下 github_trending 热度份额升至33.5%，与社区舆论占比收缩同窗。 — 依据 [Several Linux kernel vulnerabilities ac…](https://www.phoronix.com/news/LKML-New-Trend-Vulnerabilities)、[OpenShell – A safe, private runtime for…](https://github.com/NVIDIA/OpenShell)
+- **二阶影响**：曝光池收窄，短周期供给被长在榜挤占，来源素材减半向分发端传导。 — 依据 [Several Linux kernel vulnerabilities ac…](https://www.phoronix.com/news/LKML-New-Trend-Vulnerabilities)、[OpenShell – A safe, private runtime for…](https://github.com/NVIDIA/OpenShell)
+- **预言复盘**：34条预言全部未到期，最早11月16日，本周命中率无样本可估。
+- **下期观察**：两处待验：单日条目能否连到2天，6天连榜条目能否延到第7天。 — 依据 [OpenShell – A safe, private runtime for…](https://github.com/NVIDIA/OpenShell)、[MadsLorentzen/ai-job-search](https://github.com/MadsLorentzen/ai-job-search)
 
 ## 📊 板块份额变化
 
@@ -71,6 +73,7 @@
 |---|---|
 | `it_1360bd8eb5a8e67e` | LLMs are making formal software verification feasible at a … |
 | `it_1f28a16c9fe19cbe` | HKUDS/CLI-Anything |
+| `it_463277c6c46271fe` | LaLa-World: Scaling Latent World Models with Natural Langua… |
 | `it_645a6cf2b3acc8ac` | anomalyco/opencode |
 | `it_72972368be1f96c8` | Several Linux kernel vulnerabilities accidentally posted to… |
 | `it_752e25023358d2db` | MadsLorentzen/ai-job-search |
@@ -80,6 +83,9 @@
 | `it_85ee7a3aef761044` | ruvnet/ruflo |
 | `it_93bbd6e7c3469d05` | Making MLLM Latents Matter: Factor-Aware Predictive Learnin… |
 | `it_940ae4b9591d1f09` | stablyai/orca |
+| `it_98169d606489bb04` | Meta Expert: Cross-Layer Expert Sharing for Storage- and Re… |
+| `it_9f7804a9217e63d1` | Code2Video-Compass: A Comprehensive Benchmark for General-P… |
 | `it_bf00b37e101a93d7` | OpenShell – A safe, private runtime for fleets of autonomou… |
 | `it_c9cdc26758b48a34` | anthropics/knowledge-work-plugins |
 | `it_db643b160f4cefa8` | debpalash/VoiceStudio |
+| `it_fdf7de3aa15def01` | php/php-src |

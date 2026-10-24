@@ -667,6 +667,11 @@ def _structural_claims(index: CrossPeriodIndex) -> list[dict[str, Any]]:
     return claims
 
 
+def structural_claim_count(index: CrossPeriodIndex) -> int:
+    """本期可判的结构方向条数（L4 主判据的样本量；banner 也用它）。"""
+    return len(_structural_claims(index))
+
+
 def _direction_map(index: CrossPeriodIndex) -> dict[tuple[str, str], str]:
     return {(c["scope"], c["name"]): c["direction"] for c in _structural_claims(index)}
 
@@ -1015,6 +1020,7 @@ __all__ = [
     "build_admission",
     "load_admission",
     "sections_from_machine",
+    "structural_claim_count",
     "check_l1",
     "check_l2",
     "check_l3",

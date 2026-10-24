@@ -2,9 +2,9 @@
 
 This file provides guidance to CodeBuddy Code when working with code in this repository.
 
-## ★ 当前阶段：M5（趋势长文 + 多角色辩论 + 产物可读化）—— S1–S5 全部跑通，未打 tag
+## ★ 当前阶段：M5 已完成（趋势长文 + 多角色辩论 + 产物可读化）—— 已打 tag `m5`
 
-**一句话**：M0–M4、M6a、M6b、M6c 完成并真跑验证；**M5 的趋势长文（S1→S3）、多角色辩论（S4）、产物可读化（S5）都已实跑通过**。M5 整体未打 tag（等 SSOT v1.23 同步后再打 `m5`）。
+**一句话**：M0–M4、M6a、M6b、M6c 完成并真跑验证；**M5 的趋势长文（S1→S3）、多角色辩论（S4）、产物可读化（S5）都已实跑通过并打 tag `m5`**。M5 之后没有新里程碑（M6 编号空缺，M6a/b/c 是插在 M6 之前的修复与增量）。
 
 | M5 落点 | 现状 |
 |---|---|
@@ -61,9 +61,9 @@ This file provides guidance to CodeBuddy Code when working with code in this rep
 | P0 | star 追踪：★ 总数 / 增量两列、增速榜、`source_runs.json` | ✅ `star-tracking` / `cdcab79` |
 | M6b | 日报条目 why/stance 全覆盖 + 中文要点（2026-10-18，冷启动 0.011862 元/天） | ✅ `m6b` / `11fb09a` |
 | M6c | 知识库：双库隔离 + 笔记 CLI + daily index + Markdown 导出 + `cron_knowledge.sh`（2026-10-20） | ✅ `m6c` / `c9b2fa1` |
-| **M5** | **周期趋势长文 + 多角色辩论** | 🟡 长文（S1–S3）已真跑：`data/reports/trend/weekly.md` + `selfcheck.md`；**辩论未开工，未打 tag** |
+| **M5** | **周期趋势长文 + 多角色辩论 + 产物可读化** | ✅ `m5`（S1–S5 全部真跑；产物在 `data/reports/trend/<末日>/` 与 `data/reports/debate/<末日>/`） |
 
-`git tag` 全集就是上表这些，**没有 `m5` / `m6` 不是漏打**（`m6a`/`m6b`/`m6c` 是插在 M6 之前的修复与增量阶段；M5 因辩论未做也还没打）。P0 的 Actions 实跑证据：`data/reports/2026/10/17/` 由 `aipulse-bot` 提交，`generated_at 2026-10-17T14:55Z`，含 `source_runs.json`。M5 的落点见文首表格，**debate 这一半不要跨阶段实现**。
+`git tag` 全集就是上表这些，**没有 `m6` 不是漏打**（`m6a`/`m6b`/`m6c` 是插在 M6 之前的修复与增量阶段）。P0 的 Actions 实跑证据：`data/reports/2026/10/17/` 由 `aipulse-bot` 提交，`generated_at 2026-10-17T14:55Z`，含 `source_runs.json`。M5 的落点见文首表格，**debate 这一半不要跨阶段实现**。
 
 ### 当前 HEAD 与 tag 的关系
 
@@ -79,7 +79,7 @@ SSOT 两份文档当前 v1.22（`docs/文档维护日志.md` 最新一条 v1.22 
 
 ### CLI 现状
 
-已实现的 CLI：`init` / `doctor` / `collect` / `analyze` / `brief` / `daily` / `predict`（`add` / `list` / `verify` / `review`）/ `stats`（`stats --predictions`）/ **`serve`（M4 只读看板）** / **`inbox`（`add` / `add-file` / `list`，v1.1 手动投喂通道）** / **`knowledge`（`mark` / `note` / `items` / `list` / `export`，M6c）** / **`trend`（`--range 7d` / `--json` / `--out` / `--segments`，M5）** / **`selfcheck`（L1–L4，M5）**。
+已实现的 CLI：`init` / `doctor` / `collect` / `analyze` / `brief` / `daily` / `predict`（`add` / `list` / `verify` / `review`）/ `stats`（`stats --predictions`）/ **`serve`（M4 只读看板）** / **`inbox`（`add` / `add-file` / `list`，v1.1 手动投喂通道）** / **`knowledge`（`mark` / `note` / `items` / `list` / `export`，M6c）** / **`trend`（`--range 7d` / `--json` / `--out` / `--segments`，M5）** / **`selfcheck`（L1–L4，M5）** / **`debate`（`--topic` / `--json` / `--out`，M5 S4）**。
 
 `src/aipulse/cli/commands/` 下其余子应用（`normalize`/`debate`/`trend`/`topics`/`search`/`sources`）仍是 `placeholder_app()` 生成的占位，调用时抛 `NotImplementedError`。它们出现在 `--help` 里是刻意的，不是漏实现。其中 `sources` 占位**不影响加源**：增删 RSS/Atom 源改 `configs/sources.yaml` 即可（见「采集器六条约定」末段）。
 
@@ -414,7 +414,7 @@ hot_score = 100 * clamp( w_engagement*engagement_norm        # Σ coeff*log1p(me
 
 **编排接入**：`pipeline/daily.py` 在 brief 之后按 `pipeline.auto_verify` 调 `_auto_verify()`（异常只降级写 meta，绝不拖垮日报）。off 档下量化判据可完成"生成→到期→自动验证→记分板"全闭环，零 LLM。
 
-### M5 周期趋势：S1 → S3（长文已跑通，debate 未开工）
+### M5 周期趋势：S1 → S5（长文 / 自验证 / 辩论 / 可读化，全部已跑通）
 
 ```
 data/reports/**/daily.json ──> analysis/cross_period（纯计算，零 LLM）

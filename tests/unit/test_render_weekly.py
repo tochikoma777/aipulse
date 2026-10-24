@@ -157,3 +157,111 @@ def test_bar_and_share_table_handle_blocked_section(tmp_path: Path) -> None:
         assert "**封锁**" in markdown
     else:
         assert "## 📊 板块份额变化" in markdown
+
+
+# ── 数据健康 banner ───────────────────────────────────────────────────────
+
+
+def _write_day_with_runs(
+    target: Path, day: str, runs: dict[str, tuple[str, int]], scores: dict[str, float]
+) -> None:
+    """`source_runs.json` 是**独立文件**（不是 daily.json 的字段）。"""
+    target.mkdir(parents=True, exist_ok=True)
+    (target / "daily.json").write_text(
+        json.dumps(_daily(day, scores), ensure_ascii=False), encoding="utf-8"
+    )
+    (target / "source_runs.json").write_text(
+        json.dumps(
+            {
+                "sources": [
+                    {"source": k, "status": v[0], "item_count": v[1]} for k, v in runs.items()
+                ]
+            },
+            ensure_ascii=False,
+        ),
+        encoding="utf-8",
+    )
+
+
+def test_banner_absent_when_source_health_ok(tmp_path: Path) -> None:
+    """正常时**不出现** banner（不能变成永久免责）。"""
+    from aipulse.render.weekly import health_banner
+
+    for day, score in (("2026-10-19", 40.0), ("2026-10-20", 60.0), ("2026-10-21", 80.0)):
+        _write_day_with_runs(
+            tmp_path.joinpath(*day.split("-")),
+            day,
+            {"arxiv": ("ok", 20), "rss": ("degraded", 12)},
+            {"it_1111111111111111": score},
+        )
+
+    index = load_cross_period(tmp_path)
+    banner = health_banner(index)
+    # rss 是 degraded 但有条目 → 不算整源 0 条；arxiv 正常
+    assert "整源 0 条" not in banner
+
+
+def test_banner_fires_on_consecutive_zero_source(tmp_path: Path) -> None:
+    """连续整源 0 条 + 可判样本 <5 → banner 出现在标题下方。"""
+    from aipulse.render.weekly import health_banner
+
+    for day, score in (("2026-10-19", 40.0), ("2026-10-20", 60.0), ("2026-10-21", 80.0)):
+        _write_day_with_runs(
+            tmp_path.joinpath(*day.split("-")),
+            day,
+            {"arxiv": ("failed", 0), "rss": ("ok", 12)},
+            {"it_1111111111111111": score},
+        )
+
+    index = load_cross_period(tmp_path)
+    banner = health_banner(index)
+    assert banner.startswith("⚠️ 本周 ")
+    assert "arxiv 连续 3 天整源 0 条" in banner
+    assert "可判结构方向仅" in banner
+
+    markdown = render_weekly(_report(), index)
+    lines = markdown.splitlines()
+    assert lines[0].startswith("# AI 脉搏")
+    assert lines[2] == banner  # 标题下方、正文最前
+
+
+def test_banner_streak_breaks_after_healthy_day(tmp_path: Path) -> None:
+    """中间有一天正常 → 连续天数重新计数，不能虚报。"""
+    from aipulse.render.weekly import health_banner
+
+    plan = {
+        "2026-10-19": ("failed", 0),
+        "2026-10-20": ("ok", 30),
+        "2026-10-21": ("failed", 0),
+    }
+    for day, runs in plan.items():
+        _write_day_with_runs(
+            tmp_path.joinpath(*day.split("-")), day, {"arxiv": runs}, {"it_1111111111111111": 50.0}
+        )
+
+    index = load_cross_period(tmp_path)
+    banner = health_banner(index)
+    assert "arxiv 整源 0 条" in banner
+    assert "连续" not in banner
+
+
+def test_banner_ignores_inbox_and_old_failures(tmp_path: Path) -> None:
+    """inbox 是手动通道；窗口开头的旧故障也不能算成"连续 N 天"。"""
+    from aipulse.render.weekly import health_banner
+
+    plan = {
+        "2026-10-19": {"inbox": ("degraded", 0), "hf_papers": ("degraded", 0), "arxiv": ("ok", 10)},
+        "2026-10-20": {"inbox": ("degraded", 0), "hf_papers": ("ok", 8), "arxiv": ("ok", 12)},
+        "2026-10-21": {"inbox": ("degraded", 0), "hf_papers": ("ok", 9), "arxiv": ("ok", 15)},
+    }
+    for day, runs in plan.items():
+        _write_day_with_runs(
+            tmp_path.joinpath(*day.split("-")), day, runs, {"it_1111111111111111": 50.0}
+        )
+
+    index = load_cross_period(tmp_path)
+    banner = health_banner(index)
+    assert "inbox" not in banner  # 手动投喂通道永远 0 条，不是故障
+    # 窗口内出现过的整源 0 条要被报出来，但只有 1 天 → 不写"连续"
+    assert "hf_papers 整源 0 条" in banner
+    assert "hf_papers 连续" not in banner

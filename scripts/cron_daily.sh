@@ -1,8 +1,13 @@
 #!/usr/bin/env bash
 # WSL 本地 cron 备份（设计方案 §14.3）。
 #
-# GitHub Actions 是主通道，但本地 cron 保证数据不会因为 cache 失效而断档
-# （Actions 无法持久化 SQLite，我们只能"尽力而为"地缓存它；本地库是权威副本）。
+# ★ 权威副本是 `data/reports/`（已 commit 的日报 JSON），**不是** `data/aipulse.db`。
+#   原因：SQLite 只是当日运行的中间库，git 不跟踪（`.gitignore` 的 `data/*.db`）；
+#   Actions 只能靠 cache「尽力而为」地续命，本地这份也随时会停更。
+#   实测 2026-10-23：本地库停在 10-17，日报已到 10-23 —— 拿库当基准会直接读错。
+#   跨期分析（trend / debate / selfcheck / knowledge export）一律读 reports，不读库。
+#
+# GitHub Actions 是主通道；本地 cron 只是补位，避免 Actions 偶发失败时当天完全断档。
 #
 # 安装（WSL 内）：
 #   crontab -e

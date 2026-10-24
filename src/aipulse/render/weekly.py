@@ -22,6 +22,7 @@ from aipulse.analysis.cross_period import (
     PeriodItem,
     compute_all,
 )
+from aipulse.reasoning.selfcheck import structural_claim_count
 from aipulse.reasoning.trend import slice_index
 from aipulse.schema.trend import TrendReport
 
@@ -77,6 +78,56 @@ def linkify(index: CrossPeriodIndex, text: str) -> str:
         return seen[item_id]
 
     return _ITEM_ID_RE.sub(_sub, text or "")
+
+
+_MANUAL_SOURCES = frozenset({"inbox"})
+"""手动投喂通道：没有投喂就是 0 条，**不是采集失败**，不进 banner。"""
+
+
+def _failure_runs(index: CrossPeriodIndex) -> dict[str, int]:
+    """各来源在**窗口内**最长的「连续整源 0 条」天数。
+
+    只统计 `source_runs.json` 里记为 failed / degraded 且 item_count=0 的源。
+    ★ 口径是"窗口内最长连续段"，不是"截至末日的连续段"：
+    arxiv 10-19→10-22 连挂 4 天、10-23 才恢复——若只看尾巴，这 4 天会整段消失，
+    而它恰恰是读者判断本周结论可信度的前提。
+    """
+    longest: dict[str, int] = {}
+    current: dict[str, int] = {}
+    for day in index.days:
+        snapshot = index.snapshots.get(day)
+        if snapshot is None:
+            continue
+        for source, info in snapshot.source_runs.items():
+            if source in _MANUAL_SOURCES:
+                continue
+            status, count = info
+            if status in {"failed", "degraded"} and int(count or 0) == 0:
+                current[source] = current.get(source, 0) + 1
+                longest[source] = max(longest.get(source, 0), current[source])
+            else:
+                current[source] = 0
+    return {source: days for source, days in longest.items() if days > 0}
+
+
+def health_banner(index: CrossPeriodIndex) -> str:
+    """数据健康 banner：**只在数据不健康时出现**，正常时返回空串。
+
+    ★ 这不是新判据，是**呈现层搬家**：同样的信息本来在 `<details>` 折叠区里，
+    而折叠区是人看不见的地方——"数据不健康"是读者理解结论可信度的前提，
+    应该在正文最前。
+    """
+    runs = _failure_runs(index)
+    claims = structural_claim_count(index)
+
+    parts: list[str] = []
+    for source, days in sorted(runs.items(), key=lambda kv: (-kv[1], kv[0]))[:2]:
+        parts.append(f"{source} 连续 {days} 天整源 0 条" if days > 1 else f"{source} 整源 0 条")
+    if claims < 5:
+        parts.append(f"可判结构方向仅 {claims} 条（<5）")
+    if not parts:
+        return ""
+    return "⚠️ 本周 " + "、".join(parts) + "，结论置信度有限"
 
 
 def _bar(value: float, scale: float) -> str:
@@ -235,6 +286,11 @@ def render_weekly(report: TrendReport, index: CrossPeriodIndex) -> str:
     reports = {r.key: r for r in compute_all(sliced)} if sliced.days else {}
 
     lines: list[str] = ["# AI 脉搏 · 周度趋势", ""]
+    # 数据不健康时在正文最前提示（正常时不出现，不做永久免责）
+    banner = health_banner(sliced)
+    if banner:
+        lines.append(banner)
+        lines.append("")
     header = f"**取数 {report.window_start} → {report.window_end}**"
     if report.comparison_start and report.comparison_days:
         header += (
@@ -305,4 +361,4 @@ def render_weekly(report: TrendReport, index: CrossPeriodIndex) -> str:
     return "\n".join(lines).rstrip() + "\n"
 
 
-__all__ = ["cut", "esc", "item_of", "link_of", "render_weekly"]
+__all__ = ["cut", "esc", "health_banner", "item_of", "link_of", "render_weekly"]
