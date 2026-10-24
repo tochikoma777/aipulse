@@ -707,6 +707,7 @@ async def generate_trend(
         evidence = build_evidence(sliced, reports, key)
         prompt, template = render_prompt(
             "trend/weekly",
+            segment_key=key,
             segment_title=title,
             segment_goal=goal,
             window_start=sliced.days[0],

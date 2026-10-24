@@ -68,6 +68,14 @@ def main(
     issue = index.days[-1]
     issue_dir = root / "trend" / issue
     target = Path(file) if file else issue_dir / "weekly.json"
+    if not file and not target.exists():
+        # 日报每天都有、周报按周产：最新一天通常还没有 trend 产物，
+        # 这时应回退到最近一期**存在**的周报，而不是直接判死。
+        candidates = sorted(p.parent for p in root.glob("trend/*/weekly.json"))
+        if candidates:
+            issue_dir = candidates[-1]
+            target = issue_dir / "weekly.json"
+            typer.echo(f"[selfcheck] {issue} 没有周报，回退到 {issue_dir.name} 的产物", err=True)
     if not target.exists():
         typer.echo(
             f"找不到周报：{target}（先跑 `aipulse trend`；或 --file 指定机器层 weekly.json）",

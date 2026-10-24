@@ -95,6 +95,11 @@ _RELATION_WORDS = (
 _STRUCTURE_WORDS = ("份额", "斜率", "持续性", "来源构成", "板块")
 # 纯数值比较：可归约到基线（"A 比 B 高 0.83"），不算信息增量
 _PAIRWISE_WORDS = ("高于", "低于", "较多", "较少", "较", "相比", "分别")
+# L2：正文显式声明"没有替代/背离"的写法（沉默不算回答）
+_EXPLICIT_NONE_RE = re.compile(
+    r"(?:无可验证|没有可验证|未观察到|未见)[^。；\n]{0,12}(?:替代|背离)"
+    r"|(?:替代|背离)[^。；\n]{0,12}(?:无可验证|没有可验证|未观察到)"
+)
 _ENTITY_RE = re.compile(r"(?<![A-Za-z0-9])[A-Z][A-Za-z0-9.+-]{2,}(?![A-Za-z0-9])")
 _ENTITY_STOP = frozenset({"Top", "Top30", "AI", "LLM", "API", "JSON", "Markdown", "Brier"})
 
@@ -387,17 +392,24 @@ def check_l2(
     divergence = [i for i in increments if i["kind"] == "cross_item" and "背离" in i["detail"]]
 
     total = len(increments)
-    if total >= MIN_INCREMENTS:
-        verdict = PASS
-    elif total == 0:
+    cross_items = sum(1 for i in increments if i["kind"] == "cross_item")
+    # 「本期有无替代/背离」必须显式回答：有则引 id，无则明说"无可验证"。
+    # 沉默略过让人分不清"没发生"与"没检查"，所以缺这句也要降级。
+    explicit_none = bool(_EXPLICIT_NONE_RE.search(" ".join(sections.values())))
+    if total == 0:
         verdict = FAIL
+    elif cross_items == 0:
+        # ★ 跨条目关系为 0 不再算 pass：结构/实体增量再多，也没回答"谁替代了谁"。
+        verdict = WARN
+    elif total >= MIN_INCREMENTS:
+        verdict = PASS
     else:
         verdict = WARN
     overlap = len(cited & baseline_ids)
     coverage = f"{overlap}/{len(cited)}" if cited else "0/0"
     summary = (
         f"较基线（Top{len(baseline)} 榜单）新增结论 {total} 条"
-        f"（跨条目 {sum(1 for i in increments if i['kind'] == 'cross_item')}、"
+        f"（跨条目 {cross_items}、"
         f"结构 {sum(1 for i in increments if i['kind'] == 'structure')}、"
         f"外部实体 {len(external_entities)}）；"
         f"纯数值两两比较 {pairwise} 条（不计入增量）。"
@@ -405,6 +417,16 @@ def check_l2(
     findings: list[str] = []
     if total == 0:
         findings.append("增量为 0：长文没有超出「直接列 Top10」的水平")
+    if total > 0 and cross_items == 0:
+        if explicit_none:
+            findings.append(
+                "跨条目关系 0 条：正文已显式说明「无可验证的替代/背离」→ 降为 warn（可接受）"
+            )
+        else:
+            findings.append(
+                "跨条目关系 0 条，且正文未回答「本期有无替代/背离」——"
+                "沉默略过，无法区分「没发生」与「没检查」"
+            )
     if total < MIN_INCREMENTS:
         findings.append(f"增量 {total} < {MIN_INCREMENTS} 条，判定为不足")
     if cited and overlap * 2 < len(cited):
@@ -422,12 +444,14 @@ def check_l2(
             "increments": total,
             "min_increments": MIN_INCREMENTS,
             "kinds": {
-                "cross_item": sum(1 for i in increments if i["kind"] == "cross_item"),
+                "cross_item": cross_items,
                 "structure": sum(1 for i in increments if i["kind"] == "structure"),
                 "external_entity": len(external_entities),
                 "substitution": len(substitution),
                 "divergence": len(divergence),
             },
+            "cross_item_zero": cross_items == 0,
+            "explicit_no_relation": explicit_none,
             "pairwise_numeric": pairwise,
             "baseline_top": baseline,
             "baseline_overlap": coverage,

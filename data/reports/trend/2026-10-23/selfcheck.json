@@ -1,8 +1,8 @@
 {
-  "issue": "2026-10-23",
+  "issue": "2026-10-24",
   "comparison": [
-    "2026-10-17",
-    "2026-10-23"
+    "2026-10-18",
+    "2026-10-24"
   ],
   "layers": [
     {
@@ -85,30 +85,32 @@
           "substitution": 0,
           "divergence": 1
         },
+        "cross_item_zero": false,
+        "explicit_no_relation": false,
         "pairwise_numeric": 1,
         "baseline_top": [
           {
             "rank": 1,
-            "item_id": "it_77f9ddd43bbeeb71",
-            "title": "cloudflare/security-audit-skill",
-            "section": "开源项目",
-            "hot": 86.22,
+            "item_id": "it_1fd8476b4493a52b",
+            "title": "Kimi K3.1 Pro and K3.1 Pro Highspeed",
+            "section": "社区舆论",
+            "hot": 85.55,
             "delta": null
           },
           {
             "rank": 2,
-            "item_id": "it_bf00b37e101a93d7",
-            "title": "OpenShell – A safe, private runtime for fleets of autonomous AI agents",
-            "section": "社区舆论",
-            "hot": 85.88,
+            "item_id": "it_77f9ddd43bbeeb71",
+            "title": "cloudflare/security-audit-skill",
+            "section": "开源项目",
+            "hot": 83.2,
             "delta": null
           },
           {
             "rank": 3,
-            "item_id": "it_93bbd6e7c3469d05",
-            "title": "Making MLLM Latents Matter: Factor-Aware Predictive Learning for Cinematic Video Generation",
-            "section": "论文与研究",
-            "hot": 76.14,
+            "item_id": "it_1f9eddacbb7de266",
+            "title": "Swedish government offices to ban ChatGPT and Claude",
+            "section": "社区舆论",
+            "hot": 76.68,
             "delta": null
           },
           {
@@ -116,59 +118,59 @@
             "item_id": "it_42565b5232096036",
             "title": "DietrichGebert/ponytail",
             "section": "开源项目",
-            "hot": 75.59,
+            "hot": 75.45,
             "delta": null
           },
           {
             "rank": 5,
-            "item_id": "it_98169d606489bb04",
-            "title": "Meta Expert: Cross-Layer Expert Sharing for Storage- and Retrieval-Efficient MoE",
-            "section": "论文与研究",
-            "hot": 71.11,
+            "item_id": "it_0ac194e7dd2196c5",
+            "title": "Evolving Threat: http2shell is an RCE in node, Python, and more",
+            "section": "社区舆论",
+            "hot": 74.89,
             "delta": null
           },
           {
             "rank": 6,
-            "item_id": "it_72972368be1f96c8",
-            "title": "Several Linux kernel vulnerabilities accidentally posted to public mailing list",
-            "section": "社区舆论",
-            "hot": 67.88,
+            "item_id": "it_93bbd6e7c3469d05",
+            "title": "Making MLLM Latents Matter: Factor-Aware Predictive Learning for Cinematic Video Generation",
+            "section": "论文与研究",
+            "hot": 70.0,
             "delta": null
           },
           {
             "rank": 7,
-            "item_id": "it_01d32fd68c2d717a",
-            "title": "Graphify-Labs/graphify",
-            "section": "开源项目",
-            "hot": 64.97,
+            "item_id": "it_98169d606489bb04",
+            "title": "Meta Expert: Cross-Layer Expert Sharing for Storage- and Retrieval-Efficient MoE",
+            "section": "论文与研究",
+            "hot": 69.85,
             "delta": null
           },
           {
             "rank": 8,
-            "item_id": "it_fdf7de3aa15def01",
-            "title": "php/php-src",
+            "item_id": "it_01d32fd68c2d717a",
+            "title": "Graphify-Labs/graphify",
             "section": "开源项目",
-            "hot": 61.88,
+            "hot": 67.7,
             "delta": null
           },
           {
             "rank": 9,
-            "item_id": "it_463277c6c46271fe",
-            "title": "LaLa-World: Scaling Latent World Models with Natural Language Actions",
-            "section": "论文与研究",
-            "hot": 61.09,
+            "item_id": "it_8858b289f2eefaee",
+            "title": "Renhuai123/ziwei-doushu",
+            "section": "开源项目",
+            "hot": 67.5,
             "delta": null
           },
           {
             "rank": 10,
-            "item_id": "it_7ed7b72f04295c52",
-            "title": "supabase/supabase",
-            "section": "开源项目",
-            "hot": 60.22,
+            "item_id": "it_7a18b24f21ac51ca",
+            "title": "The rise and fall of Jev hype",
+            "section": "社区舆论",
+            "hot": 62.86,
             "delta": null
           }
         ],
-        "baseline_overlap": "7/18",
+        "baseline_overlap": "3/18",
         "examples": [
           {
             "kind": "cross_item",
@@ -203,61 +205,100 @@
         ]
       },
       "findings": [
-        "引用条目只有 7/18 落在基线 Top10 内，其余来自榜单尾部"
+        "引用条目只有 3/18 落在基线 Top10 内，其余来自榜单尾部"
       ]
     },
     {
       "layer": "L3",
       "name": "跨期回检",
       "verdict": "pass",
-      "summary": "预言 34 条无到期样本（最早到期 2026-11-16），不给命中率；本轮无新增核对项；历史已核对 4 条：仍在榜 1、跌出 3。",
+      "summary": "预言 34 条无到期样本（最早到期 2026-10-31），不给命中率；本轮核对 2 条 watchlist：仍在榜 0、跌出 2。",
       "metrics": {
         "predictions_total": 34,
         "predictions_verified": 0,
         "predictions_hit": 0,
         "predictions_pending": 34,
-        "earliest_due": "2026-11-16",
+        "earliest_due": "2026-10-31",
         "hit_rate": null,
-        "watchlist_created": [],
-        "watchlist_resolved": [],
+        "watchlist_created": [
+          {
+            "issue": "2026-10-24",
+            "item_id": "it_752e25023358d2db",
+            "check_on": "2026-10-25",
+            "expectation": "再盯 it_752e25023358d2db：当前连续在榜 6 天，判断是长榜连续性尚在延续，但第 7 天未确认",
+            "status": "pending"
+          },
+          {
+            "issue": "2026-10-24",
+            "item_id": "it_bf00b37e101a93d7",
+            "check_on": "2026-10-25",
+            "expectation": "下期先盯 it_bf00b37e101a93d7：当前热度 85.88、在榜 1 天／最长连续 1 天，当前判断仍是单日峰值，不构成趋势",
+            "status": "pending"
+          }
+        ],
+        "watchlist_resolved": [
+          {
+            "issue": "2026-10-23",
+            "item_id": "it_752e25023358d2db",
+            "check_on": "2026-10-24",
+            "expectation": "下期盯 it_752e25023358d2db：当前连续在榜 6 天，判断为长榜连续性仍在延续",
+            "status": "dropped",
+            "resolved_on": "2026-10-24",
+            "resolved_hot": null
+          },
+          {
+            "issue": "2026-10-23",
+            "item_id": "it_bf00b37e101a93d7",
+            "check_on": "2026-10-24",
+            "expectation": "再盯 it_bf00b37e101a93d7：当前在榜 1 天、热度 85.88，判断为单日热度、不构成趋势",
+            "status": "dropped",
+            "resolved_on": "2026-10-24",
+            "resolved_hot": null
+          }
+        ],
         "watchlist_pending": 2,
         "state_file": "data/reports/trend/2026-10-23/watchlist.json"
       },
       "findings": [
-        "本周没有到期预言：不给命中率，等最早到期日再算。"
+        "本周没有到期预言：不给命中率，等最早到期日再算。",
+        "watchlist 已登记 2 条待核对项（it_752e25023358d2db/it_bf00b37e101a93d7）"
       ]
     },
     {
       "layer": "L4",
       "name": "校准追踪",
       "verdict": "insufficient",
-      "summary": "2026-10-22 的回检不足以判定：间隔仅 1 天（<7 天，日换血 70%+ 属常态）；可判样本 0 条（<5，无统计意义）",
+      "summary": "2026-10-23 的回检不足以判定：间隔仅 1 天（<7 天，日换血 70%+ 属常态）；可判样本 1 条（<5，无统计意义）",
       "metrics": {
         "claimed_ids": [
           "it_1360bd8eb5a8e67e",
           "it_72972368be1f96c8",
           "it_bf00b37e101a93d7"
         ],
-        "claims_recorded": 2,
+        "claims_recorded": 4,
         "min_structure_continuity": 0.5,
         "min_interval_days": 7,
         "min_sample": 5,
         "min_survival_rate": 0.5,
         "resolved_issues": [
           "2026-10-21",
-          "2026-10-22"
+          "2026-10-22",
+          "2026-10-23"
         ],
-        "resolved_this_run": [],
+        "resolved_this_run": [
+          "2026-10-23"
+        ],
         "recent_survival_rate": 0.0,
-        "recent_structure_continuity": null,
-        "recent_structure_judged": 0,
+        "recent_structure_continuity": 1.0,
+        "recent_structure_judged": 1,
         "state_file": "data/reports/trend/2026-10-23/calibration.json"
       },
       "findings": [
         "样本/间隔不足 → 不判 fail，也不当作结论；本期记录为观测点。",
-        "辅助指标·条目存活率 0%（0/3）——只作参考，不单独触发 fail",
+        "辅助指标·条目存活率 0%（0/2）——只作参考，不单独触发 fail",
         "2026-10-21：间隔 — 天，结构延续 0/0，存活率 67%",
-        "2026-10-22：间隔 1 天，结构延续 0/0，存活率 0%"
+        "2026-10-22：间隔 1 天，结构延续 0/0，存活率 0%",
+        "2026-10-23：间隔 1 天，结构延续 1/1，存活率 0%"
       ]
     }
   ]

@@ -18,6 +18,7 @@ from aipulse.reasoning.selfcheck import (
     INSUFFICIENT,
     NO_DATA,
     PASS,
+    WARN,
     admission_rule_for,
     build_admission,
     check_l1,
@@ -468,3 +469,103 @@ def test_selfcheck_cli_reports_missing_machine_layer(
     result = CliRunner().invoke(cli_app, ["selfcheck", "--reports-dir", str(tmp_path)])
     assert result.exit_code == 2
     assert "先跑" in result.output
+
+
+# ── L2：跨条目 = 0 降为 warn + 必须显式回答替代/背离（C3）─────────────────
+
+
+def _structure_only_body(repeats: int = 4) -> str:
+    """只产生 structure 类增量（有 id + 板块/份额 + 数字），不产生跨条目关系。"""
+    return "it_abc123def456 份额从 0.21 升到 0.35，推测结构集中。" * repeats
+
+
+def test_l2_cross_item_zero_is_warn_not_pass(tmp_path: Path) -> None:
+    index = _index(tmp_path)
+    reports = {r.key: r for r in compute_all(index)}
+    bodies = {key: _structure_only_body() for key, _, _ in SEGMENTS}
+    result = check_l2(parse_markdown(_report_text(bodies)), index, reports)
+    assert result.metrics["increments"] >= 3
+    assert result.metrics["cross_item_zero"] is True
+    assert result.verdict == WARN
+    assert any("沉默略过" in f for f in result.findings)
+
+
+def test_l2_explicit_no_relation_still_warn_but_acknowledged(tmp_path: Path) -> None:
+    """明说"无可验证的替代/背离"仍算 warn（不是 pass），但 finding 认可这句。"""
+    index = _index(tmp_path)
+    reports = {r.key: r for r in compute_all(index)}
+    bodies = {key: _structure_only_body() for key, _, _ in SEGMENTS}
+    bodies["structural_changes"] = _structure_only_body() + "本期无可验证的替代/背离关系。"
+    result = check_l2(parse_markdown(_report_text(bodies)), index, reports)
+    assert result.verdict == WARN
+    assert result.metrics["explicit_no_relation"] is True
+    assert any("已显式说明" in f for f in result.findings)
+
+
+def test_l2_pass_requires_cross_item(tmp_path: Path) -> None:
+    index = _index(tmp_path)
+    reports = {r.key: r for r in compute_all(index)}
+    bodies = {key: _structure_only_body() for key, _, _ in SEGMENTS}
+    bodies["structural_changes"] = (
+        _structure_only_body() + "it_abc123def456 与 it_def456abc123 承接关系明显，推测替代成立。"
+    )
+    result = check_l2(parse_markdown(_report_text(bodies)), index, reports)
+    assert result.metrics["kinds"]["cross_item"] >= 1
+    assert result.verdict == PASS
+
+
+def test_structural_changes_prompt_demands_relation_answer() -> None:
+    """prompt 层预防：只有「结构变化」一节要求显式回答替代/背离。"""
+    from aipulse.llm.prompt import render_prompt
+
+    common = dict(
+        segment_title="结构变化",
+        segment_goal="写结构",
+        window_start="2026-10-17",
+        window_end="2026-10-23",
+        window_days=7,
+        evidence="（无）",
+        word_budget="300-600 字",
+        admission_rule="",
+    )
+    structural, _ = render_prompt("trend/weekly", segment_key="structural_changes", **common)
+    rising, _ = render_prompt("trend/weekly", segment_key="rising_topics", **common)
+    assert "无可验证的替代/背离关系" in structural
+    assert "无可验证的替代/背离关系" not in rising
+
+
+def test_selfcheck_cli_falls_back_to_latest_weekly(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """日报每天有、周报按周产：最新一天没有周报时要回退，而不是直接判死。"""
+    from typer.testing import CliRunner
+
+    from aipulse.cli.commands import selfcheck as sc_cli
+    from aipulse.cli.main import app as cli_app
+    from aipulse.core.config import Settings
+
+    _index(tmp_path, ("2026-10-20", "2026-10-21"))
+    _day(tmp_path, "2026-10-22", [_item("it_abc123def456", "later", 10.0)])
+    issue_dir = tmp_path / "trend" / "2026-10-21"
+    issue_dir.mkdir(parents=True)
+    bodies = _full_bodies()
+    (issue_dir / "weekly.json").write_text(
+        json.dumps(
+            {
+                "schema_version": 2,
+                "segments": [
+                    {"key": key, "title": title, "body": bodies.get(key, "")}
+                    for key, title, _ in SEGMENTS
+                ],
+            },
+            ensure_ascii=False,
+        ),
+        encoding="utf-8",
+    )
+    settings = Settings(app={"data_dir": str(tmp_path)}, mode="off")
+    monkeypatch.setattr(sc_cli, "load_settings", lambda *a, **k: settings)
+
+    result = CliRunner().invoke(cli_app, ["selfcheck", "--reports-dir", str(tmp_path)])
+    assert result.exit_code in (0, 1), result.output
+    assert "回退到 2026-10-21" in result.output
+    assert (issue_dir / "selfcheck.json").exists()
