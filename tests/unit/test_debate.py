@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from typer.testing import CliRunner
 
 from aipulse.analysis.cross_period import CrossPeriodIndex, load_cross_period
 from aipulse.core.errors import LLMTruncationError
@@ -680,3 +681,63 @@ def test_pick_auto_topic_maps_dropped_item_from_earlier_day(tmp_path: Path) -> N
     assert picked is not None
     assert picked.section == "产业与新闻"  # 19 % 4 = 3
     assert any("dropped" in r for r in picked.reasons)
+
+
+def test_debate_cli_fails_when_key_disagreements_empty(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """空共识/无分歧 = 失败（退出码 1），不是"跑完了"。"""
+    from aipulse.cli.commands import debate as debate_cmd
+    from aipulse.cli.main import app as cli_app
+    from aipulse.core.config import Settings
+
+    reports = _seed_reports(tmp_path / "root")
+    settings = Settings(
+        app={"data_dir": str(tmp_path / "root")},
+        mode="hybrid",
+        llm={"api_key": "sk-test-key"},
+    )
+    empty_moderator = json.dumps(
+        {
+            "consensus": ["四方都同意"],
+            "key_disagreements": [],
+            "actionable_conclusions": [],
+            "overall_confidence": 0.9,
+            "falsifications": [],
+            "cited_item_ids": ["it_0000000000000000"],
+        },
+        ensure_ascii=False,
+    )
+    monkeypatch.setattr(debate_cmd, "load_settings", lambda *a, **k: settings)
+    monkeypatch.setattr(
+        debate_cmd,
+        "build_client",
+        lambda *a, **k: StubLLM(
+            {
+                "debate_persona": _PERSONA_JSON,
+                "debate_cross": _CROSS_JSON,
+                "debate_moderator": empty_moderator,
+            }
+        ),
+    )
+
+    result = CliRunner().invoke(
+        cli_app, ["debate", "--topic", "Agent 议题", "--json", "--reports-dir", str(reports)]
+    )
+    assert result.exit_code == 1, result.output
+    assert "⛔" in result.output
+    assert "key_disagreements 为空" in result.output
+
+
+def test_debate_cli_missing_reports(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    from aipulse.cli.commands import debate as debate_cmd
+    from aipulse.cli.main import app as cli_app
+    from aipulse.core.config import Settings
+
+    settings = Settings(app={"data_dir": str(tmp_path)}, mode="hybrid", llm={"api_key": "sk-x"})
+    monkeypatch.setattr(debate_cmd, "load_settings", lambda *a, **k: settings)
+    result = CliRunner().invoke(
+        cli_app, ["debate", "--topic", "x", "--reports-dir", str(tmp_path / "none")]
+    )
+    assert result.exit_code == 2
+    assert "没有找到任何日报" in result.output
