@@ -526,3 +526,14 @@ async def test_generate_trend_records_shortfall_caveat(tmp_path) -> None:  # noq
     assert report.caveats
     assert "请求 30 天" in report.caveats[0]
     assert "还需再攒" in report.caveats[0]
+
+
+def test_comparison_line_shows_short_segment() -> None:
+    """P1-4 替代方案：短尾巴必须可见，不能让读者以为整个窗口都参与了比较。"""
+    from aipulse.analysis.cross_period import compute_all
+    from aipulse.reasoning.trend import _comparison_line
+
+    index = _index_for_render()
+    line = _comparison_line({r.key: r for r in compute_all(index)})[0]
+    assert "对比区间" in line
+    assert "全窗口" in line

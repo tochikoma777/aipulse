@@ -252,6 +252,15 @@ def _comparison_line(reports: dict[str, StructureReport]) -> list[str]:
     changes = m.get("source_change_days") or []
     if changes:
         line += f"；源集合变更日 {'/'.join(str(d) for d in changes)}，禁止跨该日比较"
+    # T9（P1-4 替代方案）：短尾巴要可见——说明白"窗口多少天、本段只用多少天、
+    # 剩下几天为什么没参与"，而不是让读者以为整个窗口都参与了比较。
+    used = int(m.get("comparison_days") or 0)
+    total = int(m.get("full_window_days") or 0)
+    if total > used > 0:
+        line += (
+            f"；窗口 {total} 天中本段仅 {used} 天，"
+            f"其余 {total - used} 天因源集合变更或首段过短未参与份额对比"
+        )
     return [line]
 
 
