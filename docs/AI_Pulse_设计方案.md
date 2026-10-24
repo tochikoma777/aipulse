@@ -38,8 +38,8 @@ v1.24（★ T9：trend / debate 自动触发）：
 
 115. **★ 第三态不能用 `off`**——已被 LLM 三档占用（`config.py:43`，且渗进
 
-    `meta.json.mode`）。用 `manual` 承接 `weekly_debate_enabled: false` 的旧语义，
-    迁移最平滑
+    `meta.json.mode`）。用 `manual` 承接旧 `weekly_debate_enabled: false` 的语义
+    （该字段已在 v1.24 删除），迁移最平滑
 
 116. **★ 退出码分级**：`0` 正常（含"无争议跳过"）/ `1` 质量失败 / `≥2` 用法或数据错误。
 
@@ -62,10 +62,10 @@ v1.24（★ T9：trend / debate 自动触发）：
     **L4 的跨期方向比对依赖比较基线稳定**。改为显式给出
     「本段 N 天 / 窗口 M 天 / 因源集合变更丢弃 K 天」，让短尾巴**可见**而非**隐藏**
 
-120. **`weekly_debate_enabled` 标记 deprecated**：SSOT 曾引用它，直接删会造成
+120. **`weekly_debate_enabled` 已清除**：该字段曾造成「文档说有、代码没有」的风险，
 
-    「文档说有、代码没有」。过渡方案 = `trigger_mode` 优先、fallback 旧字段 +
-    deprecation 日志；**v1.24 起文档不再引用，下版可删代码**
+    故先走 deprecated 过渡（`trigger_mode` 优先、fallback 旧字段 + deprecation 日志），
+    **v1.24 同步清除代码与文档引用**（SSOT 与 `default.yaml` 均不再保留）
 
 121. **`degrade_order` 与 `trigger_mode` 是两个维度**：前者管预算退出序（钱不够先砍谁），
 
@@ -133,7 +133,7 @@ v1.23（★ M5：周期趋势长文 + 多角色辩论 + 产物可读化）：
 
 112. **trend / debate 支持自动 + 手动双触发**（`trigger_mode`，默认 `auto`，
 
-    默认间隔日历月）；`weekly_debate_enabled` 已接线并标记 deprecated（§11.8）
+    默认间隔日历月）；旧字段 `weekly_debate_enabled` 已在本版清除（§11.8、#120）
 
 v1.22（★ M6c：知识库——本地笔记 + 导出为可消费的 Markdown）：
 
@@ -2334,8 +2334,7 @@ pipeline:
   predictions_per_day: 5
   prediction_horizons: [7, 30, 90]
   auto_verify: true
-  # ★ v1.24：以下为 deprecated 别名，新配置请用 pipeline.{trend,debate}.trigger_mode
-  weekly_debate_enabled: true
+  # ★ v1.24：原 weekly_debate_enabled 已删除，改用 pipeline.trend / pipeline.debate 配置节
 
 output:
   formats: [md, json]
