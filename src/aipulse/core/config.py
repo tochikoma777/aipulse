@@ -22,7 +22,19 @@ from dotenv import load_dotenv
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+from aipulse.core.logging import get_logger
+from aipulse.core.schedule import (
+    DEFAULT_INTERVAL,
+    DEFAULT_MIN_CONTROVERSY,
+    DEFAULT_TRIGGER_MODE,
+    TRIGGER_AUTO,
+    TRIGGER_MANUAL,
+    TRIGGER_MODES,
+)
+
 ENV_PATTERN = re.compile(r"\$\{([A-Za-z_][A-Za-z0-9_]*)(?::-([^}]*))?\}")
+
+log = get_logger(__name__)
 
 
 def project_root() -> Path:
@@ -116,6 +128,32 @@ class BudgetSettings(BaseModel):
     price_strong_cny_per_1m: float = 4.0
 
 
+class TriggerSettings(BaseModel):
+    """一个阶段的自动触发配置（T9）。
+
+    `trigger_mode`：auto / manual / disabled（三态，**不是** LLM 三档 off/hybrid/full）。
+    `interval`：既是触发间隔也是分析范围——`1m`=日历月，`7d`/`30d`=滚动天数。
+    `min_controversy`：仅 debate 用；0 = 不设门槛。
+    """
+
+    trigger_mode: str = DEFAULT_TRIGGER_MODE
+    interval: str = DEFAULT_INTERVAL
+    min_controversy: int = 0
+
+    @field_validator("trigger_mode")
+    @classmethod
+    def _check_mode(cls, value: str) -> str:
+        text = (value or "").strip().lower()
+        if text not in TRIGGER_MODES:
+            raise ValueError(f"trigger_mode 只接受 {list(TRIGGER_MODES)}，收到 {value!r}")
+        return text
+
+    @field_validator("min_controversy")
+    @classmethod
+    def _check_min(cls, value: int) -> int:
+        return max(int(value), 0)
+
+
 class PipelineSettings(BaseModel):
     daily_top_n: int = 30
     brief_sections: list[str] = Field(
@@ -126,7 +164,35 @@ class PipelineSettings(BaseModel):
     # v1.16：候选证据池收窄到 20 条，且只给 id + 标题（不给摘要），降低上下文与幻觉
     predict_candidate_top_n: int = 20
     auto_verify: bool = True
+    # T9：trend / debate 各自独立的触发配置（默认 auto + 日历月）
+    trend: TriggerSettings = Field(default_factory=TriggerSettings)
+    debate: TriggerSettings = Field(
+        default_factory=lambda: TriggerSettings(min_controversy=DEFAULT_MIN_CONTROVERSY)
+    )
+    # T9：deprecated 别名（v1.22 引入，trigger_mode 优先；SSOT 同步后删除）
     weekly_debate_enabled: bool = True
+
+
+def debate_trigger_mode(pipeline: PipelineSettings) -> str:
+    """debate 的触发模式：`debate.trigger_mode` 优先，`weekly_debate_enabled` 兜底。
+
+    `weekly_debate_enabled`（v1.22）是 deprecated 别名，SSOT 设计方案 §78/§2218
+    仍写着它——所以在 SSOT 更新前不能直接删，否则会留下"文档说有、代码没有"的坑。
+    判定规则：**只有用户没显式配过 `debate.trigger_mode` 时**才回退到旧字段，
+    避免"两个都配了却不知听谁"。
+    """
+    debate = pipeline.debate
+    if "trigger_mode" in debate.model_fields_set:
+        return debate.trigger_mode
+    if "weekly_debate_enabled" in pipeline.model_fields_set:
+        legacy = pipeline.weekly_debate_enabled
+        log.warning(
+            "config.weekly_debate_enabled_deprecated",
+            msg="pipeline.weekly_debate_enabled 已废弃，请改用 pipeline.debate.trigger_mode",
+            mapped=TRIGGER_AUTO if legacy else TRIGGER_MANUAL,
+        )
+        return TRIGGER_AUTO if legacy else TRIGGER_MANUAL
+    return debate.trigger_mode
 
 
 class BriefSettings(BaseModel):

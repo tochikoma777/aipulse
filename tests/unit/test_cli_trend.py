@@ -177,7 +177,8 @@ def test_trend_cli_applies_admission_rule(tmp_path: Path, monkeypatch: pytest.Mo
     stub = StubLLM()
     monkeypatch.setattr(trend_cmd, "build_client", lambda *a, **k: stub)
 
-    result = CliRunner().invoke(app, ["trend", "--reports-dir", str(reports)])
+    # 显式 --range 优先于配置的 interval
+    result = CliRunner().invoke(app, ["trend", "--reports-dir", str(reports), "--range", "7d"])
     assert result.exit_code == 0, result.output
     assert "准入收紧" in result.output
     # 约束要真的进 prompt，而不只是打印
@@ -201,3 +202,60 @@ def test_debate_cli_rejects_bad_range(tmp_path: Path, monkeypatch: pytest.Monkey
     assert result.exit_code == 2
     # ★ 不断言错误文本里的 "--range"：rich 会按终端宽度折断长选项
     # （CI 上会被截成 "--ran…"）。BadParameter 的退出码本身就是判据。
+
+
+def test_trend_cli_uses_interval_when_range_omitted(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """省略 --range → 按 pipeline.trend.interval 取上一个完整自然月。"""
+    from datetime import date
+
+    reports = _seed(tmp_path)  # 10-20 → 10-23
+    monkeypatch.setattr(trend_cmd, "load_settings", lambda *a, **k: _settings(tmp_path))
+    monkeypatch.setattr(trend_cmd, "today_local", lambda *a, **k: date(2026, 11, 1))
+    monkeypatch.setattr(trend_cmd, "build_client", lambda *a, **k: StubLLM())
+
+    result = CliRunner().invoke(app, ["trend", "--reports-dir", str(reports)])
+    assert result.exit_code == 0, result.output
+    assert "按 pipeline.trend.interval=1m（日历月）取 2026-10-01 → 2026-10-31" in result.output
+    payload = json.loads(
+        (reports / "trend" / "2026-10-23" / "weekly.json").read_text(encoding="utf-8")
+    )
+    assert payload["window"] == {"start": "2026-10-20", "end": "2026-10-23", "days": 4}
+    # 缺口按"日历月应有几天"算，不是按请求的 N 天
+    assert "分析范围 2026-10-01 → 2026-10-31（应有 31 天）" in payload["caveats"][0]
+
+
+def test_trend_cli_errors_when_interval_window_is_empty(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """interval 推导出的范围一篇日报都没有 → exit 2（用法/数据错误，该红）。"""
+    from datetime import date
+
+    reports = _seed(tmp_path)  # 10-20 → 10-23
+    monkeypatch.setattr(trend_cmd, "load_settings", lambda *a, **k: _settings(tmp_path))
+    monkeypatch.setattr(trend_cmd, "today_local", lambda *a, **k: date(2026, 12, 1))
+
+    result = CliRunner().invoke(app, ["trend", "--reports-dir", str(reports)])
+    assert result.exit_code == 2
+    assert "分析范围 2026-11-01 → 2026-11-30 内没有日报" in result.output
+    assert "现有 2026-10-20 → 2026-10-23" in result.output
+
+
+def test_trend_cli_disabled_requires_explicit_range(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """trigger_mode=disabled：不给 --range 直接劝退；给了就放行（手动覆盖）。"""
+    from datetime import date
+
+    reports = _seed(tmp_path)
+    monkeypatch.setattr(
+        trend_cmd,
+        "load_settings",
+        lambda *a, **k: _settings(tmp_path, pipeline={"trend": {"trigger_mode": "disabled"}}),
+    )
+    monkeypatch.setattr(trend_cmd, "today_local", lambda *a, **k: date(2026, 11, 1))
+
+    result = CliRunner().invoke(app, ["trend", "--reports-dir", str(reports)])
+    assert result.exit_code == 2
+    assert "trigger_mode=disabled" in result.output

@@ -42,7 +42,17 @@ pipeline:
   prediction_horizons: [7, 30, 90]
   predict_candidate_top_n: 20      # v1.16：候选证据池只给 id+标题，减少上下文
   auto_verify: true
-  weekly_debate_enabled: true
+  # T9：trend / debate 的自动触发（trigger_mode 管准入门，budget.degrade_order 管退出序）
+  #   trigger_mode: auto | manual | disabled   —— 不是 LLM 三档 off/hybrid/full
+  #   interval: 既是触发间隔也是分析范围（1m=日历月，7d/30d=滚动天数）
+  trend:
+    trigger_mode: auto
+    interval: "1m"              # 每月 1 日分析上一个完整自然月
+  debate:
+    trigger_mode: auto
+    interval: "1m"
+    min_controversy: 6          # 争议度低于此则跳过并说明（不硬产出）
+  weekly_debate_enabled: true   # deprecated：改用 debate.trigger_mode（SSOT 同步后删除）
 
 # 简报呈现（v1.15）：每板块最多 N 条，超出显示「另有 N 条」
 # v1.19：增速榜——让掉榜但 star 仍在快速增长的 repo 不消失

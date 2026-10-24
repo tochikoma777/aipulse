@@ -16,6 +16,7 @@ from __future__ import annotations
 import re
 from collections.abc import Sequence
 from dataclasses import dataclass
+from datetime import date
 
 from aipulse.analysis.cross_period import (
     CrossPeriodIndex,
@@ -138,6 +139,24 @@ def window_shortfall_note(requested: int, days: Sequence[str]) -> str:
     )
 
 
+def range_shortfall_note(start: str, end: str, days: Sequence[str]) -> str:
+    """日期范围版缺口说明（T9 日历月）：说清"应有几天 / 实有几天 / 缺哪几天"。
+
+    与 `window_shortfall_note` 的区别：这里的分母是**日历天数**而不是请求的 N 天，
+    因为月度间隔的分析范围就是整个自然月。
+    """
+    expected = calendar_days(start, end)
+    present = [day for day in days if start <= day <= end]
+    if expected <= 0 or len(present) >= expected:
+        return ""
+    missing = expected - len(present)
+    span = f"{present[0]} → {present[-1]}" if present else "无数据"
+    return (
+        f"分析范围 {start} → {end}（应有 {expected} 天），实际只有 {len(present)} 天（{span}）；"
+        f"缺 {missing} 天日报。跨度不足时「走平」与「慢趋势」更难区分，请按较低置信度阅读。"
+    )
+
+
 def slice_index(index: CrossPeriodIndex, window_days: int) -> CrossPeriodIndex:
     """取最近 N 天构建子索引；N 大于可用天数时返回全部（缺口由 window_shortfall_note 报出）。"""
     days = index.days[-window_days:] if window_days > 0 else index.days
@@ -147,6 +166,30 @@ def slice_index(index: CrossPeriodIndex, window_days: int) -> CrossPeriodIndex:
         snapshots={day: index.snapshots[day] for day in days},
         predictions=tuple(p for p in index.predictions if p.day in keep),
     )
+
+
+def slice_by_range(index: CrossPeriodIndex, start: str, end: str) -> CrossPeriodIndex:
+    """按**日期范围**切片（T9：日历月间隔需要它，`slice_index` 的 last-N-days 表达不了
+    "分析整个 10 月"）。范围外的日期直接丢弃；范围内没有数据的日期算缺口，
+    由 `window_shortfall_note` 报出，不静默缩短。
+    """
+    days = tuple(day for day in index.days if start <= day <= end)
+    keep = set(days)
+    return CrossPeriodIndex(
+        days=days,
+        snapshots={day: index.snapshots[day] for day in days},
+        predictions=tuple(p for p in index.predictions if p.day in keep),
+    )
+
+
+def calendar_days(start: str, end: str) -> int:
+    """闭区间 [start, end] 的日历天数（用于"应有 N 天"）。"""
+    try:
+        first = date.fromisoformat(start)
+        last = date.fromisoformat(end)
+    except ValueError:
+        return 0
+    return (last - first).days + 1
 
 
 # ══════════════════════════════════════════════════════════════════════════
@@ -544,6 +587,16 @@ def _with_shortfall(caveats: list[str], requested_days: int, sliced: CrossPeriod
     return ([note] if note else []) + caveats
 
 
+def _with_range_shortfall(
+    caveats: list[str], window_range: tuple[str, str] | None, sliced: CrossPeriodIndex
+) -> list[str]:
+    """日历月间隔的缺口说明（T9）：分母是日历天数，不是请求的 N 天。"""
+    if window_range is None:
+        return caveats
+    note = range_shortfall_note(window_range[0], window_range[1], sliced.days)
+    return ([note] if note else []) + caveats
+
+
 def build_caveats(index: CrossPeriodIndex, reports: dict[str, StructureReport]) -> list[str]:
     """口径与免责：全部收进机器层与 `<details>`，不占正文。"""
     lines: list[str] = []
@@ -711,9 +764,17 @@ async def generate_trend(
     segment_keys: tuple[str, ...] | None = None,
     admission_rule: str = "",
     requested_days: int = 0,
+    window_range: tuple[str, str] | None = None,
 ) -> TrendReport:
-    """按 7 节分段生成；单节失败只跳过该节。"""
-    sliced = slice_index(index, window_days)
+    """按 7 节分段生成；单节失败只跳过该节。
+
+    `window_range`：显式分析范围（日历月间隔用）；给了就按范围切片，
+    否则按 `window_days` 取最近 N 天。
+    """
+    if window_range is not None:
+        sliced = slice_by_range(index, window_range[0], window_range[1])
+    else:
+        sliced = slice_index(index, window_days)
     if not sliced.days:
         return TrendReport()
     reports = {report.key: report for report in compute_all(sliced)}
@@ -813,7 +874,11 @@ async def generate_trend(
         segments=segments,
         headlines=headlines,
         judgements=judgements,
-        caveats=_with_shortfall(build_caveats(sliced, reports), requested_days, sliced),
+        caveats=_with_range_shortfall(
+            _with_shortfall(build_caveats(sliced, reports), requested_days, sliced),
+            window_range,
+            sliced,
+        ),
         llm_calls=calls,
         attempts=attempts,
         truncated_segments=truncated,
@@ -837,6 +902,9 @@ __all__ = [
     "char_count",
     "generate_headlines",
     "generate_trend",
+    "calendar_days",
+    "range_shortfall_note",
+    "slice_by_range",
     "slice_index",
     "window_shortfall_note",
     "violations",

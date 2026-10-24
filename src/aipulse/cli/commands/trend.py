@@ -23,9 +23,21 @@ import typer
 from aipulse.analysis.cross_period import load_cross_period
 from aipulse.core.config import load_settings
 from aipulse.core.logging import configure_logging
+from aipulse.core.schedule import (
+    TRIGGER_DISABLED,
+    describe_interval,
+    parse_interval,
+    window_for,
+)
+from aipulse.core.timeutil import today_local
 from aipulse.llm.base import build_client
 from aipulse.reasoning.selfcheck import admission_rule_for, load_admission
-from aipulse.reasoning.trend import SEGMENTS, generate_trend, window_shortfall_note
+from aipulse.reasoning.trend import (
+    SEGMENTS,
+    calendar_days,
+    generate_trend,
+    window_shortfall_note,
+)
 from aipulse.render.weekly import render_weekly
 
 app = typer.Typer(
@@ -45,7 +57,15 @@ def _parse_range(value: str) -> int:
 @app.callback(invoke_without_command=True)
 def main(
     ctx: typer.Context,
-    range_: str = typer.Option("7d", "--range", help="窗口：7d（本轮只做周级）"),
+    range_: str = typer.Option(
+        "",
+        "--range",
+        help=(
+            "取材窗口，如 7d / 30d；**显式给出时优先于配置**。"
+            "省略时按 pipeline.trend.interval（默认 1m=上一个完整自然月）推导——"
+            "interval 既是触发间隔也是分析范围"
+        ),
+    ),
     json_output: bool = typer.Option(False, "--json", help="输出分段指标 JSON"),
     out: str | None = typer.Option(None, "--out", help="把 Markdown 写到指定文件"),
     max_tokens: int = typer.Option(
@@ -62,7 +82,6 @@ def main(
 
     settings = load_settings()
     configure_logging(settings.app.log_level, console_stderr=json_output)
-    window_days = _parse_range(range_)
 
     if settings.effective_mode().value == "off":
         typer.echo(
@@ -72,16 +91,31 @@ def main(
         )
         raise typer.Exit(code=2)
 
-    root = Path(reports_dir) if reports_dir else (Path(settings.app.data_dir) / "reports")
-    index = load_cross_period(root)
-    if not index.days:
-        typer.echo(f"没有找到任何日报：{root}", err=True)
-        raise typer.Exit(code=2)
+    trigger = settings.pipeline.trend
+    window_range: tuple[str, str] | None = None
 
-    # 数据不足时明确说"还差几天"，不静默把 30 天当 10 天跑
-    shortfall = window_shortfall_note(window_days, index.days)
-    if shortfall:
-        typer.echo(f"[trend] ⚠ {shortfall}", err=True)
+    if range_.strip():
+        # 显式 CLI 优先于配置
+        window_days = _parse_range(range_)
+    elif trigger.trigger_mode == TRIGGER_DISABLED:
+        typer.echo(
+            "pipeline.trend.trigger_mode=disabled：该阶段已停用。"
+            "如确需手动跑一次，请显式给 --range（如 --range 7d）。",
+            err=True,
+        )
+        raise typer.Exit(code=2)
+    else:
+        # 省略 --range → 按 interval 推导分析范围（日历月：上一个完整自然月）
+        interval = parse_interval(trigger.interval)
+        start, end = window_for(interval, today_local(), complete_only=True)
+        window_range = (start.isoformat(), end.isoformat())
+        window_days = calendar_days(start.isoformat(), end.isoformat())
+        typer.echo(
+            f"[trend] 未给 --range → 按 pipeline.trend.interval={trigger.interval}"
+            f"（{describe_interval(trigger.interval)}）取 {start.isoformat()} → {end.isoformat()}"
+            f"（{window_days} 天）",
+            err=True,
+        )
 
     keys = tuple(s.strip() for s in segments.split(",") if s.strip()) if segments else None
     valid = {key for key, _, _ in SEGMENTS}
@@ -89,6 +123,26 @@ def main(
     if unknown:
         typer.echo(f"未知的段：{unknown}；可选 {sorted(valid)}", err=True)
         raise typer.Exit(code=2)
+
+    root = Path(reports_dir) if reports_dir else (Path(settings.app.data_dir) / "reports")
+    index = load_cross_period(root)
+    if not index.days:
+        typer.echo(f"没有找到任何日报：{root}", err=True)
+        raise typer.Exit(code=2)
+    if window_range is not None and not any(
+        window_range[0] <= day <= window_range[1] for day in index.days
+    ):
+        typer.echo(
+            f"分析范围 {window_range[0]} → {window_range[1]} 内没有日报"
+            f"（现有 {index.days[0]} → {index.days[-1]}）：换 --range，或等这个月跑完。",
+            err=True,
+        )
+        raise typer.Exit(code=2)
+
+    # 数据不足时明确说"还差几天"，不静默把 30 天当 10 天跑
+    shortfall = window_shortfall_note(window_days, index.days)
+    if shortfall:
+        typer.echo(f"[trend] ⚠ {shortfall}", err=True)
 
     client = build_client(settings)  # engine=None：不写主库
     # 每段 300-600 字，但 strong 档的思维链也吃 completion 额度；
@@ -108,6 +162,7 @@ def main(
             segment_keys=keys,
             admission_rule=rule,
             requested_days=window_days,
+            window_range=window_range,
         )
     )
 
