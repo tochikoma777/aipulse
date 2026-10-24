@@ -502,15 +502,181 @@ def test_debate_cli_writes_report(tmp_path: Path, monkeypatch: pytest.MonkeyPatc
     assert "关键分歧" in written.read_text(encoding="utf-8")
 
 
-def test_debate_cli_requires_topic(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_debate_cli_requires_topic_when_auto_disabled(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """weekly_debate_enabled=false → 不给 --topic 直接报错，并指出开关。"""
     from typer.testing import CliRunner
 
     from aipulse.cli.commands import debate as debate_cmd
     from aipulse.cli.main import app as cli_app
     from aipulse.core.config import Settings
 
-    settings = Settings(mode="hybrid", llm={"api_key": "sk-test-key"})
+    reports = _seed_reports(tmp_path / "root")
+    settings = Settings(
+        app={"data_dir": str(tmp_path / "root")},
+        mode="hybrid",
+        llm={"api_key": "sk-test-key"},
+        pipeline={"weekly_debate_enabled": False},
+    )
     monkeypatch.setattr(debate_cmd, "load_settings", lambda *a, **k: settings)
-    result = CliRunner().invoke(cli_app, ["debate"])
+    result = CliRunner().invoke(cli_app, ["debate", "--reports-dir", str(reports)])
     assert result.exit_code == 2
-    assert "auto 模式" in result.output
+    assert "必须给 --topic" in result.output
+    assert "weekly_debate_enabled" in result.output
+
+
+def _write_trend(reports: Path, issue: str, cited_id: str) -> None:
+    target = reports / "trend" / issue
+    target.mkdir(parents=True, exist_ok=True)
+    (target / "weekly.json").write_text(
+        json.dumps(
+            {
+                "schema_version": 2,
+                "window": {"start": "2026-10-16", "end": issue, "days": 7},
+                "judgements": [
+                    {
+                        "key": "structural_changes",
+                        "title": "结构变化",
+                        "claim": "开源项目份额上升，社区舆论收缩",
+                        "cited_item_ids": [cited_id],
+                    }
+                ],
+            },
+            ensure_ascii=False,
+        ),
+        encoding="utf-8",
+    )
+    (target / "watchlist.json").write_text(
+        json.dumps(
+            {
+                "entries": [
+                    {
+                        "issue": issue,
+                        "item_id": cited_id,
+                        "check_on": issue,
+                        "expectation": "下期是否仍在榜",
+                        "status": "dropped",
+                        "resolved_on": issue,
+                    }
+                ]
+            },
+            ensure_ascii=False,
+        ),
+        encoding="utf-8",
+    )
+
+
+def test_pick_auto_topic_scores_and_explains(index: CrossPeriodIndex, tmp_path: Path) -> None:
+    """选题依据必须可复核：每条加分都要能在原因里看到。"""
+    from aipulse.reasoning.auto_topic import pick_auto_topic
+
+    _write_trend(tmp_path, "2026-10-22", "it_0000000000000000")
+    picked = pick_auto_topic(index, tmp_path)
+    assert picked is not None
+    assert picked.section == "论文与研究"
+    assert picked.source == "trend/2026-10-22"
+    assert "真实迁移还是单日脉冲" in picked.topic
+    assert any("上期周报明确下过判断" in r for r in picked.reasons)
+    assert any("dropped" in r for r in picked.reasons)
+    assert picked.score >= 4
+    announcement = picked.announcement()
+    assert announcement.startswith("已自动选题：")
+    assert "选择依据：" in announcement
+
+
+def test_pick_auto_topic_returns_none_without_trend(
+    index: CrossPeriodIndex, tmp_path: Path
+) -> None:
+    from aipulse.reasoning.auto_topic import pick_auto_topic
+
+    assert pick_auto_topic(index, tmp_path) is None
+
+
+def test_debate_cli_auto_topic(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """auto 模式：无 --topic 也能跑，且提示选题来源与依据。"""
+    from typer.testing import CliRunner
+
+    from aipulse.cli.commands import debate as debate_cmd
+    from aipulse.cli.main import app as cli_app
+    from aipulse.core.config import Settings
+
+    reports = _seed_reports(tmp_path / "root")
+    _write_trend(reports, "2026-10-22", "it_0000000000000000")
+    settings = Settings(
+        app={"data_dir": str(tmp_path / "root")},
+        mode="hybrid",
+        llm={"api_key": "sk-test-key"},
+    )
+    monkeypatch.setattr(debate_cmd, "load_settings", lambda *a, **k: settings)
+    monkeypatch.setattr(
+        debate_cmd,
+        "build_client",
+        lambda *a, **k: StubLLM(
+            {
+                "debate_persona": _PERSONA_JSON,
+                "debate_cross": _CROSS_JSON,
+                "debate_moderator": _MODERATOR_JSON,
+            }
+        ),
+    )
+
+    result = CliRunner().invoke(cli_app, ["debate", "--reports-dir", str(reports)])
+    assert result.exit_code == 0, result.output
+    assert "已自动选题" in result.output
+    assert "来源：trend/2026-10-22" in result.output
+    assert "选择依据" in result.output
+    written = list((reports / "debate").glob("*/debate-*.md"))
+    assert len(written) == 1
+    assert "论文与研究" in written[0].name
+
+
+def test_debate_cli_auto_topic_without_trend_errors(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """开关开着但没有 trend 产物 → 明确告诉用户先跑 trend，而不是静默选一个空话题。"""
+    from typer.testing import CliRunner
+
+    from aipulse.cli.commands import debate as debate_cmd
+    from aipulse.cli.main import app as cli_app
+    from aipulse.core.config import Settings
+
+    reports = _seed_reports(tmp_path / "root")
+    settings = Settings(
+        app={"data_dir": str(tmp_path / "root")},
+        mode="hybrid",
+        llm={"api_key": "sk-test-key"},
+    )
+    monkeypatch.setattr(debate_cmd, "load_settings", lambda *a, **k: settings)
+    result = CliRunner().invoke(cli_app, ["debate", "--reports-dir", str(reports)])
+    assert result.exit_code == 2
+    assert "自动选题失败" in result.output
+    assert "aipulse trend" in result.output
+
+
+def test_pick_auto_topic_maps_dropped_item_from_earlier_day(tmp_path: Path) -> None:
+    """掉出榜单的条目不在最新快照里，仍要靠历史快照找回它的板块。"""
+    from aipulse.reasoning.auto_topic import pick_auto_topic
+
+    reports = tmp_path / "reports"
+    day1 = _daily("2026-10-21", 20)
+    day2 = _daily("2026-10-22", 20)
+    dropped_id = f"it_{19:016x}"  # 只出现在 day1
+    day2["items"].pop(dropped_id)
+    day2["sections"] = [
+        {"name": s["name"], "item_ids": [i for i in s["item_ids"] if i != dropped_id]}
+        for s in day2["sections"]
+    ]
+    for day, payload in (("2026-10-21", day1), ("2026-10-22", day2)):
+        target = reports.joinpath(*day.split("-"))
+        target.mkdir(parents=True, exist_ok=True)
+        (target / "daily.json").write_text(
+            json.dumps(payload, ensure_ascii=False), encoding="utf-8"
+        )
+    index = load_cross_period(reports)
+
+    _write_trend(reports, "2026-10-22", dropped_id)
+    picked = pick_auto_topic(index, reports)
+    assert picked is not None
+    assert picked.section == "产业与新闻"  # 19 % 4 = 3
+    assert any("dropped" in r for r in picked.reasons)

@@ -9,9 +9,9 @@
 
 该目录已被 `scripts/cron_knowledge.sh` 的脏树检查排除（生成物重跑即脏，不应阻断导出）。
 
-TODO(auto)：从 `data/reports/trend/weekly.md` 的分歧度自动挑本周最大争议话题。
-需要先把"分歧度"定义成可计算的量（候选：同一 item 在不同段被给出相反方向、
-或 source_share 与 persistence 结论方向相反），本轮未开工。
+不给 `--topic` 时按 `pipeline.weekly_debate_enabled` 决定：
+true → 从最新 trend 产物自动选题（`reasoning/auto_topic.py`，依据会打印出来）；
+false → 报错，要求显式给 `--topic`。
 """
 
 from __future__ import annotations
@@ -27,6 +27,7 @@ from aipulse.analysis.cross_period import load_cross_period
 from aipulse.core.config import load_settings
 from aipulse.core.logging import configure_logging
 from aipulse.llm.base import build_client
+from aipulse.reasoning.auto_topic import pick_auto_topic
 from aipulse.reasoning.debate import run_debate
 from aipulse.render.debate import render_debate
 
@@ -55,7 +56,9 @@ def slugify(topic: str) -> str:
 @app.callback(invoke_without_command=True)
 def main(
     ctx: typer.Context,
-    topic: str = typer.Option("", "--topic", help="辩论议题（auto 模式本轮未实现，必须显式给）"),
+    topic: str = typer.Option(
+        "", "--topic", help="辩论议题；省略则按 weekly_debate_enabled 自动从 trend 产物选题"
+    ),
     range_: str = typer.Option("7d", "--range", help="取材窗口：7d"),
     json_output: bool = typer.Option(False, "--json", help="输出指标 JSON"),
     out: str | None = typer.Option(None, "--out", help="把 Markdown 写到指定文件"),
@@ -81,18 +84,30 @@ def main(
         )
         raise typer.Exit(code=2)
 
-    if not topic.strip():
-        typer.echo(
-            "必须给 --topic；auto 模式（从 trend 输出挑本周最大争议话题）本轮未实现。",
-            err=True,
-        )
-        raise typer.Exit(code=2)
-
     root = Path(reports_dir) if reports_dir else (Path(settings.app.data_dir) / "reports")
     index = load_cross_period(root)
     if not index.days:
         typer.echo(f"没有找到任何日报：{root}", err=True)
         raise typer.Exit(code=2)
+
+    topic_text = topic.strip()
+    if not topic_text:
+        if not settings.pipeline.weekly_debate_enabled:
+            typer.echo(
+                "必须给 --topic，或把 pipeline.weekly_debate_enabled 设为 true 让程序自动选题。",
+                err=True,
+            )
+            raise typer.Exit(code=2)
+        auto = pick_auto_topic(index, root)
+        if auto is None:
+            typer.echo(
+                "自动选题失败：没有可用的 trend 产物。先跑 `aipulse trend --range 7d`，"
+                "或显式给 --topic。",
+                err=True,
+            )
+            raise typer.Exit(code=2)
+        topic_text = auto.topic
+        typer.echo(f"[debate] {auto.announcement()}", err=True)
 
     window_days = _parse_range(range_)
     client = build_client(settings)  # engine=None：不写主库
@@ -101,7 +116,7 @@ def main(
         run_debate(
             index,
             client,
-            topic=topic.strip(),
+            topic=topic_text,
             max_tokens=budget_tokens,
             price_strong_cny_per_1m=settings.budget.price_strong_cny_per_1m,
             window_days=window_days,
@@ -111,7 +126,7 @@ def main(
     markdown = render_debate(report, index)
     issue = report.window_end or "unknown"
     default_dir = (Path(settings.app.data_dir) / "reports") / "debate" / issue
-    target = Path(out) if out else default_dir / f"debate-{slugify(topic)}.md"
+    target = Path(out) if out else default_dir / f"debate-{slugify(topic_text)}.md"
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(markdown, encoding="utf-8")
     target.with_suffix(".json").write_text(
