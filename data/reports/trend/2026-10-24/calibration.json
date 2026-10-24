@@ -1,0 +1,120 @@
+{
+  "issues": [
+    {
+      "issue": "2026-10-21",
+      "window_end": "2026-10-21",
+      "claimed_ids": [
+        "it_186fa8565548fc42",
+        "it_752e25023358d2db",
+        "it_77f9ddd43bbeeb71"
+      ],
+      "resolved": {
+        "checked_on": "2026-10-22",
+        "survived": [
+          "it_752e25023358d2db",
+          "it_77f9ddd43bbeeb71"
+        ],
+        "dropped": [
+          "it_186fa8565548fc42"
+        ],
+        "survival_rate": 0.6666666666666666
+      }
+    },
+    {
+      "issue": "2026-10-22",
+      "window_end": "2026-10-22",
+      "claimed_ids": [
+        "it_532d82fae300522c",
+        "it_5d41f3374c717eac",
+        "it_5dbb54a005401fc7"
+      ],
+      "resolved": {
+        "checked_on": "2026-10-23",
+        "interval_days": 1,
+        "survived": [],
+        "dropped": [
+          "it_532d82fae300522c",
+          "it_5d41f3374c717eac",
+          "it_5dbb54a005401fc7"
+        ],
+        "survival_rate": 0.0,
+        "structure_judged": 0,
+        "structure_continued": 0,
+        "structure_continuity": null,
+        "verdict": "insufficient"
+      }
+    },
+    {
+      "issue": "2026-10-23",
+      "window_end": "2026-10-23",
+      "claimed_ids": [
+        "it_72972368be1f96c8",
+        "it_bf00b37e101a93d7"
+      ],
+      "resolved": {
+        "checked_on": "2026-10-24",
+        "interval_days": 1,
+        "survived": [],
+        "dropped": [
+          "it_72972368be1f96c8",
+          "it_bf00b37e101a93d7"
+        ],
+        "survival_rate": 0.0,
+        "structure_judged": 1,
+        "structure_continued": 1,
+        "structure_continuity": 1.0,
+        "verdict": "insufficient"
+      },
+      "claims": [
+        {
+          "scope": "section",
+          "name": "社区舆论",
+          "direction": "down",
+          "value": -11.28
+        },
+        {
+          "scope": "source",
+          "name": "hackernews",
+          "direction": "down",
+          "value": -13.33
+        }
+      ]
+    },
+    {
+      "issue": "2026-10-24",
+      "window_end": "2026-10-24",
+      "claimed_ids": [
+        "it_1360bd8eb5a8e67e",
+        "it_72972368be1f96c8",
+        "it_bf00b37e101a93d7"
+      ],
+      "claims": [
+        {
+          "scope": "section",
+          "name": "社区舆论",
+          "direction": "down",
+          "value": -22.15
+        },
+        {
+          "scope": "source",
+          "name": "reddit",
+          "direction": "down",
+          "value": -26.67
+        },
+        {
+          "scope": "source",
+          "name": "github_trending",
+          "direction": "up",
+          "value": 6.67
+        },
+        {
+          "scope": "source",
+          "name": "rss",
+          "direction": "down",
+          "value": -3.33
+        }
+      ],
+      "resolved": null
+    }
+  ]
+}

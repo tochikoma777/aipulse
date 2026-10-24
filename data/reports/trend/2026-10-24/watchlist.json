@@ -1,0 +1,79 @@
+{
+  "entries": [
+    {
+      "issue": "2026-10-21",
+      "item_id": "it_186fa8565548fc42",
+      "check_on": "2026-10-22",
+      "expectation": "it_77f9ddd43bbeeb71 的热度为 82.89，82.89/82.06=1.010，与同为新进的 it_186fa8565548fc42 几乎同级，说明当前热度无法把二者区分成不同强度，二者都应按脉冲候选处理",
+      "status": "dropped",
+      "resolved_on": "2026-10-22",
+      "resolved_hot": null
+    },
+    {
+      "issue": "2026-10-21",
+      "item_id": "it_77f9ddd43bbeeb71",
+      "check_on": "2026-10-22",
+      "expectation": "it_77f9ddd43bbeeb71 的热度为 82.89，82.89/82.06=1.010，与同为新进的 it_186fa8565548fc42 几乎同级，说明当前热度无法把二者区分成不同强度，二者都应按脉冲候选处理",
+      "status": "still_on",
+      "resolved_on": "2026-10-22",
+      "resolved_hot": 82.82
+    },
+    {
+      "issue": "2026-10-22",
+      "item_id": "it_5dbb54a005401fc7",
+      "check_on": "2026-10-23",
+      "expectation": "盯 it_752e25023358d2db 与 it_5dbb54a005401fc7",
+      "status": "dropped",
+      "resolved_on": "2026-10-23",
+      "resolved_hot": null
+    },
+    {
+      "issue": "2026-10-22",
+      "item_id": "it_752e25023358d2db",
+      "check_on": "2026-10-23",
+      "expectation": "盯 it_752e25023358d2db 与 it_5dbb54a005401fc7",
+      "status": "dropped",
+      "resolved_on": "2026-10-23",
+      "resolved_hot": null
+    },
+    {
+      "issue": "2026-10-23",
+      "item_id": "it_752e25023358d2db",
+      "check_on": "2026-10-24",
+      "expectation": "下期盯 it_752e25023358d2db：当前连续在榜 6 天，判断为长榜连续性仍在延续",
+      "status": "dropped",
+      "resolved_on": "2026-10-24",
+      "resolved_hot": null
+    },
+    {
+      "issue": "2026-10-23",
+      "item_id": "it_bf00b37e101a93d7",
+      "check_on": "2026-10-24",
+      "expectation": "再盯 it_bf00b37e101a93d7：当前在榜 1 天、热度 85.88，判断为单日热度、不构成趋势",
+      "status": "dropped",
+      "resolved_on": "2026-10-24",
+      "resolved_hot": null
+    },
+    {
+      "issue": "2026-10-24",
+      "item_id": "it_752e25023358d2db",
+      "check_on": "2026-10-25",
+      "expectation": "再盯 it_752e25023358d2db：当前连续在榜 6 天，判断是长榜连续性尚在延续，但第 7 天未确认",
+      "status": "pending"
+    },
+    {
+      "issue": "2026-10-24",
+      "item_id": "it_bf00b37e101a93d7",
+      "check_on": "2026-10-25",
+      "expectation": "下期先盯 it_bf00b37e101a93d7：当前热度 85.88、在榜 1 天／最长连续 1 天，当前判断仍是单日峰值，不构成趋势",
+      "status": "pending"
+    },
+    {
+      "issue": "2026-10-24",
+      "item_id": "it_1fd8476b4493a52b",
+      "check_on": "2026-10-25",
+      "expectation": "再看 it_1fd8476b4493a52b：首日热度 85.55，在榜 1 天，单日样本不足以确认趋势",
+      "status": "pending"
+    }
+  ]
+}
