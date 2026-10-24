@@ -8,6 +8,60 @@
 
 ---
 
+## [t9-auto-trigger] — trend/debate 自动触发（日历月，2026-10-24）
+
+> 项目负责人拍板：trend 与 debate 都支持 auto+manual，默认 auto；**间隔 = 日历月**，
+> 且「间隔」既是触发间隔也是分析范围——月度触发时分析整个自然月，
+> 所以 `window_days` 不需要独立配置。命名用 `trigger_mode`（避开 LLM 三档）。
+
+### Added
+
+- **`pipeline.trend` / `pipeline.debate`**（`trigger_mode` + `interval`）：
+  三态 `auto | manual | disabled`；`interval` 支持 `1m`（日历月）与 `Nd`。
+  **`trigger_mode` 管准入门（要不要自动跑），`budget.degrade_order` 管退出序（钱不够先砍谁）。**
+- **`core/schedule.py`**：日历月推导（`previous_month_bounds` / `window_for`）。
+- **`reasoning/trend.py::slice_by_range`**：按日期范围切片——`last-N-days` 表达不了
+  "分析整个 10 月"。
+- **`aipulse watchlist`**（P0-3）：每日轻量核对，**只核对不新建、零 LLM 零网络**；
+  写回合并后的 `data/reports/trend/watchlist.json`，各期目录保持只读。
+  已接入 `daily.yml`（提交报告前一步）。
+- **`.github/workflows/monthly.yml`**：每月 1 日跑 `trend → selfcheck → debate`（固定顺序），
+  退出码分级：0 正常 / 1 质量失败 → `::warning::` 不标红 / ≥2 用法数据错误 → `::error::` 标红。
+
+### Changed
+
+- **`trend` 省略 `--range`** → 按 `pipeline.trend.interval` 取**上一个完整自然月**；
+  显式 `--range` 优先；`disabled` 不给 `--range` 直接劝退；范围内一篇日报都没有 → exit 2。
+- **`debate` 自动选题加两道闸门**：
+  1. **时效守卫**（P0-2）：trend 产物的窗口结束日必须落在本期范围内，否则跳过并打印 top2 候选；
+  2. **争议度门槛**（P1-5，默认 6 分）：最高分低于门槛 → 跳过，不硬产出没人看的辩论。
+  跳过 = exit 0（只有真错误才非 0）。
+- **debate 取材窗口跟随所辩论的那期 trend 产物**，不再默认"最近 7 天"。
+- **`weekly_debate_enabled` 标 deprecated**：只在用户没显式配过 `debate.trigger_mode` 时
+  才回退（`true→auto` / `false→manual`），并打一次 deprecation 日志。
+  SSOT 同步后删除——在那之前直接删会留下"文档说有、代码没有"的坑。
+- **同构段短尾巴可见**（P1-4 替代方案，项目负责人接受）：证据里明说
+  「窗口 M 天中本段仅 N 天，其余 K 天因源集合变更或首段过短未参与份额对比」。
+  **不改取段逻辑**——取最长段会破坏跨期可比，而 L4 整个设计依赖可比。
+
+### Fixed
+
+- **`_state_files` 真 bug**：`state_dir` 传 trend 根目录时 `parent` 是 `data/reports`，
+  glob 不到各期文件 → 合并结果为空。改为同时看 `state_dir/*/` 与 `state_dir.parent/*/`。
+
+### 实测
+
+| 项 | 值 |
+|---|---|
+| trend 30d（10 天数据） | 8/8 调用、0 截断、13330+41519、**¥0.2194**、exit **0** |
+| debate（显式 topic，与自动选题同题） | 9/9 调用、0 截断、22912+17061、**¥0.1599**、分歧 4、可用证伪 9/9 |
+| 月度合计预估 | **¥0.38–0.51**（低于预估的 ¥0.5–0.8） |
+| 自动选题时效守卫 | 今天 10-24 → 本期 9 月 → 最新产物 10-24 **被拦下**，exit 0 + top2 候选（8 分 / 5 分） |
+| 争议度门槛 | 最高 8 分 ≥ 6，**会放行**（真实数据上不会月月跳过） |
+| watchlist | 8 条历史（5 dropped / 1 still_on / 2 pending），L3 ✅ |
+
+---
+
 ## [post-m5-cleanup] — 遗留清理 10 项（2026-10-24）
 
 ### Added

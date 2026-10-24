@@ -39,7 +39,7 @@ aipulse 多做了一件难得多的事：**每天给出 3-5 条可证伪的预�
 | 自动化 | GitHub Actions 每日 08:00（北京时间）跑一次（`hybrid` 档：自动生成预言 + 主编点评），报告 commit 回仓库；本地 cron 作为备份；知识库导出由 `scripts/cron_knowledge.sh` 独立执行（方案 E） |
 | **★ 周度趋势长文** | `aipulse trend --range 7d`：9 个跨期结构（热度迁移 / 共动 / 背离 / 替代对 / 涌现断档 / 持续性 / 来源份额 / 预言复盘 / 未发生预期）先由代码算出来，再分 7 段交给模型解释。**采集失败日、源集合变更日会被自动排除**，不会把「数据缺陷」写成「趋势」。产出**双层**：`weekly.md` 人类版（本周三句话 + 判断 + 份额条形表 + 跌出榜 + 下期观察 + 折叠免责 + 文末溯源，正文零裸 ID）；`weekly.json` 机器版（7 节正文原样，供 L1-L4） |
 | **★ 自验证** | `aipulse selfcheck`：L1 硬判据（字数 / 套话 / 违规 / 锚定 id）、L2 信息增量（是否超出「直接列 Top10」）、L3 跨期回检（预言命中率 + watchlist 在榜核对）、L4 校准追踪（上期**结构判断的方向是否延续**；间隔 <7 天或样本 <5 条判 `insufficient`，条目存活率只作辅助）。默认读 `weekly.json` 机器层，纯离线，0 成本；结论会写 `admission.json` 供下期 `trend` 收紧门槛 |
-| **★ 多角色辩论** | `aipulse debate --topic "…"`（省略 `--topic` 时按 `weekly_debate_enabled` 从最新 trend 产物自动选题，并打印选择依据）：乐观 / 怀疑 / 工程 / 投资四方 `asyncio.gather` 并行陈述 → 交叉质证 → 主持人收敛为「共识 / 关键分歧 / 可执行结论 / 置信度 / 什么证据会让我改变判断」。证据包 ≤15 条、每条 ≤60 字、**绝不回显摘要原文**；证伪条件必须是单一二元可观测状态（禁数值阈值、禁合取），不合格的只标记不可用、不判整场失败。人类版含**结论卡片（置信度置顶）+ 交锋矩阵 + 证伪表格**，各方 3 条核心论据 + 折叠全文 |
+| **★ 多角色辩论** | `aipulse debate --topic "…"`（省略 `--topic` 时按 `pipeline.debate.trigger_mode` 自动选题：争议度打分 + 时效守卫，依据逐条打印）：乐观 / 怀疑 / 工程 / 投资四方 `asyncio.gather` 并行陈述 → 交叉质证 → 主持人收敛为「共识 / 关键分歧 / 可执行结论 / 置信度 / 什么证据会让我改变判断」。证据包 ≤15 条、每条 ≤60 字、**绝不回显摘要原文**；证伪条件必须是单一二元可观测状态（禁数值阈值、禁合取），不合格的只标记不可用、不判整场失败。人类版含**结论卡片（置信度置顶）+ 交锋矩阵 + 证伪表格**，各方 3 条核心论据 + 折叠全文 |
 | **★ 知识库** | 给日报条目写本地笔记 / 阅读状态；`knowledge export` 生成 `index.md` / `my-notes.md` / `topics/*.md`，可直接喂给任意 AI 工具。主库只读，笔记存独立 `data/user_data.db` |
 | 零 API 也能用 | 三档模式，未配置 key 自动降级，**采集 / 打分 / 聚类 / 手写预言 / 自动验证 / 统计全链路可用** |
 
@@ -243,8 +243,10 @@ uv run aipulse knowledge list                            # 查看笔记
 uv run aipulse knowledge export                          # → data/knowledge/
 
 # 周度趋势长文（M5，需要 API key）
-uv run aipulse trend --range 7d                         # 人类版 Markdown 到 stdout（--range 30d 也支持，数据不足会明说缺几天）
+uv run aipulse trend --range 7d                         # 人类版 Markdown 到 stdout
+uv run aipulse trend                                   # 省略 --range → 按 pipeline.trend.interval（默认日历月）取上一个完整自然月
 uv run aipulse trend --range 7d --segments structural_changes   # 只重跑某一段
+uv run aipulse watchlist                                # 每日核对 watchlist 条目是否仍在榜（纯离线 0 成本）
 uv run aipulse selfcheck                                # L1-L4 自验证（读 weekly.json，纯离线 0 成本）
 uv run aipulse selfcheck --json --no-write-state         # 只看结论，不更新观察清单
 # 产物：data/reports/trend/<窗口末日>/{weekly.md, weekly.json, selfcheck.*, watchlist, calibration}
@@ -287,6 +289,7 @@ uv run aipulse debate --topic "…" --out /tmp/d.md       # 指定落盘（默�
 | **M6b** | 日报条目「为什么重要 / 立场」全覆盖 + 中文要点（`one_liner`） | ✅（tag `m6b`） |
 | **M6c** | 知识库：本地笔记 + 阅读状态 + Markdown 导出 | ✅（tag `m6c`） |
 | **M5** | 周期趋势长文（S1–S3）+ 多角色辩论（S4）+ 产物可读化（S5） | ✅（tag `m5`） |
+| **T9** | trend / debate 自动触发（日历月 + 退出码分级 + watchlist 日核对） | ✅ 已实跑验证（未打 tag） |
 
 ## 开发
 
