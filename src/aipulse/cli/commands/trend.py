@@ -132,12 +132,21 @@ def main(
     if window_range is not None and not any(
         window_range[0] <= day <= window_range[1] for day in index.days
     ):
+        # ★ interval 推导出的范围一篇日报都没有 → **exit 0 + 说明**，不是错误。
+        #   月度自动触发时，"上个月还没有这个项目"完全正常（本项目 10-15 才有数据，
+        #   9 月整月空白）。若这里 exit 2，首次触发前任何人点一下都红 = 狼来了。
+        #   只有**真错误**（off 档 / 无日报目录 / 未知段）才 exit 2。
         typer.echo(
-            f"分析范围 {window_range[0]} → {window_range[1]} 内没有日报"
-            f"（现有 {index.days[0]} → {index.days[-1]}）：换 --range，或等这个月跑完。",
+            f"[trend] 跳过本期：分析范围 {window_range[0]} → {window_range[1]} 内没有日报"
+            f"（现有 {index.days[0]} → {index.days[-1]}）。",
             err=True,
         )
-        raise typer.Exit(code=2)
+        typer.echo(
+            "[trend] 数据不足不是错误：等这个周期有日报后再触发，"
+            "或显式给 --range 指定一个有数据的窗口。",
+            err=True,
+        )
+        raise typer.Exit(code=0)
 
     # 数据不足时明确说"还差几天"，不静默把 30 天当 10 天跑
     shortfall = window_shortfall_note(window_days, index.days)

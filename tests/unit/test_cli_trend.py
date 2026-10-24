@@ -226,10 +226,14 @@ def test_trend_cli_uses_interval_when_range_omitted(
     assert "分析范围 2026-10-01 → 2026-10-31（应有 31 天）" in payload["caveats"][0]
 
 
-def test_trend_cli_errors_when_interval_window_is_empty(
+def test_trend_cli_skips_when_interval_window_is_empty(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """interval 推导出的范围一篇日报都没有 → exit 2（用法/数据错误，该红）。"""
+    """★ interval 推导出的范围一篇日报都没有 → exit 0 + 说明，不是错误。
+
+    月度自动触发时"上个月还没有这个项目"完全正常（本项目 10-15 才有数据，
+    9 月整月空白）。若这里 exit 2，首次触发前任何人点一下都红 = 狼来了。
+    """
     from datetime import date
 
     reports = _seed(tmp_path)  # 10-20 → 10-23
@@ -237,9 +241,10 @@ def test_trend_cli_errors_when_interval_window_is_empty(
     monkeypatch.setattr(trend_cmd, "today_local", lambda *a, **k: date(2026, 12, 1))
 
     result = CliRunner().invoke(app, ["trend", "--reports-dir", str(reports)])
-    assert result.exit_code == 2
-    assert "分析范围 2026-11-01 → 2026-11-30 内没有日报" in result.output
+    assert result.exit_code == 0, result.output
+    assert "跳过本期：分析范围 2026-11-01 → 2026-11-30 内没有日报" in result.output
     assert "现有 2026-10-20 → 2026-10-23" in result.output
+    assert "数据不足不是错误" in result.output
 
 
 def test_trend_cli_disabled_requires_explicit_range(
