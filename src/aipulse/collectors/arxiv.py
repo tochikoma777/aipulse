@@ -3,7 +3,7 @@
 - 端点：`export.arxiv.org/api/query`，按分类 + submittedDate 倒序
 - 解析：`feedparser` 解析 Atom（fixture: arxiv_atom.xml）
 - 过滤：先按分类白名单，再按关键词（可配），最后取 Top N
-- 限速：配置 `rate_limit: 3/s`（硬限制，超限 503）
+- 限速：`rate_limit: 1/3s`（arXiv 官方要求 3 秒 1 次，超限 429）
 """
 
 from __future__ import annotations
@@ -100,9 +100,15 @@ class ArxivCollector(BaseCollector):
                 rate_limit=self.cfg.rate_limit,
             )
         except httpx.HTTPError as exc:
-            raise self.raise_error(f"arXiv 请求失败：{exc}", cause=exc) from exc
+            # str() 对超时类异常是空串（ReadTimeout/ConnectTimeout），
+            # 只写 f"{exc}" 会得到"arXiv 请求失败："这种无法诊断的日志。
+            detail = str(exc).strip() or "无错误详情"
+            raise self.raise_error(
+                f"arXiv 请求失败（{type(exc).__name__}）：{detail}", cause=exc
+            ) from exc
         if response.status_code >= 400:
-            raise self.raise_error(f"arXiv 返回 HTTP {response.status_code}")
+            hint = "（限流：arXiv 要求 3 秒 1 次）" if response.status_code == 429 else ""
+            raise self.raise_error(f"arXiv 返回 HTTP {response.status_code}{hint}")
 
         papers = parse_arxiv_atom(response.text)
         if not papers:

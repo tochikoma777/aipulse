@@ -1,9 +1,9 @@
 # AI Pulse · Agent 开发执行手册
 
-> ★ **当前版本：v1.22** · 对应基线 `m6c` / `c9b2fa1` · 详见 `docs/文档维护日志.md`
+> ★ **当前版本：v1.23** · 对应基线 `m5` / `4244cae` · 详见 `docs/文档维护日志.md`
 > 文件名**固定不带版本号**。文内 `v1.x` 标注为该决策产生的版本，用于追溯。
 
-> 配套文档：`AI_Pulse_设计方案.md`（设计 SSOT，v1.22）
+> 配套文档：`AI_Pulse_设计方案.md`（设计 SSOT，v1.23）
 > **已确认决策清单（Agent 直接执行，无需再问）**
 >
 > v1.1：① 微信/X 彻底移除（改用 inbox 手动投喂）；② LLM 默认 DeepSeek；③ 命名 `aipulse`（AI 脉搏）+ 许可证 **MIT**；④ **里程碑重排：M4 = 发布与自动化，M5 = 周期长文与辩论**（任务卡顺序已对调）
@@ -15,7 +15,7 @@
 
 > **v1.4（M0 验收后补丁，M1 开工前必须应用）**：
 > ⑫ **数据源环境分级** `availability: always|actions_only`——本地 WSL 与 Actions 网络可达性不同，
->    reddit/hf_papers/importai 标 `actions_only`：本地跳过且**不计失败**，Actions 全开；
+> reddit/hf_papers/importai 标 `actions_only`：本地跳过且**不计失败**，Actions 全开；
 > ⑬ **HF 只预留 `fallback_endpoints: []` 空字段**，默认走官方，不在生产配置写第三方镜像；
 > ⑭ **中文源（量子位）标 `title_only: true`，且不参与 TF-IDF 聚类**（22 字摘要会污染聚类）；
 > ⑮ **M0 探测实证坑位已归档**（§7 坑 27-32），编写采集器时直接复用，不要重新踩。
@@ -34,17 +34,17 @@
 
 ### 0.0 项目身份（v1.1 已确认，不要更改）
 
-| 项 | 值 |
-|---|---|
-| 项目名 / 包名 / CLI 名 | `aipulse`（AI 脉搏） |
-| 命名含义 | 脉搏三层隐喻：把脉（每日采样信号）→ 诊断（分析判断）→ 预后（推演预言），正好对应采集→分析→推演三段主线 |
-| 许可证 | **MIT**（不是 Apache-2.0） |
-| LLM 默认厂商 | **DeepSeek**：`deepseek-chat`（fast）/ `deepseek-reasoner`（strong） |
-| 自动数据源 | 6 个：github_trending / arxiv / hf_papers / hackernews / reddit / rss，外加 inbox 手动投喂 |
-| RSS 分层 | 英文主干（Simon Willison / Import AI / Latent Space / 官方博客 / Verge / TechCrunch / Ars）+ 中文补充（机器之心、量子位，标 `optional`） |
-| 仓库可见性 | **M0 即 public**，README 顶部标 WIP + Roadmap 勾选清单 |
-| 通知 | 只实现 `FileNotifier`；`notify.channels: [file]`，预留 SMTP/TG/飞书接口但**现在不实现** |
-| 不做 | **微信公众号 / X（Twitter）的任何抓取或 RSS 桥** |
+| 项                     | 值                                                           |
+| ---------------------- | ------------------------------------------------------------ |
+| 项目名 / 包名 / CLI 名 | `aipulse`（AI 脉搏）                                         |
+| 命名含义               | 脉搏三层隐喻：把脉（每日采样信号）→ 诊断（分析判断）→ 预后（推演预言），正好对应采集→分析→推演三段主线 |
+| 许可证                 | **MIT**（不是 Apache-2.0）                                   |
+| LLM 默认厂商           | **DeepSeek**：`deepseek-chat`（fast）/ `deepseek-reasoner`（strong） |
+| 自动数据源             | 6 个：github_trending / arxiv / hf_papers / hackernews / reddit / rss，外加 inbox 手动投喂 |
+| RSS 分层               | 英文主干（Simon Willison / Import AI / Latent Space / 官方博客 / Verge / TechCrunch / Ars）+ 中文补充（机器之心、量子位，标 `optional`） |
+| 仓库可见性             | **M0 即 public**，README 顶部标 WIP + Roadmap 勾选清单       |
+| 通知                   | 只实现 `FileNotifier`；`notify.channels: [file]`，预留 SMTP/TG/飞书接口但**现在不实现** |
+| 不做                   | **微信公众号 / X（Twitter）的任何抓取或 RSS 桥**             |
 
 ### 0.1 项目根目录与运行方式
 
@@ -61,20 +61,20 @@ uv add --dev ruff mypy pre-commit
 
 ### 0.2 编码规范（Agent 必须遵守，CI 会检查）
 
-| 项 | 规范 |
-|---|---|
+| 项       | 规范                                                         |
+| -------- | ------------------------------------------------------------ |
 | 类型注解 | **所有公开函数必须有完整类型注解**；`mypy --strict` 至少对 `core/ schema/ analysis/` 通过 |
 | 异步约定 | 采集器统一 `async def fetch()`；`pipeline` 用 `asyncio.gather` 编排；CLI 用 `asyncio.run` |
 | 网络调用 | 禁止在采集器内裸调 `httpx`；一律用注入的 `utils/http.py::HttpClient` |
 | LLM 调用 | 禁止直接调 SDK；一律用 `llm/base.py::LLMClient`；prompt 一律来自 `prompts/**.j2` |
-| 时间 | 代码内一律 UTC；仅在渲染层转 `Asia/Shanghai`；禁止 `datetime.now()`（用 `core/timeutil.utcnow()`） |
-| 日志 | `structlog.get_logger(__name__)`；禁止 `print`（CLI 输出用 `rich.console`） |
+| 时间     | 代码内一律 UTC；仅在渲染层转 `Asia/Shanghai`；禁止 `datetime.now()`（用 `core/timeutil.utcnow()`） |
+| 日志     | `structlog.get_logger(__name__)`；禁止 `print`（CLI 输出用 `rich.console`） |
 | 错误处理 | 自定义异常继承 `core/errors.py::AipulseError`；采集器内捕获后转 `CollectorError` 并记录 |
-| 配置 | 禁止硬编码常量；权重/阈值/源配置全部走 `configs/*.yaml` |
-| 注释 | 复杂算法（打分、聚类、去重、Brier）必须写中文注释解释**为什么**这么算 |
-| 提交 | Conventional Commits；每个阶段结束打 tag（`m0`/`m1`/...） |
+| 配置     | 禁止硬编码常量；权重/阈值/源配置全部走 `configs/*.yaml`      |
+| 注释     | 复杂算法（打分、聚类、去重、Brier）必须写中文注释解释**为什么**这么算 |
+| 提交     | Conventional Commits；每个阶段结束打 tag（`m0`/`m1`/...）    |
 
-### 0.3 四十三条红线（违反即返工）
+### 0.3 五十四条红线（违反即返工）
 
 1. ❌ 一次性生成整个项目——必须分阶段。
 2. ❌ 凭想象写字段解析——必须基于 `tests/fixtures/` 的真实响应。
@@ -127,7 +127,24 @@ uv add --dev ruff mypy pre-commit
     未跟踪文件（`data/inbox/`）会让它长期命中"不干净则跳过"，**等于永久关闭自动化**（静默失败）。
 47. ❌ 用 `topic_id` 做跨天聚合键——`tp_` + hash(日期:名称)**跨天必变**，且 daily.json 不导出 topic 名称。
     **用板块 slug**，不稳定时宁可粗也不要每天一个新文件。
-31. ❌ 条目因字段缺失而省略整行——**表格列固定，空值显示 `—`**，这是"详略不一、排版混乱"的根源（v1.14）。
+48. ❌ 让趋势由模型"发现"——**必须代码先算出跨条目结构**，模型只解释与判断。
+    M6b 已实证：让模型自主挑选 → 覆盖率崩到 4%（M5 §11.7.1）。
+49. ❌ 归因只作用于单个结构——**必须传播到所有跨天计算**（斜率 / 来源份额 / 跌出）。
+    坏日 `masked`、整源 0 条 `usable=False` 封锁。已三度复现"数据缺陷伪装成趋势"，
+    最严重一次方向反转（社区舆论 +22.80pp → 同构区间 +2.77pp）。
+50. ❌ 证伪条件用**点值区间**或**合取**——必须是**单一可观测问句**（可判定、互斥且穷尽）。
+    ✅"10-23 是否仍在 Top30" ❌"热度不低于 82.89"（实测 82.82 落在空档，判定悬空）
+    ❌"是否出现新条目，同时 X 是否仍在榜"（4 态组合 / 2 分支，必然覆盖不全）。
+51. ❌ 为了排版好看删掉校验依赖的数据——**双层呈现**：专业数据层（id / 数字 / 口径）
+    进 JSON + 文末溯源 + 折叠块，人类阅读层（结论 / 图表 / 图形标志）进正文。
+    **信息密度不降低，只分层。**
+52. ❌ 生成产物用固定文件名反复覆盖——**必须按窗口结束日建目录**。
+    固定名会丢掉跨期历史，而 L3/L4 自验证最需要的就是跨期对比。
+53. ❌ 条目因字段缺失而省略整行——**表格列固定，空值显示 `—`**，这是"详略不一、排版混乱"的根源（v1.14）。
+    （原编号 31，因历史错位排在末尾，v1.23 修正为 53；内容未变。）
+54. ❌ 跨期分析读主库 `data/aipulse.db`——**权威副本是 `data/reports/**/`**。
+    本地库随时停更（实测停在 10-17 而日报已到 10-23），
+    **任何依赖跨天累积的能力（连续上榜天数、`streak_days`）在本地一律失效**。
 
 ### 0.4 每个阶段结束 Agent 必须输出的验收报告格式
 
@@ -486,20 +503,20 @@ uv add --dev ruff mypy pre-commit
 
 ### 6.5.1 四个必须开新会话（clear）的时机
 
-| 时机 | 为什么 |
-|---|---|
+| 时机                               | 为什么                                                       |
+| ---------------------------------- | ------------------------------------------------------------ |
 | **① 每个里程碑切换时（最强信号）** | 上一阶段的代码细节对新阶段全是噪音。带着几万 token 的历史上下文，模型注意力被稀释，且成本更高。**开新会话 + 让它重读 SSOT 文档**，反而更准确 |
-| **② Agent 开始在同一处反复打转** | 连续 2-3 轮尝试同一方案都失败 → 它已被自己的失败尝试锚定。换会话等于换思路 |
-| **③ 输出质量明显下滑** | 回复变短、变敷衍、开始用"我认为大概是"这类模糊表述 → 注意力稀释的典型信号 |
-| **④ 任务性质切换** | 从"写代码"切成"改文档"或"做架构评审"，上下文里的代码细节完全无用 |
+| **② Agent 开始在同一处反复打转**   | 连续 2-3 轮尝试同一方案都失败 → 它已被自己的失败尝试锚定。换会话等于换思路 |
+| **③ 输出质量明显下滑**             | 回复变短、变敷衍、开始用"我认为大概是"这类模糊表述 → 注意力稀释的典型信号 |
+| **④ 任务性质切换**                 | 从"写代码"切成"改文档"或"做架构评审"，上下文里的代码细节完全无用 |
 
 ### 6.5.2 不要 clear 的三个时机
 
-| 时机 | 为什么 |
-|---|---|
-| 正在调试一个连贯问题 | 上下文里有刚拿到的关键报错、已排除的可能，清掉等于从头再来 |
-| Agent 刚读懂一个复杂模块 | 让它继续做相关改动，比新会话重新读一遍划算 |
-| 上一轮输出正好是你想要的 | 顺着这个状态继续，别打断 |
+| 时机                     | 为什么                                                     |
+| ------------------------ | ---------------------------------------------------------- |
+| 正在调试一个连贯问题     | 上下文里有刚拿到的关键报错、已排除的可能，清掉等于从头再来 |
+| Agent 刚读懂一个复杂模块 | 让它继续做相关改动，比新会话重新读一遍划算                 |
+| 上一轮输出正好是你想要的 | 顺着这个状态继续，别打断                                   |
 
 ### 6.5.3 clear 后的正确开法（关键）
 
@@ -516,12 +533,12 @@ uv add --dev ruff mypy pre-commit
 
 ### 6.5.4 init（重新索引项目）的时机
 
-| 信号 | 处理 |
-|---|---|
-| 新增了大量文件（如 M1 新增 11 个源文件后） | 重新 init，让索引跟上 |
-| 目录结构发生变化 | 重新 init |
+| 信号                                                  | 处理                      |
+| ----------------------------------------------------- | ------------------------- |
+| 新增了大量文件（如 M1 新增 11 个源文件后）            | 重新 init，让索引跟上     |
+| 目录结构发生变化                                      | 重新 init                 |
 | **Agent 开始引用不存在的文件路径 / 用过时的接口签名** | **索引已过期，立刻 init** |
-| 每个里程碑开始时 | 顺手 init 一次，成本低 |
+| 每个里程碑开始时                                      | 顺手 init 一次，成本低    |
 
 > **本项目推荐节奏**：每个里程碑 = 一个新会话（clear + init + 三段式开场）。
 > 这样每个阶段的上下文都干净、成本可控，且强制 Agent 重读最新 SSOT，避免它记住的是旧版文档。
@@ -533,30 +550,30 @@ uv add --dev ruff mypy pre-commit
 
 ### 6.6.1 可用模型分档
 
-| 档位 | 模型 | 单次成本 | 适用 |
-|---|---|---|---|
-| **S 档（最强）** | Kimi-K3 `kimi-k3-1` | x1.62 | 架构决策、最难的诊断 |
-| **A 档（强）** | GLM-5.3 / 5.2 / 5.1、Kimi-K2.8-Preview | x0.77-0.79 | 复杂模块实现、prompt 工程 |
-| **A- 档（强/专精）** | Kimi-K2.7-Code、Deepseek-V4-Pro | x0.51-0.57 | **代码专精**、复杂逻辑 |
-| **B 档（中）** | MiniMax-M3、MiniMax-M2.7 | x0.19-0.25 | 常规模块、文档撰写 |
-| **C 档（轻/快）** | Deepseek-V4.1-Flash、GLM-5.3-Flash、Space-Bunny、Hy3-x | x0.05-0.11 | 写测试、改格式、机械批量修改 |
-| **免费档** | Hy4-preview、Hy3、Step-5-Preview | x0.00 | 简单问答、低风险试写 |
-| ⚠️ 不适用 | GLM-5v-Turbo | x0.71 | **视觉模型**（v=vision），非编码用途，不要用于开发 |
+| 档位                 | 模型                                                   | 单次成本   | 适用                                               |
+| -------------------- | ------------------------------------------------------ | ---------- | -------------------------------------------------- |
+| **S 档（最强）**     | Kimi-K3 `kimi-k3-1`                                    | x1.62      | 架构决策、最难的诊断                               |
+| **A 档（强）**       | GLM-5.3 / 5.2 / 5.1、Kimi-K2.8-Preview                 | x0.77-0.79 | 复杂模块实现、prompt 工程                          |
+| **A- 档（强/专精）** | Kimi-K2.7-Code、Deepseek-V4-Pro                        | x0.51-0.57 | **代码专精**、复杂逻辑                             |
+| **B 档（中）**       | MiniMax-M3、MiniMax-M2.7                               | x0.19-0.25 | 常规模块、文档撰写                                 |
+| **C 档（轻/快）**    | Deepseek-V4.1-Flash、GLM-5.3-Flash、Space-Bunny、Hy3-x | x0.05-0.11 | 写测试、改格式、机械批量修改                       |
+| **免费档**           | Hy4-preview、Hy3、Step-5-Preview                       | x0.00      | 简单问答、低风险试写                               |
+| ⚠️ 不适用             | GLM-5v-Turbo                                           | x0.71      | **视觉模型**（v=vision），非编码用途，不要用于开发 |
 
 ### 6.6.2 按开发环节选模型（核心建议）
 
-| 环节 | 推荐档位 | 理由 |
-|---|---|---|
-| **架构设计 / 方案评审** | S / A | 需要长链条推理与全局权衡，选错代价最大 |
-| **本项目 M3 预言系统** | **S / A** | 项目灵魂，含"不可证伪拦截""校准度统计"等微妙逻辑，值得用最好的 |
-| **M2 的 `llm/structured.py`** | **A / A-** | "JSON Schema 约束 + 校验 + 修复重试 + 降级"这块极易出微妙 bug |
-| **M2 打分公式 / 聚类算法** | **A / A-** | 纯算法设计，权重与阈值需要仔细推敲 |
-| **疑难调试（卡 >30 分钟）** | **S / A** | 换强模型往往一轮解决，比继续用弱模型烧 5 轮更划算 |
-| **写新模块（采集器/存储层）** | **A- / B** | 模式固定，有 SSOT 文档约束，中强即可 |
-| **写单测** | **C** | 高度模式化（fixtures → 断言），弱模型完全够 |
-| **修 lint / 格式 / 批量改名** | **C / 免费** | 纯机械操作 |
-| **写文档 / 更新 README** | **B** | 需要一定表达质量，但不需深度推理 |
-| **确认进度 / 简单问答** | **免费** | 无风险 |
+| 环节                          | 推荐档位     | 理由                                                         |
+| ----------------------------- | ------------ | ------------------------------------------------------------ |
+| **架构设计 / 方案评审**       | S / A        | 需要长链条推理与全局权衡，选错代价最大                       |
+| **本项目 M3 预言系统**        | **S / A**    | 项目灵魂，含"不可证伪拦截""校准度统计"等微妙逻辑，值得用最好的 |
+| **M2 的 `llm/structured.py`** | **A / A-**   | "JSON Schema 约束 + 校验 + 修复重试 + 降级"这块极易出微妙 bug |
+| **M2 打分公式 / 聚类算法**    | **A / A-**   | 纯算法设计，权重与阈值需要仔细推敲                           |
+| **疑难调试（卡 >30 分钟）**   | **S / A**    | 换强模型往往一轮解决，比继续用弱模型烧 5 轮更划算            |
+| **写新模块（采集器/存储层）** | **A- / B**   | 模式固定，有 SSOT 文档约束，中强即可                         |
+| **写单测**                    | **C**        | 高度模式化（fixtures → 断言），弱模型完全够                  |
+| **修 lint / 格式 / 批量改名** | **C / 免费** | 纯机械操作                                                   |
+| **写文档 / 更新 README**      | **B**        | 需要一定表达质量，但不需深度推理                             |
+| **确认进度 / 简单问答**       | **免费**     | 无风险                                                       |
 
 ### 6.6.3 三条实操原则
 
@@ -569,63 +586,63 @@ uv add --dev ruff mypy pre-commit
 
 ## 7. 常见坑清单（Agent 开工前先读一遍）
 
-| # | 坑 | 症状 | 正确做法 |
-|---|---|---|---|
-| 1 | 代码放 `/mnt/c/` | I/O 极慢、SQLite 锁异常、git 行为诡异 | 一律放 `~/projects/aipulse`（WSL ext4） |
-| 2 | 用了 Windows 侧 Python | 依赖装错环境、CLI 找不到 | WSL 内 `uv venv`，VSCode 用 Remote-WSL |
-| 3 | arXiv 不限速 | 503、临时封 IP | 强制 ≥3s 间隔 + 退避 + 缓存 |
-| 4 | 凭记忆写解析 | 字段名对不上，静默丢数据 | 先 probe → fixtures → 再写解析 |
-| 5 | GitHub Trending 空列表 | 采集数为 0 却不报错 | 空/少结果自动降级 Search API + 告警 |
-| 6 | 中英文聚类效果差 | 中文条目全被聚成一簇 | 中文用 jieba 分词后再 TF-IDF |
-| 7 | prompt 写进代码 | 改一句要动代码、无法版本化 | 一律 `prompts/**.j2` + front-matter |
-| 8 | LLM 输出直接 `json.loads` | 偶发解析失败导致整轮崩 | 结构化 + 校验 + 修复重试 + 降级跳过 |
-| 9 | 忘记 `--no-llm` | 调试一次烧一次钱 | 开发期全面用 FakeLLM / skip-llm |
-| 10 | 单源异常炸全流程 | 一个源挂了当天全没 | 每源独立 try/except + source_runs |
-| 11 | 时间用本地时区 | 跨日边界错乱、报告日期偏移 | 全程 UTC，只在渲染层转本地 |
-| 12 | 预言"看起来对但无法证伪" | 项目灵魂丢失 | 缺 falsifiable_criteria 一律拒收 |
-| 13 | Actions 里 SQLite 丢失 | signals 历史断档 | 报告 commit + cache + signals 落 JSON |
-| 14 | Reddit 不设 UA | 被严厉限流 | UA 格式 `<platform>:<appid>:<ver> (by /u/<user>)` |
-| 15 | 忘记 `--json` 输出 | 无法被脚本消费 | 所有命令支持 `--json` |
-| 16 | 又去加微信/X 采集 | 违反 v1.1 决策，且必然踩合规与失效坑 | 一律走 `inbox` 手动投喂；`collectors/` 只允许 6 个自动源 + inbox |
-| 17 | 把 M4/M5 顺序搞反 | 先做了长文辩论，自动化迟迟没跑起来，记分板永远空的 | **M4 = Actions + Web + README（先做）；M5 = 长文 + 辩论（后做）** |
-| 18 | 记分板 0 样本时页面报错 | 开源首日门面难看 | 优雅空态："系统已运行 N 天，首批预言将于 X 日到期" |
-| 19 | 中文 RSS 源失效导致 pipeline 退出码非 0 | Actions 天天红 | 中文源标 `optional: true`，失效只告警 |
-| 20 | Reddit RSS 无 score 直接置 0 | 该源条目热度永远垫底，好内容被埋 | 用 `(N-rank)/N` 排名位次作代理 + 该源降权 |
-| 21 | 提前写 OAuth / 邮件推送 | 白写代码还多一套密钥要管 | v1.2 明确不做，只留接口 |
-| 22 | 密钥被 commit 到公开仓库 | 安全事故 | M0 首次 push 前检查 `.gitignore` 含 `.env`、`data/*.db`、`data/cache/` |
-| 23 | off 档仍偷偷调 API | 用户以为零成本却在烧钱 | 注入 NullLLM；单测用 respx 断言 0 次请求 |
-| 24 | 缺 api_key 直接报错退出 | 无 key 用户根本跑不起来 | 自动降级 off + 提示一次，不报错 |
-| 25 | 手写预言做成纯参数 | 用户要手写 JSON 判据，太麻烦导致功能被弃用 | 缺参自动降向导 + 判据模板选择 |
-| 26 | 报告不写运行模式 | 读者不知道这份报告有没有 AI 参与 | meta.json 与 brief.md 末尾固定标注 |
-| 27 | 把 actions_only 源本地跳过当失败 | 本地运行天天报红 | 写 `skipped_offline`，不计失败、不影响退出码 |
-| 28 | 坏 gzip 响应进缓存后一直复现 | 排查时以为是代码 bug | 排查必须 `--no-cache` 重跑；解码失败加入可重试异常 |
-| 29 | httpx 0.28 用 `Response.ext` | AttributeError | 改用 `extensions`；`Timeout` 显式给 `default=` |
-| 30 | SQLModel 字段 `date` 与类型冲突 | 注解报错 | `from datetime import date as date_type` |
-| 31 | alembic 迁移漏 import sqlmodel | 迁移执行失败 | 补进 `script.py.mako`；migrations 排除 mypy |
-| 32 | 装 `types-feedparser` | 注册表无此包，装不上 | 已从 pyproject 移除，不要再加回来 |
-| 33 | 凭印象写 type: ignore 错误码 | mypy 报"未使用的 ignore"，白改一轮 | 查准错误码或用 `cast()` |
-| 34 | Actions 里不设 `AIPULSE_ENV=actions` | reddit/hf/importai 三个源永远不采集 | daily.yml env 必须带上 |
-| 35 | Actions 无持久化，signals 历史断档 | star 增速永远算不出来 | 报告 commit + cache 恢复 db + signals.json |
-| 36 | 记分板 0 样本时页面空白或报错 | 开源首日门面难看 | 空态："系统已运行 N 天，首批预言将于 X 日到期" |
-| 43 | 时间语义只分 event/state 两态 | arXiv 索引滞后，按 published_at 过滤会让采来的论文全部丢失 | 补第三态 discovery（用 first_seen_at） |
-| 44 | 一个板块列 24 条 | 让人无从下手，违背"帮你放弃大部分" | max_items_per_section（默认 10） |
-| 45 | 窗口修好后 predict 反降为 0 条 | items 从 1 涨到 174，上下文膨胀 10 倍撞 max_tokens | 池收窄 Top 20 只给标题 + max_tokens 分档 |
-| 46 | degraded 时不打印原始输出 | 无法区分"截断"与"格式错误"，只能猜 | 打印前 500 字符 + 长度 |
-| 47 | 同 item 进多个板块 | 日报显重复 | 只保留主板块 |
-| 48 | LLM 输出回显完整条目 | 输出翻倍撞 max_tokens（predict 曾因此生成 0 条） | 只返回 id + 必要字段 |
-| 49 | 改数据规模后不回归上下文相关环节 | 窗口 7h→24h 后 predict 从 5 条变 0 条 | 改规模必须回归 predict |
-| 50 | ubuntu-latest 不固定 | 2026-10-19 起迁移 Ubuntu 26，定时流水线可能突然失败 | 固定 ubuntu-24.04 |
-| 51 | 掉榜项目消失被当成 bug 修 | 强行让掉榜项目进 Trending 会破坏快照语义 | 用 signals 的 star 序列做"持续追踪"，不硬改快照 |
-| 52 | 文档与代码版本对不上 | 回溯时无从查证 | 维护日志 + 先提交后刷新 |
-| 53 | 显示 star 每小时速率 | 短窗口会放大成"日增 29951"这类离谱值 | 只显示绝对增量 |
-| 54 | 本地库当 Actions 库用 | 本地库停在 10-13，无法代表真实状态 | 诊断时用 data/reports 里的 daily.json / signals.json |
-| 55 | source_runs 不落盘 | "某项目怎么没了"只能靠猜 | 导出 source_runs.json 到日报目录 |
-| 37 | yaml 里写死本该可覆盖的配置 | pydantic-settings 下 init kwargs 压过 env，AIPULSE_* 全线失效 | 环境开关用 ${ENV} 占位符，算法阈值留字面量 |
-| 38 | effective_mode 只查 api_key | 缺 base_url 时 daily 崩溃，违反红线 9 | api_key 与 base_url 缺任一即降级 off |
-| 39 | 主编点评走 strong 模型 | reasoner 不支持 json_schema/json_object → 每日降级 → 点评永远为空 | 轻任务走 fast（deepseek-chat） |
-| 40 | timeout 只在配置里写不透传 | llm.timeout_s:120 是死配置，实际吃 HttpClient 的 20s | 按 fast/strong 分档透传（strong 180s） |
-| 41 | Actions 报告用 pull --rebase | 同日重跑必然内容冲突 → 丢报告（报告即数据库） | git fetch + git reset --soft FETCH_HEAD |
-| 42 | 证据 id 只校验数量不校验存在 | 模型产出幻觉 id，污染记分板 | prompt 注入候选池 + 存在性校验（两层） |
+| #    | 坑                                      | 症状                                                         | 正确做法                                                     |
+| ---- | --------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| 1    | 代码放 `/mnt/c/`                        | I/O 极慢、SQLite 锁异常、git 行为诡异                        | 一律放 `~/projects/aipulse`（WSL ext4）                      |
+| 2    | 用了 Windows 侧 Python                  | 依赖装错环境、CLI 找不到                                     | WSL 内 `uv venv`，VSCode 用 Remote-WSL                       |
+| 3    | arXiv 不限速                            | 503、临时封 IP                                               | 强制 ≥3s 间隔 + 退避 + 缓存                                  |
+| 4    | 凭记忆写解析                            | 字段名对不上，静默丢数据                                     | 先 probe → fixtures → 再写解析                               |
+| 5    | GitHub Trending 空列表                  | 采集数为 0 却不报错                                          | 空/少结果自动降级 Search API + 告警                          |
+| 6    | 中英文聚类效果差                        | 中文条目全被聚成一簇                                         | 中文用 jieba 分词后再 TF-IDF                                 |
+| 7    | prompt 写进代码                         | 改一句要动代码、无法版本化                                   | 一律 `prompts/**.j2` + front-matter                          |
+| 8    | LLM 输出直接 `json.loads`               | 偶发解析失败导致整轮崩                                       | 结构化 + 校验 + 修复重试 + 降级跳过                          |
+| 9    | 忘记 `--no-llm`                         | 调试一次烧一次钱                                             | 开发期全面用 FakeLLM / skip-llm                              |
+| 10   | 单源异常炸全流程                        | 一个源挂了当天全没                                           | 每源独立 try/except + source_runs                            |
+| 11   | 时间用本地时区                          | 跨日边界错乱、报告日期偏移                                   | 全程 UTC，只在渲染层转本地                                   |
+| 12   | 预言"看起来对但无法证伪"                | 项目灵魂丢失                                                 | 缺 falsifiable_criteria 一律拒收                             |
+| 13   | Actions 里 SQLite 丢失                  | signals 历史断档                                             | 报告 commit + cache + signals 落 JSON                        |
+| 14   | Reddit 不设 UA                          | 被严厉限流                                                   | UA 格式 `<platform>:<appid>:<ver> (by /u/<user>)`            |
+| 15   | 忘记 `--json` 输出                      | 无法被脚本消费                                               | 所有命令支持 `--json`                                        |
+| 16   | 又去加微信/X 采集                       | 违反 v1.1 决策，且必然踩合规与失效坑                         | 一律走 `inbox` 手动投喂；`collectors/` 只允许 6 个自动源 + inbox |
+| 17   | 把 M4/M5 顺序搞反                       | 先做了长文辩论，自动化迟迟没跑起来，记分板永远空的           | **M4 = Actions + Web + README（先做）；M5 = 长文 + 辩论（后做）** |
+| 18   | 记分板 0 样本时页面报错                 | 开源首日门面难看                                             | 优雅空态："系统已运行 N 天，首批预言将于 X 日到期"           |
+| 19   | 中文 RSS 源失效导致 pipeline 退出码非 0 | Actions 天天红                                               | 中文源标 `optional: true`，失效只告警                        |
+| 20   | Reddit RSS 无 score 直接置 0            | 该源条目热度永远垫底，好内容被埋                             | 用 `(N-rank)/N` 排名位次作代理 + 该源降权                    |
+| 21   | 提前写 OAuth / 邮件推送                 | 白写代码还多一套密钥要管                                     | v1.2 明确不做，只留接口                                      |
+| 22   | 密钥被 commit 到公开仓库                | 安全事故                                                     | M0 首次 push 前检查 `.gitignore` 含 `.env`、`data/*.db`、`data/cache/` |
+| 23   | off 档仍偷偷调 API                      | 用户以为零成本却在烧钱                                       | 注入 NullLLM；单测用 respx 断言 0 次请求                     |
+| 24   | 缺 api_key 直接报错退出                 | 无 key 用户根本跑不起来                                      | 自动降级 off + 提示一次，不报错                              |
+| 25   | 手写预言做成纯参数                      | 用户要手写 JSON 判据，太麻烦导致功能被弃用                   | 缺参自动降向导 + 判据模板选择                                |
+| 26   | 报告不写运行模式                        | 读者不知道这份报告有没有 AI 参与                             | meta.json 与 brief.md 末尾固定标注                           |
+| 27   | 把 actions_only 源本地跳过当失败        | 本地运行天天报红                                             | 写 `skipped_offline`，不计失败、不影响退出码                 |
+| 28   | 坏 gzip 响应进缓存后一直复现            | 排查时以为是代码 bug                                         | 排查必须 `--no-cache` 重跑；解码失败加入可重试异常           |
+| 29   | httpx 0.28 用 `Response.ext`            | AttributeError                                               | 改用 `extensions`；`Timeout` 显式给 `default=`               |
+| 30   | SQLModel 字段 `date` 与类型冲突         | 注解报错                                                     | `from datetime import date as date_type`                     |
+| 31   | alembic 迁移漏 import sqlmodel          | 迁移执行失败                                                 | 补进 `script.py.mako`；migrations 排除 mypy                  |
+| 32   | 装 `types-feedparser`                   | 注册表无此包，装不上                                         | 已从 pyproject 移除，不要再加回来                            |
+| 33   | 凭印象写 type: ignore 错误码            | mypy 报"未使用的 ignore"，白改一轮                           | 查准错误码或用 `cast()`                                      |
+| 34   | Actions 里不设 `AIPULSE_ENV=actions`    | reddit/hf/importai 三个源永远不采集                          | daily.yml env 必须带上                                       |
+| 35   | Actions 无持久化，signals 历史断档      | star 增速永远算不出来                                        | 报告 commit + cache 恢复 db + signals.json                   |
+| 36   | 记分板 0 样本时页面空白或报错           | 开源首日门面难看                                             | 空态："系统已运行 N 天，首批预言将于 X 日到期"               |
+| 43   | 时间语义只分 event/state 两态           | arXiv 索引滞后，按 published_at 过滤会让采来的论文全部丢失   | 补第三态 discovery（用 first_seen_at）                       |
+| 44   | 一个板块列 24 条                        | 让人无从下手，违背"帮你放弃大部分"                           | max_items_per_section（默认 10）                             |
+| 45   | 窗口修好后 predict 反降为 0 条          | items 从 1 涨到 174，上下文膨胀 10 倍撞 max_tokens           | 池收窄 Top 20 只给标题 + max_tokens 分档                     |
+| 46   | degraded 时不打印原始输出               | 无法区分"截断"与"格式错误"，只能猜                           | 打印前 500 字符 + 长度                                       |
+| 47   | 同 item 进多个板块                      | 日报显重复                                                   | 只保留主板块                                                 |
+| 48   | LLM 输出回显完整条目                    | 输出翻倍撞 max_tokens（predict 曾因此生成 0 条）             | 只返回 id + 必要字段                                         |
+| 49   | 改数据规模后不回归上下文相关环节        | 窗口 7h→24h 后 predict 从 5 条变 0 条                        | 改规模必须回归 predict                                       |
+| 50   | ubuntu-latest 不固定                    | 2026-10-19 起迁移 Ubuntu 26，定时流水线可能突然失败          | 固定 ubuntu-24.04                                            |
+| 51   | 掉榜项目消失被当成 bug 修               | 强行让掉榜项目进 Trending 会破坏快照语义                     | 用 signals 的 star 序列做"持续追踪"，不硬改快照              |
+| 52   | 文档与代码版本对不上                    | 回溯时无从查证                                               | 维护日志 + 先提交后刷新                                      |
+| 53   | 显示 star 每小时速率                    | 短窗口会放大成"日增 29951"这类离谱值                         | 只显示绝对增量                                               |
+| 54   | 本地库当 Actions 库用                   | 本地库停在 10-13，无法代表真实状态                           | 诊断时用 data/reports 里的 daily.json / signals.json         |
+| 55   | source_runs 不落盘                      | "某项目怎么没了"只能靠猜                                     | 导出 source_runs.json 到日报目录                             |
+| 37   | yaml 里写死本该可覆盖的配置             | pydantic-settings 下 init kwargs 压过 env，AIPULSE_* 全线失效 | 环境开关用 ${ENV} 占位符，算法阈值留字面量                   |
+| 38   | effective_mode 只查 api_key             | 缺 base_url 时 daily 崩溃，违反红线 9                        | api_key 与 base_url 缺任一即降级 off                         |
+| 39   | 主编点评走 strong 模型                  | reasoner 不支持 json_schema/json_object → 每日降级 → 点评永远为空 | 轻任务走 fast（deepseek-chat）                               |
+| 40   | timeout 只在配置里写不透传              | llm.timeout_s:120 是死配置，实际吃 HttpClient 的 20s         | 按 fast/strong 分档透传（strong 180s）                       |
+| 41   | Actions 报告用 pull --rebase            | 同日重跑必然内容冲突 → 丢报告（报告即数据库）                | git fetch + git reset --soft FETCH_HEAD                      |
+| 42   | 证据 id 只校验数量不校验存在            | 模型产出幻觉 id，污染记分板                                  | prompt 注入候选池 + 存在性校验（两层）                       |
 
 ---
 
@@ -642,18 +659,18 @@ uv add --dev ruff mypy pre-commit
 
 ## 9. 阶段总览速查表
 
-| 顺序 | 阶段 | 状态 | 核心产出 | 关键验收物 | 测试数 |
-|---|---|---|---|---|---|
-| 1 | M0 | ✅ tag `m0` | 骨架 + 数据探测 | fixtures + 数据源手册 + doctor | 64 |
-| 2 | M1 | ✅ tag `m1` | 6 采集器 + inbox + 去重 | 采集 107 条、跨源合并生效 | 142 |
-| 3 | M2 | ✅ tag `m2` | 打分/聚类 + 每日简报 | brief.md + 三档模式 | 180 |
-| 4 | M3a | ✅ tag `m3a` | 预言生成 + 拦截 + 手写预言 | openai 移除、覆盖率 94% | 229 |
-| 5 | M3b | ✅ tag `m3b` | 验证 + 统计 + 记分板 | **★ 预言系统闭环** | 272 |
-| 6 | M4 | ✅ tag `m4`（已收口） | Actions + Web + README | hybrid 真实跑通、主编点评非空 | 319 |
-| 7 | M6a | ✅ tag `m6a` | 格式规范化 + 修复快照型源 + 关注订阅 | brief.md 每日统一、REA 类项目不再消失 | — |
-| 8 | **M6b** | ✅ tag `m6b` | why/stance 全覆盖 + 中文要点（★ 中文概述由 `one_liner` 承担，不新增字段） | `enhanced == enhance_total == 23`、套话命中 0、稳态 1.01 元/年 | 364 |
-| 9 | **M6c** | ✅ tag `m6c` | 知识库（双库 + 读写 + 导出）：本地笔记 + 导出为可消费 Markdown | 407 passed、主库 sha256 不变、导出 113 条/带 why 51/幂等 | 407 |
-| 10 | M5 | 待做（已让位 M6） | 周期长文 + 多角色辩论 | 2000+ 字长文 + 4 视角辩论 | — |
+| 顺序 | 阶段    | 状态                 | 核心产出                                                     | 关键验收物                                                   | 测试数 |
+| ---- | ------- | -------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ | ------ |
+| 1    | M0      | ✅ tag `m0`           | 骨架 + 数据探测                                              | fixtures + 数据源手册 + doctor                               | 64     |
+| 2    | M1      | ✅ tag `m1`           | 6 采集器 + inbox + 去重                                      | 采集 107 条、跨源合并生效                                    | 142    |
+| 3    | M2      | ✅ tag `m2`           | 打分/聚类 + 每日简报                                         | brief.md + 三档模式                                          | 180    |
+| 4    | M3a     | ✅ tag `m3a`          | 预言生成 + 拦截 + 手写预言                                   | openai 移除、覆盖率 94%                                      | 229    |
+| 5    | M3b     | ✅ tag `m3b`          | 验证 + 统计 + 记分板                                         | **★ 预言系统闭环**                                           | 272    |
+| 6    | M4      | ✅ tag `m4`（已收口） | Actions + Web + README                                       | hybrid 真实跑通、主编点评非空                                | 319    |
+| 7    | M6a     | ✅ tag `m6a`          | 格式规范化 + 修复快照型源 + 关注订阅                         | brief.md 每日统一、REA 类项目不再消失                        | —      |
+| 8    | **M6b** | ✅ tag `m6b`          | why/stance 全覆盖 + 中文要点（★ 中文概述由 `one_liner` 承担，不新增字段） | `enhanced == enhance_total == 23`、套话命中 0、稳态 1.01 元/年 | 364    |
+| 9    | **M6c** | ✅ tag `m6c`          | 知识库（双库 + 读写 + 导出）：本地笔记 + 导出为可消费 Markdown | 407 passed、主库 sha256 不变、导出 113 条/带 why 51/幂等     | 407    |
+| 10   | M5      | 待做（已让位 M6）    | 周期长文 + 多角色辩论                                        | 2000+ 字长文 + 4 视角辩论                                    | —      |
 
 > **★ v1.13 顺序调整**：M6（每日学习增强）插队到 M5 之前——它是项目负责人每天真在用的，
 > M5 是锦上添花且无等待期，任何时候做都能立刻见效。

@@ -117,7 +117,7 @@ def test_load_sources_reads_feeds_and_tiers():
     tiers = {f.tier for f in rss.feeds}
     assert tiers <= {"core", "optional"}
     assert any(f.tier == "core" for f in rss.feeds), "英文主干源必须存在"
-    assert sources.sources["arxiv"].rate_limit == "3/s"
+    assert sources.sources["arxiv"].rate_limit == "1/3s"  # arXiv 官方 3 秒 1 次
 
 
 def test_source_config_allows_source_specific_fields():

@@ -59,8 +59,15 @@ def test_debate_is_implemented_and_needs_topic():
     assert not debate.app.registered_commands
 
 
-def test_doctor_without_network_returns_zero(tmp_path):
-    # 数据库缺失只算警告（提示先跑 init），不应让 doctor 直接判死
+def test_doctor_without_network_returns_zero(tmp_path, monkeypatch):
+    # 数据库缺失只算警告（提示先跑 init），不应让 doctor 直接判死。
+    # ★ 必须把 data_dir 指向 tmp_path：数据源健康检查读的是 data/reports 的真实历史，
+    #   不隔离就会让这个用例随仓库里最新几天的采集结果时红时绿。
+    from aipulse.cli.commands import doctor as doctor_mod
+    from aipulse.core.config import Settings
+
+    settings = Settings(app={"data_dir": str(tmp_path)})
+    monkeypatch.setattr(doctor_mod, "load_settings", lambda *a, **k: settings)
     code = run_doctor(json_output=True, skip_network=True)
     assert code == 0
 

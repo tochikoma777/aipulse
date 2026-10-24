@@ -22,6 +22,9 @@ from aipulse.core.timeutil import now_local, utcnow
 from aipulse.store.db import table_names
 from aipulse.utils.http import HttpClient, resolve_proxy
 
+# 手动投喂通道：天天 0 条是常态，数据源健康检查里不当故障
+MANUAL_SOURCES = frozenset({"inbox"})
+
 # 各源的探针 URL（最小请求，不解析内容，只看连通性与状态码）
 DEFAULT_PROBES: dict[str, str] = {
     "github_trending": "https://github.com/trending?since=daily",
@@ -139,6 +142,60 @@ def _db_check(db_path: Path) -> tuple[str, str]:
     return "ok", f"{len(names)} 张表齐全"
 
 
+def _source_health_check(reports_root: Path, *, days: int = 7) -> tuple[str, str]:
+    """最近 N 天各源「连续整源 0 条」的尾部连败。
+
+    ★ 只看**截至最新一期**的连续段：昨天挂了、今天恢复的源不该继续报 ❌。
+    ★ `inbox` 是手动投喂通道，天天 0 条是常态，不算故障。
+    """
+    files = sorted(reports_root.glob("*/*/*/source_runs.json"))[-days:]
+    if not files:
+        return "warn", f"{reports_root} 下没有 source_runs.json → 还没跑过采集？"
+
+    runs: list[dict[str, dict[str, object]]] = []
+    for path in files:
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            continue
+        if not data.get("collected", True):
+            # --no-collect 的日报不参与判断，否则会被误判成"所有源都挂了"
+            continue
+        rows = data.get("sources") or []
+        runs.append({str(row.get("source")): row for row in rows if isinstance(row, dict)})
+
+    if not runs:
+        return "warn", f"最近 {len(files)} 份日报都没采集（--no-collect），无法判断"
+
+    streaks: dict[str, int] = {}
+    closed: set[str] = set()  # 见到正常的一天就封口，更早的失败不再计入
+    for snapshot in reversed(runs):
+        for source, row in snapshot.items():
+            if source in MANUAL_SOURCES or source in closed:
+                continue
+            status = str(row.get("status") or "")
+            raw_count = row.get("item_count")
+            count = int(raw_count) if isinstance(raw_count, (int, float)) else 0
+            if status in {"failed", "degraded"} and count == 0:
+                streaks[source] = streaks.get(source, 0) + 1
+            else:
+                streaks.setdefault(source, 0)
+                closed.add(source)
+
+    worst = max(streaks.values(), default=0)
+    state = "fail" if worst >= 3 else ("warn" if worst >= 2 else "ok")
+    if worst == 0:
+        return state, f"最近 {len(runs)} 期无整源 0 条"
+
+    latest = runs[-1]
+    parts = [
+        f"{source} 连续 {days_} 天（最近：{str((latest.get(source) or {}).get('status') or '?')}）"
+        for source, days_ in sorted(streaks.items(), key=lambda kv: (-kv[1], kv[0]))
+        if days_ > 0
+    ]
+    return state, "整源 0 条：" + "、".join(parts)
+
+
 def run_doctor(
     *, json_output: bool = False, timeout_read_s: float = 8.0, skip_network: bool = False
 ) -> int:
@@ -169,6 +226,9 @@ def run_doctor(
     )
     state, detail = _db_check(settings.db_path())
     add("存储", "数据库", state, detail)
+
+    state, detail = _source_health_check(Path(settings.app.data_dir) / "reports")
+    add("数据源健康", "近 7 天整源 0 条", state, detail)
 
     if skip_network:
         add("数据源", "网络探针", "warn", "已跳过（--no-network）")

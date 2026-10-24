@@ -17,7 +17,7 @@ sources:
     time_semantics: discovery
     availability: always
     weight: 0.8
-    rate_limit: "3/s"              # 硬限制，超限 503
+    rate_limit: "1/3s"             # arXiv 官方要求 3 秒 1 次，超限 429
     categories: [cs.AI, cs.LG, cs.CL, cs.CV, cs.MA, stat.ML]
     max_results: 200
     keyword_filter: [llm, agent, multimodal, diffusion, inference, rl, reasoning]
