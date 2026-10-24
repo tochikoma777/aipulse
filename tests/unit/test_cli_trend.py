@@ -199,4 +199,5 @@ def test_debate_cli_rejects_bad_range(tmp_path: Path, monkeypatch: pytest.Monkey
         app, ["debate", "--topic", "x", "--range", "week", "--reports-dir", str(reports)]
     )
     assert result.exit_code == 2
-    assert "--range" in result.output
+    # ★ 不断言错误文本里的 "--range"：rich 会按终端宽度折断长选项
+    # （CI 上会被截成 "--ran…"）。BadParameter 的退出码本身就是判据。
