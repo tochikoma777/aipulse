@@ -25,7 +25,7 @@ from aipulse.core.config import load_settings
 from aipulse.core.logging import configure_logging
 from aipulse.llm.base import build_client
 from aipulse.reasoning.selfcheck import admission_rule_for, load_admission
-from aipulse.reasoning.trend import SEGMENTS, generate_trend
+from aipulse.reasoning.trend import SEGMENTS, generate_trend, window_shortfall_note
 from aipulse.render.weekly import render_weekly
 
 app = typer.Typer(
@@ -78,6 +78,11 @@ def main(
         typer.echo(f"没有找到任何日报：{root}", err=True)
         raise typer.Exit(code=2)
 
+    # 数据不足时明确说"还差几天"，不静默把 30 天当 10 天跑
+    shortfall = window_shortfall_note(window_days, index.days)
+    if shortfall:
+        typer.echo(f"[trend] ⚠ {shortfall}", err=True)
+
     keys = tuple(s.strip() for s in segments.split(",") if s.strip()) if segments else None
     valid = {key for key, _, _ in SEGMENTS}
     unknown = [key for key in (keys or ()) if key not in valid]
@@ -102,6 +107,7 @@ def main(
             price_strong_cny_per_1m=settings.budget.price_strong_cny_per_1m,
             segment_keys=keys,
             admission_rule=rule,
+            requested_days=window_days,
         )
     )
 

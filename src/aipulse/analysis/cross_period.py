@@ -32,6 +32,7 @@
 from __future__ import annotations
 
 import json
+import math
 import re
 import statistics
 import unicodedata
@@ -59,6 +60,7 @@ __all__ = [
     "homogeneous_segments",
     "source_change_days",
     "co_movement",
+    "direction_eps",
     "compute_all",
     "divergence",
     "emergence",
@@ -86,13 +88,26 @@ DEFAULT_TRACK_MIN_DAYS = 2
 DEFAULT_TRACK_MIN_OVERLAP = 3
 DEFAULT_TRACK_CORRELATION = 0.7
 # ① 的方向判定阈值（pp/天）：斜率绝对值低于它视为「基本走平」。
-# 5 天窗口下 0.5pp/天 ≈ 累计 2.5pp，小于日报单日份额波动。
+# 5 天窗口下 0.5pp/天 ≈ 累计 2.5pp，小于日报单日份额波动——这是**锚点**，
+# 不是通用常数：斜率估计的标准误 ∝ 1/√N，窗口越长，同样的斜率越可信。
+# 固定 0.5 会让 30 天窗口对慢漂移过度迟钝、让 3 天窗口对噪声过度敏感。
+DIRECTION_EPS_ANCHOR_DAYS = 5
 DEFAULT_DIRECTION_EPS = 0.5
 DEFAULT_MIN_EDGE_CORRELATION = 0.8
 
 # 每个源的"互动指标"：背离检测要拿它跟 hot_score 比方向。
 # rss 只有 rank_score（榜单位次），github 的 stars_in_window 是增量——都偏弱，
 # 但它们是该源唯一可用的量，宁可标注来源也不要用别的源的字段硬套。
+def direction_eps(days: int) -> float:
+    """走平阈值随窗口缩放：`eps(N) = 0.5 * sqrt(5/N)`。
+
+    依据：斜率的标准误与 √N 成反比，窗口翻倍 → 同样斜率更可信 → 阈值应放宽收紧。
+    以 5 天 0.5pp/天 为锚点（原始校准值），N=3 时约 0.65、N=30 时约 0.20。
+    """
+    n = max(int(days), 2)
+    return DEFAULT_DIRECTION_EPS * math.sqrt(DIRECTION_EPS_ANCHOR_DAYS / n)
+
+
 ENGAGEMENT_METRIC: dict[str, str] = {
     "hackernews": "points",
     "hf_papers": "upvotes",
@@ -893,9 +908,9 @@ def heat_migration(
         taint_sources = sorted(s for s in section_sources.get(section, set()) if failures.get(s))
         taint_days = sorted({day for source in taint_sources for day in failures[source]})
         slope = _slope_at(points)
-        direction = (
-            "flat" if abs(slope) < DEFAULT_DIRECTION_EPS else ("up" if slope > 0 else "down")
-        )
+        # ★ 阈值随**实际可用天数**缩放（剔除坏日后的 len(points)），不是固定 0.5
+        eps = direction_eps(len(points))
+        direction = "flat" if abs(slope) < eps else ("up" if slope > 0 else "down")
         conflict = (direction == "up" and delta_pp < 0) or (direction == "down" and delta_pp > 0)
         entries.append(
             {
@@ -943,7 +958,7 @@ def heat_migration(
         notes=(
             f"对比区间 {a.day}→{b.day}（{len(days_used)} 天，源集合同构）；"
             f"份额分母仅含已归板块的条目；"
-            f"direction 以斜率（阈值 ±{DEFAULT_DIRECTION_EPS}pp/天）为准，"
+            f"direction 以斜率（阈值 ±{direction_eps(len(points)):.2f}pp/天，随窗口缩放）为准，"
             f"delta_pp 只作幅度参照"
             + (f"；首末差与斜率方向不一致：{'/'.join(conflicts)}" if conflicts else "")
             + (f"；采集失败、不可作趋势：{'/'.join(tainted)}" if tainted else "")

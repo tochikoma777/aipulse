@@ -14,6 +14,7 @@
 from __future__ import annotations
 
 import re
+from collections.abc import Sequence
 from dataclasses import dataclass
 
 from aipulse.analysis.cross_period import (
@@ -119,8 +120,26 @@ class Evidence:
     titles: tuple[str, ...] = ()
 
 
+def window_shortfall_note(requested: int, days: Sequence[str]) -> str:
+    """请求窗口比实际数据长时，给出"还差多少天"的明确说明（否则静默缩短窗口）。
+
+    30 天窗口不是"把 7 改成 30"就完事：跨度不足时斜率更难与噪声区分，
+    结论的置信度本来就该更低。说清楚缺多少天，比假装跑完了诚实。
+    """
+    available = len(days)
+    if requested <= 0 or available >= requested:
+        return ""
+    missing = requested - available
+    span = f"{days[0]} → {days[-1]}" if days else "无数据"
+    return (
+        f"请求 {requested} 天窗口，实际只有 {available} 天（{span}）；"
+        f"结构判定按 {available} 天进行，还需再攒 {missing} 天日报才能覆盖完整 {requested} 天。"
+        "跨度不足时「走平」与「慢趋势」更难区分，请按较低置信度阅读。"
+    )
+
+
 def slice_index(index: CrossPeriodIndex, window_days: int) -> CrossPeriodIndex:
-    """取最近 N 天构建子索引（30 天窗口留到下一阶段，本轮只做 7 天）。"""
+    """取最近 N 天构建子索引；N 大于可用天数时返回全部（缺口由 window_shortfall_note 报出）。"""
     days = index.days[-window_days:] if window_days > 0 else index.days
     keep = set(days)
     return CrossPeriodIndex(
@@ -520,6 +539,11 @@ def violations(
 # ══════════════════════════════════════════════════════════════════════════
 
 
+def _with_shortfall(caveats: list[str], requested_days: int, sliced: CrossPeriodIndex) -> list[str]:
+    note = window_shortfall_note(requested_days, sliced.days)
+    return ([note] if note else []) + caveats
+
+
 def build_caveats(index: CrossPeriodIndex, reports: dict[str, StructureReport]) -> list[str]:
     """口径与免责：全部收进机器层与 `<details>`，不占正文。"""
     lines: list[str] = []
@@ -686,6 +710,7 @@ async def generate_trend(
     price_strong_cny_per_1m: float = 4.0,
     segment_keys: tuple[str, ...] | None = None,
     admission_rule: str = "",
+    requested_days: int = 0,
 ) -> TrendReport:
     """按 7 节分段生成；单节失败只跳过该节。"""
     sliced = slice_index(index, window_days)
@@ -788,7 +813,7 @@ async def generate_trend(
         segments=segments,
         headlines=headlines,
         judgements=judgements,
-        caveats=build_caveats(sliced, reports),
+        caveats=_with_shortfall(build_caveats(sliced, reports), requested_days, sliced),
         llm_calls=calls,
         attempts=attempts,
         truncated_segments=truncated,
@@ -813,5 +838,6 @@ __all__ = [
     "generate_headlines",
     "generate_trend",
     "slice_index",
+    "window_shortfall_note",
     "violations",
 ]

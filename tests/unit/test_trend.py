@@ -479,3 +479,50 @@ def test_headline_candidates_cover_all_structures(tmp_path) -> None:  # noqa: AN
     assert "来源份额变化" in text
     assert "预言" in text
     assert text.startswith("- ")
+
+
+# ── 30 天窗口（C5）────────────────────────────────────────────────────────
+
+
+def test_direction_eps_scales_with_window() -> None:
+    """阈值必须随窗口缩放：5 天是原始锚点，窗口越长越灵敏、越短越保守。"""
+    from aipulse.analysis.cross_period import direction_eps
+
+    assert direction_eps(5) == pytest.approx(0.5)
+    assert direction_eps(3) > direction_eps(5) > direction_eps(7) > direction_eps(30)
+    assert direction_eps(30) == pytest.approx(0.5 * (5 / 30) ** 0.5, rel=1e-6)
+    # 退化输入不能炸：0/1 天按 2 天算
+    assert direction_eps(0) == direction_eps(2)
+
+
+def test_shortfall_note_says_how_many_days_missing() -> None:
+    from aipulse.reasoning.trend import window_shortfall_note
+
+    days = [f"2026-10-{d:02d}" for d in range(15, 25)]
+    note = window_shortfall_note(30, days)
+    assert "请求 30 天" in note
+    assert "实际只有 10 天" in note
+    assert "还需再攒 20 天" in note
+    assert window_shortfall_note(7, days) == ""
+    assert window_shortfall_note(0, days) == ""
+
+
+def test_slice_index_returns_all_when_window_too_long() -> None:
+    from aipulse.reasoning.trend import slice_index
+
+    index = _index_for_render()
+    sliced = slice_index(index, 30)
+    assert sliced.days == index.days
+
+
+@pytest.mark.asyncio
+async def test_generate_trend_records_shortfall_caveat(tmp_path) -> None:  # noqa: ANN001
+    """30 天请求 + 3 天数据：免责里必须写明缺口，不能假装跑满。"""
+    from aipulse.reasoning.trend import generate_trend
+
+    index = _index(tmp_path)
+    client = _ScriptedClient([GOOD_BODY])
+    report = await generate_trend(index, client, window_days=30, max_tokens=2000, requested_days=30)
+    assert report.caveats
+    assert "请求 30 天" in report.caveats[0]
+    assert "还需再攒" in report.caveats[0]
