@@ -87,6 +87,13 @@ jobs:
           echo "── predictions.md ──"
           cat "data/reports/$day/predictions.md"
 
+      # ── watchlist 每日核对（T9 / P0-3）────────────────────────────
+      # trend 是月度触发，但 watchlist 条目 check_on = 窗口末日次日：
+      # 按月核对等于"提出一个月后才验"。条目层必须短尺度，所以每日单独跑一次。
+      # 纯离线、零 LLM 成本；只核对不新建（新建是月度 trend 产物的事）。
+      - name: Resolve watchlist
+        run: uv run aipulse watchlist
+
       # ── §14.1 对策①：报告文件 commit 回仓库（文本即数据库）──────────
       - name: Commit reports
         run: |

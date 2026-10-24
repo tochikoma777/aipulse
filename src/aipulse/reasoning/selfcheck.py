@@ -490,11 +490,16 @@ def _state_files(state_dir: Path, name: str) -> list[Path]:
 
     ★ S5 起产物按窗口末日分目录，如果只读本期文件，跨期历史就丢了——
     而 L3（watchlist 核对）与 L4（存活率）要的正是跨期。
+
+    ★ 同时看 `state_dir/*/name` 与 `state_dir.parent/*/name`：前者让
+    `aipulse watchlist` 可以把 trend 根目录当 state_dir（此时 parent 是
+    data/reports，glob 不到任何东西，必须靠前者）；后者是 selfcheck 传
+    某期目录时的老路径。两者取并集，两种情况都对。
     """
     files = {state_dir / name}
-    parent = state_dir.parent
-    if parent.exists():
-        files.update(parent.glob(f"*/{name}"))
+    for base in (state_dir, state_dir.parent):
+        if base.exists():
+            files.update(base.glob(f"*/{name}"))
     return sorted(p for p in files if p.is_file())
 
 

@@ -30,6 +30,7 @@ from aipulse.cli.commands import (
 from aipulse.cli.commands.doctor import doctor_command
 from aipulse.cli.commands.init import init_command
 from aipulse.cli.commands.serve import app as serve_app
+from aipulse.cli.commands.watchlist import app as watchlist_app
 
 app = typer.Typer(
     name="aipulse",
@@ -51,6 +52,8 @@ app.add_typer(inbox.app)
 app.add_typer(knowledge.app)
 # 周报自验证（M5 S3）：L1-L4，纯离线
 app.add_typer(selfcheck.app)
+# watchlist 每日核对（T9 / P0-3）：条目层短尺度，纯离线
+app.add_typer(watchlist_app)
 
 # 待实现（占位，--help 可见）；collect / analyze / brief / daily / predict / stats 已实现，
 # 与占位命令共用 add_typer 注册（占位于 commands/_placeholder.py 内定义）
