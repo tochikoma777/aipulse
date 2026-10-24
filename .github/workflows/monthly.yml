@@ -1,0 +1,137 @@
+name: monthly
+
+# ★ T9：trend / debate 的自动触发（月度）。
+#   cron 每月 1 日 01:00 UTC = 北京 09:00 → 分析**上一个完整自然月**
+#   （interval 既是触发间隔也是分析范围，见 core/schedule.py）。
+#   顺序固定 trend → selfcheck → debate：
+#     trend    产出本期机器层与人类层
+#     selfcheck 更新 watchlist / calibration / admission（debate 的准入依赖它）
+#     debate    自动选题读的正是本期 trend 产物（有时效守卫，串行才不会读到上期）
+#
+# ★ 退出码分级（P0-1，GitHub Actions 不会自动把非 0 变成 warning）：
+#     0 = 正常（含"无争议跳过"）
+#     1 = 质量失败（产物已生成但不达标）→ ::warning:: + 继续，**不标红**
+#     ≥2 = 用法/数据错误 → ::error:: + 退出，标红
+#   没有这一层，"数据不足"和"真失败"都会月月标红，狼来了。
+
+on:
+  schedule:
+    - cron: "0 1 1 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write # 报告要 commit 回仓库（文本即数据库，§14.1 对策①）
+
+# 手动触发与定时触发撞车时不要并跑（共享同一份 cache 里的 DB）
+concurrency:
+  group: monthly
+  cancel-in-progress: false
+
+jobs:
+  monthly:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      AIPULSE_ENV: actions
+      AIPULSE_MODE: hybrid
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v10.3.2
+        with:
+          enable-cache: true
+
+      - name: Set up Python 3.11
+        run: uv python install 3.11
+
+      - name: Install dependencies
+        run: uv sync --frozen --no-dev || uv sync --no-dev
+
+      # ── §14.1 对策②：SQLite 走 Actions cache「尽力而为」 ──────────────
+      - name: Restore SQLite history
+        uses: actions/cache@v4
+        with:
+          path: data/aipulse.db
+          key: aipulse-db-${{ github.run_number }}
+          restore-keys: |
+            aipulse-db-
+
+      # ── ① 月度趋势长文 ─────────────────────────────────────────────
+      - name: Trend (monthly)
+        env:
+          AIPULSE_LLM__API_KEY: ${{ secrets.AIPULSE_LLM__API_KEY }}
+          AIPULSE_LLM__BASE_URL: ${{ vars.AIPULSE_LLM__BASE_URL || 'https://api.deepseek.com/v1' }}
+        run: |
+          set +e
+          # 省略 --range → 按 pipeline.trend.interval（默认 1m）取上一个完整自然月
+          uv run aipulse trend --json
+          code=$?
+          set -e
+          if [ "$code" -eq 0 ]; then
+            echo "trend 正常"
+          elif [ "$code" -eq 1 ]; then
+            echo "::warning::trend 质量失败：产物已生成但质量不达标（L1-L4 见日志），不阻断后续步骤"
+          else
+            echo "::error::trend 用法或数据错误（退出码 $code）"
+            exit "$code"
+          fi
+
+      # ── ② 自验证：更新 watchlist / calibration / admission ──────────
+      # 必须夹在 trend 与 debate 之间：admission.json 是 trend→trend 的反馈闭环，
+      # debate 的自动选题也依赖本期 trend 产物已经落盘。
+      - name: Selfcheck (L1-L4)
+        env:
+          AIPULSE_LLM__API_KEY: ${{ secrets.AIPULSE_LLM__API_KEY }}
+          AIPULSE_LLM__BASE_URL: ${{ vars.AIPULSE_LLM__BASE_URL || 'https://api.deepseek.com/v1' }}
+        run: |
+          set +e
+          uv run aipulse selfcheck
+          code=$?
+          set -e
+          if [ "$code" -eq 0 ]; then
+            echo "selfcheck 正常"
+          elif [ "$code" -eq 1 ]; then
+            echo "::warning::selfcheck 有层 fail：结论仍可用，但请按 findings 修正"
+          else
+            echo "::error::selfcheck 用法或数据错误（退出码 $code）"
+            exit "$code"
+          fi
+
+      # ── ③ 月度辩论（自动选题） ──────────────────────────────────────
+      # 不给 --topic：按 pipeline.debate.trigger_mode + min_controversy 决策。
+      # 争议度不足 / trend 产物过期 →  exit 0 跳过并说明，不硬产出。
+      - name: Debate (auto topic)
+        env:
+          AIPULSE_LLM__API_KEY: ${{ secrets.AIPULSE_LLM__API_KEY }}
+          AIPULSE_LLM__BASE_URL: ${{ vars.AIPULSE_LLM__BASE_URL || 'https://api.deepseek.com/v1' }}
+        run: |
+          set +e
+          uv run aipulse debate --json
+          code=$?
+          set -e
+          if [ "$code" -eq 0 ]; then
+            echo "debate 正常（含跳过）"
+          elif [ "$code" -eq 1 ]; then
+            echo "::warning::debate 质量失败（如关键分歧为空）：不阻断提交"
+          else
+            echo "::error::debate 用法或数据错误（退出码 $code）"
+            exit "$code"
+          fi
+
+      # ── §14.1 对策①：报告文件 commit 回仓库（文本即数据库）──────────
+      - name: Commit reports
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "aipulse-bot"
+          git config user.email "aipulse-bot@users.noreply.github.com"
+          git fetch origin ${{ github.ref_name }}
+          git reset --soft FETCH_HEAD
+          git add data/reports
+          if git diff --staged --quiet; then
+            echo "本次运行没有新增报告内容，跳过提交"
+            exit 0
+          fi
+          git commit -m "chore(reports): $(date -u -d '+8 hours' +%F) 月度趋势与辩论"
+          git push origin HEAD:${{ github.ref_name }}
