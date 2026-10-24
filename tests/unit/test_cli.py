@@ -50,10 +50,12 @@ def test_placeholder_commands_raise_not_implemented():
 
 
 def test_debate_is_implemented_and_needs_topic():
-    # 真命令不再抛 NotImplementedError；未给 --topic 时退出码 2（auto 模式本轮未做）
+    # 真命令不再抛 NotImplementedError。
+    # ★ 不断言 --help 文本：rich 会按终端宽度折断长选项（CI 上 COLUMNS 较窄，
+    #   实测 "--topic" 会被截成 "--topi…"）。需要 topic 的行为由
+    #   test_debate_cli_requires_topic 用退出码覆盖。
     result = runner.invoke(app, ["debate", "--help"])
     assert result.exit_code == 0
-    assert "--topic" in result.output
     assert not debate.app.registered_commands
 
 

@@ -26,6 +26,7 @@ from fastapi.templating import Jinja2Templates
 from aipulse.analysis.stats import PredictionStats
 from aipulse.core.config import Settings, load_settings
 from aipulse.core.logging import get_logger
+from aipulse.core.timeutil import today_local
 from aipulse.render.scoreboard import render_scoreboard_markdown
 from aipulse.web.charts import build_calibration_chart
 from aipulse.web.data import ReadOnlyStore, ReportIndex
@@ -195,7 +196,10 @@ def create_app(
 
     @app.get("/topics", response_class=HTMLResponse)
     def topics(request: Request) -> HTMLResponse:
-        day = reports.latest() or date.today().isoformat()
+        # ★ 必须用 today_local()：报告日期按本地时区（默认 Asia/Shanghai）生成，
+        #   用 date.today()（容器/系统时区）会在 UTC 16:00-24:00 之间错开一天，
+        #   页面就会查不到当天的 topic 与 entity，表现为"主题还在、实体全空"。
+        day = reports.latest() or today_local().isoformat()
         return templates.TemplateResponse(
             request,
             "topics.html",
