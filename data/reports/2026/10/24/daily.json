@@ -1,0 +1,972 @@
+{
+  "date": "2026-10-24",
+  "headline": "AI 安全攻防同一天双向加速：Cloudflare 把安全审计做成智能体技能，Claude-Red 把攻击方法论也做成技能，而瑞典政府选择直接禁用 ChatGPT 与 Claude",
+  "headline_item_id": "it_77f9ddd43bbeeb71",
+  "overview_bullets": [
+    {
+      "icon": "🔐",
+      "topic": "安全技能化",
+      "text": "Cloudflare 的 security-audit-skill 与 Claude-Red 同日上榜，攻防两端都被封装成可复用的 agent 技能，安全能力正在从“工具”变成“提示词资产”。"
+    },
+    {
+      "icon": "🤖",
+      "topic": "模型迭代",
+      "text": "Kimi K3.1 Pro 携 Highspeed 版本冲上榜首，中国开源/半开源模型继续以发布节奏抢占注意力，而非以能力代差。"
+    },
+    {
+      "icon": "🏢",
+      "topic": "合规退潮",
+      "text": "瑞典政府办公室禁用 ChatGPT 与 Claude，与 OpenAI 宣布不再用实时互联网训练模型形成同向信号：数据边界正在收紧而非放宽。"
+    },
+    {
+      "icon": "📄",
+      "topic": "视频世界模型",
+      "text": "今日 HF 论文密集围绕视频生成、潜在世界模型与代码化视频，研究重心从“生成好看”转向“可控、可规划”。"
+    },
+    {
+      "icon": "🛠️",
+      "topic": "上下文工程",
+      "text": "graphify 用确定性 AST 解析替代向量库、ponytail 主张“少写代码”，工具层开始反思 RAG 与代码生成的热度泡沫。"
+    }
+  ],
+  "executive_summary": "今天的 AI 新闻不是能力竞赛的又一天，而是边界重划的一天：能力被封装成技能、数据被收回围墙、研究从炫技转向可控，谁掌握边界谁就掌握下一轮定价权。",
+  "editor_note": {
+    "core": "今天最该记住的是“安全被技能化”：Cloudflare 与 Claude-Red 同一天把审计与攻击方法论写成 SKILL.md，意味着安全能力的分发单位从软件包变成了提示词包——这会让攻防扩散速度提升一个量级，也让审计结果的可验证性成为新的竞争点。",
+    "cross_signal": "瑞典政府禁用 ChatGPT/Claude、OpenAI 宣布不再用实时互联网训练，与 HN 上 http2shell 这类 RCE 讨论形成三方印证：模型能力越强，外部输入面越危险，机构的第一反应是收缩数据边界而不是加强检测。",
+    "counterintuitive": "热度最高的 Kimi K3.1 Pro 与“AI 诊断超越医生”都属能力叙事，但真正改变格局的是热度中游的 graphify 与 ponytail——它们主张少用向量库、少写代码，与当下“更大上下文、更多生成”的主流叙事正好相反。",
+    "risk": "把安全审计交给 agent 技能存在闭环风险：审计者与被审计对象同属一个模型家族时，独立验证很容易退化为自我确认；而瑞典式“一刀切禁用”若成为范式，会把合规压力转嫁给无法自建模型的机构，反而扩大头部厂商的议价权。"
+  },
+  "contradictions": [
+    "OpenAI 称因“重大风险”不再用实时互联网训练模型，但其工程师此前公开表示该方案不可行——官方理由与技术现实之间存在叙事落差。",
+    "一边是瑞典政府因安全顾虑禁用 ChatGPT 与 Claude，一边是 Cloudflare 等厂商把安全审计能力做成 Claude 技能，同一模型同时被视为风险源与风控工具。"
+  ],
+  "underrated": [
+    "Graphify-Labs/graphify：用确定性 AST 解析与可解释边替代向量库，是对 RAG 默认架构的实质性挑战",
+    "Meta Expert: Cross-Layer Expert Sharing for Storage- and Retrieval-Efficient MoE：直击 MoE 部署的存储与检索成本，工程价值高于其热度",
+    "Renhuai123/ziwei-doushu：与 AI 无关但展示了开源知识库化的另一种路径，算法与古籍数据同仓",
+    "Beyond Watching and Searching：以视频为中心的深度研究智能体基准，填补了当前评测的空白区"
+  ],
+  "sections": [
+    {
+      "name": "开源项目",
+      "summary": "GitHub 热榜被“给 agent 用的技能与知识层”占据，从安全审计、攻击方法论到代码知识图谱，工具正在为智能体而非人类重新设计。",
+      "item_ids": [
+        "it_77f9ddd43bbeeb71",
+        "it_42565b5232096036",
+        "it_01d32fd68c2d717a",
+        "it_3880477a3e9a8bf0",
+        "it_a7519c6ce55f34ab",
+        "it_c9cdc26758b48a34",
+        "it_38e504ab00817795",
+        "it_7ed7b72f04295c52",
+        "it_fdf7de3aa15def01",
+        "it_2fbf3db695f9d673",
+        "it_873c35a344852ac9",
+        "it_8858b289f2eefaee",
+        "it_00b5d16e5263ed2a"
+      ]
+    },
+    {
+      "name": "论文与研究",
+      "summary": "视频与 MoE 是今日论文的两条主线：一边用语言动作扩展潜在世界模型、用代码化视频做基准，一边用跨层专家共享压缩 MoE 的存储与检索成本。",
+      "item_ids": [
+        "it_93bbd6e7c3469d05",
+        "it_98169d606489bb04",
+        "it_463277c6c46271fe",
+        "it_9f7804a9217e63d1",
+        "it_8ea6ea906fb17117",
+        "it_41ec37365e67af16",
+        "it_593011f7fe1bce84"
+      ]
+    },
+    {
+      "name": "社区舆论",
+      "summary": "HN 的注意力一半给了安全漏洞与 Jev 式炒作退潮，一半给了“AI 诊断超越医生”这类高冲击力结论，情绪在警惕与兴奋之间摆动。",
+      "item_ids": [
+        "it_c94050b89bcaf4d3",
+        "it_1fd8476b4493a52b",
+        "it_0ac194e7dd2196c5",
+        "it_7a18b24f21ac51ca",
+        "it_f9a8ffb1d681774b",
+        "it_a8f2132df5b8b6a6",
+        "it_8612522c4276d8a3",
+        "it_1f9eddacbb7de266"
+      ]
+    },
+    {
+      "name": "产业与新闻",
+      "summary": "政策与公司动作同日收紧：瑞典政府禁用主流聊天机器人、OpenAI 切断实时互联网训练，而 Nvidia 用玩具机器人做了一场漂亮的消费级叙事。",
+      "item_ids": [
+        "it_f699a3e5cdaf4929",
+        "it_67ab64203109c3c9"
+      ]
+    }
+  ],
+  "comments": [
+    {
+      "item_id": "it_77f9ddd43bbeeb71",
+      "one_liner": "Cloudflare 开源的 coding-agent 技能，用于分阶段执行安全审计并输出可独立验证的机器可读结果",
+      "why": "把安全审计拆成多阶段并输出可机器校验的结论，让编码代理的审计结果从「人读报告」变成可接入 CI 的判定信号，审计责任从人转移到流水线。",
+      "stance": "方向对，但审计结论一旦可自动化，误报就会被当成合规证据，必须保留人工复核闸门。"
+    },
+    {
+      "item_id": "it_42565b5232096036",
+      "one_liner": "一个让 AI agent 以「最懒的资深开发者」思路写代码的提示技能，主张能不写的代码就不写",
+      "why": "用「最懒的资深工程师」作为代理的行为约束，直接压低生成代码量，把代理的优化目标从产出更多转向少写，减少维护面。",
+      "stance": "这是对代理过度生成的一次有价值的反向校准，但懒惰若无边界会退化成该做的抽象也不做。"
+    },
+    {
+      "item_id": "it_01d32fd68c2d717a",
+      "one_liner": "把代码库连同文档、SQL schema、配置和 PDF 转成可查询知识图谱的工具，以 /graphify 技能形式接入 Claude Code、Cursor、Codex 和 Gemini CLI，采用本地确定性 AST 解析，不使用向量库。",
+      "why": "把代码库、SQL schema、配置和 PDF 统一解析成可查询知识图谱，且用确定性 AST 解析、每条边可解释、不依赖向量库，直接绕开 RAG 的召回不可控与黑箱问题。",
+      "stance": "对需要审计代码上下文的团队，确定性图谱比向量检索更值得押注。"
+    },
+    {
+      "item_id": "it_3880477a3e9a8bf0",
+      "one_liner": "面向 Claude skills 系统的攻防安全技能库，每个 SKILL.md 对应一类攻击面（如 SQLi、shellcode、EDR 绕过、漏洞开发）的方法论。",
+      "why": "把攻击方法论封装成 Claude 技能文件，等于给通用模型装上可复用的渗透作业手册，攻防门槛从「会写工具」降到「会调用技能」。",
+      "stance": "这是把双用途能力直接塞进模型生态，平台方迟早要为技能包做分级与审计。"
+    },
+    {
+      "item_id": "it_a7519c6ce55f34ab",
+      "one_liner": "一份面向 Claude Code 的图文示例教程，从基础概念讲到进阶 agent，附可直接复制的模板。",
+      "why": "把 Claude Code 从零散技巧整理成可视化、可复制的模板，降低了 agent 工作流的入门门槛，也让最佳实践从个人经验变成可传播资产。",
+      "stance": "教程类项目会加速工具普及，但模板化容易掩盖真实工程复杂度。"
+    },
+    {
+      "item_id": "it_c9cdc26758b48a34",
+      "one_liner": "Anthropic 开源的插件仓库，主要面向知识工作者在 Claude Cowork 中使用。",
+      "why": "官方亲自下场做知识工作者的插件仓库，意味着 Claude 生态从通用对话转向垂直场景技能包，第三方插件的分层与准入标准随之被官方定义。",
+      "stance": "官方收编插件是平台化信号，第三方技能包将被迫分层。"
+    },
+    {
+      "item_id": "it_38e504ab00817795",
+      "one_liner": "OpenBMB 的 VoxCPM2 无 tokenizer TTS 模型，支持多语言语音生成、创意音色设计与高保真声音克隆。",
+      "why": "去掉 tokenizer 的 TTS 让多语种与音色克隆不再依赖专用分词前端，模型权重与克隆能力一起下沉到可本地部署的形态。",
+      "stance": "语音克隆的滥用成本被进一步压低，开源方应把水印与授权约束做进默认流程。"
+    },
+    {
+      "item_id": "it_7ed7b72f04295c52",
+      "one_liner": "Supabase 是一个基于 Postgres 的开发平台，为 Web、移动端和 AI 应用提供专属数据库。",
+      "why": "把 Postgres 包装成开箱即用的后端，AI 应用开发者不必再自建数据库与鉴权层，云厂商的托管数据库收入被直接分流。",
+      "stance": "开源数据库即服务这条路已经跑通，闭源 BaaS 的溢价空间正在被吃掉。"
+    },
+    {
+      "item_id": "it_fdf7de3aa15def01",
+      "one_liner": "PHP 语言的官方解释器源码仓库。",
+      "why": "PHP 解释器本体持续出现在趋势榜，说明存量 Web 生态的维护需求依然庞大，语言运行时层面的改动会直接波及大量线上服务。",
+      "stance": "老牌运行时的热度是存量市场的体温计，不该被新框架叙事掩盖。"
+    },
+    {
+      "item_id": "it_2fbf3db695f9d673",
+      "one_liner": "Node.js 官方 JavaScript 运行时仓库。",
+      "why": "运行时本体持续出现在热榜，说明服务端 JS 的存量迁移与工具链依赖仍在扩张，生态重心没有转向别处。",
+      "stance": "热度是惯性而非信号，真正该盯的是它对新负载形态的适配速度。"
+    },
+    {
+      "item_id": "it_93bbd6e7c3469d05",
+      "one_liner": "提出 Factor-Aware 预测学习方法，让 MLLM 的隐表示用于电影级视频生成中的角色、场景、动作与镜头控制。",
+      "why": "把 MLLM 的隐表示真正用于电影级视频生成的因素解耦控制，针对的是稀疏引导下角色、场景、动作、镜头难以分别调节的痛点。",
+      "stance": "因素感知控制是视频生成从炫技走向可用的关键一步。"
+    },
+    {
+      "item_id": "it_98169d606489bb04",
+      "one_liner": "提出 Meta Expert 跨层专家共享方案，降低 MoE 模型的存储与检索开销。",
+      "why": "发现不同层专家虽拓扑独立却高度相似，据此做跨层共享，直接压缩 MoE 的存储与检索开销，影响的是大模型推理的部署成本结构。",
+      "stance": "跨层专家共享是对 MoE 参数冗余的正面开刀，方向正确。"
+    },
+    {
+      "item_id": "it_463277c6c46271fe",
+      "one_liner": "LaLa-World 让 JEPA 式隐空间世界模型借助自然语言动作接口跨领域学习，用于想象式规划与下游策略。",
+      "why": "让 JEPA 式隐世界模型借用视频生成的语言条件接口，从而跨域跨数据源学习，为想象式规划与下游策略提供统一基座。",
+      "stance": "用自然语言当动作接口，是打通世界模型与通用智能体的务实路径。"
+    },
+    {
+      "item_id": "it_9f7804a9217e63d1",
+      "one_liner": "Code2Video-Compass 是一个覆盖 T2V、I2V、V2V 的通用代码生成视频评测基准。",
+      "why": "把代码生成视频拆成 T2V、I2V、V2V 三类并建立统一评测，填补了可编辑、可复用视频生成缺乏可比基准的空白，直接影响模型选型依据。",
+      "stance": "没有统一基准的代码生成视频只是演示，这个基准来得正是时候。"
+    },
+    {
+      "item_id": "it_8ea6ea906fb17117",
+      "one_liner": "提出 Policy-Mask，在预算约束下为判别任务自适应选取冻结 diffusion 模型的时间步、模块与通道特征",
+      "why": "冻结扩散模型的可判别信号散落在时间步、网络深度与通道三个维度，选点成本直接决定下游任务能否低成本复用生成模型。",
+      "stance": "预算感知的特征选择比再训一个专用编码器更务实，这类工作会压缩生成模型转判别任务的迁移成本。"
+    },
+    {
+      "item_id": "it_41ec37365e67af16",
+      "one_liner": "提出以视频为中心的深度研究报告生成基准，考察 agent 围绕源视频提出研究问题并检索外部资料撰写长报告的能力",
+      "why": "现有深度研究基准只考核网页文本证据，视频作为研究起点被排除在外，导致以视频为源头的多模态调研能力无法被量化比较。",
+      "stance": "把视频纳入研究型 agent 的评测轴是必要补课，但先要解决视频证据可溯源与引用核验，否则只是换了个输入模态。"
+    },
+    {
+      "item_id": "it_593011f7fe1bce84",
+      "one_liner": "综述视频基础模型与视频世界模型在读写、分享和交互世界方面的关联与统一视角",
+      "why": "视频理解/生成模型与世界模型目标不同却共享同一套视频-世界关系假设，把两者并置会改变研究者划分问题边界的方式。",
+      "stance": "统一视角有价值，但把生成质量等同于世界动态建模是当前最容易被滥用的偷换，需要明确区分。"
+    },
+    {
+      "item_id": "it_c94050b89bcaf4d3",
+      "one_liner": "Show HN 上的 Corgi，一个面向 AI agent 与终端的复用器（multiplexer），可展示各 agent 的实时动态与输出流。",
+      "why": "把多个编码代理放进同一个可观测终端，解决的是并行代理「看不见在干什么」的调度盲区，工作流从单会话变成多路编排。",
+      "stance": "方向对，但多路复用器很快会被 IDE 与云代理平台吸收，独立工具窗口期不长。"
+    },
+    {
+      "item_id": "it_1fd8476b4493a52b",
+      "one_liner": "Kimi 发布 K3.1 Pro 与 K3.1 Pro Highspeed 两个模型版本，附官方文档与第三方评测链接。",
+      "why": "新版本同时给出高速档与第三方评测链接，意味着国产开源模型开始用可对账的基准而非发布会话术来争夺编码场景份额。",
+      "stance": "评测页比模型卡更有信息量，谁先把第三方复现做实，谁才拿到开发者信任。"
+    },
+    {
+      "item_id": "it_0ac194e7dd2196c5",
+      "one_liner": "http2shell：影响 Node、Python 等多个运行时的远程代码执行（RCE）攻击手法。",
+      "why": "HTTP/2 实现层的远程代码执行横跨 Node 与 Python 运行时，受影响面是整条服务端依赖链而非单个应用。",
+      "stance": "协议栈级漏洞的修复窗口以小时计，运维方应把运行时版本升级排在业务迭代之前。"
+    },
+    {
+      "item_id": "it_7a18b24f21ac51ca",
+      "one_liner": "一篇讲述 Jev 概念炒作兴起与退潮的文章。",
+      "why": "围绕单一概念的热度周期被复盘，反映的是叙事驱动型项目在融资与关注度上的快速透支与回落。",
+      "stance": "把技术叙事当资产炒作的团队，下一轮会以同样速度被抛弃。"
+    },
+    {
+      "item_id": "it_f9a8ffb1d681774b",
+      "one_liner": "Show HN 上的 Swurf，一个以滑动卡片方式逐页浏览真实网页、并按偏好推荐且不重复的浏览工具。",
+      "why": "用滑动推荐替代搜索与信息流，把「发现网页」的入口从关键词改成偏好建模，长尾站点的流量分配逻辑随之改变。",
+      "stance": "推荐式浏览会把开放网络再中心化一层，去重与偏好学习是它的卖点也是它的天花板。"
+    },
+    {
+      "item_id": "it_a8f2132df5b8b6a6",
+      "one_liner": "一项称新 AI 在疾病诊断上表现超过医生两倍以上的报道。",
+      "why": "诊断准确率对比医生的结论一旦被广泛引用，会直接推动临床辅助工具的准入讨论与责任归属划分。",
+      "stance": "「两倍于医生」这类指标必须绑定数据集与科室条件，脱离场景的对比是营销而非证据。"
+    },
+    {
+      "item_id": "it_8612522c4276d8a3",
+      "one_liner": "泽连斯基表示 Starlink 与 Starshield 的速率限制仍然存在。",
+      "why": "卫星通信速率限制被公开点名为战场变量，把商业星座的运营策略直接拖进地缘冲突的责任讨论。",
+      "stance": "商业基础设施在战争中的开关权不该由单一公司私下决定，需要可追责的规则。"
+    },
+    {
+      "item_id": "it_1f9eddacbb7de266",
+      "one_liner": "瑞典政府机构将禁止使用 ChatGPT 和 Claude",
+      "why": "政府机构把通用聊天机器人整体列为禁用对象，等于把合规风险从「怎么用」前移到「能不能用」，公共部门采购将转向本地部署或私有实例。",
+      "stance": "在缺乏数据流向审计手段时，一刀切禁用是政府唯一能自保的选择，代价是效率红利被推迟。"
+    },
+    {
+      "item_id": "it_f699a3e5cdaf4929",
+      "one_liner": "OpenAI 以「重大风险」为由，宣布不再用实时互联网数据训练其 AI 模型",
+      "why": "切断前沿模型与实时网络的连接，把训练数据从「抓取即得」推回授权与静态语料，数据供应商的议价权上升，模型时效性优势被削弱。",
+      "stance": "这是对自身工程判断的公开撤回，安全叙事盖过了能力叙事，短期是产品退步、长期是责任划界。"
+    },
+    {
+      "item_id": "it_67ab64203109c3c9",
+      "one_liner": "Nvidia CEO 把玩的 Microduck 机器人走红，已售出 2 万台",
+      "why": "两万台玩具级机器人售罄，说明具身智能的消费级入口先落在情绪陪伴而非生产力，芯片厂商借此把品牌从机房推进客厅。",
+      "stance": "这是营销事件被当成技术里程碑，热闹归热闹，别把玩具销量读成机器人产业拐点。"
+    }
+  ],
+  "stats": {},
+  "items": {
+    "it_1fd8476b4493a52b": {
+      "id": "it_1fd8476b4493a52b",
+      "source": "hackernews",
+      "title": "Kimi K3.1 Pro and K3.1 Pro Highspeed",
+      "url": "https://www.kimi.ai/blog/kimi-k3-1-pro",
+      "summary": "https://www.kimi.com/code/docs/en/kimi-code/models.html https://artificialanalysis.ai/models/kimi-k3-1-pro https://www.modelcompare.ai/blog/china-open-source-ai",
+      "hot_score": 85.553,
+      "topic_id": "tp_ed49951cdb0f",
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-23T16:59:08+00:00",
+      "last_seen_at": "2026-10-24T03:10:28.754372+00:00",
+      "metrics": {
+        "points": 758,
+        "num_comments": 469
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_77f9ddd43bbeeb71": {
+      "id": "it_77f9ddd43bbeeb71",
+      "source": "github_trending",
+      "title": "cloudflare/security-audit-skill",
+      "url": "https://github.com/cloudflare/security-audit-skill",
+      "summary": "A coding-agent skill for multi-phase security audits with independently verified, machine-readable findings",
+      "hot_score": 83.1991,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-21T03:11:29.651293+00:00",
+      "last_seen_at": "2026-10-24T03:10:28.815672+00:00",
+      "metrics": {
+        "stars_total": 42306,
+        "stars_in_window": 2979,
+        "forks": 2643,
+        "streak_days": 4
+      },
+      "streak_days": 4,
+      "language": "JavaScript"
+    },
+    "it_1f9eddacbb7de266": {
+      "id": "it_1f9eddacbb7de266",
+      "source": "hackernews",
+      "title": "Swedish government offices to ban ChatGPT and Claude",
+      "url": "https://www.sverigesradio.se/artikel/chat-gpt-och-claude-forbjuder-regeringskansliet",
+      "summary": "",
+      "hot_score": 76.6785,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-23T11:39:54+00:00",
+      "last_seen_at": "2026-10-24T03:10:28.757466+00:00",
+      "metrics": {
+        "points": 315,
+        "num_comments": 118
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_42565b5232096036": {
+      "id": "it_42565b5232096036",
+      "source": "github_trending",
+      "title": "DietrichGebert/ponytail",
+      "url": "https://github.com/DietrichGebert/ponytail",
+      "summary": "Makes your AI agent think like the laziest senior dev in the room. The best code is the code you never wrote.",
+      "hot_score": 75.4491,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-21T03:11:29.651306+00:00",
+      "last_seen_at": "2026-10-23T03:15:42.528384+00:00",
+      "metrics": {
+        "stars_total": 173682,
+        "stars_in_window": 2079,
+        "forks": 9453,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "JavaScript"
+    },
+    "it_0ac194e7dd2196c5": {
+      "id": "it_0ac194e7dd2196c5",
+      "source": "hackernews",
+      "title": "Evolving Threat: http2shell is an RCE in node, Python, and more",
+      "url": "https://nitter.click/AikidoSecurity/status/2113759110625906950?__galadriel=lPmlGl9id4oAd5UeBwMhlYKArHyr6lR2IDGujPwB5HV2kQ1aLoPWFd5A9sGuzNcmrp8fUso8qygmHcKTDZ8MNHWqQ3bDJcycV87xp_0VypzQLYj6O_RRHlZuQqj33oASGY2YLSoAiMjeOZN40h7Stf8AG7DPrGZbAPVKUXy36HoMudRbvwF3_r2uYNmfJMhpKzywQDM6Ab8",
+      "summary": "",
+      "hot_score": 74.8929,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-23T23:30:17+00:00",
+      "last_seen_at": "2026-10-24T03:10:28.759325+00:00",
+      "metrics": {
+        "points": 106,
+        "num_comments": 53
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_93bbd6e7c3469d05": {
+      "id": "it_93bbd6e7c3469d05",
+      "source": "hf_papers",
+      "title": "Making MLLM Latents Matter: Factor-Aware Predictive Learning for Cinematic Video Generation",
+      "url": "arxiv:2610.30926",
+      "summary": "Cinematic video generation requires both temporal inference from limited inputs (i.e., sparse rather than frame-by-frame guidance) and factor-aware control of character, scene, action, and camera. Multimodal large language models (MLLMs) offer useful priors for both capabilities, but their representations are not automatically actionable for video generation: a Video Diffusion Transformer (DiT) may bypass them through native conditioning pathways, and using them does not ensure either factor-aware control or generation-compatible temporal prediction. We propose Factor-Aware Predictive Learning (FAPL), which establishes effective MLLM latent use as a shared prerequisite and then targets the two capabilities with complementary learning signals. First, latent-only generator grounding trains the DiT with a frozen MLLM and connector, strengthening the DiT's use of MLLM latents for generation. Second, for factor-aware control, paired videos specify a target-factor change and non-target preservation, and factor-span replacement trains the DiT to realize this relationship in its output. Third, for temporal inference, text-only and text-plus-complete-video observations share a video target, and the trained DiT is then frozen while the MLLM and connector are optimized through it. This final stage trains limited-input representations for generation while retaining complete-observation reconstruction as a complementary training mode. Extensive experiments demonstrate our consistently better performance on three cinematic video generation tasks (i.e., sparse-to-video, factor-aware editing, and multi-shot generation) over baselines and validate FAPL's contributions to MLLM feature use, temporal control, and factor coordination.",
+      "hot_score": 70.003,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-22T04:43:48+00:00",
+      "last_seen_at": "2026-10-23T03:15:42.570652+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 11
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_98169d606489bb04": {
+      "id": "it_98169d606489bb04",
+      "source": "hf_papers",
+      "title": "Meta Expert: Cross-Layer Expert Sharing for Storage- and Retrieval-Efficient MoE",
+      "url": "arxiv:2610.27598",
+      "summary": "As model parameters scale up, sparsely activated Mixture-of-Experts (MoE) approaches have become essential for model scaling. However, mainstream models currently adopt hierarchical architectures, where experts in different layers, although topologically independent, exhibit substantial similarity and redundancy in their stored content. Compared to the hierarchically arranged Local Expert in existing mainstream models, we hypothesize that inter-layer shared Meta Expert hold greater potential. To this end, we conduct a multi-dimensional empirical comparison between Local and Meta Experts, and find that models incorporating Meta Experts exhibit lower parameter redundancy, together with lower cross-entropy loss and higher downstream task accuracy. With the activated quantity and the expert granularity held fixed, our model matches the performance of Vanilla MoE using only 70--80\\% of the experts, substantially improving the model's scaling potential. Beyond removing inter-layer redundancy among experts and improving information storage efficiency, our theoretical analysis further shows that, compared with Local Experts, Meta Experts provide hidden states with more flexible residual pathways, thereby improving information retrieval efficiency.",
+      "hot_score": 69.8451,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-19T20:00:00+00:00",
+      "last_seen_at": "2026-10-23T03:15:42.570071+00:00",
+      "metrics": {
+        "num_comments": 2,
+        "upvotes": 15
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_01d32fd68c2d717a": {
+      "id": "it_01d32fd68c2d717a",
+      "source": "github_trending",
+      "title": "Graphify-Labs/graphify",
+      "url": "https://github.com/Graphify-Labs/graphify",
+      "summary": "Turn any codebase, with its docs, SQL schemas, configs, and PDFs, into a queryable knowledge graph. A /graphify skill for Claude Code, Cursor, Codex, and Gemini CLI: local deterministic AST parsing, every edge explained, no vector store.",
+      "hot_score": 67.6991,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-21T03:11:29.651321+00:00",
+      "last_seen_at": "2026-10-23T03:15:42.529925+00:00",
+      "metrics": {
+        "stars_total": 133093,
+        "stars_in_window": 1433,
+        "forks": 12730,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "Python"
+    },
+    "it_8858b289f2eefaee": {
+      "id": "it_8858b289f2eefaee",
+      "source": "github_trending",
+      "title": "Renhuai123/ziwei-doushu",
+      "url": "https://github.com/Renhuai123/ziwei-doushu",
+      "summary": "紫微斗数开源排盘引擎 — 基于倪海厦《天纪》体系，含完整排盘算法、四化系统、格局知识库、古籍原文数据",
+      "hot_score": 67.5,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-24T03:09:27.367517+00:00",
+      "last_seen_at": "2026-10-24T03:10:28.819165+00:00",
+      "metrics": {
+        "stars_total": 6936,
+        "stars_in_window": 546,
+        "forks": 1419,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "TypeScript"
+    },
+    "it_7a18b24f21ac51ca": {
+      "id": "it_7a18b24f21ac51ca",
+      "source": "hackernews",
+      "title": "The rise and fall of Jev hype",
+      "url": "https://blog.alexewerlof.com/p/rise-and-fall-of-jev-eval-hype-vs-llm",
+      "summary": "",
+      "hot_score": 62.8649,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-23T09:21:00+00:00",
+      "last_seen_at": "2026-10-24T03:10:28.760168+00:00",
+      "metrics": {
+        "points": 88,
+        "num_comments": 65
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_3880477a3e9a8bf0": {
+      "id": "it_3880477a3e9a8bf0",
+      "source": "github_trending",
+      "title": "SnailSploit/Claude-Red",
+      "url": "https://github.com/SnailSploit/Claude-Red",
+      "summary": "claude-red is a curated library of offensive security skills designed for the Claude skills system. Each skill is a structured SKILL.md file that primes Claude with expert-level methodology for a specific attack surface — from SQLi to shellcode, EDR evasion to exploit development.",
+      "hot_score": 60.0,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-24T03:09:27.367527+00:00",
+      "last_seen_at": "2026-10-24T03:10:28.820264+00:00",
+      "metrics": {
+        "stars_total": 8552,
+        "stars_in_window": 226,
+        "forks": 1105,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_7ed7b72f04295c52": {
+      "id": "it_7ed7b72f04295c52",
+      "source": "github_trending",
+      "title": "supabase/supabase",
+      "url": "https://github.com/supabase/supabase",
+      "summary": "The Postgres development platform. Supabase gives you a dedicated Postgres database to build your web, mobile, and AI applications.",
+      "hot_score": 58.9764,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-22T03:09:54.791445+00:00",
+      "last_seen_at": "2026-10-23T03:15:42.530484+00:00",
+      "metrics": {
+        "stars_total": 113534,
+        "stars_in_window": 693,
+        "forks": 17007,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "TypeScript"
+    },
+    "it_463277c6c46271fe": {
+      "id": "it_463277c6c46271fe",
+      "source": "hf_papers",
+      "title": "LaLa-World: Scaling Latent World Models with Natural Language Actions",
+      "url": "arxiv:2610.27851",
+      "summary": "This paper shows that JEPA-style latent world models (LWMs) can learn across diverse domains and data sources by adopting the language-conditioned interface of video generation models. We establish this approach as an effective and efficient basis for planning with imagination and downstream policy fine-tuning. To this end, we introduce LaLa-World, a Language-conditioned Latent World model that learns from simulation and robot trajectories together with broader image and video data. Two designs make this work. First, we describe both numerical actions and visual changes in language, enabling joint training of a single future predictor across heterogeneous datasets. Second, we build the predictor on a language model, allowing it to interpret language conditions while predicting future latent states. The resulting predictor achieves higher average MPC planning performance than existing LWMs trained separately for each domain or task. Adding image and video data further improves average planning performance and robustness to action phrasing. In a matched comparison with an RAEv2-based video generation model baseline, LaLa-World reaches comparable planning performance with 6times less training cost and 13.9times faster planning. Beyond planning, the pretrained LaLa-World serves as an initialization for LaLa-Policy, which jointly predicts actions and future visual representations. LaLa-Policy performs competitively with Cosmos Policy on LIBERO and RoboCasa, with up to 5.5times faster inference.",
+      "hot_score": 58.6198,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-20T20:00:00+00:00",
+      "last_seen_at": "2026-10-23T03:15:42.571273+00:00",
+      "metrics": {
+        "num_comments": 2,
+        "upvotes": 6
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_9f7804a9217e63d1": {
+      "id": "it_9f7804a9217e63d1",
+      "source": "hf_papers",
+      "title": "Code2Video-Compass: A Comprehensive Benchmark for General-Purpose Code-Based Video Generation across T2V, I2V, and V2V",
+      "url": "arxiv:2610.28416",
+      "summary": "Code-based video generation offers fine-grained control, targeted editing, and component reuse compared with direct video generation. This approach requires multimodal large language models (MLLMs) to translate visual and temporal requirements into executable programs that produce complete videos. However, existing code-based benchmarks primarily target specialized tasks, leaving complete video creation across diverse creative categories and input modalities insufficiently evaluated. We introduce Code2Video-Compass, a general-purpose benchmark for code-based video generation across text-to-video (T2V), image-to-video (I2V), and video-to-video (V2V) settings. Code2Video-Compass comprises 2,104 tasks spanning 10 categories, 24 subtypes, and three complexity dimensions covering construction, dynamic animation, and state dependency. It combines tasks curated from textual instructions and visual references with corresponding T2V, I2V, and V2V tasks derived from complete professional and user-created videos. We propose a dual-level evaluation framework combining 12 objective metrics and five subjective metrics. Objective evaluation covers operational performance, video quality, text-video alignment, and reference fidelity, while subjective evaluation uses an MLLM judge to evaluate instruction following and holistic video quality. Extensive evaluation of 15 recent proprietary and open-weight MLLMs from nine families reveals that even leading models face challenges in reliably generating high-quality complete videos aligned with textual and visual requirements, with performance generally declining as construction, dynamic animation, and state-dependency complexity increases. We anticipate that Code2Video-Compass will advance reliable, coherent, and controllable code-based video generation and inspire broader progress in programmatic visual creation.",
+      "hot_score": 57.3451,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-19T20:00:00+00:00",
+      "last_seen_at": "2026-10-23T03:15:42.571889+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 6
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_fdf7de3aa15def01": {
+      "id": "it_fdf7de3aa15def01",
+      "source": "github_trending",
+      "title": "php/php-src",
+      "url": "https://github.com/php/php-src",
+      "summary": "The PHP Interpreter",
+      "hot_score": 57.1586,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-23T03:15:27.781246+00:00",
+      "last_seen_at": "2026-10-24T03:10:28.816459+00:00",
+      "metrics": {
+        "stars_total": 41585,
+        "stars_in_window": 716,
+        "forks": 8363,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "C"
+    },
+    "it_38e504ab00817795": {
+      "id": "it_38e504ab00817795",
+      "source": "github_trending",
+      "title": "OpenBMB/VoxCPM",
+      "url": "https://github.com/OpenBMB/VoxCPM",
+      "summary": "VoxCPM2: Tokenizer-Free TTS for Multilingual Speech Generation, Creative Voice Design, and True-to-Life Cloning",
+      "hot_score": 56.25,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-24T03:09:27.367536+00:00",
+      "last_seen_at": "2026-10-24T03:10:28.821248+00:00",
+      "metrics": {
+        "stars_total": 40303,
+        "stars_in_window": 150,
+        "forks": 4581,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_a7519c6ce55f34ab": {
+      "id": "it_a7519c6ce55f34ab",
+      "source": "github_trending",
+      "title": "luongnv89/claude-howto",
+      "url": "https://github.com/luongnv89/claude-howto",
+      "summary": "A visual, example-driven guide to Claude Code — from basic concepts to advanced agents, with copy-paste templates that bring immediate value.",
+      "hot_score": 55.9086,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-23T03:15:27.781286+00:00",
+      "last_seen_at": "2026-10-23T03:15:42.531323+00:00",
+      "metrics": {
+        "stars_total": 43351,
+        "stars_in_window": 177,
+        "forks": 5398,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_f9a8ffb1d681774b": {
+      "id": "it_f9a8ffb1d681774b",
+      "source": "hackernews",
+      "title": "Show HN: Swurf – Swipe through the real web",
+      "url": "https://swurf.org/",
+      "summary": "Hello HN, Swurf allows you to swipe through the real web one page after another. It learns what you like and doesn’t show you the same page twice. The idea came naturally: there’s a seemingly infinite amount of high quality blog posts, random topic rabbit holes, and trending or cool sites that exist which the average person simply will never load on their browser. Swurf solves that by allowing you to rapidly traverse a constantly growing and learning feed of sites that it thinks you’d want to vi",
+      "hot_score": 55.4943,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-23T06:54:52+00:00",
+      "last_seen_at": "2026-10-24T03:10:28.760919+00:00",
+      "metrics": {
+        "points": 63,
+        "num_comments": 29
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_a8f2132df5b8b6a6": {
+      "id": "it_a8f2132df5b8b6a6",
+      "source": "hackernews",
+      "title": "New AI Is More Than Twice as Good at Diagnosing Diseases as Doctors",
+      "url": "https://gizmodo.com/microsoft-says-its-new-ai-is-more-than-twice-as-good-at-diagnosing-diseases-as-doctors-2000829562",
+      "summary": "",
+      "hot_score": 54.7122,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-23T19:31:36+00:00",
+      "last_seen_at": "2026-10-24T03:10:28.763807+00:00",
+      "metrics": {
+        "points": 43,
+        "num_comments": 36
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_c9cdc26758b48a34": {
+      "id": "it_c9cdc26758b48a34",
+      "source": "github_trending",
+      "title": "anthropics/knowledge-work-plugins",
+      "url": "https://github.com/anthropics/knowledge-work-plugins",
+      "summary": "Open source repository of plugins primarily intended for knowledge workers to use in Claude Cowork",
+      "hot_score": 52.4491,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-21T03:11:29.651346+00:00",
+      "last_seen_at": "2026-10-24T03:10:28.817677+00:00",
+      "metrics": {
+        "stars_total": 32278,
+        "stars_in_window": 635,
+        "forks": 3576,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "Python"
+    },
+    "it_8ea6ea906fb17117": {
+      "id": "it_8ea6ea906fb17117",
+      "source": "hf_papers",
+      "title": "Policy-Mask: Budget-Aware Adaptation of Diffusion Features to Discriminative Tasks",
+      "url": "arxiv:2610.28889",
+      "summary": "Selecting intermediate features from a frozen diffusion model for discriminative tasks is non-trivial because the useful signal is distributed across the denoising trajectory, network depth, and channels. In practice, this requires choosing a timestep, a block, and a channel subset. Existing methods either fix these choices by hand or optimize only a few extraction hyperparameters, most often the timestep, then reuse the same rule across inputs and budgets. We introduce Policy-Mask, a budget-conditioned policy trained on the downstream objective that jointly selects all three under a prescribed channel budget. Without normalization, the channel-score contribution grows with the number of selected channels and dominates the timestep and block updates. We normalize it by subset cardinality, keeping the three policy heads on comparable scales and stabilizing joint training. At matched budgets, Policy-Mask improves over fixed extraction and feature-filter baselines across segmentation, classification, and semantic correspondence, reaching 38.9 mIoU on ADE20K, 75.4% top-1 on CIFAR-100 at 128 dimensions, and 76.3 PCK@0.1 on SPair-71k. Component-wise ablations show that block selection materially affects downstream accuracy, and the highest recorded channel-budget score occurs at 256 retained channels, identifying a practical operating point for compact diffusion representations. We further adapt Policy-Mask to diffusion transformers, including PixArt-Σ and SD3.5 MMDiT, by replacing U-Net channels with image-token hidden dimensions.",
+      "hot_score": 49.8451,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-19T20:00:00+00:00",
+      "last_seen_at": "2026-10-23T03:15:42.572484+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 5
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_41ec37365e67af16": {
+      "id": "it_41ec37365e67af16",
+      "source": "hf_papers",
+      "title": "Beyond Watching and Searching: Benchmarking Agents for Video-centered Deep Research Reports",
+      "url": "arxiv:2610.31158",
+      "summary": "Deep research agents synthesize open-web evidence into long reports, but current benchmarks do not evaluate research centered on a source video. We introduce Video-Centered Deep Research Report Generation. Given a video and user request, an agent identifies research questions, retrieves external multimodal evidence, and produces an interactive report linked to relevant video moments. This task has direct practical value because it helps users locate relevant moments, verify claims, reproduce demonstrated procedures, and make informed decisions from video content. We present a skill-based workflow and OmniDR-Bench for this task. For evaluation, we propose Omni Atomic Rubric Trees (Omni-ARTs). Each tree contains three dimensions, 23 shared directions, and task-specific atomic binary criteria. The directions test audiovisual grounding, multimodal evidence use, and interactive presentation. Audited Rubric Construction (ARC) builds these trees through independent evidence collection, automated checks, behavioral calibration, and iterative human review. OmniDR-Bench contains 50 Chinese and English tasks across 19 realworld subcategories. It includes 6,414 criteria. Across 18 agent configurations, the best system scores 63.3 out of 100. Current agents still need broader content coverage, stronger causal and logical analysis across modalities, and more accurate citation support. We further analyze models, harnesses, skill configurations, video categories, and research trajectories. The code and data are released at https://github.com/marinero4972/OmniDR-Bench.",
+      "hot_score": 48.6027,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-21T20:00:00+00:00",
+      "last_seen_at": "2026-10-23T03:15:42.573125+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 3
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_8612522c4276d8a3": {
+      "id": "it_8612522c4276d8a3",
+      "source": "hackernews",
+      "title": "Volodymyr Zelenskyy: The speed limits on Starlink and Starshield are still there",
+      "url": "https://twitter.com/ZelenskyyUa/status/2113677048354947180",
+      "summary": "",
+      "hot_score": 48.196,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-23T19:21:40+00:00",
+      "last_seen_at": "2026-10-24T03:10:28.764598+00:00",
+      "metrics": {
+        "points": 39,
+        "num_comments": 14
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_2fbf3db695f9d673": {
+      "id": "it_2fbf3db695f9d673",
+      "source": "github_trending",
+      "title": "nodejs/node",
+      "url": "https://github.com/nodejs/node",
+      "summary": "Node.js JavaScript runtime ✨🐢🚀✨",
+      "hot_score": 45.0,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-24T03:09:27.367548+00:00",
+      "last_seen_at": "2026-10-24T03:10:28.821971+00:00",
+      "metrics": {
+        "stars_total": 122907,
+        "stars_in_window": 66,
+        "forks": 39834,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "JavaScript"
+    },
+    "it_873c35a344852ac9": {
+      "id": "it_873c35a344852ac9",
+      "source": "github_trending",
+      "title": "fastapi/fastapi",
+      "url": "https://github.com/fastapi/fastapi",
+      "summary": "FastAPI framework, high performance, easy to learn, fast to code, ready for production",
+      "hot_score": 44.6586,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-23T03:15:27.781280+00:00",
+      "last_seen_at": "2026-10-23T03:15:42.530933+00:00",
+      "metrics": {
+        "stars_total": 103827,
+        "stars_in_window": 101,
+        "forks": 10093,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_593011f7fe1bce84": {
+      "id": "it_593011f7fe1bce84",
+      "source": "hf_papers",
+      "title": "Reading, Writing, Sharing, and Interacting with the World through Video",
+      "url": "arxiv:2610.31668",
+      "summary": "Video foundation models have advanced rapidly in understanding and generating visual sequences, while video world models seek to capture the underlying dynamics of the world they depict. Despite their different objectives, both concern the relationship between video observations and an evolving world. This survey adopts world modeling as a unifying lens for examining these developments. Viewing an observed video as a partial, lossy, and temporally ordered projection of a latent temporal world, we organize the literature around four complementary operations: reading infers world properties from observed video; writing synthesizes video from specified or learned world conditions; sharing integrates understanding and generation through common modeling mechanisms; and interacting predicts and updates world states under actions and evolving observations. This perspective distinguishes temporal coherence in observed or generated sequences from consistency in the underlying world state. Across tasks, representations, models, datasets, and benchmarks, we trace a shift in emphasis from clip-level recognition and perceptual fidelity toward persistent state, controllable evolution, physical and causal validity, and evaluation grounded in interaction and downstream decisions, and we distill the open challenges that follow.",
+      "hot_score": 43.6027,
+      "topic_id": null,
+      "seen_in": [
+        "arxiv",
+        "hf_papers"
+      ],
+      "published_at": "2026-10-21T20:00:00+00:00",
+      "last_seen_at": "2026-10-23T03:15:42.532821+00:00",
+      "metrics": {
+        "num_comments": 0,
+        "upvotes": 1
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_c94050b89bcaf4d3": {
+      "id": "it_c94050b89bcaf4d3",
+      "source": "hackernews",
+      "title": "Show HN: Corgi, a helpful {agent, terminal} multiplexer",
+      "url": "https://corgi.computer/",
+      "summary": "Hey everyone, Inspired by Herdr, I've built an agent multiplexer that I've been using as my daily driver for a few weeks now. I think I improved on the concept in a few ways, focusing on the ergonomics I always wished I had: I show you what the agents are up to, along with a running feed of their activity.\nThere's also a simple shortcut (F1) to go to the next unread agent. I use multiple accounts, so I've added unified launcher for Codex/Claude Code/Pi.\nTheres some careful ergonomics there: fast",
+      "hot_score": 41.9885,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-23T19:46:38+00:00",
+      "last_seen_at": "2026-10-24T03:10:28.762323+00:00",
+      "metrics": {
+        "points": 46,
+        "num_comments": 8
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_00b5d16e5263ed2a": {
+      "id": "it_00b5d16e5263ed2a",
+      "source": "github_trending",
+      "title": "Meloong-Git/PCL",
+      "url": "https://github.com/Meloong-Git/PCL",
+      "summary": "Minecraft 启动器 Plain Craft Launcher（PCL）。",
+      "hot_score": 40.9086,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-23T03:15:27.781290+00:00",
+      "last_seen_at": "2026-10-23T03:15:42.531798+00:00",
+      "metrics": {
+        "stars_total": 8743,
+        "stars_in_window": 119,
+        "forks": 1209,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Visual Basic .NET"
+    },
+    "it_f699a3e5cdaf4929": {
+      "id": "it_f699a3e5cdaf4929",
+      "source": "rss",
+      "title": "OpenAI says it will no longer train its AI models on the live internet, citing “significant risks”",
+      "url": "https://techcrunch.com/2026/10/23/openai-says-it-will-no-longer-train-its-ai-models-on-the-live-internet-citing-significant-risks",
+      "summary": "OpenAI will cut frontier models off from the internet weeks after one of its engineers said that solution wouldn't work.",
+      "hot_score": 39.0,
+      "topic_id": "tp_50a4ca95f21e",
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-10-23T23:05:49+00:00",
+      "last_seen_at": "2026-10-24T03:10:28.808690+00:00",
+      "metrics": {
+        "rank_score": 1.0
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_67ab64203109c3c9": {
+      "id": "it_67ab64203109c3c9",
+      "source": "rss",
+      "title": "Hottest toy for Christmas? Nvidia CEO plays with adorable Microduck robots, 20,000 sell",
+      "url": "https://techcrunch.com/2026/10/23/hottest-toy-for-christmas-nvidia-ceo-plays-with-adorable-microduck-robots-20000-sell",
+      "summary": "The robots, stomping their little feet and making tiny R2-D2 noises, sat, fell down dead for a \"nap,\" and summersaulted on voice command.",
+      "hot_score": 39.0,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-10-23T21:59:19+00:00",
+      "last_seen_at": "2026-10-24T03:10:28.809540+00:00",
+      "metrics": {
+        "rank_score": 0.75
+      },
+      "streak_days": 0,
+      "language": "en"
+    }
+  },
+  "meta": {
+    "mode": "hybrid",
+    "day": "2026-10-24",
+    "generated_at": "2026-10-24T03:11:33.417260+00:00",
+    "window": {
+      "since": "2026-10-23T03:09:26.108427+00:00",
+      "until": "2026-10-24T03:10:28.839015+00:00",
+      "hours": 24.0,
+      "since_local": "2026-10-23T11:09+08:00",
+      "until_local": "2026-10-24T11:10+08:00",
+      "tz": "Asia/Shanghai"
+    },
+    "analysis": {
+      "items": 134,
+      "scored": 134,
+      "topics": 5,
+      "new_entity_mention_rows": 155,
+      "state_items": 7
+    },
+    "llm": {
+      "degraded": false,
+      "degraded_reason": "",
+      "calls": 1
+    },
+    "collect": {
+      "ok_sources": 6,
+      "failed_sources": 1,
+      "skipped": 0,
+      "total_items": 60
+    },
+    "verify": {
+      "verified": 0,
+      "unverifiable": 0,
+      "deferred": 0,
+      "failed": 0,
+      "llm_calls": 0
+    },
+    "predictions": {
+      "total": 69,
+      "verified": 0,
+      "pending": 69,
+      "unverifiable": 0,
+      "hit_rate": null,
+      "weighted_score": null,
+      "brier": null
+    },
+    "prediction_generation": {
+      "mode": "hybrid",
+      "generated": 5,
+      "inserted": 5,
+      "dropped": [],
+      "llm_calls": 1,
+      "candidate_pool": 20,
+      "degraded": false,
+      "degraded_reason": ""
+    },
+    "brief": {
+      "max_items_per_section": 10,
+      "velocity_board_enabled": true,
+      "velocity_board_top_n": 5
+    },
+    "signals": {
+      "entities": 310,
+      "points": 945,
+      "with_velocity": 41,
+      "insufficient": 112,
+      "cold_start": 157,
+      "min_window_hours": 6.0
+    },
+    "enhance_total": 27,
+    "enhanced": 27,
+    "enhance_skipped_count": 0,
+    "enhance_cache_hit": 14,
+    "enhance_cost_cny": 0.006616
+  }
+}
