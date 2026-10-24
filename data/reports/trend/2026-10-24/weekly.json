@@ -1,0 +1,227 @@
+{
+  "schema_version": 2,
+  "window": {
+    "start": "2026-10-15",
+    "end": "2026-10-24",
+    "days": 10
+  },
+  "comparison": {
+    "start": "2026-10-17",
+    "end": "2026-10-24",
+    "days": 8
+  },
+  "headlines": [
+    "开源项目份额8天由30.2%升至43.9%，来源集中度抬升",
+    "社区舆论份额首末+1.84pp、斜率-2.21pp/天，后段转降",
+    "五条开源项目连续在榜3至7天后跌出Top30"
+  ],
+  "judgements": [
+    {
+      "key": "rising_topics",
+      "title": "上升主题",
+      "claim": "开源项目是本周唯一份额明显上行的板块，短窗内个体热度与板块方向一致。",
+      "cited_item_ids": [
+        "it_77f9ddd43bbeeb71",
+        "it_c9cdc26758b48a34"
+      ]
+    },
+    {
+      "key": "falling_topics",
+      "title": "降温主题",
+      "claim": "社区舆论首末为正但斜率转负，开源项目连续在榜3至7天后集中于20日至22日跌出。",
+      "cited_item_ids": [
+        "it_1fd8476b4493a52b",
+        "it_752e25023358d2db",
+        "it_645a6cf2b3acc8ac"
+      ]
+    },
+    {
+      "key": "emerging_topics",
+      "title": "新进榜",
+      "claim": "单日新进榜8条中社区舆论占5条，回流与反复进出的8条则全部落在开源项目。",
+      "cited_item_ids": [
+        "it_1fd8476b4493a52b",
+        "it_c9cdc26758b48a34"
+      ]
+    },
+    {
+      "key": "structural_changes",
+      "title": "结构变化",
+      "claim": "开源项目份额与github_trending来源份额同值，板块变化锁定在单一来源的供给节奏上。",
+      "cited_item_ids": [
+        "it_77f9ddd43bbeeb71",
+        "it_1fd8476b4493a52b"
+      ]
+    },
+    {
+      "key": "second_order_effects",
+      "title": "二阶影响",
+      "claim": "注意力向可复用仓库集中，长尾分散曝光方承压，舆情类内容的转化窗口随之缩短。",
+      "cited_item_ids": [
+        "it_42565b5232096036",
+        "it_01d32fd68c2d717a",
+        "it_1f9eddacbb7de266"
+      ]
+    },
+    {
+      "key": "prediction_review",
+      "title": "预言复盘",
+      "claim": "39条预言最早到期日为10月31日，本周无到期样本，命中情况尚不可估。",
+      "cited_item_ids": []
+    },
+    {
+      "key": "watchlist",
+      "title": "下期观察",
+      "claim": "下期核验两条：长榜项目能否由7天延到8天，单日新进项目能否连到2天。",
+      "cited_item_ids": [
+        "it_752e25023358d2db",
+        "it_1fd8476b4493a52b"
+      ]
+    }
+  ],
+  "caveats": [
+    "请求 30 天窗口，实际只有 10 天（2026-10-15 → 2026-10-24）；结构判定按 10 天进行，还需再攒 20 天日报才能覆盖完整 30 天。跨度不足时「走平」与「慢趋势」更难区分，请按较低置信度阅读。",
+    "对比区间 2026-10-17→2026-10-24（8 天，源集合同构；全窗口 10 天）；源集合变更日 2026-10-17，禁止跨该日比较",
+    "论文与研究：供给源 arxiv/hf_papers 在 2026-10-17/2026-10-18/2026-10-19/2026-10-20/2026-10-21/2026-10-22/2026-10-24 整源 0 条（份额 0.4292→0.2285，斜率 -0.19pp/天 仅供参考）",
+    "2026-10-17 hf_papers：degraded，item_count=0",
+    "2026-10-18 hf_papers：degraded，item_count=0",
+    "2026-10-19 arxiv：failed，item_count=0",
+    "2026-10-20 arxiv：failed，item_count=0",
+    "2026-10-21 arxiv：failed，item_count=0",
+    "2026-10-22 arxiv：failed，item_count=0",
+    "2026-10-24 arxiv：failed，item_count=0",
+    "2026-10-24 hf_papers：degraded，item_count=0"
+  ],
+  "segments": [
+    {
+      "key": "rising_topics",
+      "title": "上升主题",
+      "body": "开源项目（it_77f9ddd43bbeeb71 所在板块）在 10-17→10-24 的同构区间内份额 0.3019→0.4394（8 天斜率 +0.44pp/天；首末差 +13.75pp 仅作幅度参照），意味着该板块占比在这 8 天内抬升。条目 it_c9cdc26758b48a34 相邻两日 43.72→52.45（+8.73），意味着开源项目内部存在短窗热度抬升的个体证据；这一条与板块份额方向一致。同步变化组中，it_752e25023358d2db 所在 11 条组 n_days=3~6、it_01d32fd68c2d717a 所在 4 条组 n_days=3~4，其中 n_days 部分低于 5 天且未做显著性检验；两组均 coherent=False，组内出现分化，不作同向解读。同步组仅作内部结构提示，不作为上升证据。份额方向以斜率为主，首末差只作幅度参照；窗口内不跨源集合变更日比较。",
+      "char_count": 379,
+      "cited_item_ids": [
+        "it_01d32fd68c2d717a",
+        "it_752e25023358d2db",
+        "it_77f9ddd43bbeeb71",
+        "it_c9cdc26758b48a34"
+      ],
+      "boilerplate_hits": [],
+      "violations": [],
+      "llm_calls": 1,
+      "prompt_tokens": 1469,
+      "completion_tokens": 6753,
+      "skipped_reason": ""
+    },
+    {
+      "key": "falling_topics",
+      "title": "降温主题",
+      "body": "it_1fd8476b4493a52b 所在社区舆论份额首末差 +1.84pp、斜率 -2.21pp/天，方向不一致，说明窗口内先升后降，拐点后进入降温；首末差为正但斜率转负，意味着末段回落已抵消前段抬升。开源项目连续在榜后跌出 Top30：it_752e25023358d2db（7天，80.61）、it_645a6cf2b3acc8ac（6天，67.08）、it_940ae4b9591d1f09（6天，65.71）、it_7d0ed93b88de47b1（4天，57.28）、it_85ee7a3aef761044（3天，49.8）均在最后在榜后跌出 Top30；连续在榜天数由7天降到3天，说明短周期上榜项目更快触及跌出 Top30 的时点。上述开源条目最后在榜日集中在10-20至10-22，连续在榜档位覆盖3至7天，跌出 Top30 前热度分层明显；其中6天档有两条同日跌出，4天档与3天档分别落在10-22和10-20。",
+      "char_count": 408,
+      "cited_item_ids": [
+        "it_1fd8476b4493a52b",
+        "it_645a6cf2b3acc8ac",
+        "it_752e25023358d2db",
+        "it_7d0ed93b88de47b1",
+        "it_85ee7a3aef761044",
+        "it_940ae4b9591d1f09"
+      ],
+      "boilerplate_hits": [],
+      "violations": [],
+      "llm_calls": 1,
+      "prompt_tokens": 1853,
+      "completion_tokens": 7944,
+      "skipped_reason": ""
+    },
+    {
+      "key": "emerging_topics",
+      "title": "新进榜",
+      "body": "以 it_1fd8476b4493a52b 的在榜1天为观察点，单日新进榜8条中社区舆论5条、开源项目3条，5/8→62.5%对3/8→37.5%，意味着当日榜面由社区舆论占多数，但单日样本只作观察，不能据此断言新趋势。it_c9cdc26758b48a34 在榜3天、最长连续2天，回到榜与反复进出8条均为开源项目，8/8=100%对0/8=0%，意味着这组回流样本当前全部集中在开源项目，其3天在榜、最长连续2天只作为样本属性，不单独构成趋势判断；该对比只覆盖该组样本，不外推其他榜类。",
+      "char_count": 242,
+      "cited_item_ids": [
+        "it_1fd8476b4493a52b",
+        "it_c9cdc26758b48a34"
+      ],
+      "boilerplate_hits": [],
+      "violations": [],
+      "llm_calls": 1,
+      "prompt_tokens": 1790,
+      "completion_tokens": 6629,
+      "skipped_reason": ""
+    },
+    {
+      "key": "structural_changes",
+      "title": "结构变化",
+      "body": "推测结构变化首先体现在供给来源与板块份额的同向抬升：对比区间内 github_trending 热度份额 0.3019→0.4394，与开源项目板块同值，代表条目 it_77f9ddd43bbeeb71 所在板块的份额读数被这一来源放大；这意味着开源项目的份额抬升不是多源普遍扩张，而是 github_trending 单源贡献增强，来源集中度随之上升，后续单源采集或排序波动会更直接地传导到开源项目板块读数。由于热度份额与板块份额同值，来源构成与板块份额在读数上重合，推测这会把开源项目板块的结构变化锁定在单一来源的供给节奏上，而非多源共同抬升。推测另一变化在社区舆论：该板块份额首末 0.2689→0.2873（+1.84pp），但斜率 -2.21pp/天，代表条目 it_1fd8476b4493a52b 所在板块的方向以斜率为准；首末差仍正、斜率已负，说明区间后段出现拐点，净增主要来自前段，后段边际转弱，社区舆论的下降侧压力开始显性化。这一拐点意味着首末差对后段强度的代表性有限，结构判断应以斜率为准。同步变化组无可用组，不作同向解读。持续性分布本周未观察其与具体条目 id 的对应关系，不据此作结构判断。本期无可验证的替代/背离关系。",
+      "char_count": 510,
+      "cited_item_ids": [
+        "it_1fd8476b4493a52b",
+        "it_77f9ddd43bbeeb71"
+      ],
+      "boilerplate_hits": [],
+      "violations": [],
+      "llm_calls": 1,
+      "prompt_tokens": 1604,
+      "completion_tokens": 6680,
+      "skipped_reason": ""
+    },
+    {
+      "key": "second_order_effects",
+      "title": "二阶影响",
+      "body": "推测开源项目侧是窗口内的主要受益者：it_77f9ddd43bbeeb71 所代表的热度份额从 0.3019 抬到 0.4394，首末差 +13.75pp，这一对比意味着新增热度没有均匀散开，而是向开源项目集合集中；同样 8 天里，靠长尾分散曝光的内容方会承压，因为注意力向可复用仓库和项目更新倾斜，发布方会被迫把叙述压缩成短周期、可验证的迭代，长周期项目的边际收益因此被压低。下一步观察 it_42565b5232096036 与 it_01d32fd68c2d717a 能否把 0.4394 从首末差 +13.75pp 的高点维持住，而不是只靠单日脉冲；若维护者把更新节奏继续压短，推测项目类供给的竞争点会从“讲清楚”转向“持续交付”，只做一次性发布的团队会先感到挤压。\n\n推测社区舆论侧承压且内部出现拐点：it_1fd8476b4493a52b 所在板块份额首末为 0.2689→0.2873（+1.84pp），而 8 天斜率为 -2.21pp/天，这两个数字方向不一致，说明区间首末抬升主要由前段贡献，后半段转为回落；因此把 +1.84pp 当成稳定上行会误判，二阶影响是舆情类供给的转化窗口缩短，依赖话题冲高的内容方先承压，而能承接开源项目讨论的账号受益。下一步看 it_1f9eddacbb7de266 与 it_0ac194e7dd2196c5 在斜率 -2.21pp/天 与首末 +1.84pp 的背离下能否维持 0.2873 附近，若不能，推测社区舆论份额会继续向开源项目让渡。",
+      "char_count": 614,
+      "cited_item_ids": [
+        "it_01d32fd68c2d717a",
+        "it_0ac194e7dd2196c5",
+        "it_1f9eddacbb7de266",
+        "it_1fd8476b4493a52b",
+        "it_42565b5232096036",
+        "it_77f9ddd43bbeeb71"
+      ],
+      "boilerplate_hits": [],
+      "violations": [
+        "超出本节字数上限（614 > 600）"
+      ],
+      "llm_calls": 1,
+      "prompt_tokens": 1487,
+      "completion_tokens": 5212,
+      "skipped_reason": ""
+    },
+    {
+      "key": "prediction_review",
+      "title": "预言复盘",
+      "body": "本周 39 条预言均已到期但尚未验证，最早到期日在 2026-10-31，晚于当前的 2026-10-24，所以没有到期样本，命中率不可估。",
+      "char_count": 66,
+      "cited_item_ids": [],
+      "boilerplate_hits": [],
+      "violations": [],
+      "llm_calls": 1,
+      "prompt_tokens": 814,
+      "completion_tokens": 45,
+      "skipped_reason": ""
+    },
+    {
+      "key": "watchlist",
+      "title": "下期观察",
+      "body": "下期先看 it_752e25023358d2db：连续在榜 7 天，下期若仍在前 30 则变为 7→8，说明长榜留存跨过第二周；若跌出 Top30，则“长榜留存可延续”被证伪。再看 it_1fd8476b4493a52b：首日热度 85.55，在榜 1 天，单日样本不足以确认趋势；下期若连续在榜 1→2，则需把“单日新进”修正为持续进入，若跌出 Top30 则维持单日判断。两条观察只核验 Top30 在榜状态、连续天数和首日热度，不用单日热度外推份额，也不把新进榜单日样本与长榜项目做跨期排名。下期结束时，若 it_752e25023358d2db 的连续天数停在 7 天且跌出 Top30，同时 it_1fd8476b4493a52b 仍只有 1 天在榜，则两项当前判断均保留；若出现 7→8 或 1→2 的任一变化，则分别修正对应判断。对 it_752e25023358d2db，只关注是否跌出 Top30；对 it_1fd8476b4493a52b，只核验在榜连续性，不把首日热度当作留存证据。",
+      "char_count": 420,
+      "cited_item_ids": [
+        "it_1fd8476b4493a52b",
+        "it_752e25023358d2db"
+      ],
+      "boilerplate_hits": [],
+      "violations": [],
+      "llm_calls": 1,
+      "prompt_tokens": 1231,
+      "completion_tokens": 6322,
+      "skipped_reason": ""
+    }
+  ],
+  "llm": {
+    "calls": 8,
+    "attempts": 8,
+    "truncated_segments": [],
+    "prompt_tokens": 13330,
+    "completion_tokens": 41519,
+    "cost_cny": 0.219396,
+    "model_tier": "strong"
+  }
+}
