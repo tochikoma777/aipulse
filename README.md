@@ -7,7 +7,7 @@
 
 > **每日自动采集 AI 领域热点，不只整理，还给出可回测的推演与预言。**
 
-> ✅ **状态**：M0–M6c 与 **M5（周度趋势长文 + 多角色辩论 + 产物可读化）** 均已落地并真跑验证（tag `m5`）——**系统每天自动跑**（Actions 定时流水线），产出日报 + **预言记分板**；周报与辩论需手动触发（`aipulse trend` / `aipulse debate`）。
+> ✅ **状态**：M0–M6c、**M5（周度趋势长文 + 多角色辩论 + 产物可读化）** 与 **T9（trend/debate 自动触发）** 均已落地并真跑验证（tag `m5`）——**系统每天自动跑**（Actions `daily` 定时流水线）产出日报 + 预言记分板，**每月 1 日自动跑**趋势与辩论（Actions `monthly`）。
 > **M5 已落地**（`aipulse trend` + `aipulse selfcheck` + `aipulse debate`，S1–S5 全部真跑验证）。产物按**窗口结束日**分目录：周报在 [`data/reports/trend/2026-10-23/weekly.md`](data/reports/trend/2026-10-23/weekly.md)，辩论在 [`data/reports/debate/2026-10-23/`](data/reports/debate/2026-10-23/)。每份都分两层：`weekly.md` 给人看（结论 + 表格 + 折叠免责），`weekly.json` 给校验看（7 节正文 + 裸 ID + 口径）。
 >
 > 完整变更见 [CHANGELOG](CHANGELOG.md) · 开发踩坑见 [踩坑实录](docs/踩坑实录.md)

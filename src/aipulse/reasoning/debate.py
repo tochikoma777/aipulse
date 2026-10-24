@@ -19,8 +19,9 @@
   而 `generate_structured` 不捕获它 → 必须 `return_exceptions=True` + 逐方捕获，
   否则一个 persona 截断会炸掉整轮。
 
-TODO(auto)：从 trend 输出自动挑本周最大争议话题（需要 `TrendReport` 的分歧度打分），
-本轮只做手动 `--topic`，auto 模式未开工。
+自动选题（T9）：省略 `--topic` 时由 `reasoning/auto_topic.py` 挑争议度最高的板块
+（争议度打分 + trend 产物时效守卫 + `min_controversy` 门槛），
+见 `cli/commands/debate.py` 与 `core/schedule.py`。
 """
 
 from __future__ import annotations

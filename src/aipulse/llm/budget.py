@@ -17,6 +17,7 @@
 
 from __future__ import annotations
 
+from collections.abc import Collection
 from datetime import UTC, date, datetime
 
 from sqlalchemy import Engine, func
@@ -50,12 +51,17 @@ class BudgetTracker:
         price_fast_cny_per_1m: float = 1.0,
         price_strong_cny_per_1m: float = 4.0,
         degrade_order: list[str] | None = None,
+        inactive_features: Collection[str] = (),
     ) -> None:
         self.engine = engine
         self.daily_limit_cny = daily_limit_cny
         self.price_fast = price_fast_cny_per_1m
         self.price_strong = price_strong_cny_per_1m
         self.degrade_order = degrade_order or ["debate", "trend", "brief_topn", "all"]
+        # ★ 红线 63：degrade 只对「本期确实要跑」（trigger_mode=auto）的阶段生效，
+        #   否则会出现「降级了一个没在跑的东西」的假动作。inactive 里的名字
+        #   即使进了 degrade_order 也不计入"被降级"清单。
+        self.inactive_features = frozenset(inactive_features)
         # 运行期收集本次会话新增的花费（无 engine 时也能用，纯内存记账）
         self.session_cost = 0.0
 
@@ -98,8 +104,13 @@ class BudgetTracker:
         return min(steps, len(self.degrade_order))
 
     def disabled_features(self) -> list[str]:
-        """当前被关闭的功能名（按 degrade_order 顺序取前缀）。"""
-        return list(self.degrade_order[: self.degrade_stage()])
+        """当前被关闭的功能名（按 degrade_order 顺序取前缀）。
+
+        只报「本期确实要跑」的：`inactive_features`（trigger_mode != auto）里的名字
+        即使进了降级顺序，也不算"被降级"——它本来就没在跑。
+        """
+        closed = self.degrade_order[: self.degrade_stage()]
+        return [f for f in closed if f not in self.inactive_features]
 
     def is_enabled(self, purpose: str) -> bool:
         """该 purpose 在当前降级级数下是否允许调用。"""

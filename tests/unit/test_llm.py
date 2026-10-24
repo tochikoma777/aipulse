@@ -208,3 +208,34 @@ def test_render_prompt_injects_variables():
     )
     assert "[]" in text
     assert "开源项目" in text
+
+
+def test_disabled_features_excludes_inactive_stages() -> None:
+    """红线 63：trigger_mode != auto 的阶段不算"被降级"（它本来就没在跑）。
+
+    用 daily_limit_cny=0 强制降级到顶（stage = len(order)），
+    验证 inactive 里的名字被从 disabled_features 里剔除，但门禁（is_enabled）仍严格。
+    """
+    from aipulse.llm.budget import BudgetTracker
+
+    budget = BudgetTracker(
+        None,
+        daily_limit_cny=0,
+        degrade_order=["debate", "trend", "brief_topn", "all"],
+        inactive_features={"trend"},
+    )
+    budget.session_cost = 5.0  # 无 engine 时靠内存记账；先记一笔超支
+    disabled = budget.disabled_features()
+    assert "trend" not in disabled  # 本期不自动跑 trend，不算被降级
+    assert "debate" in disabled
+    assert "all" in disabled
+    # 门禁仍严格：即使 trend 是 inactive，手动跑 trend 也会被"all"挡住
+    assert not budget.is_enabled("trend_weekly")
+
+
+def test_disabled_features_full_when_nothing_inactive() -> None:
+    from aipulse.llm.budget import BudgetTracker
+
+    budget = BudgetTracker(None, daily_limit_cny=0, degrade_order=["debate", "trend", "all"])
+    budget.session_cost = 5.0
+    assert budget.disabled_features() == ["debate", "trend", "all"]

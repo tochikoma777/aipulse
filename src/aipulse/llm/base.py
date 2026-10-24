@@ -108,12 +108,23 @@ def build_client(settings: Any, *, engine: Any | None = None) -> LLMClient:
     from aipulse.llm.budget import BudgetTracker
     from aipulse.llm.openai_compat import OpenAICompatClient
 
+    # 红线 63：trigger_mode != auto 的阶段本期不会自动跑，不该被算作"被降级"
+    pipeline = getattr(settings, "pipeline", None)
+    inactive_features: tuple[str, ...] = ()
+    if pipeline is not None:
+        inactive_features = tuple(
+            name
+            for name in ("trend", "debate")
+            if getattr(getattr(pipeline, name, None), "trigger_mode", "auto") != "auto"
+        )
+
     budget = BudgetTracker(
         engine,
         daily_limit_cny=settings.budget.daily_limit_cny,
         price_fast_cny_per_1m=settings.budget.price_fast_cny_per_1m,
         price_strong_cny_per_1m=settings.budget.price_strong_cny_per_1m,
         degrade_order=settings.budget.degrade_order,
+        inactive_features=inactive_features,
     )
     return OpenAICompatClient(settings.llm, engine=engine, budget=budget)
 
