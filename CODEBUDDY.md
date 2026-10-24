@@ -21,8 +21,8 @@ tag `m5`）、T9（trend/debate 自动触发 + `aipulse watchlist`，tag `t9`）
 | `cli/commands/watchlist.py` | ✅ 每日轻量核对 watchlist（只核对不新建、零 LLM），daily.yml 每步都跑 |
 | `data/reports/debate/` | ✅ `debate-<slug>.{md,json}`（不入库，只落盘） |
 | `pipeline/weekly.py` | ⬜ 不存在（周报靠 `aipulse trend` 手动/cron 触发） |
-| `web/app.py` 的「趋势」「辩论」入口 | 「趋势」可读 `data/reports/trend/weekly.md`；「辩论」仍置灰 |
-| debate 的 auto 模式（从 trend 挑本周最大争议话题） | ⬜ TODO：需先把「分歧度」定义成可计算的量 |
+| `web/app.py` 的「趋势」「辩论」入口 | **两者都仍置灰**：`web/app.py::M5_ENTRIES` 是纯占位，`base.html` 对它一律渲染 `nav-disabled`（title「M5 完成后点亮」）。M5 产物只在文件系统与 CLI 里消费，看板**没有 trend/debate 页面**——别照旧注释以为「趋势」已点亮 |
+| debate 的 auto 模式（从 trend 挑本期最大争议话题） | ✅ 已落地：`reasoning/auto_topic.py::select_debate_topic()`——4 信号争议度打分（板块份额 \|Δ\|≥3pp / 上期下过判断 / 有条目刚 dropped / 有条目未到期）+ **时效守卫**（trend 产物必须属于本期）+ **`min_controversy` 门槛**（默认 6，低于则跳过并说明）。省略 `--topic` 即走它，依据逐条打印 |
 
 **debate 验收要点（手册 §6 DoD，别做偏）**：四个 persona **必须 `asyncio.gather` 并行**（串行视为不合格）；证据包每条 ≤60 字、合计 ≤15 条、**绝不回显摘要原文**；收敛块必须含「什么证据会让我改变判断」。
 
@@ -31,6 +31,8 @@ tag `m5`）、T9（trend/debate 自动触发 + `aipulse watchlist`，tag `t9`）
 **★ L2 判据（C3）**：跨条目关系 = 0 **不算 pass**（降 warn）——结构/实体增量再多也没回答「谁替代了谁」；正文必须显式回答「本期有无替代/背离」，缺失即判「沉默略过」。「跨条目=0 + 明说无可验证」仍是 warn，不是 pass。
 
 **★ 触发配置（T9，两套开关别混）**：`pipeline.{trend,debate}.trigger_mode` 管**准入门**（auto/manual/disabled，不是 LLM 三档 off/hybrid/full）；`budget.degrade_order` 管**退出序**（钱不够先砍谁）。前者是计划，后者是预算。`interval` 既是触发间隔也是分析范围（`1m`=上一个完整自然月）。
+
+**★ 退出码分级（T9，改 monthly.yml 或 trend/debate 前必读）**：`0` = 正常产出；`1` = **跳过**（数据不足 / 争议度不够 / 窗口无日报——是预期内的"今天不产出"，不是故障）；`≥2` = 真失败。**Actions 必须显式捕获把 `1` 转成 warning**，否则正常跳过会被标红；反过来也不能把 `1` 当成成功静默吞掉。degrade（降级）只对"本期确实要跑"的阶段生效——`trigger_mode != auto` 的阶段不得被假降级。
 
 **★ 方向阈值随窗口缩放（C5）**：`direction_eps(N) = 0.5 * sqrt(5/N)`（5 天为锚点）。**不要写死 0.5**——固定阈值会让 30 天窗口对慢漂移过度迟钝。
 
@@ -77,13 +79,15 @@ tag `m5`）、T9（trend/debate 自动触发 + `aipulse watchlist`，tag `t9`）
 
 ### 当前 HEAD 与 tag 的关系
 
-HEAD 在 tag `m5`（`4244cae`）之后约 30 个提交，包含 post-m5 收口（数据健康 banner /
-README 三类部署形态 / `cron_daily.sh` 口径订正 / CI 修复）与 T9（自动触发）。
-T9 已打 tag `t9`。
+HEAD **就是 tag `t9`**（`96e9d02`）本身，不是「在某个 tag 之后 N 个提交」。
+判断当前代码对应哪个 tag 用 `git tag --points-at HEAD` 或 `git describe --tags`，
+**不要凭印象数提交数**（这类描述会随后续提交立刻失真）。
+
+tag 全集（12 个）：`m0` `m1` `m2` `m3a` `m3b` `m4` `m5` `m6a` `m6b` `m6c` `star-tracking` `t9`。
 
 ### 文档版本基线
 
-SSOT 两份文档当前 v1.22（`docs/文档维护日志.md` 最新一条 v1.22 = tag `m6c` / `c9b2fa1`）。文件名固定为 `docs/AI_Pulse_设计方案.md` 与 `docs/AI_Pulse_Agent开发执行手册.md`，**版本由 git 管理，不再写进文件名**。`docs/文档维护日志.md` 的「维护记录」表按**倒序**维护（新的在上），**该表顶部第一行**的 tag 才是「文档对应哪次提交」的唯一锚点（注意不要读上半部分的格式示例，那里的 v1.20 只是样例）。新会话先读它确认基线。**SSOT 两份文档与 `docs/文档维护日志.md` 是 Agent 只读，不得修改**；文档维护必须「先提交代码 + 打 tag，再刷新文档」。
+SSOT 两份文档当前 **v1.24**（`docs/文档维护日志.md`「维护记录」表首行 v1.24 = tag `t9` / 2026-10-24；v1.23 = `m5`，v1.22 = `m6c`）。文件名固定为 `docs/AI_Pulse_设计方案.md` 与 `docs/AI_Pulse_Agent开发执行手册.md`，**版本由 git 管理，不再写进文件名**。`docs/文档维护日志.md` 的「维护记录」表按**倒序**维护（新的在上），**该表顶部第一行**的 tag 才是「文档对应哪次提交」的唯一锚点（注意不要读上半部分的格式示例，那里的 v1.20 只是样例）。新会话先读它确认基线。**SSOT 两份文档与 `docs/文档维护日志.md` 是 Agent 只读，不得修改**；文档维护必须「先提交代码 + 打 tag，再刷新文档」。
 
 ### 新会话开场顺序
 
@@ -91,7 +95,7 @@ SSOT 两份文档当前 v1.22（`docs/文档维护日志.md` 最新一条 v1.22 
 
 ### CLI 现状
 
-已实现的 CLI：`init` / `doctor` / `collect` / `analyze` / `brief` / `daily` / `predict`（`add` / `list` / `verify` / `review`）/ `stats`（`stats --predictions`）/ **`serve`（M4 只读看板）** / **`inbox`（`add` / `add-file` / `list`，v1.1 手动投喂通道）** / **`knowledge`（`mark` / `note` / `items` / `list` / `export`，M6c）** / **`trend`（`--range 7d` / `--json` / `--out` / `--segments`，M5）** / **`selfcheck`（L1–L4，M5）** / **`debate`（`--topic` / `--json` / `--out`，M5 S4）**。
+已实现的 CLI：`init` / `doctor` / `collect` / `analyze` / `brief` / `daily` / `predict`（`add` / `list` / `verify` / `review`）/ `stats`（`stats --predictions`）/ **`serve`（M4 只读看板）** / **`inbox`（`add` / `add-file` / `list`，v1.1 手动投喂通道）** / **`knowledge`（`mark` / `note` / `items` / `list` / `export`，M6c）** / **`trend`（`--range 7d` / `--json` / `--out` / `--segments`，M5）** / **`selfcheck`（L1–L4，M5）** / **`debate`（`--topic` / `--range` / `--json` / `--out` / `--max-tokens` / `--reports-dir`，M5 S4；省略 `--topic` 走自动选题）** / **`watchlist`（T9 每日轻量核对，`--json` / `--write-state/--no-write-state` / `--reports-dir`）**。
 
 `src/aipulse/cli/commands/` 下其余子应用（`normalize`/`debate`/`trend`/`topics`/`search`/`sources`）仍是 `placeholder_app()` 生成的占位，调用时抛 `NotImplementedError`。它们出现在 `--help` 里是刻意的，不是漏实现。其中 `sources` 占位**不影响加源**：增删 RSS/Atom 源改 `configs/sources.yaml` 即可（见「采集器六条约定」末段）。
 
@@ -206,11 +210,11 @@ scripts/cron_daily.sh                                 # 本地 cron 备份（日
 CI（`.github/workflows/ci.yml`，无 secrets）实际只跑 4 步：`ruff check .` → `ruff format --check .` → `mypy src/aipulse` → `pytest`（**没有覆盖率门禁**，覆盖率是本地基线，不达标不会挂 CI）。`.github/workflows/probe.yml` 是手动触发的探测，不在 CI 链上。
 
 ```bash
-uv run pytest                             # 全量（当前 498 条，约 65s，无需网络、无需密钥）
+uv run pytest                             # 全量（当前 598 条，约 65s，无需网络、无需密钥）
 uv run pytest tests/unit/test_dedup.py                      # 单文件
 uv run pytest "tests/unit/test_dedup.py::test_l2_merges_arxiv_and_hf_same_paper" -q  # 单用例
 uv run pytest -k "dedup or cluster" -q                      # 按关键字筛（跨文件，最常用）
-uv run pytest -q --cov=aipulse --cov-report=term            # 覆盖率：collectors/ ≥80%、openai_compat ≥80%、TOTAL 90%
+uv run pytest -q --cov=aipulse --cov-report=term            # 覆盖率：collectors/ ≥80%、openai_compat ≥80%、TOTAL 91%
 
 uv run ruff check .                       # lint（line-length=100，select=E,F,I,UP,B,SIM）
 uv run ruff format --check .              # 格式检查
@@ -239,6 +243,10 @@ uv run pre-commit install                 # 钩子：ruff --fix + ruff-format + 
 | `analysis/cross_period.py` | `pytest tests/unit/test_cross_period.py`（轨迹 / 9 结构 / 坏日归因 / 同构区间；改结构口径必补例） |
 | `reasoning/trend.py` · `schema/trend.py` · `prompts/trend/*.j2` | `pytest tests/unit/test_trend.py tests/unit/test_selfcheck.py`；改 prompt 后**必须配 key 实跑一次** `aipulse trend --range 7d` |
 | `reasoning/selfcheck.py` | `pytest tests/unit/test_selfcheck.py`（L1–L4 各有用例；状态文件用 tmp_path） |
+| `render/weekly.py` | `pytest tests/unit/test_render_weekly.py`（人类层渲染：三句话 / 表格 / 折叠免责 / 文末溯源 / 正文零裸 ID）|
+| `reasoning/debate.py` · `schema/debate.py` · `prompts/debate/*.j2` | `pytest tests/unit/test_debate.py tests/unit/test_render_debate.py`；改 persona 或收敛块后**必须配 key 实跑** `aipulse debate --topic "…"`（四方并行是 DoD，串行视为不合格）|
+| `reasoning/auto_topic.py` · `core/schedule.py` | `pytest tests/unit/test_debate.py tests/unit/test_cli_trend.py`（自动选题的打分 / 时效守卫 / 门槛跳过；`parse_interval` / `window_for` 的日历月推导）|
+| `cli/commands/watchlist.py` | `pytest tests/unit/test_watchlist.py`（只核对不新建 / 无日报时退出码 2 / `--no-write-state`）|
 | `llm/` | `pytest tests/unit/test_llm.py tests/unit/test_openai_compat.py`（`respx` 拦截 `/chat/completions`） |
 | `store/models.py` | `uv run alembic revision --autogenerate -m "..."`（**只改模型不生成迁移 = 线上漂移**）+ `test_store.py` / `test_repo_items.py` |
 | `core/config.py` · `configs/default.yaml` | `pytest tests/unit/test_config.py` |
@@ -308,6 +316,7 @@ configs/*.yaml ──> collectors/ ──> RawItem ──> normalize/dedup ─�
 | `core/timeutil.py` | 时间唯一来源。`utcnow()` / `ensure_utc()` / `parse_duration()` / `window_since()` / `day_window()` |
 | `core/hashing.py` | `canonical_url`（去追踪参数；**arxiv.org 与 huggingface.co/papers 都归一成 `arxiv:{id}`**）/ `cross_source_key`（`arxiv:{id}`、`repo:{owner/name}`）/ `content_hash`(sha1) / `simhash64` + `hamming_distance`（中文按 bigram 分词） |
 | `core/errors.py` | `AipulseError` → `CollectorError` / `LLMError` / `ConfigError` / `StoreError` |
+| `core/schedule.py` | **T9 触发调度**（纯函数）：`trigger_mode` 三态 `auto`/`manual`/`disabled`（**不是 LLM 三档 off/hybrid/full**）、`parse_interval`（`1m`/`7d`/`30d`）、`month_bounds` / `previous_month_bounds` / `window_for`。★ `interval` **既是触发间隔也是分析范围**，所以没有独立的 `window_days` |
 | `core/logging.py` | structlog。`get_logger(__name__)`；支持把日志改道 stderr（`configure_logging(console_stderr=True)`），供 `--json` 输出保持 stdout 纯净 |
 | `utils/http.py` | **所有网络请求的唯一出口**。每源独立令牌桶限速（`rate_limit: "3/s"`）、tenacity 重试（429/5xx/超时/`DecodingError`）、SQLite 响应缓存、统一 UA、代理解析（`HTTPS_PROXY`>…）。`respx` 在此拦截 |
 | `schema/items.py` | `SourceEnum`（源白名单）/ `RawItem` / `SourceMetrics` |
@@ -339,11 +348,16 @@ configs/*.yaml ──> collectors/ ──> RawItem ──> normalize/dedup ─�
 | `reasoning/predictor.py` | `generate_predictions()`：Top N + 主题 + 实体频次组装上下文 → `prompts/predict/generate.j2` → 结构化 `PredictionBatch` → 硬校验 → **一次**语义重写 → 仍不合法丢弃记账（任何 LLM 异常都降级为空，绝不 raise 到 pipeline） |
 | `reasoning/criteria.py` | 量化判据模板库（`configs/criteria.yaml`）的加载/渲染：`criteria_names` / `render_criteria` / `coerce_param` / `parse_param_assignments`。M3b 的 verifier 将复用同一套模板定义 |
 | `schema/trend.py` | `TrendSegment`（key/title/body/char_count/cited_item_ids/boilerplate_hits/violations/token 与花费）+ `TrendReport`（窗口 + **比较区间** `comparison_*` / `truncated_segments` / `cost_cny`）。每段自带违规与截断记账，`--json` 直接吐它 |
+| `schema/debate.py` | `DebateRound1` / `DebateRound2` / `ModeratorSummary` / `DebateReport` + `falsification_violations()`（★ 证伪条件必须是**单一二元可观测状态**，禁数值阈值、禁两个问句合取）|
 | `schema/prediction.py` | `Prediction` / `PredictionBatch` / `Verdict` + `find_vague_phrases`（模糊措辞黑名单，"可能"用负向断言排除"不可能"）+ `validate_prediction`（可证伪红线校验） |
 | `reasoning/verifier.py` | M3b 到期验证：**双路径**——`judge_criteria()` 量化判据查表（6 模板 + `custom` 受限 AST 求值，**零 LLM**）/ 语义路径 `retrieve_evidence()`（TF-IDF+余弦，窗口 `[生成日, due_date+3]`）→ 充分度门槛 → `generate_structured(Verdict)`。`verify_due_predictions()` 编排；**unverifiable 只由证据门槛产生**，LLM 失败保持 pending |
 | `reasoning/trend.py` | M5 生成层：`build_evidence()` 把 9 个结构 + 轨迹压成**每节独立证据包**（≤200 字/条、合计 ≤15 条，含 `item_id`），`generate_trend()` 按 `SEGMENTS` 7 节**每段一次 strong 调用**串行生成（段名见常量：`rising_topics` / `falling_topics` / `emerging_topics` / `structural_changes` / `second_order_effects` / `prediction_review` / `watchlist`），逐段走 `segment_violations()` 校验字数与套话后落 `TrendReport`，**单段失败只跳该段**。`SEGMENT_MAX_CHARS` 是硬上限，`WORD_BUDGET` 是 prompt 里的软区间 |
 | `reasoning/selfcheck.py` | M5 验证层（**离线零成本**）：`parse_markdown()` 回读 `weekly.md` → `check_l1` 硬判据（结构/字数/cited id 存在性）→ `check_l2` 信息增量（对比基线 Top，防复述日报）→ `check_l3` 跨期回检（`watchlist.json` 对照上期）→ `check_l4` 校准（`calibration.json`）；`run_selfcheck()` 汇总，任一层 FAIL 则 `selfcheck` 退出码 1 |
+| `reasoning/auto_topic.py` | T9 自动选题（纯计算）：从**最新且属于本期**的 trend 产物挑最值得辩的议题，4 信号加分（份额 \|Δ\|≥3pp 记 3 / 上期下过判断记 2 / 有条目刚 dropped 记 2 / 有条目未到期记 1），平手依次比 \|Δpp\|、板块名 → 同样输入必得同样结果。低于 `min_controversy`（默认 6）跳过并说明，**不硬产出** |
+| `reasoning/debate.py` | M5 S4 编排：`build_evidence_pack()`（按**板块轮转**取材，每板块 Top 3-4，≤15 条 / 每条 ≤60 字 / **绝不回显摘要原文**）→ 四方 persona `asyncio.gather` **并行**陈述 → 交叉质证 → 主持人收敛（共识 / 关键分歧 / 可执行结论 / 置信度 / **什么证据会让我改变判断**）。单方失败只标记该方，不拖垮整场 |
 | `analysis/stats.py` | `compute_prediction_stats()`：命中率 / 加权分 / Brier（`partial=0.5`）/ 校准分桶（含 `[0.05,0.5)`）/ 按 category·horizon·origin·model·prompt_version 分组；`unverifiable`+`pending` 不入分母 |
+| `render/weekly.py` | M5 S5 人类层：`weekly.md`——本周三句话 / 判断 / 份额条形表 / 跌出榜 / 下期观察 + 折叠 `<details>` 免责 + 文末**数据溯源**（★ 正文零裸 ID，ID 只是**移位**到文末不是删除）|
+| `render/debate.py` | M5 S5 人类层：结论卡片（置信度置顶）+ 交锋矩阵 + 证伪表格；各方 3 条核心论据 + 折叠全文 |
 | `render/scoreboard.py` | `render_scoreboard_markdown()`：可直接贴 README 的预言记分板（总览 + 校准表 + 分组），0 样本时优雅空态 |
 | `render/markdown.py` / `render/json_out.py` | 简报渲染；`brief.md` / `daily.json` |
 | `render/verdicts.py` | `render_verdicts_markdown()`：当日到期验证结果 → `verdicts.md`（命中/部分/落空/无法验证 + 判定方 + 依据）|
@@ -468,7 +482,7 @@ selfcheck.{md,json} + watchlist.json / calibration.json（下期 L3/L4 回读）
 
 | 文件 | 段 | 消费方 |
 |---|---|---|
-| `default.yaml` | `app` / `mode`（**必须是 `${AIPULSE_MODE:-full}` 占位符**，写死字面量会压掉环境变量）/ `llm`（`json_schema: auto`、`timeout_s`/`timeout_strong_s`、**`max_tokens_fast` 4000 / `max_tokens_strong` 10000**——reasoner 思维链会吃掉输出预算）/ `budget`（含 `price_*_cny_per_1m`）/ `pipeline`（`daily_top_n` `brief_sections` `predictions_per_day` `prediction_horizons`（默认 `[7,30,90]`，`180` 虽合法但未启用）**`predict_candidate_top_n`（20，候选池只给 id+标题）** `auto_verify` `weekly_debate_enabled`）/ **`brief`（`max_items_per_section` + `velocity_board_enabled` / `velocity_board_top_n` + M6b 增强六项：`enhance_top_n` 30 / `enhance_batch_size` 10 / `enhance_budget_cny` 0.15 / `enhance_ttl_days` 30 / `enhance_refresh_hot_delta` 10.0 / `enhance_refresh_on_new_signals` false）** / `verify`（`grace_days` `evidence_window_grace_days` `evidence_top_k` `similarity_threshold` `strong_similarity` `min_evidence` `partial_tolerance` `max_context_tokens`）/ **`signals`（`min_velocity_window_hours` + `repo_lookback_days`，M4/v1.19）** / `output` / `notify` / `http` | `Settings` |
+| `default.yaml` | `app` / `mode`（**必须是 `${AIPULSE_MODE:-full}` 占位符**，写死字面量会压掉环境变量）/ `llm`（`json_schema: auto`、`timeout_s`/`timeout_strong_s`、**`max_tokens_fast` 4000 / `max_tokens_strong` 10000**——reasoner 思维链会吃掉输出预算）/ `budget`（含 `price_*_cny_per_1m`）/ `pipeline`（`daily_top_n` `brief_sections` `predictions_per_day` `prediction_horizons`（默认 `[7,30,90]`，`180` 虽合法但未启用）**`predict_candidate_top_n`（20，候选池只给 id+标题）** `auto_verify` / **`trend`**（`trigger_mode` `interval`）/`debate`（`trigger_mode` `interval` `min_controversy`，T9）/ **`brief`（`max_items_per_section` + `velocity_board_enabled` / `velocity_board_top_n` + M6b 增强六项：`enhance_top_n` 30 / `enhance_batch_size` 10 / `enhance_budget_cny` 0.15 / `enhance_ttl_days` 30 / `enhance_refresh_hot_delta` 10.0 / `enhance_refresh_on_new_signals` false）** / `verify`（`grace_days` `evidence_window_grace_days` `evidence_top_k` `similarity_threshold` `strong_similarity` `min_evidence` `partial_tolerance` `max_context_tokens`）/ **`signals`（`min_velocity_window_hours` + `repo_lookback_days`，M4/v1.19）** / `output` / `notify` / `http` | `Settings` |
 | `sources.yaml` | 每源的端点、权重、`availability`、`rate_limit`、`title_only`、`fallback_endpoints` | `collectors/` + `analysis/score.py` |
 | `scoring.yaml` | `weights` / `freshness` / `cross_source_bonus` / `engagement`（每源指标系数）/ `cold_start` / `title_only_weight` / `cluster` | `analysis/score.py` `analysis/cluster.py` |
 | `entities.yaml` | `entities.{model,framework,company,hardware,concept,person}`（name + aliases） | `analysis/entities.py` |
@@ -488,20 +502,20 @@ selfcheck.{md,json} + watchlist.json / calibration.json（下期 L3/L4 回读）
 
 ## 硬性约定（CI 与人工验收都会查）
 
-### 必须停下来问项目负责人的四类事（v1.22）
+### 必须停下来问项目负责人的四类事（v1.24）
 
 1. **任何涉及“数据在哪里”的判断** —— `*.db` 不进仓库；公开数据只有 `data/reports/<date>/` 下已 commit 的文件。不要把本地库、缓存或未 commit 的报告当成公开数据源。
 2. **任何“本地能不能跑”的结论** —— WSL 无外网 → 不能本地采集；导出/渲染不需要网络，可以本地跑。不要把“采集不可用”推广成“所有功能都不可用”。
 3. **任何字段复用/新增** —— 先问是否已有字段能承担；不要直接加列、加表或造新字段。
 4. **优先级排序** —— 用户点名的需求自动 P0；不要按自己的 roadmap 或“顺手优化”降级。
 
-### 红线（v1.22；手册 §0.3 新增 44–47，实际条目到 47，标题暂仍写“四十三条”）
+### 红线（v1.24；M6c 增 44–47、M5 增 48–52、T9 增 55–63，实际条目到 63，标题暂仍写“四十三条”）
 
 下面只列最常踩的 14 条；M6b 另有 5 条高频红线：**增强结果必须持久化**（`item_enhance`，不重复付费）、**只对 `brief.enhance_top_n` 的渲染集增强**、**中文条目不生成中文概述**、**why/stance 只由 `item_enhance.j2` 产出**（不得回显标题摘要、不得与 `item_comment.j2` 双写）、**增强失败只降级为 `—`，不拖垮日报**。另有时间语义三态、Actions 固定 `ubuntu-24.04`、star 只显示绝对增量等，见手册。
 
 1. 不一次性生成整个项目——分阶段，DoD 全勾再进下一张卡。
 2. **不凭想象写字段解析**——必须基于 `tests/fixtures/` 的真实响应快照。
-3. **prompt 不写进 `.py`**——一律 `prompts/**.j2`，头部必须有 YAML front-matter（`model_tier` / `temperature` / `purpose`）。已实现：`brief/daily_brief.j2`、`brief/item_comment.j2`、`brief/item_enhance.j2`、`predict/generate.j2`、`predict/verify.j2`、`trend/weekly.j2`（M5）；`debate/` 仍为空，是 M5 下一半的落点。
+3. **prompt 不写进 `.py`**——一律 `prompts/**.j2`，头部必须有 YAML front-matter（`model_tier` / `temperature` / `purpose`）。已实现：`brief/daily_brief.j2`、`brief/item_comment.j2`、`brief/item_enhance.j2`、`predict/generate.j2`、`predict/verify.j2`、`trend/weekly.j2`（M5）、`trend/headlines.j2`、`debate/{round1,round2,moderator}.j2`（M5 S4）——**已全部落地，没有空目录**。
 4. LLM 输出不直接 `json.loads`——必须 response_model + 校验 + 一次修复重试 + 再失败降级跳过。
 5. 单源异常不得导致整条流水线崩溃。
 6. **不实现任何微信 / X（Twitter）相关的采集器、配置段、环境变量或 RSS 桥**——v1.1 已彻底移除，相关内容只能走 inbox 手动投喂（`aipulse inbox add` / `add-file`，或往 `data/inbox/*.md` 写 URL）。
@@ -556,7 +570,8 @@ selfcheck.{md,json} + watchlist.json / calibration.json（下期 L3/L4 回读）
 - M6c 单测：`test_knowledge_store.py`（用户库建表/CRUD/主库 checksum 三不变/只读守卫）、`test_knowledge_cli.py`（mark/note/items/list/export、URL/query 定位、候选不自动选、`--allow-unknown`）、`test_daily_index.py`（四种历史结构/why 优先合并/URL 查询）、`test_export.py`（协议/回退/501 条与 200KB 分片/幂等）。
 - inbox CLI 单测（`test_inbox_cli.py`）：`add` 正常入库 / **抓不到标题也保留条目**（标题退化为 URL，断网契约）/ 重复投喂幂等 / `add-file` 批量导入 / `list` 空态与展示。
 - M5 单测：`test_cross_period.py`（50 例：9 结构 / 轨迹 / 坏日与源集合变更归因 / `homogeneous_segments` 同构切分；改结构口径必须补例）、`test_trend.py`（证据包裁剪 / 分段字数与套话校验 / 单段失败只跳该段）、`test_selfcheck.py`（L1–L4 各层 pass/fail、状态文件用 `tmp_path`）。三者都是**纯离线**，用 `tmp_path` 造日报目录，不读仓库里的 `data/reports`
-- 覆盖率基线（M6c 实测）：`web/app` 95% / `web/data` 92% / `web/charts` 100% / `render/verdicts`·`render/predictions` 100% / `render/markdown` 93% / `pipeline/daily` 92% / `reasoning/brief` 88% / `cli/commands/inbox` 98% / `cli/commands/knowledge` 93% / `knowledge/export` 99% / `knowledge/daily_index` 92% / `knowledge/store` 94% / `collectors/` 88% / **TOTAL 90%**。
+- 覆盖率基线（M6c 实测）：`web/app` 95% / `web/data` 92% / `web/charts` 100% / `render/verdicts`·`render/predictions` 100% / `render/markdown` 93% / `pipeline/daily` 92% / `reasoning/brief` 88% / `cli/commands/inbox` 98% / `cli/commands/knowledge` 93% / `knowledge/export` 99% / `knowledge/daily_index` 92% / `knowledge/store` 94% / `collectors/` 88% / **TOTAL 91%**。
+- T9 单测：`test_debate.py`（自动选题打分 / 时效守卫 / 门槛跳过 / 四方并行 / 证伪条件校验 / 收敛块字段）、`test_cli_trend.py`（`trend` CLI 参数与落盘）、`test_watchlist.py`（只核对不新建 / 无日报退出码 2 / 状态合并）、`test_render_weekly.py` + `test_render_debate.py`（人类层渲染与双层分离）。全部纯离线，用 `tmp_path` 造日报目录。
 
 ---
 
@@ -564,13 +579,14 @@ selfcheck.{md,json} + watchlist.json / calibration.json（下期 L3/L4 回读）
 
 | 文件 | 用途 |
 |---|---|
-| `README.md` | 定位 / 能力清单 / 三档模式 / 5 分钟快速开始 / ★ 预言记分板 / mermaid 架构图 / 数据源与合规 / Roadmap（M4 后已重写）。**记分板区块是生成物（"请勿手改数字"）** |
+| `README.md` | 对外门面：定位 / 能力清单 / 三档模式 / **三种部署形态与三句纠偏** / 快速开始 / ★ 预言记分板 / mermaid 架构图 / 数据源与合规 / Roadmap。**记分板区块是生成物（"请勿手改数字"）**；改 README 前先确认它没有偏离「对外交付件」定位（不是过程日志） |
 | `CONTRIBUTING.md` | 贡献流程 + 10 条硬规矩（可证伪口径、只读看板、SSOT 只读…）|
 | `.github/ISSUE_TEMPLATE/` | bug / feature 表单（bug 表单要求先跑 `doctor`；feature 表单列明 V1 边界）|
-| `docs/AI_Pulse_Agent开发执行手册.md` | **SSOT 级执行手册**（v1.22）：全局约定、**红线 44–47（M6c 新增）**、M0–M6 任务卡与 DoD、常见坑、Agent 工作方式要求。开工前必读，**只读** |
-| `docs/AI_Pulse_设计方案.md` | 设计 SSOT（v1.22，2697 行），代码注释里的 `§5.x` / `§6.2` / `§7` 都指向它；**只读**。M6c 设计见 §11.6（知识库），M6b 增强见 §11.1 |
+| `docs/AI_Pulse_Agent开发执行手册.md` | **SSOT 级执行手册**（v1.24）：全局约定、**红线（M6c 44–47 / M5 48–52 / T9 55–63）**、M0–M6 任务卡与 DoD、常见坑、Agent 工作方式要求。开工前必读，**只读** |
+| `docs/AI_Pulse_设计方案.md` | 设计 SSOT（v1.24），代码注释里的 `§5.x` / `§6.2` / `§7` 都指向它；**只读**。M6c 设计见 §11.6（知识库），M6b 增强见 §11.1，T9 自动触发见 §11.8 |
 | `docs/文档维护日志.md` | 每行 = 一次文档维护对应的 tag/commit；**「维护记录」表倒序排列，新会话先读该表顶部第一行确认基线**（别读格式示例）；Agent 只读 |
 | `docs/简报格式规范.md` | 已实现的简报格式规范（头条来源块 / 总览分条 / 四节点评 / 表格列固定与空值占位；M6b 起含「要点 / 为什么重要 / 立场」三列全覆盖约定）|
+| `docs/M5_可读化改造方案.md` | M5 S5 人类层渲染的方案与判据（三句话 / 表格 / 交锋矩阵 / 折叠免责 / 文末溯源；双层分离落地细节）|
 | `docs/踩坑实录.md` | 按阶段积累的踩坑记录（README 与 CHANGELOG 都链接它）；`CODEBUDDY.md` 末尾的「已归档的坑」是它的浓缩版 |
 | `docs/数据源手册.md` | 每个源的端点、真实字段、限速、失效降级路径、探测结论 |
 | `docs/新增数据源指南.md` | 加源的标准流程（L1 改配置 / L2 写模块）+ 自检清单 + 常见坑 |
@@ -578,7 +594,7 @@ selfcheck.{md,json} + watchlist.json / calibration.json（下期 L3/L4 回读）
 | `docs/images/dashboard.png` | 看板截图（README「看板预览」引用，取自 2026-10-17 真实日报）|
 | `scripts/probe_sources.py` · `scripts/cron_daily.sh` | 数据源探测（加源/改 URL 前必跑）与 WSL 本地 daily cron 备份入口（crontab：`35 7 * * * /home/<you>/projects/aipulse/scripts/cron_daily.sh`，北京 07:35，避开 Actions 的 08:00）|
 | `scripts/cron_knowledge.sh` | M6c 知识库导出 cron（方案 E）：不跑本地 daily，只 `git pull --ff-only` + `knowledge export`；工作区检查只看已跟踪改动；日志 `data/logs/cron_knowledge.log` |
-| `prompts/{brief,predict,debate,trend}/` | Jinja2 模板落点。`brief/` 有 `daily_brief.j2` + `item_comment.j2`（v2，顶层键 `one_liners`，只产中文要点）+ `item_enhance.j2`（顶层键 `comments`，产 why/stance）；`predict/` 有 `generate.j2` + `verify.j2`；`trend/weekly.j2` 已落地（M5，7 节分段，front-matter 走 strong）；`debate/` 待 M5 下半 |
+| `prompts/{brief,predict,debate,trend}/` | Jinja2 模板落点。`brief/` 有 `daily_brief.j2` + `item_comment.j2`（v2，顶层键 `one_liners`，只产中文要点）+ `item_enhance.j2`（顶层键 `comments`，产 why/stance）；`predict/` 有 `generate.j2` + `verify.j2`；`trend/weekly.j2` 与 `trend/headlines.j2` 已落地（M5，7 节分段，front-matter 走 strong）；`debate/{round1,round2,moderator}.j2` 已落地（M5 S4，四方陈述 / 交叉质证 / 主持人收敛）|
 
 `configs/scoring.yaml` 的打分权重与 `cluster` 段已被 M2 实际读取（engagement / freshness / velocity / source_weight / cold_start / title_only_weight / cluster），调权重改配置即可，不要改代码。
 

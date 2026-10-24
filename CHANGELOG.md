@@ -8,6 +8,45 @@
 
 ---
 
+## [docs-refresh] — README 重写 + CODEBUDDY 事实校准（2026-10-25）
+
+> 纯文档改动，**无代码变更**。SSOT 基线仍是 **v1.24（tag `t9`）**，本次未动 SSOT 两份文档与 tag。
+
+### Changed
+
+- **`README.md` 整体重写**：从过程产物式记录改为对外交付件。
+  - 结构重排：看板（截图）→ 不一样的地方 → 快速开始 → 三种跑法 → 能力清单 → 命令速查 → ★ 预言记分板 → 运行模式 → 工作原理 → 每天自动跑 → 数据源 → 合规 → 开发 → 进度。
+  - 首屏去掉 M0–M6c 那块内部阶段黑话，状态压缩为一行；「三句纠偏」收进 `<details>` 折叠（保留内容、降低噪音）。
+  - 能力清单拆成「采集与分析（零成本）」/「推理与产出」两张表，行内长句收紧。
+  - 新增「一份真实日报长什么样」：引 2026-10-24 的真实头条与总览三条（有具体事实，不再是空泛描述）。
+  - **记分板数据更新为实测值 69 条 / 0 已验证**（原 README 写 34 条，已过时）。
+  - 其余数字一并核对：598 条测试、RSS 8 个 feed、`reddit` 两个 subreddit、`scripts/cron_knowledge.sh`。
+- **`CODEBUDDY.md` 事实校准 7 处**：
+  1. 测试数 498 → **598**，覆盖率 TOTAL 90% → **91%**；
+  2. SSOT 基线 v1.22 → **v1.24**（tag `t9` / 2026-10-24），红线 44–47 → **48–52（M5）+ 55–63（T9）**；
+  3. 「HEAD 在 tag `m5` 之后约 30 个提交」→ **HEAD 就是 tag `t9`（`96e9d02`）**，并写明用 `git tag --points-at HEAD` 自查、不要数提交；
+  4. `prompts/debate/`「仍为空」→ **已落地 `round1` / `round2` / `moderator`**；
+  5. debate auto 模式「⬜ TODO」→ **已落地**（`reasoning/auto_topic.py`，4 信号打分 + 时效守卫 + `min_controversy=6`）；
+  6. `pipeline.weekly_debate_enabled` → **SSOT v1.24 已删除**，改为 `trend/debate.{trigger_mode,interval,min_controversy}`；
+  7. web「趋势」入口「可读 weekly.md」→ **趋势与辩论都仍置灰**（`M5_ENTRIES` 纯占位，`base.html` 一律 `nav-disabled`），看板**没有 trend/debate 页面**。
+
+### Added
+
+- **`CODEBUDDY.md` 补齐 T9/M5 遗漏 6 处**：
+  - CLI 现状补 `watchlist`（T9 每日轻量核对）；
+  - 模块职责表补 `core/schedule.py` / `reasoning/auto_topic.py` / `reasoning/debate.py` / `schema/debate.py` / `render/weekly.py` / `render/debate.py`；
+  - 「改哪里 → 先跑什么」补 5 行（debate / auto_topic+schedule / watchlist / render.weekly / render.debate），测试约定补 T9 单测说明；
+  - 新增 **★ 退出码分级（T9）**：`0` 正常 / `1` 跳过（Actions 必须显式捕获转 warning）/ `≥2` 真失败；degrade 只对「本期确实要跑」的阶段生效；
+  - 文档地图补 `docs/M5_可读化改造方案.md`；
+  - README 条目标注「三种部署形态与三句纠偏」属对外承诺，改动前先确认没偏离交付件定位。
+
+### 遗留（待项目负责人定夺）
+
+- README 的记分板区块与「一份真实日报长什么样」**都是固定日期的手工快照，会随时间过期**——后续是否由 Actions 自动回写。
+- 看板截图仍是 2026-10-17 的旧版，且「趋势 / 辩论」入口至今置灰。
+
+---
+
 ## [t9-auto-trigger] — trend/debate 自动触发（日历月，2026-10-24）
 
 > 项目负责人拍板：trend 与 debate 都支持 auto+manual，默认 auto；**间隔 = 日历月**，
