@@ -150,3 +150,16 @@ def test_load_settings_invokes_dotenv_before_yaml(monkeypatch):
     settings = load_settings()
     assert settings.llm.api_key == "sk-from-dotenv"
     load_settings.cache_clear()
+
+
+def test_stale_weekly_debate_enabled_key_is_harmless() -> None:
+    """★ 旧配置残留无害（SSOT v1.24 已删该字段，但老 yaml 里可能还写着）。
+
+    `PipelineSettings` 是 pydantic 默认 `extra=ignore`：残留键被静默忽略，
+    不报错、不影响行为。记成测试，避免下个会话把它当 bug 修。
+    """
+    settings = Settings(
+        mode="hybrid", llm={"api_key": "sk-x"}, pipeline={"weekly_debate_enabled": True}
+    )
+    assert settings.pipeline.debate.trigger_mode == "auto"
+    assert not hasattr(settings.pipeline, "weekly_debate_enabled")

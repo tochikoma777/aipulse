@@ -44,6 +44,17 @@
   「窗口 M 天中本段仅 N 天，其余 K 天因源集合变更或首段过短未参与份额对比」。
   **不改取段逻辑**——取最长段会破坏跨期可比，而 L4 整个设计依赖可比。
 
+### Removed（SSOT v1.24 收口）
+
+- **`pipeline.weekly_debate_enabled` 兼容别名整体删除**：SSOT v1.24 §120 记录
+  "v1.24 同步清除代码与文档引用（SSOT 与 `default.yaml` 均不再保留）"，且 `docs/` 下
+  对该字段只剩历史表述（"已清除"），无活跃引用。删除：`PipelineSettings` 字段、
+  `debate_trigger_mode()` 的 fallback 分支与 deprecation 日志、`default.yaml` 条目；
+  CLI 改为直读 `settings.pipeline.debate.trigger_mode`。
+- ★ **旧配置残留无害**：`PipelineSettings` 是 pydantic 默认 `extra=ignore`，
+  老 `configs/*.yaml` 里残留 `weekly_debate_enabled: true` 会被静默忽略，
+  不报错、不影响行为——**不是 bug**（已加单测固化）。
+
 ### Fixed
 
 - **`_state_files` 真 bug**：`state_dir` 传 trend 根目录时 `parent` 是 `data/reports`，

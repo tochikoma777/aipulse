@@ -506,7 +506,7 @@ def test_debate_cli_writes_report(tmp_path: Path, monkeypatch: pytest.MonkeyPatc
 def test_debate_cli_requires_topic_when_auto_disabled(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """weekly_debate_enabled=false → 不给 --topic 直接报错，并指出开关。"""
+    """trigger_mode=manual → 不给 --topic 直接报错，并指出开关。"""
     from typer.testing import CliRunner
 
     from aipulse.cli.commands import debate as debate_cmd
@@ -518,13 +518,13 @@ def test_debate_cli_requires_topic_when_auto_disabled(
         app={"data_dir": str(tmp_path / "root")},
         mode="hybrid",
         llm={"api_key": "sk-test-key"},
-        pipeline={"weekly_debate_enabled": False},
+        pipeline={"debate": {"trigger_mode": "manual"}},
     )
     monkeypatch.setattr(debate_cmd, "load_settings", lambda *a, **k: settings)
     result = CliRunner().invoke(cli_app, ["debate", "--reports-dir", str(reports)])
     assert result.exit_code == 2
     assert "必须给 --topic" in result.output
-    assert "weekly_debate_enabled" in result.output
+    assert "trigger_mode=manual" in result.output
 
 
 def _write_trend(reports: Path, issue: str, cited_id: str) -> None:
@@ -848,7 +848,7 @@ def test_debate_cli_skips_when_controversy_below_threshold(
 def test_debate_cli_manual_mode_requires_topic(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """trigger_mode=manual：命令可用，但不自动选题（承接 weekly_debate_enabled:false）。"""
+    """trigger_mode=manual：命令可用，但不自动选题。"""
     from datetime import date as _date
 
     from aipulse.cli.commands import debate as debate_cmd
@@ -862,31 +862,6 @@ def test_debate_cli_manual_mode_requires_topic(
         mode="hybrid",
         llm={"api_key": "sk-test-key"},
         pipeline={"debate": {"trigger_mode": "manual"}},
-    )
-    monkeypatch.setattr(debate_cmd, "load_settings", lambda *a, **k: settings)
-    monkeypatch.setattr(debate_cmd, "today_local", lambda *a, **k: _date(2026, 11, 1))
-
-    result = CliRunner().invoke(cli_app, ["debate", "--reports-dir", str(reports)])
-    assert result.exit_code == 2
-    assert "trigger_mode=manual" in result.output
-
-
-def test_debate_cli_legacy_flag_maps_to_manual(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
-    """deprecated 别名：weekly_debate_enabled=false → manual（不自动选题）。"""
-    from datetime import date as _date
-
-    from aipulse.cli.commands import debate as debate_cmd
-    from aipulse.cli.main import app as cli_app
-    from aipulse.core.config import Settings
-
-    reports = _seed_reports(tmp_path / "root")
-    settings = Settings(
-        app={"data_dir": str(tmp_path / "root")},
-        mode="hybrid",
-        llm={"api_key": "sk-test-key"},
-        pipeline={"weekly_debate_enabled": False},
     )
     monkeypatch.setattr(debate_cmd, "load_settings", lambda *a, **k: settings)
     monkeypatch.setattr(debate_cmd, "today_local", lambda *a, **k: _date(2026, 11, 1))

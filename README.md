@@ -255,6 +255,7 @@ uv run aipulse selfcheck --json --no-write-state         # 只看结论，不更
 uv run aipulse debate --topic "Agent 类项目密集进榜：真实采用还是单日脉冲"
 uv run aipulse debate --topic "…" --json                # 只吐指标（含 可用证伪 N/M）
 uv run aipulse debate --topic "…" --out /tmp/d.md       # 指定落盘（默认 data/reports/debate/<窗口末日>/）
+uv run aipulse debate                                   # 省略 --topic → 按 pipeline.debate.trigger_mode 自动选题
 ```
 
 ## 数据源

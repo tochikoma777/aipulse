@@ -18,7 +18,6 @@ This file provides guidance to CodeBuddy Code when working with code in this rep
 | `cli/commands/watchlist.py` | ✅ 每日轻量核对 watchlist（只核对不新建、零 LLM），daily.yml 每步都跑 |
 | `data/reports/debate/` | ✅ `debate-<slug>.{md,json}`（不入库，只落盘） |
 | `pipeline/weekly.py` | ⬜ 不存在（周报靠 `aipulse trend` 手动/cron 触发） |
-| `configs/default.yaml::pipeline.weekly_debate_enabled` | ⬜ 已留开关（`true`），**仍无消费方**——debate 是手动触发 |
 | `web/app.py` 的「趋势」「辩论」入口 | 「趋势」可读 `data/reports/trend/weekly.md`；「辩论」仍置灰 |
 | debate 的 auto 模式（从 trend 挑本周最大争议话题） | ⬜ TODO：需先把「分歧度」定义成可计算的量 |
 

@@ -22,19 +22,14 @@ from dotenv import load_dotenv
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-from aipulse.core.logging import get_logger
 from aipulse.core.schedule import (
     DEFAULT_INTERVAL,
     DEFAULT_MIN_CONTROVERSY,
     DEFAULT_TRIGGER_MODE,
-    TRIGGER_AUTO,
-    TRIGGER_MANUAL,
     TRIGGER_MODES,
 )
 
 ENV_PATTERN = re.compile(r"\$\{([A-Za-z_][A-Za-z0-9_]*)(?::-([^}]*))?\}")
-
-log = get_logger(__name__)
 
 
 def project_root() -> Path:
@@ -169,30 +164,6 @@ class PipelineSettings(BaseModel):
     debate: TriggerSettings = Field(
         default_factory=lambda: TriggerSettings(min_controversy=DEFAULT_MIN_CONTROVERSY)
     )
-    # T9：deprecated 别名（v1.22 引入，trigger_mode 优先；SSOT 同步后删除）
-    weekly_debate_enabled: bool = True
-
-
-def debate_trigger_mode(pipeline: PipelineSettings) -> str:
-    """debate 的触发模式：`debate.trigger_mode` 优先，`weekly_debate_enabled` 兜底。
-
-    `weekly_debate_enabled`（v1.22）是 deprecated 别名，SSOT 设计方案 §78/§2218
-    仍写着它——所以在 SSOT 更新前不能直接删，否则会留下"文档说有、代码没有"的坑。
-    判定规则：**只有用户没显式配过 `debate.trigger_mode` 时**才回退到旧字段，
-    避免"两个都配了却不知听谁"。
-    """
-    debate = pipeline.debate
-    if "trigger_mode" in debate.model_fields_set:
-        return debate.trigger_mode
-    if "weekly_debate_enabled" in pipeline.model_fields_set:
-        legacy = pipeline.weekly_debate_enabled
-        log.warning(
-            "config.weekly_debate_enabled_deprecated",
-            msg="pipeline.weekly_debate_enabled 已废弃，请改用 pipeline.debate.trigger_mode",
-            mapped=TRIGGER_AUTO if legacy else TRIGGER_MANUAL,
-        )
-        return TRIGGER_AUTO if legacy else TRIGGER_MANUAL
-    return debate.trigger_mode
 
 
 class BriefSettings(BaseModel):

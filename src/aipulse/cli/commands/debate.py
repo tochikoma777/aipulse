@@ -9,7 +9,7 @@
 
 该目录已被 `scripts/cron_knowledge.sh` 的脏树检查排除（生成物重跑即脏，不应阻断导出）。
 
-不给 `--topic` 时按 `pipeline.weekly_debate_enabled` 决定：
+不给 `--topic` 时按 `pipeline.debate.trigger_mode` 决定：
 true → 从最新 trend 产物自动选题（`reasoning/auto_topic.py`，依据会打印出来）；
 false → 报错，要求显式给 `--topic`。
 """
@@ -24,7 +24,7 @@ from pathlib import Path
 import typer
 
 from aipulse.analysis.cross_period import load_cross_period
-from aipulse.core.config import debate_trigger_mode, load_settings
+from aipulse.core.config import load_settings
 from aipulse.core.logging import configure_logging
 from aipulse.core.schedule import TRIGGER_AUTO, TRIGGER_DISABLED
 from aipulse.core.timeutil import today_local
@@ -74,7 +74,7 @@ def slugify(topic: str) -> str:
 def main(
     ctx: typer.Context,
     topic: str = typer.Option(
-        "", "--topic", help="辩论议题；省略则按 weekly_debate_enabled 自动从 trend 产物选题"
+        "", "--topic", help="辩论议题；省略则按 pipeline.debate.trigger_mode 自动从 trend 产物选题"
     ),
     range_: str = typer.Option("7d", "--range", help="取材窗口：7d"),
     json_output: bool = typer.Option(False, "--json", help="输出指标 JSON"),
@@ -110,7 +110,7 @@ def main(
     topic_text = topic.strip()
     debate_window: tuple[str, str] | None = None
     if not topic_text:
-        mode = debate_trigger_mode(settings.pipeline)
+        mode = settings.pipeline.debate.trigger_mode
         if mode != TRIGGER_AUTO:
             hint = "该阶段已停用" if mode == TRIGGER_DISABLED else "不自动选题"
             typer.echo(
