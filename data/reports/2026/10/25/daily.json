@@ -1,0 +1,946 @@
+{
+  "date": "2026-10-25",
+  "headline": "AI 的回报仍集中在科技行业内部，而今天最热的开源项目几乎都在给编码智能体补「设计感」和「安全审计」这两块短板——工具层在自我完善，产业层还没等到外溢红利。",
+  "headline_item_id": "it_074b7d5e1602db74",
+  "overview_bullets": [
+    {
+      "icon": "📉",
+      "topic": "回报未外溢",
+      "text": "HN 热帖直指科技行业之外看不到 AI 回报，与「AI 坟场」清单、媒体影视艺术岗位流失 20 万形成同一叙事的三个切面：投入已计价，产出尚未兑现。"
+    },
+    {
+      "icon": "🛠️",
+      "topic": "智能体补短板",
+      "text": "impeccable、hallmark、cloudflare 安全审计 skill、Claude-Red 同日上榜，说明编码智能体的竞争焦点已从「能不能写」转向「写得像不像人、审得动不动手」。"
+    },
+    {
+      "icon": "🔐",
+      "topic": "攻防同源",
+      "text": "Cloudflare 的防御性审计 skill 与 Claude-Red 的攻击技能库同榜，安全能力正被拆成可复用的 SKILL.md 资产，攻防两侧用的是同一套分发机制。"
+    },
+    {
+      "icon": "🤖",
+      "topic": "本地小模型",
+      "text": "M6 Mac Mini 跑 Qwen3.8-27B、RTX 30/40 解锁算力、TensorSharp 首日支持 MiniMax-M3.1-Flash，端侧推理的工程迭代速度已超过多数模型发布本身。"
+    },
+    {
+      "icon": "💬",
+      "topic": "评测祛魅",
+      "text": "KLD 被误读、Kimi K3.1 Pro 与 DeepSeek 4.1 Flash 的体感之争，反映社区开始怀疑排行榜与量化指标，转而相信自己的实际任务表现。"
+    }
+  ],
+  "executive_summary": "今天的信号很一致：AI 的产能正在工具层快速堆积，但价值兑现仍被锁在科技行业内部，而社区对「指标即质量」的信任正在松动。",
+  "editor_note": {
+    "core": "今天最该记住的是「AI 回报尚未外溢」这条判断，而不是任何单个模型发布。因为当开源热度全部集中在给智能体打磨设计与安全技能时，说明行业仍在优化生产工具本身，而非把工具卖进非科技行业——这决定了下一轮估值叙事能否成立。",
+    "cross_signal": "三条互不相关的来源指向同一件事：HN 的「科技业外无回报」、媒体影视艺术流失 20 万岗位、以及 AI 坟场清单里 Siri 与 OpenAI 超级应用的落空，共同说明预期与交付之间的缺口正在被公开计价。另一侧，Cloudflare 审计 skill 与 Claude-Red 攻击库同榜，印证安全能力正在被技能化、商品化。",
+    "counterintuitive": "最反直觉的是 Blue Planet III 主动保留粗糙镜头以自证非 AI——当「过于精致」成为造假嫌疑，AI 生成内容的副产品是让真实感重新变成稀缺资产。同样反直觉的是 KLD 被热传为量化质量标尺，实际它测的是分布偏移而非好坏。",
+    "risk": "最大的盲点是安全技能的双用途扩散：Claude-Red 把 SQLi 到 EDR 规避的方法论打包成即插即用的 SKILL.md，门槛被压到极低，而防御侧的审计工具还停留在「多阶段、需人工复核」的阶段，攻防节奏已经不对称。"
+  },
+  "contradictions": [
+    "一边是「科技行业外无 AI 回报」的判断，一边是英国政府投入 1 亿英镑建 AI 生物安全实验室，公共部门仍在加码而非观望。",
+    "社区一边抱怨 Kimi K3.1 Pro 相对 DeepSeek 4.1 Flash 提升有限，一边又为本地小模型（Qwen3.8-27B、MiniMax-M3.1-Flash）的工程进展兴奋，对「大模型代际进步」与「可用性进步」的评价标准并不一致。",
+    "RTX 30/40 解锁工具宣称算力翻倍、推理提速，同时提示价格同步上涨，性能红利的受益者可能只是持有存量卡的用户。"
+  ],
+  "underrated": [
+    "KLD is misunderstood：对量化评测指标的祛魅，比任何一次模型发布都更能改变社区的选型方式。",
+    "The Importance of Limitations for Creativity and Learning：限制条件与创造力的关系，正好对应今天「反 AI 味」设计技能包的流行逻辑。",
+    "Small model good for reverse engineering that can run on a 3090：本地化、不设限的逆向工程小模型需求真实存在，却几乎没有厂商正面回应。",
+    "pollen-robotics/microduck：双足小鸭子机器人热度不高，但是少见的开源具身智能硬件入口。",
+    "Blue Planet III is keeping the rough edges in the age of AI：真实感作为差异化资产，是内容行业对 AI 最务实的一次反击。"
+  ],
+  "sections": [
+    {
+      "name": "开源项目",
+      "summary": "榜单被编码智能体的「技能包」占据——设计品味、安全审计、开箱即用 Agent 成为新的开源竞争面。",
+      "item_ids": [
+        "it_5ded0eae18819e88",
+        "it_77f9ddd43bbeeb71",
+        "it_bf5ec6e10b8ea1d5",
+        "it_2d8756d68814cbfe",
+        "it_18ea66ddd405facc",
+        "it_a7519c6ce55f34ab",
+        "it_8858b289f2eefaee",
+        "it_7bb1bdda49f9e55e",
+        "it_fdf7de3aa15def01",
+        "it_c9cdc26758b48a34",
+        "it_3880477a3e9a8bf0",
+        "it_e340e8dcefb7e729",
+        "it_38e504ab00817795",
+        "it_0709c8f48aaec625",
+        "it_2fbf3db695f9d673"
+      ]
+    },
+    {
+      "name": "论文与研究",
+      "summary": "研究侧的声音集中在方法论纠偏：KLD 不是质量排名器，限制条件反而滋养创造力。",
+      "item_ids": []
+    },
+    {
+      "name": "社区舆论",
+      "summary": "社区在质疑模型代际提升的真实幅度，同时热切分享本地部署与逆向工程的实用经验。",
+      "item_ids": [
+        "it_705d74d6480246b0",
+        "it_e04ac878b49d46d8",
+        "it_dc3cbbf1f017de92",
+        "it_1cac23aa0b658b36",
+        "it_e9d1aeb856ce29df",
+        "it_e2c6a897f5943393",
+        "it_42b906fc52ddba56",
+        "it_84c9b463e77e3500",
+        "it_0a5972b709e4b83f",
+        "it_074b7d5e1602db74",
+        "it_8f5707e9a13cb370",
+        "it_e3739f261dd50ecf",
+        "it_4945f84ab0290bb2"
+      ]
+    },
+    {
+      "name": "产业与新闻",
+      "summary": "产业面是冷热并存：AI 外溢回报存疑、岗位流失与项目死亡清单，对照英国生物安全实验室的公共投入。",
+      "item_ids": [
+        "it_0509c80e85fbace7",
+        "it_dbe76530e9896fc9"
+      ]
+    }
+  ],
+  "comments": [
+    {
+      "item_id": "it_5ded0eae18819e88",
+      "one_liner": "一套设计语言，用于提升 AI harness 在设计任务上的表现。",
+      "why": "把设计规范从人读的文档变成 AI 可直接调用的约束层，前端产出的默认审美水位被整体抬高，设计师的评审成本随之下降。",
+      "stance": "方向对，但设计语言一旦被固化成提示词模板，产出会迅速同质化。"
+    },
+    {
+      "item_id": "it_77f9ddd43bbeeb71",
+      "one_liner": "Cloudflare 开源的 coding-agent 技能，用于分阶段执行安全审计并输出可独立验证的机器可读结果",
+      "why": "把安全审计拆成多阶段并输出可机器校验的结论，让编码代理的审计结果从「人读报告」变成可接入 CI 的判定信号，审计责任从人转移到流水线。",
+      "stance": "方向对，但审计结论一旦可自动化，误报就会被当成合规证据，必须保留人工复核闸门。"
+    },
+    {
+      "item_id": "it_bf5ec6e10b8ea1d5",
+      "one_liner": "面向 Claude Code、Cursor 和 Codex 的反 AI 套路化设计技能。",
+      "why": "针对 AI 生成界面千篇一律的「塑料感」做反向约束，把审美判断写进编码代理的技能包，直接影响交付物的第一印象。",
+      "stance": "反 AI 味本身就是新赛道，但靠规则清单治标，治不了模型偏好。"
+    },
+    {
+      "item_id": "it_2d8756d68814cbfe",
+      "one_liner": "开源、开箱即用的 AI Agent 项目。",
+      "why": "把 Agent 的配置、工具链、运行环境打包成开箱即用形态，把上手门槛从「会调框架」降到「会提需求」，受益的是非工程背景的自动化需求方。",
+      "stance": "开箱即用是获客利器，也是天花板——真跑起复杂任务时，可调试性才是分水岭。"
+    },
+    {
+      "item_id": "it_18ea66ddd405facc",
+      "one_liner": "Pollen Robotics 推出的微型双足鸭子机器人。",
+      "why": "双足机器人被压到玩具级成本与体积，让步态控制、平衡算法从实验室走进个人桌面，硬件试错周期被大幅压缩。",
+      "stance": "小体积双足是教学与原型的好载体，别指望它承担任何实用任务。"
+    },
+    {
+      "item_id": "it_a7519c6ce55f34ab",
+      "one_liner": "一份面向 Claude Code 的图文示例教程，从基础概念讲到进阶 agent，附可直接复制的模板。",
+      "why": "把 Claude Code 从零散技巧整理成可视化、可复制的模板，降低了 agent 工作流的入门门槛，也让最佳实践从个人经验变成可传播资产。",
+      "stance": "教程类项目会加速工具普及，但模板化容易掩盖真实工程复杂度。"
+    },
+    {
+      "item_id": "it_8858b289f2eefaee",
+      "one_liner": "基于倪海厦《天纪》体系的开源紫微斗数排盘引擎，含四化与格局知识库。",
+      "why": "把命理排盘从 App 黑箱拆成可复用的算法与知识库，规则透明后可被校验、被二次开发，传统术数第一次具备工程化接口。",
+      "stance": "算法开源值得肯定，但「格局知识库」的准确性无法证伪，别把输出当结论。"
+    },
+    {
+      "item_id": "it_7bb1bdda49f9e55e",
+      "one_liner": "汇总帆书、微信读书、京东读书、喜马拉雅等平台电子书下载链接的资源库。",
+      "why": "把多个付费读书平台的资源以链接聚合形式集中，绕开订阅分发，直接冲击内容平台的付费墙与版权边界。",
+      "stance": "聚合盗链不是知识共享，是把侵权成本转嫁给整个开源社区。"
+    },
+    {
+      "item_id": "it_fdf7de3aa15def01",
+      "one_liner": "PHP 语言的官方解释器源码仓库。",
+      "why": "PHP 解释器本体持续出现在趋势榜，说明存量 Web 生态的维护需求依然庞大，语言运行时层面的改动会直接波及大量线上服务。",
+      "stance": "老牌运行时的热度是存量市场的体温计，不该被新框架叙事掩盖。"
+    },
+    {
+      "item_id": "it_c9cdc26758b48a34",
+      "one_liner": "Anthropic 开源的插件仓库，供知识工作者在 Claude Cowork 中使用。",
+      "why": "官方亲自下场做知识工作插件，意味着协作产品从通用对话转向按岗位预置工作流，第三方插件生态将被官方标准分层。",
+      "stance": "官方收编插件是平台化的必经一步，独立开发者只剩垂直深水区可守。"
+    },
+    {
+      "item_id": "it_705d74d6480246b0",
+      "one_liner": "一篇讨论 KLD 指标实际衡量什么、为何不足以给量化模型排名的帖子。",
+      "why": "量化社区长期把单一散度指标当质量排名依据，澄清其只衡量输出分布偏移、不衡量任务能力，能纠正选型时的错误归因。",
+      "stance": "拿 KLD 给模型排座次是统计素养缺失，评测该回到下游任务。"
+    },
+    {
+      "item_id": "it_e04ac878b49d46d8",
+      "one_liner": "一篇探讨限制条件对创造力与学习有何作用的文章。",
+      "why": "论证约束而非自由才是创造力与学习的触发器，为提示词设计、课程设计和产品引导提供了反直觉的设计依据。",
+      "stance": "限制催生创造这个判断成立，但把它当万能解释就会掩盖资源差距。"
+    },
+    {
+      "item_id": "it_dc3cbbf1f017de92",
+      "one_liner": "一条 Reddit 讨论，比较 Kimi K3.1 Pro 与 DeepSeek 4.1 Flash 的表现。",
+      "why": "用户开始用参数规模更小的竞品做横向对照，说明模型选型正从「谁最强」转向「单位成本下谁够用」，直接压缩大参数模型的溢价空间。",
+      "stance": "体感差异小于宣传差异时，参数军备竞赛的叙事就该退场了。"
+    },
+    {
+      "item_id": "it_1cac23aa0b658b36",
+      "one_liner": "Reddit 用户求推荐可在 3090 显卡与 32GB 内存上运行、且不拒绝逆向工程请求的小型本地模型",
+      "why": "消费级显卡加 32GB 内存就能跑逆向工程模型，意味着安全研究从依赖云端 API 转向本地私有推理，云端服务商的内容审查与账号封禁不再构成研究中断点。",
+      "stance": "本地化逆向模型是刚需，云厂商一边卖算力一边当举报人，用户跑路是理性选择。"
+    },
+    {
+      "item_id": "it_e9d1aeb856ce29df",
+      "one_liner": "新解锁工具让 NVIDIA RTX 30/40 系列 GPU 的 AI 算力翻倍，带来最高 2 倍 Prefill 加速，但显卡价格也随之上涨",
+      "why": "CMP 矿卡解锁让 30/40 系算力翻倍并带来最高 2 倍 prefill 提速，二手矿卡从电子垃圾变成低价推理硬件，直接压低本地大模型部署的入场成本，同时推高存量卡价格。",
+      "stance": "这是矿难遗产的二次分配，早买的人赚算力，晚买的人接盘涨价，投机味盖过技术味。"
+    },
+    {
+      "item_id": "it_e2c6a897f5943393",
+      "one_liner": "TensorSharp 在 MiniMax-M3.1-Flash 开源权重发布当天即提供支持，涵盖 GGUF、视觉、工具调用与 8×A40 基准测试",
+      "why": "开源权重发布当天就有第三方推理栈跟进 GGUF、视觉与工具调用，模型厂商的发布窗口被压缩到零，本地部署者的选型不再被官方 SDK 绑定。",
+      "stance": "Day 1 适配才是开源模型的真实竞争力，慢一周就等于没发布。"
+    },
+    {
+      "item_id": "it_42b906fc52ddba56",
+      "one_liner": "ANEMLL Forge 0.2.1 让 32GB 的 M6 Mac Mini 可在 Apple Neural Engine 上以最高 192K 上下文运行 Qwen3.8-27B",
+      "why": "27B 模型在 32GB 统一内存的 Mac 上跑出 192K 上下文，INT8 KV cache 与共享输出头的 drafter 把内存墙往后推，端侧长上下文从演示变成可日常使用的配置。",
+      "stance": "苹果神经引擎终于被认真榨干，解码速度按内容类型分化说明端侧推理已进入工程调优阶段而非跑分阶段。"
+    },
+    {
+      "item_id": "it_84c9b463e77e3500",
+      "one_liner": "John Carmack 在 Twitter 上提到的 Goose 编程语言",
+      "why": "Carmack 背书一门新语言，会把一批图形与底层性能敏感开发者拉进早期生态，语言设计取向将影响未来实时渲染与工具链的默认选择。",
+      "stance": "名人光环能带来首批用户，但语言活不活得看三年后还有没有人写编译器，先观望不站队。"
+    },
+    {
+      "item_id": "it_0a5972b709e4b83f",
+      "one_liner": "Hacker News 上名为 Dream-1 的条目，暂无摘要内容",
+      "why": "标题信息量近乎为零，缺乏摘要使读者无法判断它是模型、产品还是研究项目，这条在日报里只起到占位作用，实际传播价值取决于外链而非条目本身。",
+      "stance": "无摘要的裸标题不该进日报，编辑应补一句定位说明，否则等于把筛选成本转嫁给读者。"
+    },
+    {
+      "item_id": "it_074b7d5e1602db74",
+      "one_liner": "讨论指出科技行业之外尚未出现 AI 带来明显收益的迹象",
+      "why": "若 AI 收益仍集中在科技行业内部，企业级采购的预算逻辑会从效率叙事转向观望，算力资本开支与实体行业生产率数据之间的缺口将成为下一轮估值修正的触发点。",
+      "stance": "生产力革命不能只在卖铲人内部循环，跨行业回报缺席就是泡沫论最硬的证据。"
+    },
+    {
+      "item_id": "it_0509c80e85fbace7",
+      "one_liner": "BBC 的 Blue Planet III 在 AI 时代刻意保留不完美的镜头，以证明画面真实未经 AI 加工",
+      "why": "顶级自然纪录片刻意保留瑕疵镜头来证明非 AI 生成，说明观众对画面完美的默认解读已从精良制作翻转为合成嫌疑，内容行业被迫用不完美作为可信度凭证。",
+      "stance": "这是 AI 时代最讽刺的审美反转：越糙越真，制作水准成了原罪。"
+    },
+    {
+      "item_id": "it_dbe76530e9896fc9",
+      "one_liner": "一份持续更新的清单，收录已关停或未达预期的 AI 项目与创业公司，包括 Apple 延期的 Siri AI 等",
+      "why": "把延期与关停项目汇总成清单，为评估 AI 创业存活率提供了可对照的样本集，也让采购方在选型时多一层对供应商履约能力的怀疑。",
+      "stance": "坟场清单比融资新闻更有信息量，行业需要这种冷水式记账。"
+    }
+  ],
+  "stats": {},
+  "items": {
+    "it_074b7d5e1602db74": {
+      "id": "it_074b7d5e1602db74",
+      "source": "hackernews",
+      "title": "No signs of AI payoff outside the tech sector",
+      "url": "https://www.apollo.com/wealth/insights-news/insights/daily-spark/no-signs-of-ai-payoff-outside-the-tech-sector",
+      "summary": "",
+      "hot_score": 87.0414,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-24T19:47:19+00:00",
+      "last_seen_at": "2026-10-25T03:05:14.084216+00:00",
+      "metrics": {
+        "points": 502,
+        "num_comments": 505
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_5ded0eae18819e88": {
+      "id": "it_5ded0eae18819e88",
+      "source": "github_trending",
+      "title": "pbakaus/impeccable",
+      "url": "https://github.com/pbakaus/impeccable",
+      "summary": "The design language that makes your AI harness better at design.",
+      "hot_score": 86.7857,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-25T03:04:13.813495+00:00",
+      "last_seen_at": "2026-10-25T03:05:14.111606+00:00",
+      "metrics": {
+        "stars_total": 86499,
+        "stars_in_window": 619,
+        "forks": 5161,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Rust"
+    },
+    "it_77f9ddd43bbeeb71": {
+      "id": "it_77f9ddd43bbeeb71",
+      "source": "github_trending",
+      "title": "cloudflare/security-audit-skill",
+      "url": "https://github.com/cloudflare/security-audit-skill",
+      "summary": "A coding-agent skill for multi-phase security audits with independently verified, machine-readable findings",
+      "hot_score": 81.6465,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-21T03:11:29.651293+00:00",
+      "last_seen_at": "2026-10-25T03:05:14.109316+00:00",
+      "metrics": {
+        "stars_total": 44776,
+        "stars_in_window": 2979,
+        "forks": 2777,
+        "streak_days": 5
+      },
+      "streak_days": 5,
+      "language": "JavaScript"
+    },
+    "it_84c9b463e77e3500": {
+      "id": "it_84c9b463e77e3500",
+      "source": "hackernews",
+      "title": "The Goose Programming Language",
+      "url": "https://aardappel.github.io/goose",
+      "summary": "https://twitter.com/ID_AA_Carmack/status/2113704269274636568",
+      "hot_score": 77.6839,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-24T19:06:55+00:00",
+      "last_seen_at": "2026-10-25T03:05:14.086164+00:00",
+      "metrics": {
+        "points": 269,
+        "num_comments": 178
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_bf5ec6e10b8ea1d5": {
+      "id": "it_bf5ec6e10b8ea1d5",
+      "source": "github_trending",
+      "title": "Nutlope/hallmark",
+      "url": "https://github.com/Nutlope/hallmark",
+      "summary": "Anti-AI-slop design skill for Claude Code, Cursor, and Codex.",
+      "hot_score": 77.1429,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-25T03:04:13.813488+00:00",
+      "last_seen_at": "2026-10-25T03:05:14.110771+00:00",
+      "metrics": {
+        "stars_total": 32240,
+        "stars_in_window": 455,
+        "forks": 1656,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "CSS"
+    },
+    "it_8f5707e9a13cb370": {
+      "id": "it_8f5707e9a13cb370",
+      "source": "hackernews",
+      "title": "America has lost 200k of jobs in media, film and the arts. How much is AI?",
+      "url": "https://www.apricitas.io/p/ai-and-the-fall-of-the-creative-class",
+      "summary": "",
+      "hot_score": 69.75,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-24T23:11:54+00:00",
+      "last_seen_at": "2026-10-25T03:05:14.087346+00:00",
+      "metrics": {
+        "points": 205,
+        "num_comments": 181
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_2d8756d68814cbfe": {
+      "id": "it_2d8756d68814cbfe",
+      "source": "github_trending",
+      "title": "makecindy/cindy",
+      "url": "https://github.com/makecindy/cindy",
+      "summary": "Consider it done. The open-source AI agent that works out of the box · 想到，就能做到。开源、开箱即用的 AI Agent。",
+      "hot_score": 67.5,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-25T03:04:13.813509+00:00",
+      "last_seen_at": "2026-10-25T03:05:14.113308+00:00",
+      "metrics": {
+        "stars_total": 4149,
+        "stars_in_window": 477,
+        "forks": 600,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "TypeScript"
+    },
+    "it_18ea66ddd405facc": {
+      "id": "it_18ea66ddd405facc",
+      "source": "github_trending",
+      "title": "pollen-robotics/microduck",
+      "url": "https://github.com/pollen-robotics/microduck",
+      "summary": "A Tiny biped duck robot 🦆",
+      "hot_score": 64.2857,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-25T03:04:13.813497+00:00",
+      "last_seen_at": "2026-10-25T03:05:14.111958+00:00",
+      "metrics": {
+        "stars_total": 11046,
+        "stars_in_window": 319,
+        "forks": 1416,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Rust"
+    },
+    "it_a7519c6ce55f34ab": {
+      "id": "it_a7519c6ce55f34ab",
+      "source": "github_trending",
+      "title": "luongnv89/claude-howto",
+      "url": "https://github.com/luongnv89/claude-howto",
+      "summary": "A visual, example-driven guide to Claude Code — from basic concepts to advanced agents, with copy-paste templates that bring immediate value.",
+      "hot_score": 63.5195,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-23T03:15:27.781286+00:00",
+      "last_seen_at": "2026-10-25T03:05:14.111183+00:00",
+      "metrics": {
+        "stars_total": 44617,
+        "stars_in_window": 392,
+        "forks": 5496,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_8858b289f2eefaee": {
+      "id": "it_8858b289f2eefaee",
+      "source": "github_trending",
+      "title": "Renhuai123/ziwei-doushu",
+      "url": "https://github.com/Renhuai123/ziwei-doushu",
+      "summary": "紫微斗数开源排盘引擎 — 基于倪海厦《天纪》体系，含完整排盘算法、四化系统、格局知识库、古籍原文数据",
+      "hot_score": 62.8686,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-24T03:09:27.367517+00:00",
+      "last_seen_at": "2026-10-24T03:10:28.819165+00:00",
+      "metrics": {
+        "stars_total": 6936,
+        "stars_in_window": 546,
+        "forks": 1419,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "TypeScript"
+    },
+    "it_7bb1bdda49f9e55e": {
+      "id": "it_7bb1bdda49f9e55e",
+      "source": "github_trending",
+      "title": "jbiaojerry/ebook-treasure-chest",
+      "url": "https://github.com/jbiaojerry/ebook-treasure-chest",
+      "summary": "欢迎来到电子书下载宝库，一个汇聚了各类电子书下载链接的地方。无论你是喜欢阅读经典文学、经管励志、终身学习、职场创业、技术手册还是其他类型的书籍，这里都能满足你的需求。 该库涵盖了帆书app(原樊登读书)、微信读书、京东读书、喜马拉雅等读书app的大部分电子书。",
+      "hot_score": 61.0714,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-25T03:04:13.813506+00:00",
+      "last_seen_at": "2026-10-25T03:05:14.112652+00:00",
+      "metrics": {
+        "stars_total": 22711,
+        "stars_in_window": 227,
+        "forks": 3195,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_fdf7de3aa15def01": {
+      "id": "it_fdf7de3aa15def01",
+      "source": "github_trending",
+      "title": "php/php-src",
+      "url": "https://github.com/php/php-src",
+      "summary": "The PHP Interpreter",
+      "hot_score": 59.8291,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-23T03:15:27.781246+00:00",
+      "last_seen_at": "2026-10-24T03:10:28.816459+00:00",
+      "metrics": {
+        "stars_total": 41585,
+        "stars_in_window": 716,
+        "forks": 8363,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "C"
+    },
+    "it_0a5972b709e4b83f": {
+      "id": "it_0a5972b709e4b83f",
+      "source": "hackernews",
+      "title": "Dream-1",
+      "url": "https://dreamlabs.ai/research/dream-1",
+      "summary": "",
+      "hot_score": 59.3063,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-24T18:23:24+00:00",
+      "last_seen_at": "2026-10-25T03:05:14.087845+00:00",
+      "metrics": {
+        "points": 156,
+        "num_comments": 75
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_c9cdc26758b48a34": {
+      "id": "it_c9cdc26758b48a34",
+      "source": "github_trending",
+      "title": "anthropics/knowledge-work-plugins",
+      "url": "https://github.com/anthropics/knowledge-work-plugins",
+      "summary": "Open source repository of plugins primarily intended for knowledge workers to use in Claude Cowork",
+      "hot_score": 58.6703,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-21T03:11:29.651346+00:00",
+      "last_seen_at": "2026-10-24T03:10:28.817677+00:00",
+      "metrics": {
+        "stars_total": 32278,
+        "stars_in_window": 635,
+        "forks": 3576,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "Python"
+    },
+    "it_e04ac878b49d46d8": {
+      "id": "it_e04ac878b49d46d8",
+      "source": "hackernews",
+      "title": "The Importance of Limitations for Creativity and Learning (2023)",
+      "url": "https://ratfactor.com/cards/limitations",
+      "summary": "",
+      "hot_score": 51.75,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-24T21:42:47+00:00",
+      "last_seen_at": "2026-10-25T03:05:14.088293+00:00",
+      "metrics": {
+        "points": 34,
+        "num_comments": 10
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_3880477a3e9a8bf0": {
+      "id": "it_3880477a3e9a8bf0",
+      "source": "github_trending",
+      "title": "SnailSploit/Claude-Red",
+      "url": "https://github.com/SnailSploit/Claude-Red",
+      "summary": "claude-red is a curated library of offensive security skills designed for the Claude skills system. Each skill is a structured SKILL.md file that primes Claude with expert-level methodology for a specific attack surface — from SQLi to shellcode, EDR evasion to exploit development.",
+      "hot_score": 50.0115,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-24T03:09:27.367527+00:00",
+      "last_seen_at": "2026-10-24T03:10:28.820264+00:00",
+      "metrics": {
+        "stars_total": 8552,
+        "stars_in_window": 226,
+        "forks": 1105,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_e340e8dcefb7e729": {
+      "id": "it_e340e8dcefb7e729",
+      "source": "github_trending",
+      "title": "google-gemini/gemini-cli",
+      "url": "https://github.com/google-gemini/gemini-cli",
+      "summary": "An open-source AI agent that brings the power of Gemini directly into your terminal.",
+      "hot_score": 48.2143,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-25T03:04:13.813503+00:00",
+      "last_seen_at": "2026-10-25T03:05:14.112304+00:00",
+      "metrics": {
+        "stars_total": 108110,
+        "stars_in_window": 44,
+        "forks": 14812,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "TypeScript"
+    },
+    "it_38e504ab00817795": {
+      "id": "it_38e504ab00817795",
+      "source": "github_trending",
+      "title": "OpenBMB/VoxCPM",
+      "url": "https://github.com/OpenBMB/VoxCPM",
+      "summary": "VoxCPM2: Tokenizer-Free TTS for Multilingual Speech Generation, Creative Voice Design, and True-to-Life Cloning",
+      "hot_score": 46.7972,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-24T03:09:27.367536+00:00",
+      "last_seen_at": "2026-10-24T03:10:28.821248+00:00",
+      "metrics": {
+        "stars_total": 40303,
+        "stars_in_window": 150,
+        "forks": 4581,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_0709c8f48aaec625": {
+      "id": "it_0709c8f48aaec625",
+      "source": "github_trending",
+      "title": "aws/agent-toolkit-for-aws",
+      "url": "https://github.com/aws/agent-toolkit-for-aws",
+      "summary": "Official, AWS-supported MCP servers, skills, and plugins to help AI agents build on AWS",
+      "hot_score": 45.0,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-25T03:04:13.813485+00:00",
+      "last_seen_at": "2026-10-25T03:05:14.110380+00:00",
+      "metrics": {
+        "stars_total": 3159,
+        "stars_in_window": 13,
+        "forks": 400,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_2fbf3db695f9d673": {
+      "id": "it_2fbf3db695f9d673",
+      "source": "github_trending",
+      "title": "nodejs/node",
+      "url": "https://github.com/nodejs/node",
+      "summary": "Node.js JavaScript runtime ✨🐢🚀✨",
+      "hot_score": 43.5829,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-24T03:09:27.367548+00:00",
+      "last_seen_at": "2026-10-24T03:10:28.821971+00:00",
+      "metrics": {
+        "stars_total": 122907,
+        "stars_in_window": 66,
+        "forks": 39834,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "JavaScript"
+    },
+    "it_4945f84ab0290bb2": {
+      "id": "it_4945f84ab0290bb2",
+      "source": "hackernews",
+      "title": "\"Musk\" Documentary Pulled from Almost Every One of 472 Theaters After One Week",
+      "url": "https://www.showbiz411.com/2026/10/23/controversial-musk-documentary-pulled-from-almost-every-one-of-472-theaters-after-one-week-by-newly-sold-bleecker-street-films",
+      "summary": "",
+      "hot_score": 42.75,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-25T01:40:01+00:00",
+      "last_seen_at": "2026-10-25T03:05:14.088686+00:00",
+      "metrics": {
+        "points": 33,
+        "num_comments": 7
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_0509c80e85fbace7": {
+      "id": "it_0509c80e85fbace7",
+      "source": "rss",
+      "title": "Blue Planet III is keeping the rough edges in the age of AI",
+      "url": "https://www.theverge.com/ai-artificial-intelligence/1018205/blue-planet-iii-authentic-organic-ai",
+      "summary": "BBC's Blue Planet III is looking to prove its authenticity by leaving in the less-than-perfect shots. Previous incarnations of the nature series were defined by their gorgeous, crystal-clear footage that seemed almost too good to be real. But one dead giveaway of AI is when things look too polished and seamless. To counter that, Blue Planet III goes warts and all.\nExecutive Producer Elizabeth White told The Guardian in the past, \"the amount of plankton and things\" floating in the water would have caused them to cut a shot. Or \"we might have framed out a boat or a buoy or gone: 'Oh, actually … the water conditions are not really good enough …\nRead the full story at The Verge.",
+      "hot_score": 39.0,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-10-24T21:29:12+00:00",
+      "last_seen_at": "2026-10-25T03:05:14.106431+00:00",
+      "metrics": {
+        "rank_score": 1.0
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_dc3cbbf1f017de92": {
+      "id": "it_dc3cbbf1f017de92",
+      "source": "reddit",
+      "title": "Is it just me or Kimi K3.1 Pro don’t look much better than DeepSeek 4.1 Flash?",
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1xemxoq/is_it_just_me_or_kimi_k31_pro_dont_look_much",
+      "summary": "Personally I am quite fond of the Kimi models, especially them taking a gamble pushing the 2.8b parameter models. But that’s just it, you’d figure that the results would be representative of its size. However, the recent release of DeepSeek 1017 has put things in perspective for me. kimi k3 is a great model but realistically very hard to run locally, even when quantized, and even if managing to run it it is slow, due to the 104 active layers it need to go through to make a single token. on the other hand, DeepSeek 4.1 flash 1017 results are quite close at a much smaller footprint and while also much faster. I have seen plenty coverage of the results of kimi k3 pro and to be frank, they don’t look like substantial improvement over DeepSeek 1017. So thinking about it, maybe just stick to 4.1 flash 1017 and ignore kimi k3 pro open weigh that will be released in nov 4th. Running it quantized will deteriorate its output compared to a high quant version of DeepSeek. Just some thoughts I am h",
+      "hot_score": 38.25,
+      "topic_id": null,
+      "seen_in": [
+        "reddit"
+      ],
+      "published_at": "2026-10-24T23:24:59+00:00",
+      "last_seen_at": "2026-10-25T03:05:14.098403+00:00",
+      "metrics": {
+        "score": 0,
+        "rank_score": 0.44
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_e3739f261dd50ecf": {
+      "id": "it_e3739f261dd50ecf",
+      "source": "reddit",
+      "title": "UK to invest £100m in 'world first' AI Biosecurity Lab",
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1xem3kc/uk_to_invest_100m_in_world_first_ai_biosecurity",
+      "summary": "submitted by /u/MerePotato [link] [comments]",
+      "hot_score": 38.25,
+      "topic_id": null,
+      "seen_in": [
+        "reddit"
+      ],
+      "published_at": "2026-10-24T22:45:29+00:00",
+      "last_seen_at": "2026-10-25T03:05:14.102038+00:00",
+      "metrics": {
+        "score": 0,
+        "rank_score": 0.2
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_e9d1aeb856ce29df": {
+      "id": "it_e9d1aeb856ce29df",
+      "source": "reddit",
+      "title": "CMP170HX inspiration unlocks 30x/40x also, up to 2X Prefill speedup --> NVIDIA RTX 30 & RTX 40 GPUs Get Impressively Fast In AI LLMs As Compute Doubles With New Unlock Tool But Prices Surge Too",
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1xelhpj/cmp170hx_inspiration_unlocks_30x40x_also_up_to_2x",
+      "summary": "Your move everyone, buy, sell, but hurry... submitted by /u/chemist_slime [link] [comments]",
+      "hot_score": 38.25,
+      "topic_id": null,
+      "seen_in": [
+        "reddit"
+      ],
+      "published_at": "2026-10-24T22:16:55+00:00",
+      "last_seen_at": "2026-10-25T03:05:14.093155+00:00",
+      "metrics": {
+        "score": 0,
+        "rank_score": 0.76
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_e2c6a897f5943393": {
+      "id": "it_e2c6a897f5943393",
+      "source": "reddit",
+      "title": "Day 1 MiniMax-M3.1-Flash support in TensorSharp: GGUF, vision, tool calling, DSpark, and 8× A40 benchmarks",
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1xejzuo/day_1_minimaxm31flash_support_in_tensorsharp_gguf",
+      "summary": "I’m the developer of TensorSharp. I added MiniMax-M3.1-Flash support on Day 1 of its open-weight release , and wanted to share what’s working and some initial benchmarks for anyone looking to run the model locally. The biggest performance difference showed up with long prompts: 64K executor prefill reached 2,567 tok/s versus 262 tok/s in the tested llama.cpp branch , while server time to first token dropped from 293.4 seconds to 40.0 seconds . What’s supported The current implementation includes: GGUF inference , including MiniMax Sparse Attention with dedicated CUDA kernels. Text and image inputs , served through an OpenAI-compatible API. JSON/schema responses, tool calling, and multi-turn KV-cache reuse. Multi-GPU layer splitting and tensor parallelism. DSpark speculative decoding. CPU offload for routed MoE experts. I tested chat, long-prompt retrieval, structured output, single and parallel tool calls, an agentic tool loop, images, and concurrent requests. Hardware and comparison s",
+      "hot_score": 38.25,
+      "topic_id": null,
+      "seen_in": [
+        "reddit"
+      ],
+      "published_at": "2026-10-24T21:10:54+00:00",
+      "last_seen_at": "2026-10-25T03:05:14.103668+00:00",
+      "metrics": {
+        "score": 0,
+        "rank_score": 0.08
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_42b906fc52ddba56": {
+      "id": "it_42b906fc52ddba56",
+      "source": "reddit",
+      "title": "M6 Mac Mini owners (32GB): now you can run Qwen3.8-27B in high quality on the Apple Neural Engine",
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1xejv61/m6_mac_mini_owners_32gb_now_you_can_run_qwen3827b",
+      "summary": "ANEMLL Forge 0.2.1: Qwen3.8-27B on the M6 Neural Engine now runs up to 192K context (M6 32GB). New: INT8 K/V cache (half of FP16) and a smaller drafter sharing the target's output head — 0.86 GB less ANE memory, same speed. Decode depends on content: JSON 35–62 tok/s, code 18–32, prose 10–17. Prefill 260 tok/s at short context, 62 at 192K. 128K–192K use a smaller prefill batch (32 vs 64 rows) to stay within memory budget. Heads up: full 192K first compile takes ~2h on M6 (one time, cached). `--ctx` exports only the entries you need, so compile is much faster: 16K is ~10 min from download to running server. IMO 96K is the sweet spot for size/speed on 32GB: 123 tok/s prefill, ~27 tok/s decode, ~21.4 GB total memory. Release notes: https://github.com/Anemll/anemll-forge/blob/main/docs/RELEASE\\_NOTES\\_v0.2.1.md Video (Tetris generated over ~150K tokens, no compaction): https://x.com/anemll/status/2111941341819408866 Paper: Three Bit MLP Vector Quantization in Apple Neural Engine — https://",
+      "hot_score": 38.25,
+      "topic_id": null,
+      "seen_in": [
+        "reddit"
+      ],
+      "published_at": "2026-10-24T21:05:21+00:00",
+      "last_seen_at": "2026-10-25T03:05:14.097100+00:00",
+      "metrics": {
+        "score": 0,
+        "rank_score": 0.52
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_dbe76530e9896fc9": {
+      "id": "it_dbe76530e9896fc9",
+      "source": "rss",
+      "title": "The AI graveyard: a running list of projects and startups that didn’t make it",
+      "url": "https://techcrunch.com/2026/10/24/the-ai-graveyard-a-running-list-of-projects-and-startups-that-didnt-make-it",
+      "summary": "From Apple's repeatedly delayed Siri AI to OpenAI's messy \"super app\" launch, here's a look at the AI projects that shut down or missed expectations.",
+      "hot_score": 37.8734,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-10-24T19:00:00+00:00",
+      "last_seen_at": "2026-10-25T03:05:14.107704+00:00",
+      "metrics": {
+        "rank_score": 1.0
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_1cac23aa0b658b36": {
+      "id": "it_1cac23aa0b658b36",
+      "source": "reddit",
+      "title": "Small model good for reverse engineering that can run on a 3090 and 32GB RAM.",
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1xeipmm/small_model_good_for_reverse_engineering_that_can",
+      "summary": "Anyone knows of a good model that does not say no to reverse engineering? Cloud models will even terminate your account by snitching on you and GLM 5.3 is too big to run on my potato. Help would be greatly appreciated. Thanks. submitted by /u/politefella0 [link] [comments]",
+      "hot_score": 37.8047,
+      "topic_id": null,
+      "seen_in": [
+        "reddit"
+      ],
+      "published_at": "2026-10-24T20:16:36+00:00",
+      "last_seen_at": "2026-10-25T03:05:14.097841+00:00",
+      "metrics": {
+        "score": 0,
+        "rank_score": 0.48
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_705d74d6480246b0": {
+      "id": "it_705d74d6480246b0",
+      "source": "reddit",
+      "title": "KLD is misunderstood",
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1xeim3m/kld_is_misunderstood",
+      "summary": "I see a lot of people here on Reddit treating the KLD number as some holy metric that can distinguish every quantized model out there and rank them by quality. TL;DR: It can't. So what does KLD actually measure? If you feed the same text to both the base model and the quantized model, you can compare the probability distributions obtained from their logits at each token. KLD basically measures how different these distributions are, and then we take the average across all tokens. The first thing that can go very wrong here is that people just throw some random text at the model, like a bunch of Wikipedia articles, and calculate KLD on that dataset. But that's not necessarily representative of what the model actually sees during inference. During generation, a growing part of the context consists of tokens generated by the model itself, and you can't replicate that by just feeding it random text. If you want a more reasonable number, you should generate your own dataset using the base mo",
+      "hot_score": 37.7673,
+      "topic_id": null,
+      "seen_in": [
+        "reddit"
+      ],
+      "published_at": "2026-10-24T20:12:28+00:00",
+      "last_seen_at": "2026-10-25T03:05:14.092487+00:00",
+      "metrics": {
+        "score": 0,
+        "rank_score": 0.8
+      },
+      "streak_days": 0,
+      "language": "en"
+    }
+  },
+  "meta": {
+    "mode": "hybrid",
+    "day": "2026-10-25",
+    "generated_at": "2026-10-25T03:06:26.207945+00:00",
+    "window": {
+      "since": "2026-10-24T03:04:12.403130+00:00",
+      "until": "2026-10-25T03:05:14.123555+00:00",
+      "hours": 24.0,
+      "since_local": "2026-10-24T11:04+08:00",
+      "until_local": "2026-10-25T11:05+08:00",
+      "tz": "Asia/Shanghai"
+    },
+    "analysis": {
+      "items": 54,
+      "scored": 54,
+      "topics": 0,
+      "new_entity_mention_rows": 62,
+      "state_items": 9
+    },
+    "llm": {
+      "degraded": false,
+      "degraded_reason": "",
+      "calls": 1
+    },
+    "collect": {
+      "ok_sources": 6,
+      "failed_sources": 1,
+      "skipped": 0,
+      "total_items": 49
+    },
+    "verify": {
+      "verified": 1,
+      "unverifiable": 0,
+      "deferred": 0,
+      "failed": 0,
+      "llm_calls": 1
+    },
+    "predictions": {
+      "total": 74,
+      "verified": 1,
+      "pending": 73,
+      "unverifiable": 0,
+      "hit_rate": 0.0,
+      "weighted_score": 0.0,
+      "brier": 0.36
+    },
+    "prediction_generation": {
+      "mode": "hybrid",
+      "generated": 5,
+      "inserted": 5,
+      "dropped": [],
+      "llm_calls": 1,
+      "candidate_pool": 20,
+      "degraded": false,
+      "degraded_reason": ""
+    },
+    "brief": {
+      "max_items_per_section": 10,
+      "velocity_board_enabled": true,
+      "velocity_board_top_n": 5
+    },
+    "signals": {
+      "entities": 323,
+      "points": 961,
+      "with_velocity": 43,
+      "insufficient": 112,
+      "cold_start": 168,
+      "min_window_hours": 6.0
+    },
+    "enhance_total": 22,
+    "enhanced": 22,
+    "enhance_skipped_count": 0,
+    "enhance_cache_hit": 3,
+    "enhance_cost_cny": 0.008904
+  }
+}
