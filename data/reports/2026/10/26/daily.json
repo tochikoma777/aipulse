@@ -1,0 +1,958 @@
+{
+  "date": "2026-10-26",
+  "headline": "大模型降价八成不是让利，而是推理成本塌方后价格战被迫开打，模型层正加速商品化",
+  "headline_item_id": "it_c45c68dc9fe27319",
+  "overview_bullets": [
+    {
+      "icon": "📉",
+      "topic": "价格战",
+      "text": "OpenAI 与 Anthropic 数月内把 LLM 价格砍到最高 80%，说明能力差距收窄后，定价权正从模型厂商转向买方与开源替代。"
+    },
+    {
+      "icon": "🛠️",
+      "topic": "技能化智能体",
+      "text": "GitHub 热榜被 Claude Code / Cursor 的\"技能包\"刷屏——安全审计、反 AI 味设计、SEO，智能体竞争已从模型转向可复用的工程化技能。"
+    },
+    {
+      "icon": "🔐",
+      "topic": "供应链安全",
+      "text": "Gheist 用窃取的 GitHub token 植入泄密工作流，同日 llama.cpp 曝 CVE-2026-116096，AI 工具链正成为攻击面而非旁观者。"
+    },
+    {
+      "icon": "📄",
+      "topic": "幻觉与记忆",
+      "text": "Omni-Woodpecker 从证据先验层面纠偏多模态幻觉，Titans 的推理期自更新记忆则引出\"学错了怎么办\"的新问题。"
+    },
+    {
+      "icon": "🏢",
+      "topic": "回报存疑",
+      "text": "Apollo 称 AI 在科技业外\"零财务回报\"，与 NVIDIA 拟按每 GPU 每年 2000 美元收软件费形成刺眼对照。"
+    }
+  ],
+  "executive_summary": "今天最清晰的信号是：模型能力在贬值、工程技能与安全成本在升值，而买单方是否真赚到钱仍无证据。",
+  "editor_note": {
+    "core": "最该记住的是 LLM 价格数月内腰斩再腰斩：这不是促销，而是推理效率提升与开源替代共同挤压下的结构性降价，模型层正滑向商品化，利润会向算力、分发与技能生态迁移。",
+    "cross_signal": "GitHub 热榜清一色是\"给智能体装技能\"的仓库，与 Apollo 的\"零财务回报\"、NVIDIA 的按 GPU 收软件费互为印证：价值正从模型本身转移到运行环境与工程封装上。",
+    "counterintuitive": "一个十年前的老 CNN 在皮肤癌诊断上打赢前沿 LLM，提醒我们\"更大更新\"不等于\"更准\"；而热度最高的降价新闻，真正的受益者可能不是用户而是被迫跟进的中小模型厂商的对手。",
+    "risk": "Gheist 借 GitHub token 植入泄密工作流、llama.cpp 曝出 CVE，说明智能体与本地推理栈正在成为高价值攻击面；社区一边要求沙箱一边大量裸跑，这个缺口比任何模型榜单都更值得警惕。"
+  },
+  "contradictions": [
+    "OpenAI/Anthropic 大幅降价暗示推理成本骤降、需求旺盛，但 Apollo 称 AI 在科技业外零财务回报，需求侧的真实付费意愿存疑。",
+    "Reddit 讨论认为开放权重将因中美限制网络能力模型而收缩，但今日开源热榜仍在高速扩张，开放与管控的叙事相互打架。",
+    "R 社区以\"反 LLM 与反个人项目\"收紧准入，与编码智能体技能仓库的爆发式增长形成方向相反的两股力量。"
+  ],
+  "underrated": [
+    "A 10-year-old CNN outperforms frontier LLMs for skin cancer diagnosis",
+    "Titans learns during inference. What if it learns the wrong thing?",
+    "PSA: llama.cpp CVE-2026-116096",
+    "Gheist campaign plants secret-dumping workflows using stolen GitHub tokens",
+    "Echo: Coupled Action and Task Status Signal Denoising for Vision Language Action Models"
+  ],
+  "sections": [
+    {
+      "name": "开源项目",
+      "summary": "热榜几乎被\"给编码智能体加技能\"的仓库占领，本地化与自托管（VoiceStudio、coolify）同步升温。",
+      "item_ids": [
+        "it_bf5ec6e10b8ea1d5",
+        "it_77f9ddd43bbeeb71",
+        "it_5ded0eae18819e88",
+        "it_db643b160f4cefa8",
+        "it_66b0d3e172d9de9b",
+        "it_18ea66ddd405facc",
+        "it_2d8756d68814cbfe",
+        "it_681fdc4cd970ffdd",
+        "it_f991da91f1042c79",
+        "it_e31b1be02ebf018e",
+        "it_a7519c6ce55f34ab",
+        "it_e340e8dcefb7e729",
+        "it_7bb1bdda49f9e55e",
+        "it_8858b289f2eefaee"
+      ]
+    },
+    {
+      "name": "论文与研究",
+      "summary": "多模态幻觉纠偏、长程购物智能体评测、VLA 任务状态去噪三线并进，研究焦点从\"能做什么\"转向\"何时该停、何时该改\"。",
+      "item_ids": [
+        "it_63124e187df38bc8",
+        "it_9cebf2453181cfe5",
+        "it_a78d7cc32dc321f5"
+      ]
+    },
+    {
+      "name": "社区舆论",
+      "summary": "开源社区在收紧边界：R 语言圈封杀个人项目与 LLM 产物，Reddit 则在争论开放权重与网络能力的未来。",
+      "item_ids": [
+        "it_3160866a597c345c",
+        "it_ed94fe60f3e18aaa",
+        "it_70452a174da4e513",
+        "it_6423fa15e6b0e577",
+        "it_40f8aba219c9fd40",
+        "it_055dfd4331e634ff",
+        "it_c45c68dc9fe27319",
+        "it_600522d60bd8a822",
+        "it_d91f0b108ecfb36f",
+        "it_1dc75a32fc6a65d3",
+        "it_bb292756bb5dc873",
+        "it_04b7086ca02a1e02"
+      ]
+    },
+    {
+      "name": "产业与新闻",
+      "summary": "降价、零回报、按 GPU 收软件费、AI 生成电影上线，商业侧的矛盾信号比技术侧更密集。",
+      "item_ids": [
+        "it_bf7f18e0418c7776"
+      ]
+    }
+  ],
+  "comments": [
+    {
+      "item_id": "it_bf5ec6e10b8ea1d5",
+      "one_liner": "面向 Claude Code、Cursor 和 Codex 的反 AI 套路化设计技能。",
+      "why": "针对 AI 生成界面千篇一律的「塑料感」做反向约束，把审美判断写进编码代理的技能包，直接影响交付物的第一印象。",
+      "stance": "反 AI 味本身就是新赛道，但靠规则清单治标，治不了模型偏好。"
+    },
+    {
+      "item_id": "it_77f9ddd43bbeeb71",
+      "one_liner": "Cloudflare 开源的 coding-agent 技能，用于分阶段执行安全审计并输出可独立验证的机器可读结果",
+      "why": "把安全审计拆成多阶段并输出可机器校验的结论，让编码代理的审计结果从「人读报告」变成可接入 CI 的判定信号，审计责任从人转移到流水线。",
+      "stance": "方向对，但审计结论一旦可自动化，误报就会被当成合规证据，必须保留人工复核闸门。"
+    },
+    {
+      "item_id": "it_5ded0eae18819e88",
+      "one_liner": "一套设计语言，用于提升 AI harness 在设计任务上的表现。",
+      "why": "把设计规范从人读的文档变成 AI 可直接调用的约束层，前端产出的默认审美水位被整体抬高，设计师的评审成本随之下降。",
+      "stance": "方向对，但设计语言一旦被固化成提示词模板，产出会迅速同质化。"
+    },
+    {
+      "item_id": "it_db643b160f4cefa8",
+      "one_liner": "一个完全本地运行的开源 ElevenLabs 替代品，支持语音克隆、语音设计、视频配音、听写、转写和有声书制作，覆盖 646 种语言",
+      "why": "语音克隆与配音从云端订阅搬到本地，646 种语言覆盖让中小创作者绕开按量计费与声音数据留存。",
+      "stance": "本地化是正确方向，但声音克隆门槛降到零之后，冒用他人声纹的追责机制完全没跟上。"
+    },
+    {
+      "item_id": "it_66b0d3e172d9de9b",
+      "one_liner": "TradingAgents：一个用多个 LLM Agent 协作完成金融交易决策的开源框架",
+      "why": "把多智能体协作直接搬进金融交易决策链，意味着 LLM 从「分析助手」变成「下单主体」，风险敞口从信息错误升级为资金损失。",
+      "stance": "多智能体交易框架在回测里好看，真实市场里一个幻觉就是真金白银，先过风控再谈智能。"
+    },
+    {
+      "item_id": "it_18ea66ddd405facc",
+      "one_liner": "Pollen Robotics 推出的微型双足鸭子机器人。",
+      "why": "双足机器人被压到玩具级成本与体积，让步态控制、平衡算法从实验室走进个人桌面，硬件试错周期被大幅压缩。",
+      "stance": "小体积双足是教学与原型的好载体，别指望它承担任何实用任务。"
+    },
+    {
+      "item_id": "it_2d8756d68814cbfe",
+      "one_liner": "开源、开箱即用的 AI Agent 项目。",
+      "why": "把 Agent 的配置、工具链、运行环境打包成开箱即用形态，把上手门槛从「会调框架」降到「会提需求」，受益的是非工程背景的自动化需求方。",
+      "stance": "开箱即用是获客利器，也是天花板——真跑起复杂任务时，可调试性才是分水岭。"
+    },
+    {
+      "item_id": "it_681fdc4cd970ffdd",
+      "one_liner": "面向 Claude Code 的通用 SEO 技能包，含 26 个子技能与 19 个子 Agent，覆盖技术 SEO、结构化数据、GEO/AEO 与报告生成",
+      "why": "把 SEO 拆成 26 个子技能加 19 个子代理，等于把「搜索引擎优化」重定义为「被 AI 代理抓取与引用」，流量入口从排名转向被模型调用。",
+      "stance": "这是给 Claude Code 生态补上营销侧的标准件，但技能包越堆越厚，真正稀缺的是判断力不是清单。"
+    },
+    {
+      "item_id": "it_f991da91f1042c79",
+      "one_liner": "Coolify：可自托管的开源 PaaS，用于在自有服务器上部署静态站点、数据库、全栈应用及 360 多个一键服务",
+      "why": "自托管 PaaS 把部署权从云厂商手里收回，360+ 一键服务让中小团队用一台服务器替代 Vercel/Heroku 的账单与锁定。",
+      "stance": "云厂商的便利溢价正在被开源抹平，运维成本从月费转成人力，这笔账多数团队算得过来。"
+    },
+    {
+      "item_id": "it_e31b1be02ebf018e",
+      "one_liner": "JetBrains 推出的轻量级真实 IDE，可围绕个人工作方式自我定制，用于 vibe coding",
+      "why": "JetBrains 亲自下场做「会自我定制」的轻量 IDE，说明大厂认定 vibe coding 的瓶颈在编辑器形态而非模型能力。",
+      "stance": "IDE 厂商做 AI 原生编辑器有天然优势，但「自我定制」若只是插件换皮，就撑不起一个新品类。"
+    },
+    {
+      "item_id": "it_63124e187df38bc8",
+      "one_liner": "UserArena：一个用于评测长程购物 Agent 的交互式用户模拟基准",
+      "why": "购物代理的评测长期缺「用户会怎么反应」这一环，用交互式用户模拟补上长程决策的评估缺口，直接决定这类代理能否上线。",
+      "stance": "没有可信的用户模拟，购物代理的 benchmark 分数就是自娱自乐，这个方向该早做。"
+    },
+    {
+      "item_id": "it_9cebf2453181cfe5",
+      "one_liner": "Omni-Woodpecker：通过证据与先验再平衡来纠正全模态 LLM 跨模态幻觉的方法",
+      "why": "把幻觉治理从输出层下推到证据与先验的纠缠处，音视频联合推理的可靠性才可能被真正改善，而非靠事后过滤。",
+      "stance": "输出层打补丁治标不治本，往模型内部动刀才是正路，但代价是训练成本再上一档。"
+    },
+    {
+      "item_id": "it_a78d7cc32dc321f5",
+      "one_liner": "Echo：针对 VLA 模型的动作与任务状态信号耦合去噪方法，用于判断任务完成与失败",
+      "why": "让机器人自己判断「做完了没有、失败了没有」，是把 VLA 从开环执行推向闭环控制的关键一步，直接影响能否无人值守运行。",
+      "stance": "任务状态信号与动作信号耦合去噪的思路对路，机器人不会喊停就永远只是演示品。"
+    },
+    {
+      "item_id": "it_3160866a597c345c",
+      "one_liner": "一篇讨论 Titans 推理期学习机制的图文解读，并附小规模实验：纠正错误输入能提升召回但无法完全恢复",
+      "why": "推理时更新权重的记忆机制一旦被错误输入污染，纠正后也无法完全恢复，意味着这类模型的可靠性问题从「答错」变成「记坏」。",
+      "stance": "能自动记忆的模型必须配可审计的遗忘机制，否则用户连「它记住了什么错的」都无从知道。"
+    },
+    {
+      "item_id": "it_ed94fe60f3e18aaa",
+      "one_liner": "一则讨论帖：某 R 语言相关开源社区全面禁止个人项目和使用了 LLM 的项目",
+      "why": "一个主流语言社区同时封杀单人项目与 LLM 辅助代码，等于用治理规则把大量贡献者挡在门外，开源协作的准入标准被重新划线。",
+      "stance": "以「反 LLM」为名连单人项目一起禁，是把治理焦虑转嫁给最脆弱的贡献者，方向错了。"
+    },
+    {
+      "item_id": "it_70452a174da4e513",
+      "one_liner": "一则讨论帖：随着中美对具备网络攻击能力的模型加以限制，开放权重与网络能力的关系正在变化",
+      "why": "中美同时限制具备网络攻防能力的模型，开放权重从「默认越来越好」变成「按能力分级管控」，开源生态的分层由此开始。",
+      "stance": "网络能力分级管控会到来，但把开放权重当默认受害者，最终只让合规大厂拿到能力垄断。"
+    },
+    {
+      "item_id": "it_6423fa15e6b0e577",
+      "one_liner": "llama.cpp 被披露存在 CVE-2026-116096 漏洞，涉及 Pocket-TTS 组件中 list_pockettts_state_slots 函数的参数处理问题",
+      "why": "本地推理栈的 TTS 组件出现参数操纵类漏洞，意味着把语音合成跑在自有机器上的团队要自己承担补丁节奏，云端托管反而成了风险转移手段。",
+      "stance": "本地化不等于更安全，社区该把 CVE 响应流程当成选型硬指标。"
+    },
+    {
+      "item_id": "it_40f8aba219c9fd40",
+      "one_liner": "社区讨论如何为 pi 做沙箱隔离，列举了 Docker、容器、devcontainer 及 gondolin/sandbox 扩展等方案",
+      "why": "当代理开始执行 shell 与文件操作，沙箱从可选项变成事故边界；讨论分散在 docker、devcontainer、扩展层，说明业界尚无默认答案。",
+      "stance": "没有沙箱的代理部署属于裸奔，宁可牺牲便利也要先划边界。"
+    },
+    {
+      "item_id": "it_055dfd4331e634ff",
+      "one_liner": "有帖子称 NVIDIA 正计划按每块 GPU 每年 2000 美元的价格收取软件费用，以拓展软件收入",
+      "why": "按 GPU 年收软件费把一次性硬件买卖改造成订阅现金流，客户的总拥有成本被重新定价，采购决策从算力预算转向软件授权谈判。",
+      "stance": "这是把硬件垄断红利二次变现，客户应警惕被锁定在按年计费的算力税里。"
+    },
+    {
+      "item_id": "it_c45c68dc9fe27319",
+      "one_liner": "讨论 OpenAI 与 Anthropic 在数月内将 LLM 价格下调最高 80% 的现象及其原因",
+      "why": "头部厂商数月内大幅降价，说明推理成本下降与份额争夺同时发生，靠 API 差价套利的中间层被挤压，应用层毛利空间反而打开。",
+      "stance": "降价是产能过剩与抢地盘的信号，不是善意；押注单一供应商的团队要准备随时迁移。"
+    },
+    {
+      "item_id": "it_600522d60bd8a822",
+      "one_liner": "Apollo 的报告称 AI 在科技行业之外尚未带来可量化的财务回报",
+      "why": "资管机构给出行业外零回报的判断，会直接影响企业 IT 预算审批与融资叙事，把 AI 支出从增长投资重新归类为待验证成本。",
+      "stance": "这话说对了一半：回报缺失多因流程未改，但拿它当砍预算的借口同样懒惰。"
+    },
+    {
+      "item_id": "it_d91f0b108ecfb36f",
+      "one_liner": "Gheist 攻击活动利用窃取的 GitHub token 植入用于泄露密钥的 workflow",
+      "why": "被盗 GitHub token 被用来植入自动外泄工作流，攻击面从代码仓库扩展到 CI 与自动化管道，凭据轮换与工作流审计的优先级被抬高。",
+      "stance": "把长期 token 塞进 CI 是自找的，强制短时凭据与工作流白名单该成为默认。"
+    },
+    {
+      "item_id": "it_1dc75a32fc6a65d3",
+      "one_liner": "一项研究显示，十年前的一个 CNN 模型在皮肤癌诊断上表现优于前沿 LLM",
+      "why": "在窄领域专用小模型击败通用前沿模型，说明医疗等垂直场景的胜负取决于数据与任务定义，而非参数规模，采购逻辑随之转向专用方案。",
+      "stance": "通用大模型在垂直诊断上被老模型打脸，是行业该有的清醒剂。"
+    },
+    {
+      "item_id": "it_bf7f18e0418c7776",
+      "one_liner": "Grok 发布了其 AI 生成版《Odyssey》的前七分钟片段",
+      "why": "生成式视频开始产出长片级内容，稀缺性从制作能力转移到审美与叙事，平台的内容供给结构被进一步稀释。",
+      "stance": "技术演示合格、作品不合格；把产能当创作是这轮视频生成最大的自我欺骗。"
+    }
+  ],
+  "stats": {},
+  "items": {
+    "it_1dc75a32fc6a65d3": {
+      "id": "it_1dc75a32fc6a65d3",
+      "source": "hackernews",
+      "title": "A 10-year-old CNN outperforms frontier LLMs for skin cancer diagnosis",
+      "url": "https://lynchlab.net/llm-skin-cancer",
+      "summary": "",
+      "hot_score": 85.7424,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-25T17:15:38+00:00",
+      "last_seen_at": "2026-10-26T03:04:07.312936+00:00",
+      "metrics": {
+        "points": 464,
+        "num_comments": 216
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_c45c68dc9fe27319": {
+      "id": "it_c45c68dc9fe27319",
+      "source": "hackernews",
+      "title": "OpenAI and Anthropic cut their LLM prices by up to 80% within a few months. Why?",
+      "url": "https://minimaxir.com/2026/10/cheap-llms",
+      "summary": "",
+      "hot_score": 80.25,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-25T21:11:31+00:00",
+      "last_seen_at": "2026-10-26T03:04:07.315944+00:00",
+      "metrics": {
+        "points": 183,
+        "num_comments": 207
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_bf5ec6e10b8ea1d5": {
+      "id": "it_bf5ec6e10b8ea1d5",
+      "source": "github_trending",
+      "title": "Nutlope/hallmark",
+      "url": "https://github.com/Nutlope/hallmark",
+      "summary": "Anti-AI-slop design skill for Claude Code, Cursor, and Codex.",
+      "hot_score": 79.6312,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-25T03:04:13.813488+00:00",
+      "last_seen_at": "2026-10-26T03:04:07.362387+00:00",
+      "metrics": {
+        "stars_total": 34056,
+        "stars_in_window": 1317,
+        "forks": 1778,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "CSS"
+    },
+    "it_77f9ddd43bbeeb71": {
+      "id": "it_77f9ddd43bbeeb71",
+      "source": "github_trending",
+      "title": "cloudflare/security-audit-skill",
+      "url": "https://github.com/cloudflare/security-audit-skill",
+      "summary": "A coding-agent skill for multi-phase security audits with independently verified, machine-readable findings",
+      "hot_score": 77.6315,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-21T03:11:29.651293+00:00",
+      "last_seen_at": "2026-10-26T03:04:07.368117+00:00",
+      "metrics": {
+        "stars_total": 47100,
+        "stars_in_window": 2979,
+        "forks": 2922,
+        "streak_days": 6
+      },
+      "streak_days": 6,
+      "language": "JavaScript"
+    },
+    "it_5ded0eae18819e88": {
+      "id": "it_5ded0eae18819e88",
+      "source": "github_trending",
+      "title": "pbakaus/impeccable",
+      "url": "https://github.com/pbakaus/impeccable",
+      "summary": "The design language that makes your AI harness better at design.",
+      "hot_score": 77.1312,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-25T03:04:13.813495+00:00",
+      "last_seen_at": "2026-10-26T03:04:07.364251+00:00",
+      "metrics": {
+        "stars_total": 87858,
+        "stars_in_window": 1092,
+        "forks": 5249,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "Rust"
+    },
+    "it_db643b160f4cefa8": {
+      "id": "it_db643b160f4cefa8",
+      "source": "github_trending",
+      "title": "debpalash/VoiceStudio",
+      "url": "https://github.com/debpalash/VoiceStudio",
+      "summary": "VoiceStudio is the open-source, fully-local ElevenLabs alternative — voice cloning, voice design, video dubbing, dictation, transcription & audiobook creation in 646 languages.",
+      "hot_score": 74.3071,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-15T14:47:23.502371+00:00",
+      "last_seen_at": "2026-10-26T03:04:07.363512+00:00",
+      "metrics": {
+        "stars_total": 87047,
+        "stars_in_window": 3027,
+        "forks": 9631,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_66b0d3e172d9de9b": {
+      "id": "it_66b0d3e172d9de9b",
+      "source": "github_trending",
+      "title": "TauricResearch/TradingAgents",
+      "url": "https://github.com/TauricResearch/TradingAgents",
+      "summary": "TradingAgents: Multi-Agents LLM Financial Trading Framework",
+      "hot_score": 73.9286,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-26T03:04:00.871461+00:00",
+      "last_seen_at": "2026-10-26T03:04:07.365413+00:00",
+      "metrics": {
+        "stars_total": 114748,
+        "stars_in_window": 381,
+        "forks": 22137,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_63124e187df38bc8": {
+      "id": "it_63124e187df38bc8",
+      "source": "hf_papers",
+      "title": "UserArena: Benchmarking Interactive User Simulation for Long-Horizon Shopping Agents",
+      "url": "arxiv:2610.30932",
+      "summary": "Agentic recommendation pursues shopper goals through sequences of context-dependent decisions. Developing and evaluating such policies requires faithful recommendation world models that capture both the interactive shopping environment and users' behavioral responses over long interactions. Existing resources rarely provide long-horizon, fine-grained real-user trajectories or support trajectory-level evaluation and offline validation against production A/B results. We introduce UserArena, a real-world e-commerce interactive benchmark containing 64,729 session trajectories from 11,010 users, spanning 566,102 items and 13 action types. UserArena pairs these trajectories with an interactive environment and supports offline validation against outcomes from a controlled production A/B test, enabling five-level evaluation from output validity and local decisions to sequential behavior, personalization, and outcomes. To improve simulator fidelity over these long-horizon interactions, we further propose On-Policy Trajectory Distillation (OPTD), which uses trajectory-level intent to provide dense teacher targets on student-generated rollouts. Experiments show that OPTD achieves the strongest overall fidelity among the evaluated simulators under UserArena's evaluation protocol and most closely reproduces the production policy effect in offline simulation.",
+      "hot_score": 69.849,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-21T20:00:00+00:00",
+      "last_seen_at": "2026-10-26T03:04:07.369636+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 13
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_ed94fe60f3e18aaa": {
+      "id": "it_ed94fe60f3e18aaa",
+      "source": "hackernews",
+      "title": "R/open source bans all solo projects and projects using LLMs",
+      "url": "https://www.reddit.com/r/opensource/comments/1xelcuf/your_tokens_arent_valuable_no_more_ai",
+      "summary": "",
+      "hot_score": 69.2229,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-25T14:05:03+00:00",
+      "last_seen_at": "2026-10-26T03:04:07.317878+00:00",
+      "metrics": {
+        "points": 82,
+        "num_comments": 108
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_18ea66ddd405facc": {
+      "id": "it_18ea66ddd405facc",
+      "source": "github_trending",
+      "title": "pollen-robotics/microduck",
+      "url": "https://github.com/pollen-robotics/microduck",
+      "summary": "A Tiny biped duck robot 🦆",
+      "hot_score": 64.9884,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-25T03:04:13.813497+00:00",
+      "last_seen_at": "2026-10-26T03:04:07.364878+00:00",
+      "metrics": {
+        "stars_total": 11755,
+        "stars_in_window": 647,
+        "forks": 1495,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "Rust"
+    },
+    "it_bb292756bb5dc873": {
+      "id": "it_bb292756bb5dc873",
+      "source": "hackernews",
+      "title": "Eunice is almost here",
+      "url": "https://armincat.com/articles/eunice-is-almost-here",
+      "summary": "",
+      "hot_score": 64.4901,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-25T19:40:27+00:00",
+      "last_seen_at": "2026-10-26T03:04:07.318592+00:00",
+      "metrics": {
+        "points": 66,
+        "num_comments": 61
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_2d8756d68814cbfe": {
+      "id": "it_2d8756d68814cbfe",
+      "source": "github_trending",
+      "title": "makecindy/cindy",
+      "url": "https://github.com/makecindy/cindy",
+      "summary": "Consider it done. The open-source AI agent that works out of the box · 想到，就能做到。开源、开箱即用的 AI Agent。",
+      "hot_score": 61.4169,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-25T03:04:13.813509+00:00",
+      "last_seen_at": "2026-10-26T03:04:07.361610+00:00",
+      "metrics": {
+        "stars_total": 5038,
+        "stars_in_window": 675,
+        "forks": 678,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "TypeScript"
+    },
+    "it_9cebf2453181cfe5": {
+      "id": "it_9cebf2453181cfe5",
+      "source": "hf_papers",
+      "title": "Omni-Woodpecker: Hallucination Correction via Evidence-Prior Rebalancing for Omni LLMs",
+      "url": "arxiv:2610.27103",
+      "summary": "Recent Omni LLMs (OLLMs) have demonstrated remarkable capabilities in joint audio-visual reasoning, yet cross-modal hallucinations remain a major challenge. Existing mitigation methods mainly operate at the output level, overlooking the entanglement of grounding evidence and learned priors within fused representations. To address this issue, we propose Omni-Woodpecker (OWP), a training-free framework that shifts hallucination mitigation from output-level manipulation to conflict-conditioned representation rebalancing. Specifically, OWP first identifies cross-modal conflicts from complementary modality-specific views. It then employs orthogonal decomposition to separate grounding evidence from competing priors within the hidden states. Finally, OWP adaptively rebalances fused representations by suppressing misleading priors and restoring ignored evidence before decoding. Extensive experiments demonstrate the effectiveness and strong cross-architecture generalization of OWP. Using Qwen2.5-Omni-7B as the backbone, OWP improves performance by 12.9 and 8.6 points on CMM and AVHBench, respectively, while consistently achieving gains of 0.67-2.25 points across four general OLLM reasoning benchmarks. Furthermore, OWP generalizes effectively to VideoLLaMA2-AV, improving performance by 4.6 and 3.9 points on the same benchmarks. Code is publicly available at https://github.com/ZiiJianLiu/Omni-Woodpecker",
+      "hot_score": 59.6826,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-18T20:00:00+00:00",
+      "last_seen_at": "2026-10-26T03:04:07.370647+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 6
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_681fdc4cd970ffdd": {
+      "id": "it_681fdc4cd970ffdd",
+      "source": "github_trending",
+      "title": "AgriciDaniel/claude-seo",
+      "url": "https://github.com/AgriciDaniel/claude-seo",
+      "summary": "Universal SEO skill for Claude Code. 26 sub-skills + 19 sub-agents covering technical SEO, E-E-A-T, schema, GEO/AEO, agent readiness (Lighthouse Agentic Browsing, WebMCP, llms.txt), backlinks, local SEO, e-commerce, international SEO, Google APIs, and PDF/Excel reporting. 9 optional extensions for live SEO data.",
+      "hot_score": 57.8571,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-26T03:04:00.871494+00:00",
+      "last_seen_at": "2026-10-26T03:04:07.368776+00:00",
+      "metrics": {
+        "stars_total": 21045,
+        "stars_in_window": 197,
+        "forks": 2962,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_04b7086ca02a1e02": {
+      "id": "it_04b7086ca02a1e02",
+      "source": "hackernews",
+      "title": "Where the Romans Fought (interactive map)",
+      "url": "https://iosiflazaridis.github.io/battles-of-the-romans",
+      "summary": "",
+      "hot_score": 56.6177,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-25T18:58:14+00:00",
+      "last_seen_at": "2026-10-26T03:04:07.319235+00:00",
+      "metrics": {
+        "points": 55,
+        "num_comments": 26
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_f991da91f1042c79": {
+      "id": "it_f991da91f1042c79",
+      "source": "github_trending",
+      "title": "coollabsio/coolify",
+      "url": "https://github.com/coollabsio/coolify",
+      "summary": "An open-source, self-hostable PaaS alternative to Vercel, Heroku & Netlify that lets you easily deploy static sites, databases, full-stack applications and 360+ one-click services on your own servers.",
+      "hot_score": 54.6429,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-26T03:04:00.871482+00:00",
+      "last_seen_at": "2026-10-26T03:04:07.367389+00:00",
+      "metrics": {
+        "stars_total": 64498,
+        "stars_in_window": 152,
+        "forks": 5796,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "PHP"
+    },
+    "it_7bb1bdda49f9e55e": {
+      "id": "it_7bb1bdda49f9e55e",
+      "source": "github_trending",
+      "title": "jbiaojerry/ebook-treasure-chest",
+      "url": "https://github.com/jbiaojerry/ebook-treasure-chest",
+      "summary": "欢迎来到电子书下载宝库，一个汇聚了各类电子书下载链接的地方。无论你是喜欢阅读经典文学、经管励志、终身学习、职场创业、技术手册还是其他类型的书籍，这里都能满足你的需求。 该库涵盖了帆书app(原樊登读书)、微信读书、京东读书、喜马拉雅等读书app的大部分电子书。",
+      "hot_score": 53.2026,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-25T03:04:13.813506+00:00",
+      "last_seen_at": "2026-10-25T03:05:14.112652+00:00",
+      "metrics": {
+        "stars_total": 22711,
+        "stars_in_window": 227,
+        "forks": 3195,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_a78d7cc32dc321f5": {
+      "id": "it_a78d7cc32dc321f5",
+      "source": "hf_papers",
+      "title": "Echo: Coupled Action and Task Status Signal Denoising for Vision Language Action Models",
+      "url": "arxiv:2610.31569",
+      "summary": "Recognizing task completion and failure enables robots to stop upon success and initiate recovery or replanning after failure. Existing methods augment Vision Language Action (VLA) policies with task status signal prediction to support these execution decisions. However, learning and integrating these signals can require fine-grained supervision, external monitoring models, or complex architectural designs. Moreover, the potential of task status signals to directly guide action generation remains underexplored. We present Echo, a framework that combines task status signal learning without frame-level progress annotations with a compact design for status prediction and action generation within a single VLA. Specifically, Echo represents task status with stop and failure signals, added as two dimensions of each action chunk and denoised together with robot actions. Their combination distinguishes ongoing execution, successful completion, and failure. To learn these signals without fine-grained progress annotations, Echo constructs successful, failed, and recovery trajectories with complementary supervision properties. To enable status signal-guided action generation, Echo controls interactions between the signals and actions and denoises the signals faster than the actions. These allow later action denoising steps to condition on cleaner status estimates while preserving accurate signal prediction. Extensive real-world manipulation experiments show that Echo accurately predicts task status and consistently improves policy performance.",
+      "hot_score": 51.849,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-21T20:00:00+00:00",
+      "last_seen_at": "2026-10-26T03:04:07.371710+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 2
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_600522d60bd8a822": {
+      "id": "it_600522d60bd8a822",
+      "source": "hackernews",
+      "title": "Apollo says AI has delivered 'zero financial payoff' outside the tech industry",
+      "url": "https://www.businessinsider.com/apollo-ai-zero-financial-payoff-corporate-america-economic-analysis-2026-10",
+      "summary": "",
+      "hot_score": 50.25,
+      "topic_id": "tp_5c46c425369f",
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-25T22:49:06+00:00",
+      "last_seen_at": "2026-10-26T03:04:07.320537+00:00",
+      "metrics": {
+        "points": 35,
+        "num_comments": 25
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_e31b1be02ebf018e": {
+      "id": "it_e31b1be02ebf018e",
+      "source": "github_trending",
+      "title": "JetBrains/thinkrail",
+      "url": "https://github.com/JetBrains/thinkrail",
+      "summary": "Vibe code with pi in a lightweight, real IDE that customises itself around the way you work — The Vibe You Need",
+      "hot_score": 48.2143,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-26T03:04:00.871475+00:00",
+      "last_seen_at": "2026-10-26T03:04:07.366760+00:00",
+      "metrics": {
+        "stars_total": 1885,
+        "stars_in_window": 51,
+        "forks": 107,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "TypeScript"
+    },
+    "it_a7519c6ce55f34ab": {
+      "id": "it_a7519c6ce55f34ab",
+      "source": "github_trending",
+      "title": "luongnv89/claude-howto",
+      "url": "https://github.com/luongnv89/claude-howto",
+      "summary": "A visual, example-driven guide to Claude Code — from basic concepts to advanced agents, with copy-paste templates that bring immediate value.",
+      "hot_score": 43.5716,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-23T03:15:27.781286+00:00",
+      "last_seen_at": "2026-10-25T03:05:14.111183+00:00",
+      "metrics": {
+        "stars_total": 44617,
+        "stars_in_window": 392,
+        "forks": 5496,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_e340e8dcefb7e729": {
+      "id": "it_e340e8dcefb7e729",
+      "source": "github_trending",
+      "title": "google-gemini/gemini-cli",
+      "url": "https://github.com/google-gemini/gemini-cli",
+      "summary": "An open-source AI agent that brings the power of Gemini directly into your terminal.",
+      "hot_score": 43.5598,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-25T03:04:13.813503+00:00",
+      "last_seen_at": "2026-10-25T03:05:14.112304+00:00",
+      "metrics": {
+        "stars_total": 108110,
+        "stars_in_window": 44,
+        "forks": 14812,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "TypeScript"
+    },
+    "it_d91f0b108ecfb36f": {
+      "id": "it_d91f0b108ecfb36f",
+      "source": "hackernews",
+      "title": "Gheist campaign plants secret-dumping workflows using stolen GitHub tokens",
+      "url": "https://www.wiz.io/blog/gheist-attempted-scaled-abuse-of-stolen-github-tokens-stumbles",
+      "summary": "",
+      "hot_score": 41.726,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-25T19:10:36+00:00",
+      "last_seen_at": "2026-10-26T03:04:07.319848+00:00",
+      "metrics": {
+        "points": 47,
+        "num_comments": 0
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_8858b289f2eefaee": {
+      "id": "it_8858b289f2eefaee",
+      "source": "github_trending",
+      "title": "Renhuai123/ziwei-doushu",
+      "url": "https://github.com/Renhuai123/ziwei-doushu",
+      "summary": "紫微斗数开源排盘引擎 — 基于倪海厦《天纪》体系，含完整排盘算法、四化系统、格局知识库、古籍原文数据",
+      "hot_score": 40.5292,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-24T03:09:27.367517+00:00",
+      "last_seen_at": "2026-10-26T03:04:07.365918+00:00",
+      "metrics": {
+        "stars_total": 7753,
+        "stars_in_window": 546,
+        "forks": 1572,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "TypeScript"
+    },
+    "it_bf7f18e0418c7776": {
+      "id": "it_bf7f18e0418c7776",
+      "source": "rss",
+      "title": "Grok releases the first seven minutes of its AI-generated ‘Odyssey’",
+      "url": "https://techcrunch.com/2026/10/25/grok-releases-the-first-seven-minutes-of-its-ai-generated-odyssey",
+      "summary": "The footage looks okay, as long as you're not seeking artistry, inspiration, or human interest.",
+      "hot_score": 39.0,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-10-25T21:31:16+00:00",
+      "last_seen_at": "2026-10-26T03:04:07.359572+00:00",
+      "metrics": {
+        "rank_score": 1.0
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_3160866a597c345c": {
+      "id": "it_3160866a597c345c",
+      "source": "reddit",
+      "title": "Titans learns during inference. What if it learns the wrong thing? [P]",
+      "url": "https://www.reddit.com/r/MachineLearning/comments/1xfl9qp/titans_learns_during_inference_what_if_it_learns",
+      "summary": "Titans gives AI a separate neural memory that updates its own weights as information arrives. I wrote a short visual explainer on how it works. In my small synthetic experiment, correcting false inputs improved recall—but didn’t fully restore it. What should an AI be allowed to remember automatically—and how should we undo a mistake? submitted by /u/pardhu-- [link] [comments]",
+      "hot_score": 38.25,
+      "topic_id": null,
+      "seen_in": [
+        "reddit"
+      ],
+      "published_at": "2026-10-26T02:44:03+00:00",
+      "last_seen_at": "2026-10-26T03:04:07.353425+00:00",
+      "metrics": {
+        "score": 0,
+        "rank_score": 0.5
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_70452a174da4e513": {
+      "id": "it_70452a174da4e513",
+      "source": "reddit",
+      "title": "Let’s talk about cyber capabilities and open weights as we move towards the future",
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1xfju8e/lets_talk_about_cyber_capabilities_and_open",
+      "summary": "We’ve taken for granted that open weights keep getting better and better. I think we’re starting to see that change is coming as the PRC and US restrict cyber-capable models. The only people that will have access to those capabilities will be operators running under the comforting eye of their government and big-AI sponsors. I see why this may seem like a good idea at first, but I can see this quickly becoming a problem. Large, powerful companies and governments become more adept at molding the digital world to their will, while the average man or woman (or small business) falls further and further away from being able to defend, secure, or manage their digital assets. And with most of our lives being at least tangential to digital technology now, I find that troublesome. Even the best cyber defense team won’t be able to keep up with a frontier model running against their system. Will the community ever be able to train models that maintain even a semblance of competence to frontier, o",
+      "hot_score": 38.25,
+      "topic_id": null,
+      "seen_in": [
+        "reddit"
+      ],
+      "published_at": "2026-10-26T01:33:38+00:00",
+      "last_seen_at": "2026-10-26T03:04:07.346665+00:00",
+      "metrics": {
+        "score": 0,
+        "rank_score": 0.12
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_6423fa15e6b0e577": {
+      "id": "it_6423fa15e6b0e577",
+      "source": "reddit",
+      "title": "PSA: llama.cpp CVE-2026-116096",
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1xfizft/psa_llamacpp_cve2026116096",
+      "summary": "https://nvd.nist.gov/vuln/detail/cve-2026-116096 25-10-2026 Description A weakness has been identified in ggml-org llama.cpp. Affected by this issue is the function list_pockettts_state_slots of the file tools/mtmd/models/pockettts-gen.cpp of the component Pocket-TTS. This manipulation of the argument mmproj causes out-of-bounds write. *The attack requires local access. The exploit has been made available to the public and could be used for attacks. Upgrading to version b11796 can resolve this issue. Patch name: 0a1ef309cdbb9f2024f58a38fb4c42352c5db569. The affected component should be upgraded. The reported heap out‑of‑bounds write (gen‑audio / pocket‑tts state_out path) is no longer a silent exploitable heap write on current master and the latest release b11871 - a malicious mmproj that previously triggered it now trips a release‑active GGML_ASSERT and aborts. But the submitter's recommended by‑construction fix (PR #29360 \"prevent OOB accesses from malformed mmproj files\") is still o",
+      "hot_score": 38.25,
+      "topic_id": null,
+      "seen_in": [
+        "reddit"
+      ],
+      "published_at": "2026-10-26T00:53:40+00:00",
+      "last_seen_at": "2026-10-26T03:04:07.337052+00:00",
+      "metrics": {
+        "score": 0,
+        "rank_score": 0.44
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_055dfd4331e634ff": {
+      "id": "it_055dfd4331e634ff",
+      "source": "reddit",
+      "title": "SMH, seriously? -->> NVIDIA Eyes Software Revenue With a $2,000 per GPU Yearly Figure From Huang",
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1xfhhm4/smh_seriously_nvidia_eyes_software_revenue_with_a",
+      "summary": "submitted by /u/chemist_slime [link] [comments]",
+      "hot_score": 38.25,
+      "topic_id": null,
+      "seen_in": [
+        "reddit"
+      ],
+      "published_at": "2026-10-25T23:46:05+00:00",
+      "last_seen_at": "2026-10-26T03:04:07.332269+00:00",
+      "metrics": {
+        "score": 0,
+        "rank_score": 0.64
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_40f8aba219c9fd40": {
+      "id": "it_40f8aba219c9fd40",
+      "source": "reddit",
+      "title": "How are you sandboxing pi?",
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1xfh38k/how_are_you_sandboxing_pi",
+      "summary": "Are you doing it or not? If yes, what approach are you taking? There are many .. docker sbx, regular container, devcontainer, pi's gondolin/sandbox extension etc. submitted by /u/rm-rf-rm [link] [comments]",
+      "hot_score": 38.25,
+      "topic_id": null,
+      "seen_in": [
+        "reddit"
+      ],
+      "published_at": "2026-10-25T23:27:48+00:00",
+      "last_seen_at": "2026-10-26T03:04:07.347994+00:00",
+      "metrics": {
+        "score": 0,
+        "rank_score": 0.08
+      },
+      "streak_days": 0,
+      "language": "en"
+    }
+  },
+  "meta": {
+    "mode": "hybrid",
+    "day": "2026-10-26",
+    "generated_at": "2026-10-26T03:05:09.301939+00:00",
+    "window": {
+      "since": "2026-10-25T03:03:58.600160+00:00",
+      "until": "2026-10-26T03:04:07.393390+00:00",
+      "hours": 24.0,
+      "since_local": "2026-10-25T11:03+08:00",
+      "until_local": "2026-10-26T11:04+08:00",
+      "tz": "Asia/Shanghai"
+    },
+    "analysis": {
+      "items": 64,
+      "scored": 64,
+      "topics": 1,
+      "new_entity_mention_rows": 63,
+      "state_items": 11
+    },
+    "llm": {
+      "degraded": false,
+      "degraded_reason": "",
+      "calls": 1
+    },
+    "collect": {
+      "ok_sources": 6,
+      "failed_sources": 1,
+      "skipped": 0,
+      "total_items": 60
+    },
+    "verify": {
+      "verified": 0,
+      "unverifiable": 0,
+      "deferred": 0,
+      "failed": 0,
+      "llm_calls": 0
+    },
+    "predictions": {
+      "total": 78,
+      "verified": 1,
+      "pending": 77,
+      "unverifiable": 0,
+      "hit_rate": 0.0,
+      "weighted_score": 0.0,
+      "brier": 0.36
+    },
+    "prediction_generation": {
+      "mode": "hybrid",
+      "generated": 4,
+      "inserted": 4,
+      "dropped": [],
+      "llm_calls": 1,
+      "candidate_pool": 20,
+      "degraded": false,
+      "degraded_reason": ""
+    },
+    "brief": {
+      "max_items_per_section": 10,
+      "velocity_board_enabled": true,
+      "velocity_board_top_n": 5
+    },
+    "signals": {
+      "entities": 340,
+      "points": 985,
+      "with_velocity": 48,
+      "insufficient": 112,
+      "cold_start": 180,
+      "min_window_hours": 6.0
+    },
+    "enhance_total": 24,
+    "enhanced": 24,
+    "enhance_skipped_count": 0,
+    "enhance_cache_hit": 6,
+    "enhance_cost_cny": 0.008392
+  }
+}
