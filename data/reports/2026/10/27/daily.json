@@ -1,0 +1,976 @@
+{
+  "date": "2026-10-27",
+  "headline": "智能体生态今天同时被三件事定义：GLM-5.3 的跨请求 KV 缓存泄露暴露了推理层安全欠账，NVIDIA 推出技能扫描器、社区批量产出 harness 优化与设计技能，说明竞争重心已从模型能力转向“外壳工程”。",
+  "headline_item_id": "it_95d5916fd6281c36",
+  "overview_bullets": [
+    {
+      "icon": "🔐",
+      "topic": "缓存越权",
+      "text": "GLM-5.3 Workers AI 出现跨请求 KV 缓存暴露、影响 155 条响应，说明多租户推理的缓存复用正在成为新的越权面，而多数团队尚未把它当作安全边界。"
+    },
+    {
+      "icon": "🤖",
+      "topic": "外壳工程",
+      "text": "从 Trial by Trace 到 Δτ-Bench、Continual Learning Exam，今天的论文集体把评测对象从“模型会不会”转向“harness 稳不稳、能否长期学习”，智能体的瓶颈已被公认为工程外壳而非基座。"
+    },
+    {
+      "icon": "🛠️",
+      "topic": "技能军备",
+      "text": "GitHub 趋势被 Claude Code / Codex 的 skill 与 harness 项目刷屏（hallmark、impeccable、ECC、Karpathy skills），配套的 NVIDIA SkillSpector 则开始给这些技能做安全扫描，技能供应链雏形已现。"
+    },
+    {
+      "icon": "🏢",
+      "topic": "算力收费",
+      "text": "NVIDIA 讨论每 GPU 每年 2000 美元的软件订阅费，叠加 Proton 以 AI 为由“重新面试”员工，产业侧正把 AI 成本同时转嫁给客户与雇员。"
+    },
+    {
+      "icon": "📄",
+      "topic": "本地替代",
+      "text": "VoiceStudio 与 Hob 分别以全本地语音克隆和端侧文件智能体对标 ElevenLabs、Claude/ChatGPT 桌面端，开源正在从“模型平替”下沉到“产品平替”。"
+    }
+  ],
+  "executive_summary": "今天真正的新闻不是某个模型变强，而是智能体的“外壳层”——缓存隔离、技能安全、harness 可靠性、本地化产品——同时被攻击面、评测和商业收费三面夹击，这一层将从免费配套变成有成本、有风险、有监管的基础设施。",
+  "editor_note": {
+    "core": "今天最该记住的是 GLM-5.3 的跨请求 KV 缓存暴露：它把“推理优化”和“数据隔离”这两件长期被分开讨论的事绑到了一起，缓存复用省下的每一分算力都可能变成一次越权读取，而行业目前既无标准也无默认防护。",
+    "cross_signal": "三条线互相印证：论文侧 Trial by Trace 在追问 harness 失败归因，工程侧 ECC、impeccable 在优化 harness 行为，安全侧 NVIDIA SkillSpector 在扫描技能漏洞——学界、开发者、厂商同时把智能体的风险定位在模型之外的同一层。",
+    "counterintuitive": "热度最高的“The Exponential Time Hypothesis Is False”是一条数学/计算复杂性结论，与 AI 产品无关，却拿到今日最高热度；而真正影响所有推理服务商的 KV 缓存越权只排在中游，说明社区对基础设施安全的定价能力仍远低于对“颠覆性结论”的兴奋。",
+    "risk": "最值得警惕的盲点是技能供应链：大量用户会直接安装 GitHub 上的 CLAUDE.md、skill 与 harness 项目来增强智能体，而这些文件本身可携带提示注入与数据外泄指令，SkillSpector 的存在恰恰证明“先装后审”的默认习惯已经形成。"
+  },
+  "contradictions": [
+    "NVIDIA 一边以 SkillSpector 扮演智能体安全守门人，一边讨论对每块 GPU 收取 2000 美元/年软件费，安全与收费都成为其对生态加码的手段，中立性存疑。",
+    "开源社区高呼“本地、免费、零 API 费用”（Hob、VoiceStudio、Agent-Reach），但同日 NVIDIA 的软件订阅收费显示底层算力与工具成本正在上升，免费叙事与成本现实背离。",
+    "Proton 以 AI 为由“重新面试”员工，与当日大量“AI 增强而非替代人”的 harness/协作工具叙事形成张力：工具在谈协作，公司在做筛选。"
+  ],
+  "underrated": [
+    "Cross-request KV cache exposure in the GLM-5.3 Workers AI model（155 responses）",
+    "Trial by Trace: Benchmarking AI Agent Harnesses for Reliability and Failure Attribution",
+    "Δτ-Bench: Pushing Agents Toward a Moving Capability",
+    "Continual Learning Exam: Benchmarking Long-Horizon RSI and Experiential Learning in LLM Agents",
+    "NVIDIA/SkillSpector",
+    "Fixing Tool-Call Accuracy in vLLM",
+    "The Git Forge for Agent-Human Collaboration"
+  ],
+  "sections": [
+    {
+      "name": "开源项目",
+      "summary": "GitHub 趋势几乎被“给 Claude Code / Codex 加技能与 harness”的项目占满，同时出现全本地语音与端侧文件智能体两个产品级平替。",
+      "item_ids": [
+        "it_bf5ec6e10b8ea1d5",
+        "it_db643b160f4cefa8",
+        "it_66b0d3e172d9de9b",
+        "it_5ded0eae18819e88",
+        "it_d41d1fa4dd02c98c",
+        "it_a5347e4650370d5f",
+        "it_2d8756d68814cbfe",
+        "it_9d2f8a32cdc6fb5b",
+        "it_1dc529d3c71f5662",
+        "it_e31b1be02ebf018e",
+        "it_b02b6b38ee45f34c",
+        "it_140b3e693b8e9ab5",
+        "it_7bf3e06315fcbc77"
+      ]
+    },
+    {
+      "name": "论文与研究",
+      "summary": "研究焦点从模型能力转向智能体的可靠性归因、工具生态演化与持续学习，另有世界模型与交互式视频生成的一批推进。",
+      "item_ids": [
+        "it_cb95bbba385bade4",
+        "it_386e60631e10babd",
+        "it_d5bcd13d6166d1e3",
+        "it_9cc807fd65edd96c",
+        "it_3dde9b2d50381d96",
+        "it_97c16c6130cbf601",
+        "it_490d4cd853bdf74b",
+        "it_ddce602623c02490",
+        "it_925072c07718db99",
+        "it_95613d2e6027b34e"
+      ]
+    },
+    {
+      "name": "社区舆论",
+      "summary": "HN 上安全事件、推理引擎工具调用修复与“给智能体用的 Git forge”同台，讨论重心是智能体基础设施的可用性与信任。",
+      "item_ids": [
+        "it_b5d0977a2a5bf2ca",
+        "it_afefdf94e214d97c",
+        "it_bcce0e72773f6ec0",
+        "it_95d5916fd6281c36",
+        "it_2cc0598e6cc3473d",
+        "it_dc08ad2034f5a6f2",
+        "it_12017d4eefdb1588"
+      ]
+    },
+    {
+      "name": "产业与新闻",
+      "summary": "NVIDIA 试探软件订阅收费、Proton 用 AI 重审岗位，成本与裁员压力开始显性化。",
+      "item_ids": []
+    }
+  ],
+  "comments": [
+    {
+      "item_id": "it_bf5ec6e10b8ea1d5",
+      "one_liner": "面向 Claude Code、Cursor 和 Codex 的反 AI 套路化设计技能。",
+      "why": "针对 AI 生成界面千篇一律的「塑料感」做反向约束，把审美判断写进编码代理的技能包，直接影响交付物的第一印象。",
+      "stance": "反 AI 味本身就是新赛道，但靠规则清单治标，治不了模型偏好。"
+    },
+    {
+      "item_id": "it_db643b160f4cefa8",
+      "one_liner": "一个完全本地运行的开源 ElevenLabs 替代品，支持语音克隆、语音设计、视频配音、听写、转写和有声书制作，覆盖 646 种语言",
+      "why": "语音克隆与配音从云端订阅搬到本地，646 种语言覆盖让中小创作者绕开按量计费与声音数据留存。",
+      "stance": "本地化是正确方向，但声音克隆门槛降到零之后，冒用他人声纹的追责机制完全没跟上。"
+    },
+    {
+      "item_id": "it_66b0d3e172d9de9b",
+      "one_liner": "TradingAgents：一个用多个 LLM Agent 协作完成金融交易决策的开源框架",
+      "why": "把多智能体协作直接搬进金融交易决策链，意味着 LLM 从「分析助手」变成「下单主体」，风险敞口从信息错误升级为资金损失。",
+      "stance": "多智能体交易框架在回测里好看，真实市场里一个幻觉就是真金白银，先过风控再谈智能。"
+    },
+    {
+      "item_id": "it_5ded0eae18819e88",
+      "one_liner": "一套设计语言，用于提升 AI harness 的设计能力",
+      "why": "把设计规范从人读的文档变成 agent 直接消费的约束层，模型输出的视觉质量不再取决于提示词运气，而取决于挂载了哪套设计语言。",
+      "stance": "这是把设计品味工程化的正确切口，但设计语言一旦标准化，产出的同质化会比现在更严重。"
+    },
+    {
+      "item_id": "it_d41d1fa4dd02c98c",
+      "one_liner": "一个 CLI 工具，让 AI agent 能读取并搜索 Twitter、Reddit、YouTube、GitHub、Bilibili、小红书等平台，且无需 API 费用",
+      "why": "用单一 CLI 打通多个平台的读取与搜索，绕开官方 API 计费与配额，agent 的信息获取成本从按次付费变成零边际成本。",
+      "stance": "零 API 费用的另一面是平台条款风险，这类工具的生命周期由反爬对抗决定，不是由功能决定。"
+    },
+    {
+      "item_id": "it_a5347e4650370d5f",
+      "one_liner": "一份 CLAUDE.md 文件，基于 Andrej Karpathy 对 LLM 编码常见问题的观察来改进 Claude Code 的行为",
+      "why": "把知名研究者对编码陷阱的经验压缩成一个可复用的配置文件，团队不必自己踩坑就能约束 Claude Code 的行为边界。",
+      "stance": "单文件调优是低成本的正确起点，但把个人观察固化成通用规则，会掩盖不同代码库的真实差异。"
+    },
+    {
+      "item_id": "it_2d8756d68814cbfe",
+      "one_liner": "一个开源、开箱即用的 AI agent 项目",
+      "why": "开箱即用降低了 agent 的接入门槛，用户从配置工具链转向直接描述任务，竞争焦点从能力转向默认体验。",
+      "stance": "开箱即用是获客手段而非护城河，真正决定留存的是出错时能否解释清楚。"
+    },
+    {
+      "item_id": "it_9d2f8a32cdc6fb5b",
+      "one_liner": "一个 HTML-native 设计 skill，在 agent 中用一句话生成网页、App 原型、可编辑 PPTX、动画和信息图，内置风格库与外观偏好记录",
+      "why": "把设计交付物直接做成可编辑的网页、原型与 PPTX，agent 的输出从建议变成可交付文件，压缩了设计与前端之间的返工环节。",
+      "stance": "多候选加风格库是对的方向，但风格库越厚，越容易变成模板拼装，原创性被稀释。"
+    },
+    {
+      "item_id": "it_1dc529d3c71f5662",
+      "one_liner": "NVIDIA 推出的 AI agent skill 安全扫描器，可在安装前检测 Claude Code、Codex 和 MCP skill 中的漏洞、恶意模式、提示注入与数据外泄风险",
+      "why": "技能包在安装前就能被扫描出提示注入与数据外泄风险，把 agent 生态的信任问题前移到供应链入口。",
+      "stance": "这类扫描器必须默认开启才有意义，作为可选工具存在等于没有。"
+    },
+    {
+      "item_id": "it_e31b1be02ebf018e",
+      "one_liner": "JetBrains 推出的轻量级真实 IDE，可围绕个人工作方式自我定制，用于 vibe coding",
+      "why": "JetBrains 亲自下场做「会自我定制」的轻量 IDE，说明大厂认定 vibe coding 的瓶颈在编辑器形态而非模型能力。",
+      "stance": "IDE 厂商做 AI 原生编辑器有天然优势，但「自我定制」若只是插件换皮，就撑不起一个新品类。"
+    },
+    {
+      "item_id": "it_cb95bbba385bade4",
+      "one_liner": "提出 StreamVibe，一类面向视频场景、能主动推断并跟随用户意图变化的视频 agent 方法",
+      "why": "视频 agent 从被动响应指令转向推断用户未说出口的下一步操作，交互范式从问答变成预判，误判成本也随之上升。",
+      "stance": "主动预判是体验升级也是越权风险，没有可撤销机制的主动介入不该上线。"
+    },
+    {
+      "item_id": "it_386e60631e10babd",
+      "one_liner": "提出 Trajectory2Gym，将工具调用轨迹转化为以决策为依据的组合式交互训练数据",
+      "why": "指出成功轨迹未必是有效监督，把训练数据的筛选标准从结果正确转向决策可解释，直接影响工具调用 agent 的泛化能力。",
+      "stance": "这是对当前轨迹蒸馏热潮的必要纠偏，只按成败打标签的做法该被淘汰。"
+    },
+    {
+      "item_id": "it_d5bcd13d6166d1e3",
+      "one_liner": "提出 WorldCast，一种支持大角度相机控制的角色视频生成方法，可保持世界一致性",
+      "why": "大角度镜头运动下保持角色外观一致，解决的是生成视频在视角切换时人物崩坏的核心缺陷，直接决定能否用于成片。",
+      "stance": "镜头控制精度比画面精美度更能决定商用价值，这条路线比堆分辨率更有意义。"
+    },
+    {
+      "item_id": "it_9cc807fd65edd96c",
+      "one_liner": "提出 Trial by Trace，一个评测 AI agent harness 可靠性与失败归因的基准",
+      "why": "把评测对象从模型能力转向承载模型的 harness，并做失败归因，让团队能区分是模型不行还是脚手架不行。",
+      "stance": "这是当前 agent 评测里最缺的一环，只报总分的榜单已经失去参考价值。"
+    },
+    {
+      "item_id": "it_3dde9b2d50381d96",
+      "one_liner": "一种交互式视频世界模型，通过 in-context conditioning 统一控制视角、角色动作与镜头运动",
+      "why": "把视角、角色动作与镜头运动拆成显式可控维度，取代以往塞进文本提示的隐式控制，交互式视频世界模型的评测口径随之从「画面像不像」转向「控制是否可分解」。",
+      "stance": "控制解耦是视频世界模型从演示走向可编辑工具的关键一步，值得押注。"
+    },
+    {
+      "item_id": "it_97c16c6130cbf601",
+      "one_liner": "InteractiveWorld：一个可验证的以人为中心环境，用于训练和评测第一视角交互式 MLLM 助手",
+      "why": "可验证的自我中心环境让可穿戴助手的能力可以被客观打分，而不是靠演示视频取信，直接抬高多模态助手进入消费硬件的准入门槛。",
+      "stance": "没有可验证环境的助手赛道都是讲故事，这类基准应当成为硬性前置条件。"
+    },
+    {
+      "item_id": "it_490d4cd853bdf74b",
+      "one_liner": "Qwen-Image-PE：面向文生图提示词增强的视觉设计学习模型，把模糊的用户请求补全为连贯的视觉规格",
+      "why": "把提示增强从「扩写句子」升级为「补足视觉设计细节」，用户原始意图与细粒度设计之间的落差被模型接管，文生图产品的差异化从模型转向提示层。",
+      "stance": "提示增强正在变成独立产品层，做文生图应用的团队应优先自建这一环。"
+    },
+    {
+      "item_id": "it_ddce602623c02490",
+      "one_liner": "Δτ-Bench：一个可执行 agent 基准，模拟工具生态持续演化下任务完成方式的结构性变化",
+      "why": "工具生态会持续增删替换，静态基准测出的分数会迅速失真；把服务演化写进评测结构，等于宣告一次性跑分的智能体榜单失去参考价值。",
+      "stance": "静态基准已到寿命终点，动态演化评测才是唯一诚实的口径。"
+    },
+    {
+      "item_id": "it_925072c07718db99",
+      "one_liner": "Continual Learning Exam：评测 LLM agent 长周期持续学习与经验积累能力的基准",
+      "why": "现有评测只看单任务成绩，无法区分「越用越强」与「越用越忘」；长时程持续学习被单独拎出来考，智能体的记忆与经验积累从卖点变成可测指标。",
+      "stance": "不能证明长期不退化的智能体，不该被允许进入生产流程。"
+    },
+    {
+      "item_id": "it_95613d2e6027b34e",
+      "one_liner": "一篇综述工作 agent 系统、能力与优化方法的论文，梳理 agent 如何可靠完成被委派的工作",
+      "why": "把智能体从信息生成推进到数字工作执行后，缺少统一视角导致各团队重复造轮子；系统化梳理能力与优化路径，会让工作型智能体的工程重心从模型转向可靠性编排。",
+      "stance": "工作智能体的瓶颈在系统而非模型，这份综述式的统一框架来得正是时候。"
+    },
+    {
+      "item_id": "it_b5d0977a2a5bf2ca",
+      "one_liner": "Hob：MIT 许可的开源桌面应用，在本地模型上对文件做类似 Claude、ChatGPT 桌面端的操作",
+      "why": "桌面端文件操作能力被搬到本地开源模型上，敏感文档不必出机器，云端助手的授权与留存顾虑被绕开，个人知识工作场景的默认选项开始松动。",
+      "stance": "本地优先的文件智能体是对云端订阅模式的正面冲击，闭源厂商的护城河在变浅。"
+    },
+    {
+      "item_id": "it_afefdf94e214d97c",
+      "one_liner": "一篇声称指数时间假设（ETH）不成立的论文",
+      "why": "若该断言成立，则大量以指数时间假设为下界的算法结论失去支撑，复杂性理论中「难解」的默认前提被整体动摇，影响面覆盖密码学与优化求解。",
+      "stance": "先当作待复现的强主张看待，但学界必须认真对待而非一笑置之。"
+    },
+    {
+      "item_id": "it_bcce0e72773f6ec0",
+      "one_liner": "关于修复 vLLM 中工具调用准确率问题的讨论",
+      "why": "工具调用准确率长期被归因于模型能力，实际常出在推理框架的解析与约束环节；在服务端修掉这一层，同样的模型能直接换来可用的函数调用成功率。",
+      "stance": "把工具调用失败甩锅给模型是偷懒，框架层的问题就该在框架层解决。"
+    },
+    {
+      "item_id": "it_95d5916fd6281c36",
+      "one_liner": "GLM-5.3 Workers AI 模型被曝存在跨请求 KV cache 暴露问题，附 155 条回应",
+      "why": "跨请求的 KV 缓存暴露意味着一个用户的前缀可能被另一个请求命中，多租户推理服务里的提示内容与上下文存在越界读取风险，托管模型的隔离假设被打破。",
+      "stance": "这是托管推理服务的严重隔离缺陷，厂商须公开根因与影响范围，不能只做静默修补。"
+    },
+    {
+      "item_id": "it_2cc0598e6cc3473d",
+      "one_liner": "一个面向 Agent 与人类协作场景的 Git 托管平台（Git forge）",
+      "why": "代码协作的重心从「人审人」转向「人审 agent 产出」，评审、权限与合并流程要围绕机器提交者重新设计，现有以人为唯一 actor 的权限模型直接失效。",
+      "stance": "把 agent 当一等公民的 forge 是必然方向，但先解决审计与责任归属，否则只是给混乱加速。"
+    },
+    {
+      "item_id": "it_dc08ad2034f5a6f2",
+      "one_liner": "Nvidia 讨论对每块 GPU 收取每年约 2000 美元的软件费用",
+      "why": "按 GPU 年费收软件授权，把一次性硬件采购变成持续订阅成本，直接抬高推理集群的运营门槛，中小买家与自建集群的性价比被重算。",
+      "stance": "这是把算力垄断延伸到软件层的收租动作，客户应把它当作锁定风险而非功能升级来谈判。"
+    },
+    {
+      "item_id": "it_12017d4eefdb1588",
+      "one_liner": "Proton 将围绕 AI 对员工进行「重新面试」，以决定谁留任",
+      "why": "以 AI 能力为标尺重新面试在职员工，等于把裁员决策包装成技能评估，员工被迫自证不可替代，团队信任与留任意愿同步下滑。",
+      "stance": "这是用 AI 当裁员挡箭牌的管理卸责，评估标准不公开就谈不上公平。"
+    }
+  ],
+  "stats": {},
+  "items": {
+    "it_afefdf94e214d97c": {
+      "id": "it_afefdf94e214d97c",
+      "source": "hackernews",
+      "title": "The Exponential Time Hypothesis Is False [pdf]",
+      "url": "https://github.com/openai/math/blob/main/preprints/The-Exponential-Time-Hypothesis-is-False-October-25-2026/paper.pdf",
+      "summary": "See also: Announcing three new discoveries in mathematics, computer science, and physics - https://news.ycombinator.com/item?id=50251344",
+      "hot_score": 87.75,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-26T21:59:15+00:00",
+      "last_seen_at": "2026-10-27T03:36:04.610030+00:00",
+      "metrics": {
+        "points": 388,
+        "num_comments": 147
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_bf5ec6e10b8ea1d5": {
+      "id": "it_bf5ec6e10b8ea1d5",
+      "source": "github_trending",
+      "title": "Nutlope/hallmark",
+      "url": "https://github.com/Nutlope/hallmark",
+      "summary": "Anti-AI-slop design skill for Claude Code, Cursor, and Codex.",
+      "hot_score": 82.6754,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-25T03:04:13.813488+00:00",
+      "last_seen_at": "2026-10-27T03:36:04.585503+00:00",
+      "metrics": {
+        "stars_total": 36710,
+        "stars_in_window": 2244,
+        "forks": 1914,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "CSS"
+    },
+    "it_db643b160f4cefa8": {
+      "id": "it_db643b160f4cefa8",
+      "source": "github_trending",
+      "title": "debpalash/VoiceStudio",
+      "url": "https://github.com/debpalash/VoiceStudio",
+      "summary": "VoiceStudio is the open-source, fully-local ElevenLabs alternative — voice cloning, voice design, video dubbing, dictation, transcription & audiobook creation in 646 languages.",
+      "hot_score": 77.1537,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-15T14:47:23.502371+00:00",
+      "last_seen_at": "2026-10-27T03:36:04.591962+00:00",
+      "metrics": {
+        "stars_total": 89547,
+        "stars_in_window": 3027,
+        "forks": 9873,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "Python"
+    },
+    "it_bcce0e72773f6ec0": {
+      "id": "it_bcce0e72773f6ec0",
+      "source": "hackernews",
+      "title": "Fixing Tool-Call Accuracy in vLLM",
+      "url": "https://www.ubicloud.com/blog/fixing-tool-call-accuracy-in-vllm",
+      "summary": "",
+      "hot_score": 77.0695,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-26T12:59:48+00:00",
+      "last_seen_at": "2026-10-27T03:36:04.531450+00:00",
+      "metrics": {
+        "points": 152,
+        "num_comments": 65
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_66b0d3e172d9de9b": {
+      "id": "it_66b0d3e172d9de9b",
+      "source": "github_trending",
+      "title": "TauricResearch/TradingAgents",
+      "url": "https://github.com/TauricResearch/TradingAgents",
+      "summary": "TradingAgents: Multi-Agents LLM Financial Trading Framework",
+      "hot_score": 75.853,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-26T03:04:00.871461+00:00",
+      "last_seen_at": "2026-10-27T03:36:04.586088+00:00",
+      "metrics": {
+        "stars_total": 116327,
+        "stars_in_window": 1395,
+        "forks": 22308,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "Python"
+    },
+    "it_cb95bbba385bade4": {
+      "id": "it_cb95bbba385bade4",
+      "source": "hf_papers",
+      "title": "StreamVibe: Proactive Video Agents for Evolving User Intent",
+      "url": "arxiv:2610.34662",
+      "summary": "Vision-language models are shifting from offline passive understanding toward online proactive interaction. However, prevailing methods largely rely on explicit requests while miss the implicit user intent (e.g., \"where should I click next?\" while a user navigate a website), meanwhile fail to update the state simultaneously as user requests might update continuously. These limitations make them less suited to intent-aware interaction in practical. To address these challenges, we introduce StreamVibe-Bench, a new benchmark serving as testbed for user intent interaction, with 4.1K evaluation samples and 85K training samples spanning explicit, implicit, and dynamic intents. Building on this benchmark, we develop StreamVibe-VL, a streaming proactive model that infers implicit user intents from continuous observations and dynamically tailors its interactions as these intents evolve. We further introduce StreamVibe-Harness, which maintains user intents as persistent states with a fleixble lifecycles via a hierarchical memory to track the latest user intent and environmental state. Our experiments reveal three key findings: (i) StreamVibe-VL preserves strong general video understanding while improving response timing and answer quality by 10.7% over other baselines; (ii) existing proactive models remain limited in understanding user intent and deciding when to respond, especially under implicit and dynamic intents; and (iii) StreamVibe-Harness further improves response consistency and adaptation over sustained interaction, resulting in a 12.3% gain in proactive interaction.",
+      "hot_score": 72.6966,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-25T20:00:00+00:00",
+      "last_seen_at": "2026-10-27T03:36:04.596419+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 26
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_b5d0977a2a5bf2ca": {
+      "id": "it_b5d0977a2a5bf2ca",
+      "source": "hackernews",
+      "title": "Show HN: Hob - Open-source, on device alternative to Claude Cowork and ChatGPT",
+      "url": "https://github.com/FrigadeHQ/hob",
+      "summary": "Hey HN, I'm Christian and this is a new OSS project I've been noodling on for the last couple of weeks. Hob is a free, MIT-licensed desktop app for Mac, Windows and Linux that works on your files the way the Claude and ChatGPT desktop apps do, except the model runs on your own computer. It uses open-weight models (currently Gemma 4 and gpt-oss). All your chats and files never leave your system. The only things that go online are web search (can be turned off in settings) and any MCP connectors y",
+      "hot_score": 72.1103,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-26T16:12:29+00:00",
+      "last_seen_at": "2026-10-27T03:36:04.610651+00:00",
+      "metrics": {
+        "points": 125,
+        "num_comments": 31
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_386e60631e10babd": {
+      "id": "it_386e60631e10babd",
+      "source": "hf_papers",
+      "title": "Trajectory2Gym: Decision-Grounded Compositional Interaction Synthesis for Tool-Use Agents",
+      "url": "arxiv:2610.33568",
+      "summary": "Successful tool-use trajectories are not necessarily useful supervision. Even successful interactions may underrepresent multi-step dependencies or contain actions that are unjustified by the information visible to the agent at decision time. We identify two coupled requirements for effective trajectory supervision: compositional coverage, so that important observation-action dependencies are represented, and decision grounding, so that each supervised action is supported by the learner-visible interaction history. We introduce Trajectory2Gym, which constructs executable interactions around under-supported compositional structures and derives supervision only from grounded decisions in their realized executions. Structural-support selection allocates the resulting experience, while parent-normalized supervised fine-tuning preserves the semantic interaction as the unit of training weight. This reframes trajectory generation as the deliberate construction of learnable interaction experience, rather than the collection of successful trajectories. Across five Qwen3 scales, Trajectory2Gym improves Tau1, Tau2, and BFCL at every tested scale, increasing the equal-weight three-benchmark mean by 16.9-29.8 percentage points. The gains are strongest in stateful and multi-turn interaction, where later decisions depend on earlier observations and feedback. Our results suggest that scaling tool-use agents depends not only on collecting more successful trajectories, but on constructing interactions whose dependencies are represented and whose decisions are learnable from the agent's visible history.",
+      "hot_score": 71.0889,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-23T20:00:00+00:00",
+      "last_seen_at": "2026-10-27T03:36:04.594645+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 42
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_5ded0eae18819e88": {
+      "id": "it_5ded0eae18819e88",
+      "source": "github_trending",
+      "title": "pbakaus/impeccable",
+      "url": "https://github.com/pbakaus/impeccable",
+      "summary": "The design language that makes your AI harness better at design.",
+      "hot_score": 70.6424,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-25T03:04:13.813495+00:00",
+      "last_seen_at": "2026-10-27T03:36:04.589082+00:00",
+      "metrics": {
+        "stars_total": 89358,
+        "stars_in_window": 1506,
+        "forks": 5317,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "Rust"
+    },
+    "it_d41d1fa4dd02c98c": {
+      "id": "it_d41d1fa4dd02c98c",
+      "source": "github_trending",
+      "title": "Panniantong/Agent-Reach",
+      "url": "https://github.com/Panniantong/Agent-Reach",
+      "summary": "Give your AI agent eyes to see the entire internet. Read & search Twitter, Reddit, YouTube, GitHub, Bilibili, XiaoHongShu — one CLI, zero API fees.",
+      "hot_score": 69.2308,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-27T03:35:32.061761+00:00",
+      "last_seen_at": "2026-10-27T03:36:04.591383+00:00",
+      "metrics": {
+        "stars_total": 103845,
+        "stars_in_window": 746,
+        "forks": 9212,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_95d5916fd6281c36": {
+      "id": "it_95d5916fd6281c36",
+      "source": "hackernews",
+      "title": "Cross-request KV cache exposure in the GLM-5.3 Workers AI model (155 responses)",
+      "url": "https://blog.cloudflare.com/kv-cache-exposure-remediation",
+      "summary": "",
+      "hot_score": 68.4643,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-26T22:41:48+00:00",
+      "last_seen_at": "2026-10-27T03:36:04.534068+00:00",
+      "metrics": {
+        "points": 92,
+        "num_comments": 28
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_d5bcd13d6166d1e3": {
+      "id": "it_d5bcd13d6166d1e3",
+      "source": "hf_papers",
+      "title": "WorldCast: World-Consistent Character Video Generation with Large-Angle Camera Control",
+      "url": "arxiv:2610.33135",
+      "summary": "Precise camera control is essential for cinematic character video generation, yet existing methods struggle to follow large-angle trajectories with combined rotation, translation, and radius variation from arbitrary initial azimuths. Such viewpoint changes also reveal character regions unseen in the initial frame, causing geometric distortions, appearance degradation, and identity drift. To systematically study these coupled challenges, we introduce CLACT, a large-scale Character-centric dataset and benchmark covering diverse Large-Angle Camera Trajectories, with accurate camera geometry and multi-view character observations for training and evaluation. We further propose WorldCast, a framework for world-consistent character video generation under diverse large-angle camera motions. Specifically, we back-project the initial frame into a 3D point cloud using estimated depth, align the point-cloud scale with the target camera trajectory, and render it along the trajectory to obtain explicit geometric guidance and coverage masks. To complement the incomplete character information, we introduce Geometry-Aligned Memory Attention (GAMA). Using relative camera poses estimated jointly from the initial frame and multi-view character anchors, we express anchor and target-view geometry in a common coordinate frame. GAMA uses this geometric alignment to guide the retrieval and injection of view-relevant character features during generation. Evaluations across diverse large-angle camera trajectories demonstrate accurate trajectory following while preserving character geometry, appearance, and identity.",
+      "hot_score": 67.0167,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-22T20:00:00+00:00",
+      "last_seen_at": "2026-10-27T03:36:04.595532+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 35
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_a5347e4650370d5f": {
+      "id": "it_a5347e4650370d5f",
+      "source": "github_trending",
+      "title": "multica-ai/andrej-karpathy-skills",
+      "url": "https://github.com/multica-ai/andrej-karpathy-skills",
+      "summary": "A single CLAUDE.md file to improve Claude Code behavior, derived from Andrej Karpathy's observations on LLM coding pitfalls.",
+      "hot_score": 65.7692,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-27T03:35:32.061781+00:00",
+      "last_seen_at": "2026-10-27T03:36:04.594037+00:00",
+      "metrics": {
+        "stars_total": 224769,
+        "stars_in_window": 638,
+        "forks": 22486,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": null
+    },
+    "it_9cc807fd65edd96c": {
+      "id": "it_9cc807fd65edd96c",
+      "source": "hf_papers",
+      "title": "Trial by Trace: Benchmarking AI Agent Harnesses for Reliability and Failure Attribution",
+      "url": "arxiv:2610.32285",
+      "summary": "LLM agents are increasingly used to solve real-world problems, and their effectiveness depends on both the underlying models and the harnesses that support their operation. However, most existing benchmarks focus on model capabilities and overall agent performance, with limited attention to the evaluation of agent harnesses. To address this gap, we introduce TraceTrial-Bench, which organizes harness reliability into seven components covering context, execution, governance, lifecycle, observability, tools, and verification. We construct 95 expert-level, mechanism-oriented tasks with executable or state-based ground truth to support semantically equivalent comparisons while preserving the native behavior of each harness. We design a Trajectory Tracing (TT) module to capture agent execution traces and introduce a two-layer evaluation framework that separately assesses agent performance and harness reliability. In addition, we design a Multi-source Evidence Acquisition (MEA) module to provide evidence from the agent context, harness, and execution environment for LLM-based evaluation, and develop a Failure Attribution (FA) module that uses explicit mechanism chains to support attribution at the run level. Across 4 harnesses, 9 models, and 95 tasks, our evaluation of 3,420 runs yields macro-averaged harness scores ranging from 59.8% to 72.0%, while 31.1% of runs achieve task success despite failing at least one harness criterion. TraceTrial-Bench provides an auditable and reproducible foundation for comparing agent harnesses, diagnosing their failures, and studying how harness design interacts with model behavior.",
+      "hot_score": 61.3917,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-22T20:00:00+00:00",
+      "last_seen_at": "2026-10-27T03:36:04.597318+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 16
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_2cc0598e6cc3473d": {
+      "id": "it_2cc0598e6cc3473d",
+      "source": "hackernews",
+      "title": "The Git Forge for Agent-Human Collaboration",
+      "url": "https://entire.com/blog/the-git-forge-for-agent-human-collaboration",
+      "summary": "",
+      "hot_score": 59.826,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-26T17:23:11+00:00",
+      "last_seen_at": "2026-10-27T03:36:04.536406+00:00",
+      "metrics": {
+        "points": 54,
+        "num_comments": 35
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_3dde9b2d50381d96": {
+      "id": "it_3dde9b2d50381d96",
+      "source": "hf_papers",
+      "title": "World-in-Context: Interactive Video World Modeling with In-Context Conditioning",
+      "url": "arxiv:2610.33169",
+      "summary": "Interactive video world models require coordinated control over viewing perspectives, character actions, and camera motion. Existing methods typically leave view modes implicit in text captions, conflate action with camera motion, and inject controls through fragmented architectural pathways that capture interdependencies only indirectly. In this work, we present World-in-Context, an interactive world modeling framework powered by In-Context Conditioning (ICC). Rather than relying on specialized conditioning pathways, World-in-Context unifies view, action, and camera controls into explicit tokens contextualized directly within a shared self-attention space. Our formulation reveals that (i) explicit view tokens disentangle conflicting dynamics and unlock emergent view switching from single-view data, while (ii) action and camera inputs play complementary roles in governing local responsiveness and global stability. To preserve temporal continuity across execution intervals, we further introduce Interaction-Transport RoPE (IT-RoPE), parameterizing temporal attention with accumulated control transitions. On WBench, World-in-Context-5B achieves navigation performance on par with 22B EchoWM (81.5 vs. 81.6) and attains a 93.8% perspective-switching success rate, substantially outperforming existing 5B baselines (18.8%). Controlled analyses further demonstrate compounding advantages of World-in-Context under richer conditioning mixtures, favorable data efficiency, and natural applicability to causal rollouts.",
+      "hot_score": 58.5792,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-22T20:00:00+00:00",
+      "last_seen_at": "2026-10-27T03:36:04.598213+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 13
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_97c16c6130cbf601": {
+      "id": "it_97c16c6130cbf601",
+      "source": "hf_papers",
+      "title": "InteractiveWorld: A Verifiable Human-Centric Environment for Building Better Interactive MLLM Assistants",
+      "url": "arxiv:2610.33966",
+      "summary": "People have long dreamed of an assistant that is always there to guide them and remind what they forget, from new dishes to lost keys. Powered by multimodal large language models (MLLMs), egocentric AI assistants on wearable devices are bringing this dream within reach: they see what the user sees and give instructions for user's physical work when necessary. However, testing such assistance is challenging and usually requires real people. The expensive and rare real interaction data leaves a key question unanswered: Can today's MLLMs truly help people in physical world? To answer this question, we propose InteractiveWorld, the first verifiable environment for closed-loop interaction between human and AI assistant. Unlike existing robot-centric simulators, InteractiveWorld lets the assistant guide a human agent who observes the scene, understands instructions, and acts independently. It thus realistically simulates how AI assistant collaborates with human: the assistant instructs, the human acts, and the environment executes actions and updates what they see next. Building on it, we introduce InteractiveBench, the first dynamic benchmark for egocentric AI assistants, with 120 multi-turn tasks across six categories. In each task, the assistant guides the human in real time, and every instruction shapes the outcome, which is scored by verifiable, state-based rewards. Experiments with 12 frontier MLLMs show they are still far from reliable assistants. Even the strongest model, Claude Fable 5.1, achieves at most 20% and 25% on long-horizon Guidance and Planning tasks, respectively. Overall, our work offers a verifiable platform and a rigorous evaluation set, laying a solid foundation for research on interactive MLLM assistants that truly help people in the physical world.",
+      "hot_score": 58.0738,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-24T20:00:00+00:00",
+      "last_seen_at": "2026-10-27T03:36:04.600009+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 9
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_2d8756d68814cbfe": {
+      "id": "it_2d8756d68814cbfe",
+      "source": "github_trending",
+      "title": "makecindy/cindy",
+      "url": "https://github.com/makecindy/cindy",
+      "summary": "Consider it done. The open-source AI agent that works out of the box · 想到，就能做到。开源、开箱即用的 AI Agent。",
+      "hot_score": 57.4006,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-25T03:04:13.813509+00:00",
+      "last_seen_at": "2026-10-27T03:36:04.587794+00:00",
+      "metrics": {
+        "stars_total": 6675,
+        "stars_in_window": 1296,
+        "forks": 807,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "TypeScript"
+    },
+    "it_490d4cd853bdf74b": {
+      "id": "it_490d4cd853bdf74b",
+      "source": "hf_papers",
+      "title": "Qwen-Image-PE: Learning Visual Design for Text-to-Image Prompt Enhancement",
+      "url": "arxiv:2610.33472",
+      "summary": "Learning visual design is essential for prompt enhancement (PE) to turn underspecified user requests into coherent visual specifications for text-to-image (T2I) generation. Existing methods preserve user intent and improve overall visual appeal, with less explicit emphasis on fine-grained design dimensions. To address this gap, we introduce Qwen-Image-PE, which learns visual design through two-stage training. Supervised fine-tuning with Caption-Based Reverse Distillation (CRD) uses dense captions of well-designed images as design supervision. Reinforcement learning with Groupwise Design Reward (GDR) jointly compares all candidate images for the same request to refine lighting, composition, layout, and detail. On Qwen-Image-Bench with Qwen-Image-2.1, Qwen-Image-PE-397B improves over original requests by 7.81 points, while Qwen-Image-PE-9B outperforms all evaluated PE baselines. Further evaluations show gains in visual design, aesthetics, image quality, and human preference. We find that PE scales along three axes: training data, model size, and information density, with sufficient information density as a prerequisite for effective enhancement. Moreover, we demonstrate that Qwen-Image-PE generalizes to four additional T2I backbones, even surpassing native prompt enhancers on HunyuanImage-2.1 and FLUX 3 Image Klein. We release Qwen-Image-PE-9B at https://huggingface.co/Qwen/Qwen-Image-2.1-PE-T2I.",
+      "hot_score": 55.6202,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-23T20:00:00+00:00",
+      "last_seen_at": "2026-10-27T03:36:04.599096+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 9
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_12017d4eefdb1588": {
+      "id": "it_12017d4eefdb1588",
+      "source": "hackernews",
+      "title": "Proton to 'Re-Interview' Staff About AI to See Who Gets to Keep Their Job",
+      "url": "https://www.404media.co/proton-to-re-interview-staff-about-ai-to-see-who-gets-to-keep-their-job",
+      "summary": "",
+      "hot_score": 55.4036,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-26T21:13:59+00:00",
+      "last_seen_at": "2026-10-27T03:36:04.535746+00:00",
+      "metrics": {
+        "points": 55,
+        "num_comments": 21
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_9d2f8a32cdc6fb5b": {
+      "id": "it_9d2f8a32cdc6fb5b",
+      "source": "github_trending",
+      "title": "alchaincyf/huashu-design",
+      "url": "https://github.com/alchaincyf/huashu-design",
+      "summary": "Huashu Design 3.0 · 在 agent 里打一句话，拿回能交付的设计：网页 / App 原型 / 可编辑 PPTX / 动画 / 信息图 · 六个候选挑三个方向 · 84 种带样张的风格库 · 越用越懂你的外观账本与设计体检 · HTML-native design skill for Claude Code, Codex, Cursor & any agent",
+      "hot_score": 55.3846,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-27T03:35:32.061776+00:00",
+      "last_seen_at": "2026-10-27T03:36:04.593138+00:00",
+      "metrics": {
+        "stars_total": 27047,
+        "stars_in_window": 251,
+        "forks": 2978,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "HTML"
+    },
+    "it_ddce602623c02490": {
+      "id": "it_ddce602623c02490",
+      "source": "hf_papers",
+      "title": "Δτ-Bench: Pushing Agents Toward a Moving Capability",
+      "url": "arxiv:2610.34238",
+      "summary": "In this paper, we introduce Δτ-Bench, an executable agent benchmark that models the structural evolution of large tool ecosystems. In Δτ-Bench, independently evolving services continually reshape how tasks can be accomplished: familiar tools may disappear or be replaced, while more efficient alternatives emerge amid overlapping functionality and noisy documentation. Against this moving capability frontier, we evaluate whether agents can proactively discover efficient tool-use paths and promptly revise their accumulated procedural knowledge, bringing together demands that existing benchmarks fail to examine. Δτ-Bench comprises 1,588 validated multi-turn tasks across 42 domains and six successive ecosystem states generated through capability-preserving transformations. Our evaluation shows that even the strongest evaluated model or harness achieves only 42.3% task success, while initial gains from existing skill-learning methods can not consistently translate into better adaptation as the ecosystem evolves. These findings motivate Steward, an ecosystem manager that jointly manages tools and procedural knowledge through incremental skill maintenance and dynamic provisioning during task execution. Experiments show that Steward sustains higher task success across ecosystem changes with lower skill-maintenance overhead, while improving both recovery from disrupted workflows and adoption of more efficient alternatives.",
+      "hot_score": 52.4488,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-24T20:00:00+00:00",
+      "last_seen_at": "2026-10-27T03:36:04.600977+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 8
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_925072c07718db99": {
+      "id": "it_925072c07718db99",
+      "source": "hf_papers",
+      "title": "Continual Learning Exam: Benchmarking Long-Horizon RSI and Experiential Learning in LLM Agents",
+      "url": "arxiv:2610.33956",
+      "summary": "Continual learning is the ability of LLM agents to improve over time by acquiring, refining, and applying knowledge from experience while retaining useful prior knowledge. It is essential for agents learning over long time horizons, yet current evaluations largely assess individual task performance rather than improvement through accumulated experience. We introduce Continual Learning Exam (CLE), a large-scale benchmark developed by 50+ domain experts to measure experience-driven improvement in realistic professional workflows. CLE comprises 120 human-authored tasks, each organised as a five-level ladder, yielding 600 levels spanning 89 professional roles across 12 occupational domains. Agents must pass each level to unlock the next, with later levels building on experience accumulated during earlier assignments. An evaluation agent assesses each submission against human-authored rubrics. We compare a single-submission setting with one that provides diagnostic feedback after failure and allows one revision. Across 17 harness-model configurations using frontier LLMs, feedback and revision yield a median completion gain of 5.3 percentage points. Yet the best-performing system clears only 47.7% of levels and completes all five levels in just 23.3% of tasks, highlighting the difficulty of sustained learning from experience for existing frontier LLMs. As such, the dataset can also be used to post-train LLMs to strengthen their continual learning capabilities.",
+      "hot_score": 52.4488,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-24T20:00:00+00:00",
+      "last_seen_at": "2026-10-27T03:36:04.601834+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 8
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_1dc529d3c71f5662": {
+      "id": "it_1dc529d3c71f5662",
+      "source": "github_trending",
+      "title": "NVIDIA/SkillSpector",
+      "url": "https://github.com/NVIDIA/SkillSpector",
+      "summary": "Security scanner for AI agent skills. Detect vulnerabilities, malicious patterns, security risks, prompt injection, data exfiltration, and supply-chain risks in Claude Code, Codex, and MCP skills before you install them.",
+      "hot_score": 51.9231,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-27T03:35:32.061742+00:00",
+      "last_seen_at": "2026-10-27T03:36:04.589637+00:00",
+      "metrics": {
+        "stars_total": 22325,
+        "stars_in_window": 214,
+        "forks": 1944,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_95613d2e6027b34e": {
+      "id": "it_95613d2e6027b34e",
+      "source": "hf_papers",
+      "title": "Work Agents: Systems, Capabilities, and Optimization",
+      "url": "arxiv:2610.35845",
+      "summary": "As foundation models evolve from information generation to digital work execution, agents are increasingly capable of completing complex tasks across tools, applications, and workflows. However, existing research lacks a unified perspective on how agents reliably accomplish delegated work. To address this gap, we present a work-centric, system-level perspective that views work agents as systems combining foundation models and runtime harnesses to execute tasks in stateful workspaces and deliver verifiable outcomes. We introduce two complementary dimensions, work persistence and work openness, to characterize working conditions, and classify digital work into five forms according to task scope and organization. Building on this framework, we identify five core capability families required for reliable work execution and examine approaches to model optimization, harness optimization, and their joint optimization. We further analyze existing evaluation methods and metrics from the perspective of work outcomes. Finally, we discuss future research directions, including sustained work delegation, adaptation to open environments, and the interaction between work execution and capability improvement. This paper provides a unified framework for understanding, optimizing, and evaluating work agents, supporting the development of systems capable of delivering reliable, verifiable, and practically valuable work outcomes.",
+      "hot_score": 51.6029,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-25T20:00:00+00:00",
+      "last_seen_at": "2026-10-27T03:36:04.602744+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 3
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_e31b1be02ebf018e": {
+      "id": "it_e31b1be02ebf018e",
+      "source": "github_trending",
+      "title": "JetBrains/thinkrail",
+      "url": "https://github.com/JetBrains/thinkrail",
+      "summary": "Vibe code with pi in a lightweight, real IDE that customises itself around the way you work — The Vibe You Need",
+      "hot_score": 49.9739,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-26T03:04:00.871475+00:00",
+      "last_seen_at": "2026-10-27T03:36:04.587077+00:00",
+      "metrics": {
+        "stars_total": 3081,
+        "stars_in_window": 1173,
+        "forks": 166,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "TypeScript"
+    },
+    "it_b02b6b38ee45f34c": {
+      "id": "it_b02b6b38ee45f34c",
+      "source": "github_trending",
+      "title": "affaan-m/ECC",
+      "url": "https://github.com/affaan-m/ECC",
+      "summary": "The agent harness performance optimization system. Skills, instincts, memory, security, and research-first development for Claude Code, Codex, Opencode, Cursor and beyond.",
+      "hot_score": 49.0218,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-15T14:47:23.502401+00:00",
+      "last_seen_at": "2026-10-27T03:36:04.588463+00:00",
+      "metrics": {
+        "stars_total": 289964,
+        "stars_in_window": 1145,
+        "forks": 42970,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "JavaScript"
+    },
+    "it_140b3e693b8e9ab5": {
+      "id": "it_140b3e693b8e9ab5",
+      "source": "github_trending",
+      "title": "gitroomhq/postiz-app",
+      "url": "https://github.com/gitroomhq/postiz-app",
+      "summary": "📨 The ultimate agentic social media scheduling tool 🤖",
+      "hot_score": 48.4615,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-27T03:35:32.061771+00:00",
+      "last_seen_at": "2026-10-27T03:36:04.592653+00:00",
+      "metrics": {
+        "stars_total": 38563,
+        "stars_in_window": 188,
+        "forks": 7461,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "TypeScript"
+    },
+    "it_dc08ad2034f5a6f2": {
+      "id": "it_dc08ad2034f5a6f2",
+      "source": "hackernews",
+      "title": "Nvidia discusses $2k-per-GPU annual fee for software",
+      "url": "https://www.tomshardware.com/pc-components/gpus/nvidia-discusses-usd2-000-per-gpu-annual-software-fee-for-running-agents-on-ai-infrastructure-firm-already-charges-more-than-twice-that-amount-for-its-ai-enterprise-software-platform",
+      "summary": "",
+      "hot_score": 47.0644,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-26T17:34:45+00:00",
+      "last_seen_at": "2026-10-27T03:36:04.536954+00:00",
+      "metrics": {
+        "points": 37,
+        "num_comments": 19
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_7bf3e06315fcbc77": {
+      "id": "it_7bf3e06315fcbc77",
+      "source": "github_trending",
+      "title": "nightly-labs/openbot",
+      "url": "https://github.com/nightly-labs/openbot",
+      "summary": "A local-first desktop workspace for persistent AI teammates. Run Codex, Claude, and Grok with dedicated workspaces, task queues, file sharing, browser control, and agent-to-agent collaboration.",
+      "hot_score": 45.0,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-27T03:35:32.061755+00:00",
+      "last_seen_at": "2026-10-27T03:36:04.590793+00:00",
+      "metrics": {
+        "stars_total": 1580,
+        "stars_in_window": 176,
+        "forks": 193,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "TypeScript"
+    }
+  },
+  "meta": {
+    "mode": "hybrid",
+    "day": "2026-10-27",
+    "generated_at": "2026-10-27T03:37:00.289678+00:00",
+    "window": {
+      "since": "2026-10-26T03:35:30.117786+00:00",
+      "until": "2026-10-27T03:36:04.634258+00:00",
+      "hours": 24.0,
+      "since_local": "2026-10-26T11:35+08:00",
+      "until_local": "2026-10-27T11:36+08:00",
+      "tz": "Asia/Shanghai"
+    },
+    "analysis": {
+      "items": 91,
+      "scored": 91,
+      "topics": 1,
+      "new_entity_mention_rows": 132,
+      "state_items": 14
+    },
+    "llm": {
+      "degraded": false,
+      "degraded_reason": "",
+      "calls": 1
+    },
+    "collect": {
+      "ok_sources": 6,
+      "failed_sources": 1,
+      "skipped": 0,
+      "total_items": 91
+    },
+    "verify": {
+      "verified": 0,
+      "unverifiable": 0,
+      "deferred": 0,
+      "failed": 0,
+      "llm_calls": 0
+    },
+    "predictions": {
+      "total": 83,
+      "verified": 1,
+      "pending": 82,
+      "unverifiable": 0,
+      "hit_rate": 0.0,
+      "weighted_score": 0.0,
+      "brier": 0.36
+    },
+    "prediction_generation": {
+      "mode": "hybrid",
+      "generated": 5,
+      "inserted": 5,
+      "dropped": [],
+      "llm_calls": 1,
+      "candidate_pool": 20,
+      "degraded": false,
+      "degraded_reason": ""
+    },
+    "brief": {
+      "max_items_per_section": 10,
+      "velocity_board_enabled": true,
+      "velocity_board_top_n": 5
+    },
+    "signals": {
+      "entities": 371,
+      "points": 1024,
+      "with_velocity": 50,
+      "insufficient": 112,
+      "cold_start": 209,
+      "min_window_hours": 6.0
+    },
+    "enhance_total": 27,
+    "enhanced": 27,
+    "enhance_skipped_count": 0,
+    "enhance_cache_hit": 4,
+    "enhance_cost_cny": 0.011468
+  }
+}
