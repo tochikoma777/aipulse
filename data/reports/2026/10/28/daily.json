@@ -1,0 +1,948 @@
+{
+  "date": "2026-10-28",
+  "headline": "Anthropic 用盗版斯坦福教授书籍训练 Claude 的指控登上头条，训练数据来源的合法性正从边角争议变成大模型公司的核心风险",
+  "headline_item_id": "it_a4c44e96b0a94df5",
+  "overview_bullets": [
+    {
+      "icon": "🔐",
+      "topic": "数据原罪",
+      "text": "Anthropic 被指用非法获取的斯坦福教授书籍训练 Claude，同期 HN 上“我的数据是否被用于训练”与“审查者很少谈可靠性、所有者谈得两倍多”同框，数据来源与责任归属正成为比模型能力更尖锐的问题。"
+    },
+    {
+      "icon": "🛠️",
+      "topic": "反 AI 味工具",
+      "text": "hallmark、impeccable、ai-design-skills 三个 GitHub 项目同日上榜，全部瞄准“给编码智能体注入设计品味、拦截 AI slop”，说明智能体产出质量已从提示词问题变成工具链问题。"
+    },
+    {
+      "icon": "🤖",
+      "topic": "智能体记忆",
+      "text": "HABIT-Bench 与 Memory Tax 两篇论文同时质疑智能体记忆的价值：前者测长期弱证据下的习惯归纳，后者发现专用记忆系统在多数场景反而不如朴素 RAG。"
+    },
+    {
+      "icon": "📄",
+      "topic": "世界模型",
+      "text": "Hy-Nomas、ThinkWorld、Rollback 等一批论文把世界模型从“前向模拟器”推向可回溯、可交互、可自我改进的策略训练底座，机器人学习路线正在分叉。"
+    },
+    {
+      "icon": "📉",
+      "topic": "可靠性盲区",
+      "text": "“审查者很少谈可靠性、所有者谈得两倍多”与“我的数据是否被用于训练”两条低热度讨论，指向同一个盲点：AI 系统的可靠性与数据流向，买单的人和评估的人不是同一批人。"
+    }
+  ],
+  "executive_summary": "今天最响的声音不是新模型，而是训练数据从哪来、智能体记什么、世界模型该往哪走——三条线都指向同一个问题：能力扩张的速度已经跑在合法性与有效性验证的前面。",
+  "editor_note": {
+    "core": "今天最该记住的是 Anthropic 的训练数据指控：它把“模型能力从哪来”这个技术问题直接翻译成法律责任问题，一旦坐实，所有依赖网络语料预训练的公司都要重新计算合规成本，而不只是 Anthropic 一家。",
+    "cross_signal": "HN 上“我的数据是否被用于训练”与“审查者很少谈可靠性、所有者谈得两倍多”两条讨论，和 Anthropic 数据指控形成互证：用户对数据流向的知情诉求与所有者对可靠性的关注，正在从两个方向挤压模型厂商的透明度叙事。",
+    "counterintuitive": "Memory Tax 的结论与当下“给智能体加记忆层”的热潮相反——大规模评测显示专用记忆系统在多数场景不如朴素 RAG，说明记忆这个被当作必答题的方向，可能只是被工程惯性推着走。",
+    "risk": "最值得警惕的盲点是：反 AI slop 工具与越狱合集同日登上 GitHub 趋势，说明智能体工具链的质量控制与安全边界是同一批人在同一时间被拉向两端，开源生态缺乏中间层的准入约束。"
+  },
+  "contradictions": [
+    "Anthropic 同日既因非法获取书籍训练模型被指控，又发布用 Claude 加速药物研发的正面进展，同一主体的合规形象与产业价值叙事彼此冲突。",
+    "智能体记忆被大量产品与论文当作长期交互的核心能力建设，但 Memory Tax 的评测显示专用记忆系统在多数场景不如直接检索原始历史。"
+  ],
+  "underrated": [
+    "Can LLMs Uncover Hidden Physical Laws through Free Exploration?：在改变物理规律的世界里测试 LLM 能否自主发现定律，是科学发现能力评估里少见的“反事实”设计。",
+    "Can Test-Time Memory Evolution Outperform Test-Time Training for Scientific Discovery?：直接质疑测试时训练的计算成本是否值得，与 Memory Tax 形成对“记忆/在线更新”热潮的双重降温。",
+    "Reviewers rarely talk about reliability. Owners bring it up twice as often：揭示 AI 可靠性话语权错位，热度不高但直指评估体系的结构性偏差。",
+    "Git for US Legislation：把立法文本版本化的工程思路，是 AI 之外但可能影响 AI 监管透明度的基础设施级想法。"
+  ],
+  "sections": [
+    {
+      "name": "开源项目",
+      "summary": "GitHub 趋势被“给智能体补设计品味与工程规范”的工具占据，同时出现开箱即用 Agent 与越狱合集，工具生态在质量与安全两端同时膨胀。",
+      "item_ids": [
+        "it_bf5ec6e10b8ea1d5",
+        "it_9780abeb5fce378d",
+        "it_5ded0eae18819e88",
+        "it_bf03923eb9b66885",
+        "it_b02b6b38ee45f34c",
+        "it_2d8756d68814cbfe",
+        "it_d4f3ebd955870d03"
+      ]
+    },
+    {
+      "name": "论文与研究",
+      "summary": "世界模型、智能体记忆、VLA 路线之争与跨模态可控性构成今日论文主线，多篇在拆解“记忆/世界模型是否真比朴素方法更值”这一净价值问题。",
+      "item_ids": [
+        "it_d350ced903bfdd10",
+        "it_67efa096f7508ca3",
+        "it_7c5f24ff8abc41e4",
+        "it_28d5719e052bb016",
+        "it_7f060d550e11bf83",
+        "it_7dffa6c0f819ada8",
+        "it_1d5d97b5d4473e12",
+        "it_3917f884420d4288",
+        "it_74ed8a194e3ad987",
+        "it_af76b0f8d8982cc5",
+        "it_ae8e7cb04a080a48",
+        "it_763131b0200ffe1b",
+        "it_5b23ee0cdd1893d0",
+        "it_10b16ef0f9ba6fdd",
+        "it_4c73f5973987b33d"
+      ]
+    },
+    {
+      "name": "社区舆论",
+      "summary": "HN 讨论集中在训练数据合法性、数据用途知情权与可靠性话语权错位，另有离线生存 LLM、立法 Git 化等偏工具理性的小众话题。",
+      "item_ids": [
+        "it_a4c44e96b0a94df5",
+        "it_62b1fcdba263ec2d",
+        "it_470e7f2ce2bd99e1",
+        "it_1ca8390dc084802e",
+        "it_4cd4ee44e5c10169",
+        "it_ec58d21b88c564f1",
+        "it_fdf27bf9960b1109",
+        "it_767a7db22edd6680"
+      ]
+    },
+    {
+      "name": "产业与新闻",
+      "summary": "Anthropic 一边被诉数据来源问题，一边发布用 Claude 加速药物研发的进展，同一家公司同日呈现法律风险与产业落地两面。",
+      "item_ids": []
+    }
+  ],
+  "comments": [
+    {
+      "item_id": "it_bf5ec6e10b8ea1d5",
+      "one_liner": "面向 Claude Code、Cursor 和 Codex 的反 AI 套路化设计技能。",
+      "why": "针对 AI 生成界面千篇一律的「塑料感」做反向约束，把审美判断写进编码代理的技能包，直接影响交付物的第一印象。",
+      "stance": "反 AI 味本身就是新赛道，但靠规则清单治标，治不了模型偏好。"
+    },
+    {
+      "item_id": "it_9780abeb5fce378d",
+      "one_liner": "HKUDS 开源的 DeepTutor，一个提供终身个性化辅导的 AI 学习助手项目。",
+      "why": "港大团队把个性化长期记忆做成可自托管的辅导系统，教育场景的数据主权从平台回到用户手里。",
+      "stance": "教育 AI 的护城河在记忆与陪伴，不在模型参数，开源方案会先吃掉自学市场。"
+    },
+    {
+      "item_id": "it_5ded0eae18819e88",
+      "one_liner": "一套设计语言，用于提升 AI harness 的设计能力",
+      "why": "把设计规范从人读的文档变成 agent 直接消费的约束层，模型输出的视觉质量不再取决于提示词运气，而取决于挂载了哪套设计语言。",
+      "stance": "这是把设计品味工程化的正确切口，但设计语言一旦标准化，产出的同质化会比现在更严重。"
+    },
+    {
+      "item_id": "it_bf03923eb9b66885",
+      "one_liner": "elayadesign 的 ai-design-skills 仓库，汇集 AI 辅助设计相关的技能集合。",
+      "why": "把设计流程拆成可复用的技能包喂给编码代理，等于给 AI 补上审美与版式这类难以言传的隐性知识。",
+      "stance": "设计技能化是代理落地的真实瓶颈，但零说明的仓库只是占位，别急着当生产力工具。"
+    },
+    {
+      "item_id": "it_b02b6b38ee45f34c",
+      "one_liner": "面向 Claude Code、Codex、Cursor 等编码 agent 的性能优化框架，涵盖技能、记忆、安全与研究流程。",
+      "why": "把技能、记忆、安全与调研流程统一成跨 Claude Code、Cursor 的代理外壳层，代理工程正从提示词转向可移植的运行时。",
+      "stance": "跨工具兼容是正确方向，但外壳层越多，越容易变成谁都能替代的中间商。"
+    },
+    {
+      "item_id": "it_2d8756d68814cbfe",
+      "one_liner": "一个开源、开箱即用的 AI agent 项目",
+      "why": "开箱即用降低了 agent 的接入门槛，用户从配置工具链转向直接描述任务，竞争焦点从能力转向默认体验。",
+      "stance": "开箱即用是获客手段而非护城河，真正决定留存的是出错时能否解释清楚。"
+    },
+    {
+      "item_id": "it_d4f3ebd955870d03",
+      "one_liner": "一个汇总作者各类 jailbreak 提示词清单的 GitHub 仓库。",
+      "why": "越狱清单公开聚合，让安全对齐的失效模式变成可复现的测试集，红队与防御方同时受益。",
+      "stance": "公开越狱是必要的压力测试，但只堆提示词不建评测标准，等于把漏洞当收藏品。"
+    },
+    {
+      "item_id": "it_d350ced903bfdd10",
+      "one_liner": "Hy-Nomas：基于 8B 扩散主干的视频世界模型，支持自由文本指令与连续相机控制的交互式世界生成。",
+      "why": "8B 扩散视频世界模型支持自由文本指令与连续镜头控制，交互式世界生成从演示片段走向可操控的连续体验。",
+      "stance": "世界模型的门槛正从画质转向可控性，谁先解决长时一致性谁定义这个品类。"
+    },
+    {
+      "item_id": "it_67efa096f7508ca3",
+      "one_liner": "ThinkWorld：利用世界想象增强 VLA 模型链式动力学推理能力的方法。",
+      "why": "用人类视频补足机器人动作标注的稀缺，把想象出的动力学链条当作推理中间层，泛化不再只靠真机数据。",
+      "stance": "人类视频是机器人数据的最优解，但想象链条若不可验证，就只是更漂亮的幻觉。"
+    },
+    {
+      "item_id": "it_7c5f24ff8abc41e4",
+      "one_liner": "Rollback：在世界模型中引入经验回溯机制以改进机器人策略的方法。",
+      "why": "让世界模型支持经验回溯而非单向推演，策略改进获得物理环境不具备的反事实试错能力。",
+      "stance": "回溯是比前向预测更被低估的能力，这条路线比堆更大世界模型更划算。"
+    },
+    {
+      "item_id": "it_28d5719e052bb016",
+      "one_liner": "ChronoReplay：针对流式空间智能任务提出多接口评测思路的研究。",
+      "why": "单一答案接口会让空间 VLM 只学会分类而丢掉度量位移，流式空间智能需要多读出接口而非一个标签。",
+      "stance": "评测接口设计决定模型学到什么，只测分类的空间模型基本不可用于真实导航。"
+    },
+    {
+      "item_id": "it_7f060d550e11bf83",
+      "one_liner": "LociArt：支持自由风格局部视频风格化的统一范式，可指定区域并保持时序一致。",
+      "why": "局部视频风格化要求区域与风格的精确绑定并保持时序一致，创作工具从整段滤镜走向逐区域编辑。",
+      "stance": "局部可控才是视频编辑的商业入口，整段风格迁移早已没有差异化。"
+    },
+    {
+      "item_id": "it_7dffa6c0f819ada8",
+      "one_liner": "CodeCap-Bench：评估用代码作为视频描述是否优于自然语言的基准测试。",
+      "why": "用代码替代自然语言描述视频，把细粒度空间结构与时序动态变成可执行、可验证的表示，评测基准随之转向结构化表达。",
+      "stance": "代码作为视频描述是正确抽象，但可读性与生成成本会决定它能否取代自然语言。"
+    },
+    {
+      "item_id": "it_1d5d97b5d4473e12",
+      "one_liner": "提出 MatAnyone-E，一种基于稀疏记忆传播的高分辨率视频抠像方法，用于保留发丝等细节并维持帧间一致性。",
+      "why": "稀疏记忆传播把高分辨率视频抠像的显存与算力开销从帧数线性增长中解耦，使发丝级细节在长视频上不再随长度崩坏，直接压低影视与直播后期的成本门槛。",
+      "stance": "抠像的瓶颈从来不是质量而是成本，这类稀疏化路线才是真正能落地的方向。"
+    },
+    {
+      "item_id": "it_3917f884420d4288",
+      "one_liner": "推出 HABIT-Bench 基准，用于评估 LLM agent 记忆能否从长期弱证据中归纳用户习惯。",
+      "why": "把「从长期弱证据中归纳习惯」单独立成基准，等于承认现有智能体记忆评测只测了显式召回，用户偏好推断这一层此前没有可比的度量，评测结果会直接暴露各家记忆架构的短板。",
+      "stance": "习惯推断比记忆检索难得多，这个基准大概率会让一批宣称有长期记忆的产品现出原形。"
+    },
+    {
+      "item_id": "it_74ed8a194e3ad987",
+      "one_liner": "研究发现跨模态 steering vector 同时存在于图像与文本生成中，可用于跨模态引导生成。",
+      "why": "若同一组引导向量能同时操控图像与文本生成，说明概念表征在模态间共享，多模态模型的干预与安全对齐可以只做一套而非每模态重复一遍。",
+      "stance": "跨模态统一表征若成立，按模态分别做对齐的工程投入就是浪费。"
+    },
+    {
+      "item_id": "it_af76b0f8d8982cc5",
+      "one_liner": "提出 RSI Arena，让十个前沿模型充当训练 agent，研究借助人类反馈实现自主后训练与递归自我改进。",
+      "why": "让十个前沿模型充当训练智能体、用人类反馈闭环改进模型，把「递归自我改进」从论文口号变成可测量的竞技场，评测结果会直接冲击谁掌握后训练算力谁就领先的格局。",
+      "stance": "把自我改进做成排行榜是必要的一步，但用人类反馈当奖励信号，测出来的更像讨好能力而非能力本身。"
+    },
+    {
+      "item_id": "it_a4c44e96b0a94df5",
+      "one_liner": "报道称 Anthropic 使用通过非法途径获取的斯坦福教授书籍训练 Claude。",
+      "why": "训练数据来源的合法性被具体指向某家实验室与特定作者群体，会把版权争议从抽象诉讼推进到可举证的采购链条，影响的是所有依赖图书语料的模型厂商的合规成本。",
+      "stance": "拿不出干净授权链条的语料就该停用，规模不是免责理由。"
+    },
+    {
+      "item_id": "it_62b1fcdba263ec2d",
+      "one_liner": "一个可在本地电脑运行的生存向 LLM 助手与应急资料库。",
+      "why": "把应急知识与推理能力打包成本地可运行程序，意味着断网、断电、云端不可用时仍能查询处置方案，救援与野外场景的可靠性从依赖网络转为依赖设备。",
+      "stance": "灾难场景下云端 AI 等于不存在，本地化不是极客趣味而是刚需。"
+    },
+    {
+      "item_id": "it_470e7f2ce2bd99e1",
+      "one_liner": "一篇讨论用户数据是否被用于模型训练的议题。",
+      "why": "用户能否查清自己的数据是否进入训练集，决定了数据主体权利从纸面条款变成可操作查询，服务商被迫公开数据流向，否则监管与用户信任两头受损。",
+      "stance": "连「我的数据有没有被拿去训练」都答不上来的产品，不配谈隐私合规。"
+    },
+    {
+      "item_id": "it_1ca8390dc084802e",
+      "one_liner": "一项观察指出代码评审者很少谈及可靠性，而代码所有者提及该话题的频率约为其两倍。",
+      "why": "评审者与所有者在可靠性话题上的提及频率差两倍，说明可靠性问题在交付前被系统性低估，缺陷成本被推迟到运维阶段由所有者承担。",
+      "stance": "评审不看可靠性，等于把风险记账记到别人头上，这个偏差该被当作流程缺陷来修。"
+    },
+    {
+      "item_id": "it_4cd4ee44e5c10169",
+      "one_liner": "目前已有 5 家推理服务商提供 abliterated 版 DeepSeek 模型。",
+      "why": "去审查微调模型出现多家推理供应商，意味着移除安全对齐的权重正在形成有竞争的服务市场，模型提供方对下游行为的控制力进一步削弱。",
+      "stance": "把去对齐模型做成多家托管的商品，是把安全责任外包给不承担后果的第三方。"
+    },
+    {
+      "item_id": "it_ec58d21b88c564f1",
+      "one_liner": "一个用 Git 方式管理美国立法文本的项目。",
+      "why": "用版本控制管理立法文本，让法条的每次修订、提案与生效日期可 diff、可追溯，公众与记者核对法律变更的成本从人工比对降到一条命令。",
+      "stance": "法律文本就该像代码一样可审计，任何拒绝提供机器可读修订历史的立法机构都在制造不透明。"
+    },
+    {
+      "item_id": "it_fdf27bf9960b1109",
+      "one_liner": "Anthropic 介绍利用 Claude 加速药物研发的早期进展",
+      "why": "把药物研发流程接入通用大模型，意味着临床前文献梳理、方案起草等环节的工时被压缩，药企的竞争点从人力规模转向数据质量与验证流程。",
+      "stance": "方向对，但药物研发的瓶颈在湿实验与监管，模型提速只解决纸面环节，别把效率叙事当成疗效承诺。"
+    },
+    {
+      "item_id": "it_767a7db22edd6680",
+      "one_liner": "Liquid AI 发布 LFM3 模型系列，覆盖多种模态以支持专用智能",
+      "why": "单一模型栈覆盖多模态并主打专用化，直接压缩企业为每种模态分别采购与集成的成本，中小团队得以用一套接口做垂直场景。",
+      "stance": "多模态已是标配而非卖点，真正的分水岭在专用场景的实测精度，发布即宣称全能的一律先看基准再谈采用。"
+    }
+  ],
+  "stats": {},
+  "items": {
+    "it_a4c44e96b0a94df5": {
+      "id": "it_a4c44e96b0a94df5",
+      "source": "hackernews",
+      "title": "Anthropic trained Claude on illegally obtained Stanford professors' books",
+      "url": "https://stanforddaily.com/2026/10/27/professors-books-pirated-to-train-claude",
+      "summary": "",
+      "hot_score": 84.4968,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-27T15:28:26+00:00",
+      "last_seen_at": "2026-10-28T03:51:52.894319+00:00",
+      "metrics": {
+        "points": 489,
+        "num_comments": 266
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_bf5ec6e10b8ea1d5": {
+      "id": "it_bf5ec6e10b8ea1d5",
+      "source": "github_trending",
+      "title": "Nutlope/hallmark",
+      "url": "https://github.com/Nutlope/hallmark",
+      "summary": "Anti-AI-slop design skill for Claude Code, Cursor, and Codex.",
+      "hot_score": 83.1278,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-25T03:04:13.813488+00:00",
+      "last_seen_at": "2026-10-28T03:51:52.966448+00:00",
+      "metrics": {
+        "stars_total": 39250,
+        "stars_in_window": 2830,
+        "forks": 2050,
+        "streak_days": 4
+      },
+      "streak_days": 4,
+      "language": "CSS"
+    },
+    "it_62b1fcdba263ec2d": {
+      "id": "it_62b1fcdba263ec2d",
+      "source": "hackernews",
+      "title": "Survival LLM: AI assistant and emergency library that runs on your own computer",
+      "url": "https://www.brangus.io/survival-llm",
+      "summary": "",
+      "hot_score": 81.0724,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-27T19:55:06+00:00",
+      "last_seen_at": "2026-10-28T03:51:52.897609+00:00",
+      "metrics": {
+        "points": 219,
+        "num_comments": 115
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_9780abeb5fce378d": {
+      "id": "it_9780abeb5fce378d",
+      "source": "github_trending",
+      "title": "HKUDS/DeepTutor",
+      "url": "https://github.com/HKUDS/DeepTutor",
+      "summary": "DeepTutor: Lifelong Personalized Tutoring. https://deeptutor.info/ .",
+      "hot_score": 76.5,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-28T03:51:31.026947+00:00",
+      "last_seen_at": "2026-10-28T03:51:52.972751+00:00",
+      "metrics": {
+        "stars_total": 46250,
+        "stars_in_window": 1598,
+        "forks": 5787,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_5ded0eae18819e88": {
+      "id": "it_5ded0eae18819e88",
+      "source": "github_trending",
+      "title": "pbakaus/impeccable",
+      "url": "https://github.com/pbakaus/impeccable",
+      "summary": "The design vocabulary for your coding agent. Steer with polish and bolder, review with critique and audit, catch AI slop before it ships.",
+      "hot_score": 75.7707,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-25T03:04:13.813495+00:00",
+      "last_seen_at": "2026-10-28T03:51:52.969341+00:00",
+      "metrics": {
+        "stars_total": 90801,
+        "stars_in_window": 1506,
+        "forks": 5383,
+        "streak_days": 4
+      },
+      "streak_days": 4,
+      "language": "Rust"
+    },
+    "it_d350ced903bfdd10": {
+      "id": "it_d350ced903bfdd10",
+      "source": "hf_papers",
+      "title": "Hy-Nomas: Towards Free-form Interactive World Generation",
+      "url": "arxiv:2610.36729",
+      "summary": "Interactive world generation requires models to follow successive commands while preserving relevant history and action consequences. We present Hy-Nomas, a video world model with an 8B diffusion backbone that supports free-form text instructions and continuous camera control across multiple interaction turns. It generates variable-length segments conditioned on current inputs and cached history. Our central design aligns structured video captions with action-aware causal attention: descriptive context remains accessible across segments, while action instructions are restricted to their intended temporal windows. A vision-language Prompt Enhancer (PE) translates user requests and multimodal interaction histories into structured conditions for the next segment. A multi-stage curriculum progressively introduces causal generation, text interaction, camera control, and training on model-generated histories, followed by diffusion distillation. In human evaluation, Hy-Nomas shows superior performance over existing world models. We release model weights, code and benchmarks, together with a lightweight adaptation workflow, to support reproducible research on interactive world generation.",
+      "hot_score": 74.65,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-26T20:00:00+00:00",
+      "last_seen_at": "2026-10-28T03:51:52.976939+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 38
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_67efa096f7508ca3": {
+      "id": "it_67efa096f7508ca3",
+      "source": "hf_papers",
+      "title": "ThinkWorld: World Imagination Reinforces Chain-of-Dynamics Reasoning",
+      "url": "arxiv:2610.37666",
+      "summary": "Vision-Language-Action (VLA) models have made substantial progress in robotic manipulation, but their generalization remains constrained by the diversity and coverage of action-labeled robot demonstrations. Human videos provide much broader behavioral and environmental experience, while learning from them faces a fundamental trade-off between scalable data and explicit action grounding. We introduce ThinkWorld, a VLA learning framework that grounds action reasoning in world dynamics and strengthens it through reinforcement learning with world imagination. ThinkWorld represents each action thought as a Chain-of-Dynamics (CoD), a sequence of discrete motion tokens that captures the intermediate dynamics connecting the current world to a future state and serves as a common action representation across embodiments. We first initialize CoD with action-labeled demonstrations, then predict the future induced by each CoD and reinforce those whose predictions better match the observed outcome. This enables videos without action annotations to provide direct supervision from observed state transitions, allowing human and robot experience to refine the same reasoning space. Experiments in simulation and on real robots demonstrate effective human-to-robot transfer and strong generalization to unseen tasks and environments.",
+      "hot_score": 72.85,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-26T20:00:00+00:00",
+      "last_seen_at": "2026-10-28T03:51:52.977978+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 33
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_470e7f2ce2bd99e1": {
+      "id": "it_470e7f2ce2bd99e1",
+      "source": "hackernews",
+      "title": "Is my data used for model training?",
+      "url": "https://privacy.claude.com/en/articles/7996868-is-my-data-used-for-model-training",
+      "summary": "",
+      "hot_score": 72.5471,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-27T13:56:15+00:00",
+      "last_seen_at": "2026-10-28T03:51:52.899704+00:00",
+      "metrics": {
+        "points": 215,
+        "num_comments": 99
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_7c5f24ff8abc41e4": {
+      "id": "it_7c5f24ff8abc41e4",
+      "source": "hf_papers",
+      "title": "Rollback: Experience Backtracking in World Models for Policy Improvement",
+      "url": "arxiv:2610.36068",
+      "summary": "Action-conditioned world models offer a scalable alternative to costly real-world interaction for improving robot policies. However, existing world-model-based methods largely treat world models as forward-only surrogates of the physical environment, leaving untapped a capability no physical environment affords: rewinding to past decision points to explore counterfactual futures. We introduce Rollback, a policy improvement paradigm that turns world models from passive simulators into counterfactual engines: it rolls back to critical decision points, branches into alternative actions, and contrasts their outcomes to attribute success to individual decisions. This concentrates imagination where it matters most and distills counterfactual outcomes into fine-grained, action-level supervision without a separately learned value model. We build a scalable training system that unifies distributed world-model search with asynchronous real-robot execution, forming a self-reinforcing cycle: real-world experience continually sharpens the world model, and a sharper world model in turn drives further policy improvement. We term the world-model side of this cycle test-time physics grounding, a capability that hand-built physics simulators lack: while the world model serves as the training environment, real transitions from the policy it trains correct its dynamics through a lightweight LoRA pipeline. Experiments on three challenging real-world tasks show that Rollback improves success rates over the strongest baseline by an absolute 10.67%, 11.11%, and 11.85% on block extraction, ball tossing, and tabletop curling, respectively, while achieving more stable improvement throughout training. Although initialized from teleoperated demonstrations far below human level, Rollback surpasses the average success rate of human players on both ball tossing and tabletop curling within 8 hours of training.",
+      "hot_score": 71.7058,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-25T20:00:00+00:00",
+      "last_seen_at": "2026-10-28T03:51:52.975879+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 40
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_28d5719e052bb016": {
+      "id": "it_28d5719e052bb016",
+      "source": "hf_papers",
+      "title": "ChronoReplay: One Answer Interface Is Not Enough for Streaming Spatial Intelligence",
+      "url": "arxiv:2610.34283",
+      "summary": "Training a spatial VLM to answer which side an object lies on does not require it to preserve the metric displacement that determines that answer, while supervision for a distance estimate may leave categorical relations largely unconstrained. When post-training emphasizes one readout, improvements can therefore concentrate on that interface while transfer to others remains weak or even degrades; we call this observed specialization interface lock-in. ChronoReplay addresses it by replaying heterogeneous spatial supervision as chronologically ordered episodes, retaining source-native targets, and balancing supervision across families. Under the same observation access, a single ChronoReplay checkpoint improves OVO-S-Bench, OST-Bench, and UCS-Bench together, including a 13.41-point gain on OST-Bench, and achieves the highest three-benchmark mean among the supervision settings compared here. Same-data controls further separate the ingredients of this transfer: answer serialization redistributes gains across OST and UCS, family-balanced learning improves over ordinary joint SFT and natural turn weighting, and chronological replay exceeds a shifted-order control by about 2.41 OST points across two paired seeds. Adaptive frame selection then changes evidence access while keeping the trained model fixed, providing an additional inference-time gain at lower visual cost. Streaming spatial performance depends on what distinctions supervision preserves, how heterogeneous histories are organized during learning, and what causal evidence inference makes available at test time.",
+      "hot_score": 71.0701,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-24T20:00:00+00:00",
+      "last_seen_at": "2026-10-28T03:51:52.974783+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 55
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_7f060d550e11bf83": {
+      "id": "it_7f060d550e11bf83",
+      "source": "hf_papers",
+      "title": "LociArt: A Unified Paradigm for Free-Style Local Video Stylization",
+      "url": "arxiv:2610.36456",
+      "summary": "Video stylization typically transforms entire scenes, while local artistic editing requires precise region--style association, spatial control, and temporal consistency. We introduce LociArt, a unified paradigm for free-style local video stylization that explicitly specifies where to stylize and what style to apply while preserving non-target content. At its core, GRNStyle builds on Generative Refinement Networks (GRN) and introduces a polar style-aware mask that embeds style identities as equal-norm directions within selected regions. Complementary representation--geometry conditioning combines encoded mask features with raw-mask spatial support, integrating spatiotemporal context with geometric control. To provide paired supervision, we develop an automated pipeline combining global stylization, video object removal, matting, and compositing, and construct the LociArt-100K Dataset with 100K local stylization pairs. We further establish the LociArt Benchmark, comprising 80 source videos and 84 target masks covering 168 foreground/background stylization cases, with a Style Prototype Similarity (SPS) evaluation scheme for regional style quality and complementary measures of non-target preservation and temporal consistency. Experiments show that GRNStyle outperforms existing methods in regional style quality and spatial control while maintaining strong temporal consistency. Qualitative examples further illustrate joint stylization of multiple regions with the same or different learned styles, despite training only on single-region, single-style pairs. Together, these components provide a unified foundation for learning and evaluating controllable local video stylization. Project page: https://higherhu.github.io/lociart/.",
+      "hot_score": 71.05,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-26T20:00:00+00:00",
+      "last_seen_at": "2026-10-28T03:51:52.979027+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 24
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_fdf27bf9960b1109": {
+      "id": "it_fdf27bf9960b1109",
+      "source": "hackernews",
+      "title": "Early progress on accelerating drug development with Claude",
+      "url": "https://www.anthropic.com/research/early-progress-drug-development",
+      "summary": "",
+      "hot_score": 70.3164,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-27T20:50:42+00:00",
+      "last_seen_at": "2026-10-28T03:51:52.900509+00:00",
+      "metrics": {
+        "points": 159,
+        "num_comments": 147
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_bf03923eb9b66885": {
+      "id": "it_bf03923eb9b66885",
+      "source": "github_trending",
+      "title": "elayadesign/ai-design-skills",
+      "url": "https://github.com/elayadesign/ai-design-skills",
+      "summary": "",
+      "hot_score": 67.5,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-28T03:51:31.026875+00:00",
+      "last_seen_at": "2026-10-28T03:51:52.965858+00:00",
+      "metrics": {
+        "stars_total": 9707,
+        "stars_in_window": 1395,
+        "forks": 689,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": null
+    },
+    "it_7dffa6c0f819ada8": {
+      "id": "it_7dffa6c0f819ada8",
+      "source": "hf_papers",
+      "title": "CodeCap-Bench: Can Code Serve as a Good Video Caption?",
+      "url": "arxiv:2610.37341",
+      "summary": "Video captioning aims to preserve visual information through compact descriptions, predominantly using natural language. However, precisely expressing fine-grained spatial structures and temporal dynamics in natural language often leads to lengthy and potentially ambiguous descriptions. In this work, we explore Code as Video Caption, a paradigm where executable programs serve as a complementary representation of visual content through graphical primitives, layout rules, and functions of time. To examine whether code captions effectively preserve video information, we compare them with natural language captions on downstream question answering and video reconstruction tasks. Our results show that code captions achieve superior reasoning accuracy and reconstruction fidelity. Despite these advantages, realizing the potential of code captioning depends on whether current multimodal large language models (MLLMs) can generate faithful code captions. To systematically assess this capability, we introduce CodeCap-Bench, which comprises 323 videos spanning five categories of structured 2D content, along with fine-grained annotations and a multi-level evaluation framework. Extensive experiments reveal that while leading proprietary MLLMs demonstrate promising code captioning capabilities, they still struggle to faithfully capture complex temporal dynamics, with open-source models lagging substantially behind.",
+      "hot_score": 65.65,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-26T20:00:00+00:00",
+      "last_seen_at": "2026-10-28T03:51:52.982286+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 10
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_1d5d97b5d4473e12": {
+      "id": "it_1d5d97b5d4473e12",
+      "source": "hf_papers",
+      "title": "MatAnyone-E: Sparse Memory Propagation for Efficient High-Resolution Video Matting",
+      "url": "arxiv:2610.35724",
+      "summary": "High-resolution video matting requires preserving fine details, such as hair strands and soft transparency, while maintaining consistency across frames. Memory-based methods achieve strong matting quality by matching current-frame features with information stored from earlier frames, but this process becomes increasingly costly as resolution grows. We present MatAnyone-E, an efficient extension of MatAnyone 2 that focuses computation where it is most needed. Our approach first performs low-resolution propagation to identify uncertain regions that require closer inspection and the memory candidates most relevant to them. It then performs high-resolution matching only for these regions using the selected memory, while reusing low-resolution matching results elsewhere. This strategy reduces both the number of locations requiring detailed matching and the amount of memory searched, while preserving the information needed to produce a complete matte. We further reduce the cost of generating high-resolution mattes with a lightweight decoder designed around measured runtime bottlenecks and trained to reproduce the original decoder's representations. Experiments show that MatAnyone-E maintains matting quality comparable to MatAnyone 2 while achieving an estimated 7.4x inference speedup and reducing peak GPU memory usage to 7.6% of the usage of MatAnyone 2 at 4K. With compilation-enabled inference on a single NVIDIA H200 GPU, it reaches 73.07 FPS at 1080p and 28.62 FPS at 4K.",
+      "hot_score": 62.7058,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-25T20:00:00+00:00",
+      "last_seen_at": "2026-10-28T03:51:52.981207+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 14
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_3917f884420d4288": {
+      "id": "it_3917f884420d4288",
+      "source": "hf_papers",
+      "title": "HABIT-Bench: Evaluating Habit Induction from Longitudinal Weak Evidence in Agent Memory",
+      "url": "arxiv:2610.24520",
+      "summary": "In long-term interactions with large language model (LLM) agents, users reveal habits through their choices and actions. These habits capture implicit user information that agents must infer across conversations. However, individual observations may provide only partial evidence about a habit or when it applies. Retaining past interactions alone does not ensure that agents can infer habits and apply them appropriately. We introduce HABIT-Bench to evaluate how well agent memory systems infer habits from weak evidence and apply them to later requests. We construct synthetic user histories from task-oriented dialogue data and controlled habit graphs. The histories span hundreds of sessions across food, finance, software, and travel. Four-choice tasks assess agents' ability to infer user habits and apply them appropriately. They include temporary exceptions, changes in habits, and suggestions that users have not accepted. Sampled tasks undergo independent human review. We evaluate eight memory methods with Qwen3-235B-A22B and GLM-5.3-Flash. The best-performing memory method achieves 33.61\\% macro accuracy across the four domains. Performance remains limited even when annotated evidence is supplied directly. These results expose a persistent gap between access to past interactions and the ability to infer and appropriately use user habits.",
+      "hot_score": 59.5917,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-19T20:00:00+00:00",
+      "last_seen_at": "2026-10-28T03:51:52.980107+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 17
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_4cd4ee44e5c10169": {
+      "id": "it_4cd4ee44e5c10169",
+      "source": "hackernews",
+      "title": "There are now 5 inference providers for abliterated DeepSeek",
+      "url": "https://allmodels.io/llm/abliterated",
+      "summary": "",
+      "hot_score": 57.7337,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-27T04:53:52+00:00",
+      "last_seen_at": "2026-10-28T03:51:52.902031+00:00",
+      "metrics": {
+        "points": 93,
+        "num_comments": 118
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_767a7db22edd6680": {
+      "id": "it_767a7db22edd6680",
+      "source": "hackernews",
+      "title": "Introducing LFM3: Every Modality for Specialized Intelligence",
+      "url": "https://www.liquid.ai/blog/lfm3",
+      "summary": "",
+      "hot_score": 57.1362,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-27T17:04:50+00:00",
+      "last_seen_at": "2026-10-28T03:51:52.901284+00:00",
+      "metrics": {
+        "points": 127,
+        "num_comments": 51
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_74ed8a194e3ad987": {
+      "id": "it_74ed8a194e3ad987",
+      "source": "hf_papers",
+      "title": "Cross-modal Steering Vectors Exist Across Both Image and Text Generation",
+      "url": "arxiv:2610.36269",
+      "summary": "Are concepts and mechanisms unified across modalities in current AI models, or instead implemented separately for each one? We operationalize this broad question of modality unification by studying cross-modal steering: 1) finding vectors that successfully steer generation on tokens of one modality, which then 2) transfer zero-shot to steer generation when added to tokens of another modality. Our study goes beyond simple correlational alignment (e.g. representational similarity) because steering is fundamentally causal. We study cross-modal steering in several unified multimodal models (UMMs), since they possess shared parameters for language and image generation, focusing on these two modalities. Across diverse steered concepts such as emotion and object size, we show that steering vectors transfer zero-shot in both directions (text-to-image & image-to-text). Even for concepts that are highly unique to one modality (e.g. formal vs. colloquial language), steering vectors often induce a consistent, interpretable effect in the other modality, such as formal clothing and design. This transfer has a geometric signature too: despite a clear modality gap separating text and image representations, steering vectors with strong cross-modal transferability tend to point in similar directions for the same concept. Our findings shed light on how vision and language interact inside unified multimodal models and point towards more general, modality-agnostic approaches for controlling their behavior.",
+      "hot_score": 55.5058,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-25T20:00:00+00:00",
+      "last_seen_at": "2026-10-28T03:51:52.985505+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 7
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_af76b0f8d8982cc5": {
+      "id": "it_af76b0f8d8982cc5",
+      "source": "hf_papers",
+      "title": "RSI Arena: Towards Recursive Self-Improvement with Human Feedback",
+      "url": "arxiv:2610.33624",
+      "summary": "Can AI agents autonomously train useful language models and improve them using feedback from users? We introduce RSI Arena, a two-stage study of autonomous post-training as a step toward recursive self-improvement. Ten frontier models act as training agents, each starting from NVIDIA Nemotron 3.5 Lightning 30B-A3B Base. During a six-day first stage, each agent has 1,000 GPU-hours and $300 in API credit on a shared 64-GPU cluster, independently selecting data, implementing training procedures, and choosing checkpoints. We evaluate their models on 20 benchmarks and through blind human evaluations. All ten agents produce working assistants, with the strongest model, trained by GPT-6 Astra, closing a median of 76% of the base-to-Instruct gap across 12 capability benchmarks. Its human-preference rating is also close to NVIDIA Instruct after statistical adjustment for answer length and formatting. In Stage 2, each agent receives the comparison records and votes involving its Stage 1 model and is given three additional days for further training. Using NVIDIA Instruct as a common reference across the two evaluation rounds, we observe an improvement from Stage 1 to Stage 2 in the style-adjusted relative rating of eight of the ten models. We show that benchmark gains were modest, with no clear link to preference gains, while some agents encouraged longer responses and one model showed increased harmful compliance on StrongREJECT. RSI Arena provides an auditable setting for studying how human feedback can guide autonomous model development. It takes a step toward recursive self-improvement with human feedback (RSIHF), in which people help define what improvement means for the AI systems they use.",
+      "hot_score": 55.4195,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-23T20:00:00+00:00",
+      "last_seen_at": "2026-10-28T03:51:52.983307+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 9
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_1ca8390dc084802e": {
+      "id": "it_1ca8390dc084802e",
+      "source": "hackernews",
+      "title": "Reviewers rarely talk about reliability. Owners bring it up twice as often",
+      "url": "https://www.bettascore.ai/research/reliability-reviewers-vs-owners",
+      "summary": "",
+      "hot_score": 54.0,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-27T22:31:15+00:00",
+      "last_seen_at": "2026-10-28T03:51:52.902745+00:00",
+      "metrics": {
+        "points": 78,
+        "num_comments": 73
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_b02b6b38ee45f34c": {
+      "id": "it_b02b6b38ee45f34c",
+      "source": "github_trending",
+      "title": "affaan-m/ECC",
+      "url": "https://github.com/affaan-m/ECC",
+      "summary": "The agent harness performance optimization system. Skills, instincts, memory, security, and research-first development for Claude Code, Codex, Opencode, Cursor and beyond.",
+      "hot_score": 53.8627,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-15T14:47:23.502401+00:00",
+      "last_seen_at": "2026-10-28T03:51:52.971967+00:00",
+      "metrics": {
+        "stars_total": 291006,
+        "stars_in_window": 1165,
+        "forks": 43088,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "JavaScript"
+    },
+    "it_ae8e7cb04a080a48": {
+      "id": "it_ae8e7cb04a080a48",
+      "source": "hf_papers",
+      "title": "Omni-InteractScope: Benchmarking Proactive and Agentic Interaction in Continuous Omnimodal Streams",
+      "url": "arxiv:2610.35439",
+      "summary": "Omnimodal large language models (Omni-LLMs) are increasingly expected to assist users while observing continuous audiovisual streams. However, existing evaluations provide limited insight into how reliably these models connect stream evidence and user needs to timely, sustained interventions. We introduce Omni-InteractScope, a benchmark of 1,479 human-annotated, cross-reviewed interactions with 1,790 temporal targets across eight task groups. It links input modalities, event triggers, intervention types, and user needs, covering event-timed tool invocation and query-free assistance alongside notifications, warnings, state tracking, and continuous responses. Our experimental results on the proposed benchmark reveal three critical limitations of current Omni-LLMs: (1) Timely tool invocation remains unreliable: all 12 evaluated models produce an on-time first response for at most 40\\% of tool-invocation targets, and joint timing-and-tool accuracy reaches at most 32.0\\%. (2) Query-free reminders remain poorly covered: all evaluated models achieve lower timely reference-target recall on query-free reminders than on explicit questions, measured on their respective target sets. Reminder recall never exceeds 23.0\\%. (3) End-to-end guidance coverage remains limited: nine models cover none of the 26 guidance sequences in full, and the remaining three cover only one to three sequences each. Targeted controls further show that tool-invocation scores alone do not establish event grounding and that reminder coverage depends on response history and frequency. These findings motivate developing and evaluating streaming assistants for timely action, initiative under general user needs, and coverage of entire response sequences.",
+      "hot_score": 53.7058,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-25T20:00:00+00:00",
+      "last_seen_at": "2026-10-28T03:51:52.986595+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 6
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_763131b0200ffe1b": {
+      "id": "it_763131b0200ffe1b",
+      "source": "hf_papers",
+      "title": "Can Test-Time Memory Evolution Outperform Test-Time Training for Scientific Discovery?",
+      "url": "arxiv:2610.32046",
+      "summary": "Recent test-time training (TTT) frameworks have enabled open-weight large language models (LLMs) to outperform inference-only frameworks powered by frontier models on scientific discovery tasks. However, TTT introduces additional computational cost for online weight updates during the discovery process, making computational efficiency an important consideration when scaling to larger models. This motivates us to explore an efficient test-time adaptation method for scientific discovery. We introduce Test-Time Memory Evolution (TTME), a plug-and-play test-time adaptation method, as an alternative to TTT. TTME continually updates the external memory by distilling the experience to guide subsequent discovery without updating model weights. To have a clean comparison, we evaluate TTME and TTT under the same discovery framework, replacing only the test-time adaptation method. Our evaluation shows that TTME outperforms TTT on all five mathematical tasks, while reducing computational cost by 82.8-84.6% in FLOPs and 47.7-58.4% in runtime. These results establish TTME as an effective and computationally efficient alternative to TTT in the evaluated discovery settings.",
+      "hot_score": 52.9775,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-22T20:00:00+00:00",
+      "last_seen_at": "2026-10-28T03:51:52.984442+00:00",
+      "metrics": {
+        "num_comments": 2,
+        "upvotes": 8
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_5b23ee0cdd1893d0": {
+      "id": "it_5b23ee0cdd1893d0",
+      "source": "hf_papers",
+      "title": "Vision-Language-Action or World-Action? Just Action Models",
+      "url": "arxiv:2610.37219",
+      "summary": "The vision-language-action (VLA) and world-action model (WAM) communities debate whether control policies should inherit pretrained knowledge from vision-language models or from visual generators. The debate, however, bundles three separable choices: backbone initialization, the objective applied to future observations, and whether the machinery for that future loss is kept at inference. A gap between a VLA and a WAM therefore cannot simply be attributed to any one of them. We show that decoupling these choices yields a common framework for both families, which we term Just Action Model (JAM): a pretrained visual backbone with an action expert, trained with an action loss and a foresight loss. The foresight loss trains current-observation features to predict frozen encodings of the recorded future through a prediction head discarded after training, so no visual generation is involved in either training or inference, and the backbone can be chosen freely. We first compare objectives within fixed policy architectures, then evaluate the foresight recipe across backbone families. The resulting JAM policies outperform their matched FastWAM and ImageWAM counterparts on LIBERO and LIBERO-Plus, and achieve similar or slightly higher success rates on RoboTwin. Compared with FastWAM, JAM improves the success rates from 97.0%/55.3%/91.2% to 98.2%/64.5%/91.4%, respectively. With cached foresight targets, JAM reduces estimated online training FLOPs per sample per update by 73% relative to FastWAM. Our results show that future supervision improves control without visual generation or additional inference machinery, and strong foresight performance is attainable with either generator-initialized or vision-language backbones. Project Page: https://y0uroy.github.io/JAM",
+      "hot_score": 52.15,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-26T20:00:00+00:00",
+      "last_seen_at": "2026-10-28T03:51:52.989887+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 2
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_10b16ef0f9ba6fdd": {
+      "id": "it_10b16ef0f9ba6fdd",
+      "source": "hf_papers",
+      "title": "Can LLMs Uncover Hidden Physical Laws through Free Exploration?",
+      "url": "arxiv:2610.37649",
+      "summary": "Scientific discovery often begins with an unexpected observation that prompts a new research question. In a world with altered physical laws, can large language models (LLMs) notice unexpected behavior, such as heavier objects falling more slowly, and discover the law through experiments without being told what to investigate? To evaluate this ability, we introduce LongChang, an automated framework that creates simulated worlds with altered physics, where one or more laws differ from ordinary physics. The evaluated LLMs act as explorers, manipulating objects and building tools to investigate their own questions without research tasks or hints about these laws. Separate LLM agents generate and review scenes, review tool designs, and evaluate reports for correctness and experimental support using the altered physical laws and exploration records. These records guide scene evolution for further exploration, allowing the full cycle to run without human intervention. Among 12 LLMs, GPT-6-Astra achieves a discovery rate of 16.7%, while the other 11 score 0%. The exploration records reveal uninvestigated anomalies and only partial identification of the altered physical laws.",
+      "hot_score": 52.15,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-26T20:00:00+00:00",
+      "last_seen_at": "2026-10-28T03:51:52.990976+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 2
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_2d8756d68814cbfe": {
+      "id": "it_2d8756d68814cbfe",
+      "source": "github_trending",
+      "title": "makecindy/cindy",
+      "url": "https://github.com/makecindy/cindy",
+      "summary": "Consider it done. The open-source AI agent that works out of the box · 想到，就能做到。开源、开箱即用的 AI Agent。",
+      "hot_score": 50.4135,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-25T03:04:13.813509+00:00",
+      "last_seen_at": "2026-10-28T03:51:52.970145+00:00",
+      "metrics": {
+        "stars_total": 7598,
+        "stars_in_window": 1465,
+        "forks": 899,
+        "streak_days": 4
+      },
+      "streak_days": 4,
+      "language": "TypeScript"
+    },
+    "it_d4f3ebd955870d03": {
+      "id": "it_d4f3ebd955870d03",
+      "source": "github_trending",
+      "title": "togg53192-cmd/jailbreaks",
+      "url": "https://github.com/togg53192-cmd/jailbreaks",
+      "summary": "LIST OF ALL MY JAILBREAKS",
+      "hot_score": 49.5,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-28T03:51:31.026959+00:00",
+      "last_seen_at": "2026-10-28T03:51:52.974174+00:00",
+      "metrics": {
+        "stars_total": 5783,
+        "stars_in_window": 902,
+        "forks": 849,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": null
+    },
+    "it_4c73f5973987b33d": {
+      "id": "it_4c73f5973987b33d",
+      "source": "hf_papers",
+      "title": "Memory Tax: Dissecting the Net Value of Agent Memory",
+      "url": "arxiv:2610.34073",
+      "summary": "Memory is increasingly used in long-horizon agents, yet the net value of building memory over direct retrieval from raw history remains largely unclear. Through a large-scale evaluation across multiple benchmarks and model backbones, we find many dedicated memory systems underperform naive RAG in many cases, indicating a negative net value. Taking RAG as a reference, we dissect the net value of memory into the gains and losses over direct retrieval, termed memory benefit and memory tax. These gains and losses arise because memory process changes how the raw information is organized and accessed. We view such changes as the double-edged deviations from the raw history. They are originally designed and introduced to benefit the task, for example by reorganizing facts or distilling preferences, but some may also remove or obscure evidence, giving rise to memory tax. Since memory benefit reflects the expected gains of its design, we then focus more on the overlooked memory tax, study how it arises from the system and evaluation side, and generalize the concept to more application scenarios of memory. We hope the notion of memory tax can provide a new lens and shift more attention from standalone performance to the net value of memory, informing more reliable memory designs and evaluations. We will open-source the code and results to the community. Project Page: https://hexuan21.github.io/MemoryTax/",
+      "hot_score": 49.4701,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-24T20:00:00+00:00",
+      "last_seen_at": "2026-10-28T03:51:52.987671+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 4
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_ec58d21b88c564f1": {
+      "id": "it_ec58d21b88c564f1",
+      "source": "hackernews",
+      "title": "Git for US Legislation",
+      "url": "https://lexifina.com/blog/git-for-the-us-code",
+      "summary": "",
+      "hot_score": 48.375,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-28T01:47:50+00:00",
+      "last_seen_at": "2026-10-28T03:51:52.903431+00:00",
+      "metrics": {
+        "points": 72,
+        "num_comments": 33
+      },
+      "streak_days": 0,
+      "language": "en"
+    }
+  },
+  "meta": {
+    "mode": "hybrid",
+    "day": "2026-10-28",
+    "generated_at": "2026-10-28T03:52:50.386633+00:00",
+    "window": {
+      "since": "2026-10-27T03:51:29.120533+00:00",
+      "until": "2026-10-28T03:51:53.035291+00:00",
+      "hours": 24.0,
+      "since_local": "2026-10-27T11:51+08:00",
+      "until_local": "2026-10-28T11:51+08:00",
+      "tz": "Asia/Shanghai"
+    },
+    "analysis": {
+      "items": 102,
+      "scored": 102,
+      "topics": 4,
+      "new_entity_mention_rows": 156,
+      "state_items": 11
+    },
+    "llm": {
+      "degraded": false,
+      "degraded_reason": "",
+      "calls": 1
+    },
+    "collect": {
+      "ok_sources": 6,
+      "failed_sources": 1,
+      "skipped": 0,
+      "total_items": 102
+    },
+    "verify": {
+      "verified": 0,
+      "unverifiable": 0,
+      "deferred": 0,
+      "failed": 0,
+      "llm_calls": 0
+    },
+    "predictions": {
+      "total": 88,
+      "verified": 1,
+      "pending": 87,
+      "unverifiable": 0,
+      "hit_rate": 0.0,
+      "weighted_score": 0.0,
+      "brier": 0.36
+    },
+    "prediction_generation": {
+      "mode": "hybrid",
+      "generated": 5,
+      "inserted": 5,
+      "dropped": [],
+      "llm_calls": 1,
+      "candidate_pool": 20,
+      "degraded": false,
+      "degraded_reason": ""
+    },
+    "brief": {
+      "max_items_per_section": 10,
+      "velocity_board_enabled": true,
+      "velocity_board_top_n": 5
+    },
+    "signals": {
+      "entities": 409,
+      "points": 1070,
+      "with_velocity": 52,
+      "insufficient": 112,
+      "cold_start": 245,
+      "min_window_hours": 6.0
+    },
+    "enhance_total": 25,
+    "enhanced": 25,
+    "enhance_skipped_count": 0,
+    "enhance_cache_hit": 3,
+    "enhance_cost_cny": 0.010503
+  }
+}

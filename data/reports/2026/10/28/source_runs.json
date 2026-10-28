@@ -1,0 +1,63 @@
+{
+  "date": "2026-10-28",
+  "generated_at": "2026-10-28T03:52:50.386633+00:00",
+  "collected": true,
+  "sources": [
+    {
+      "source": "github_trending",
+      "status": "ok",
+      "item_count": 11,
+      "started_at": "2026-10-28T03:51:29.209106+00:00",
+      "finished_at": "2026-10-28T03:51:31.027070+00:00",
+      "error": null
+    },
+    {
+      "source": "arxiv",
+      "status": "failed",
+      "item_count": 0,
+      "started_at": "2026-10-28T03:51:29.246377+00:00",
+      "finished_at": "2026-10-28T03:51:52.822662+00:00",
+      "error": "CollectorError: [arxiv] arXiv 请求失败（ReadTimeout）：无错误详情"
+    },
+    {
+      "source": "hf_papers",
+      "status": "ok",
+      "item_count": 26,
+      "started_at": "2026-10-28T03:51:29.247339+00:00",
+      "finished_at": "2026-10-28T03:51:34.315868+00:00",
+      "error": null
+    },
+    {
+      "source": "hackernews",
+      "status": "ok",
+      "item_count": 9,
+      "started_at": "2026-10-28T03:51:29.248061+00:00",
+      "finished_at": "2026-10-28T03:51:33.339072+00:00",
+      "error": null
+    },
+    {
+      "source": "reddit",
+      "status": "degraded",
+      "item_count": 25,
+      "started_at": "2026-10-28T03:51:29.248780+00:00",
+      "finished_at": "2026-10-28T03:51:33.971189+00:00",
+      "error": null
+    },
+    {
+      "source": "rss",
+      "status": "degraded",
+      "item_count": 31,
+      "started_at": "2026-10-28T03:51:29.249351+00:00",
+      "finished_at": "2026-10-28T03:51:36.426541+00:00",
+      "error": null
+    },
+    {
+      "source": "inbox",
+      "status": "degraded",
+      "item_count": 0,
+      "started_at": "2026-10-28T03:51:29.249594+00:00",
+      "finished_at": "2026-10-28T03:51:31.027191+00:00",
+      "error": null
+    }
+  ]
+}
