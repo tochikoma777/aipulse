@@ -1,0 +1,973 @@
+{
+  "date": "2026-10-29",
+  "headline": "Stack Overflow 月提问跌破 1000，AI 正在把开发者问答社区从「知识市场」变成「遗迹」——而同一批开发者正在用「反 AI 味」技能包重建审美防线",
+  "headline_item_id": "it_34bccb07b60f34df",
+  "overview_bullets": [
+    {
+      "icon": "📉",
+      "topic": "社区塌缩",
+      "text": "Stack Overflow 月提问不足千条，AI 编码助手把「提问—回答」的公共知识循环抽干，损失的是可检索的集体记忆而非流量。"
+    },
+    {
+      "icon": "🛠️",
+      "topic": "反 AI 味",
+      "text": "hallmark、impeccable、ai-design-skills 同日上榜，开发者开始把「去 AI 味」做成可安装的 agent 技能，审美正在被工程化。"
+    },
+    {
+      "icon": "🔐",
+      "topic": "安全连环",
+      "text": "41,000 名国土安全部人员（含 ICE 卧底）数据泄露与 GitLab CVE-2026-97229 遭利用同日出现，AI 供应链与身份数据是同一根软肋。"
+    },
+    {
+      "icon": "💬",
+      "topic": "反 AI 情绪",
+      "text": "Mosseri 承认 AI 负面情绪「还会更糟」，NYT Cooking 加 AI 遭用户反弹，MicroZig 直接立「禁 LLM」政策——抵触从情绪走向制度。"
+    },
+    {
+      "icon": "🏢",
+      "topic": "云与广告",
+      "text": "Azure 首次披露单季 332 亿美元、Google 把 AI 搜索广告推向全球，AI 变现路径已清晰，代价是核心广告增速放缓。"
+    }
+  ],
+  "executive_summary": "今天最清晰的一条线是：AI 在供给侧高歌猛进，在需求侧却同时制造了社区萎缩、审美反抗与制度性排斥——技术扩散的速度已经超过了社会消化它的速度。",
+  "editor_note": {
+    "core": "Stack Overflow 月提问跌破 1000 是今天最该记住的数字：它不是一家公司的衰落，而是「人类公开提问、人类公开回答」这一知识生产模式的终结，而 AI 训练数据恰恰依赖这个模式的历史存量。",
+    "cross_signal": "GitHub 热榜上三个「反 AI 味」设计技能包，与 HN 上 MicroZig 的禁 LLM 政策、Mosseri 承认的负面情绪，指向同一件事：用户不再争论 AI 好不好，而是开始给 AI 划边界。",
+    "counterintuitive": "Claude Code 用 3 个词的 status line 烧掉 15–20% token 这条热度不高，却比任何模型发布都更能说明 agent 产品的真实成本结构——浪费藏在看不见的 UI 层。",
+    "risk": "41,000 名执法人员（含卧底）数据泄露与 GitLab CVE 遭实际利用同日出现，提醒我们：AI 时代最危险的不是模型失控，而是模型周边那些没人愿意维护的老系统。"
+  },
+  "contradictions": [
+    "一边是 AI 编码助手大幅提升个体效率的叙事，一边是 Stack Overflow 提问量崩塌——效率提升与公共知识再生产之间出现了负相关。",
+    "AI 高管宣称 AI 让生活更美好，而 Mosseri 自己承认公众对 AI 的负面情绪「还会更糟」，行业内部认知与外部感知明显脱节。",
+    "Google 扩大 AI 搜索广告的同时核心广告增速放缓，AI 变现究竟是增量还是左手倒右手，数据本身没有给出答案。"
+  ],
+  "underrated": [
+    "Claude Code burns ~15–20% of your tokens on a 3-word status line",
+    "MicroZig to Adopt Strict No LLM / No AI Policy",
+    "Sleep framework: A new way for LLMs to retain knowledge in continual learning",
+    "Billion-query-per-second lookup tables in C++",
+    "Quoting Ted Sanders（模型规模仍是性能方差的主解释变量）"
+  ],
+  "sections": [
+    {
+      "name": "开源项目",
+      "summary": "GitHub 热榜被「agent 技能/设计规范」类项目占据，说明生态重心正从模型能力转向对模型输出的约束与调教。",
+      "item_ids": [
+        "it_9780abeb5fce378d",
+        "it_bf5ec6e10b8ea1d5",
+        "it_bf03923eb9b66885",
+        "it_5ded0eae18819e88",
+        "it_d4f3ebd955870d03",
+        "it_37cb70e5bf4c7c16",
+        "it_5e0dde4ffdaea550",
+        "it_178cc64b71f841b2",
+        "it_2d8756d68814cbfe",
+        "it_c181e3f6bd83b0eb",
+        "it_f859b2d15e1457f4",
+        "it_3c134dd2cb3a166d",
+        "it_e31b1be02ebf018e"
+      ]
+    },
+    {
+      "name": "论文与研究",
+      "summary": "扩散语言模型的 RL 信用分配、流式音视频目标说话人提取、多视角主体一致视频生成，三条线都在补「生成质量之外」的工程短板。",
+      "item_ids": [
+        "it_b97c8c0da03d9889",
+        "it_0b7e877ad28523a6",
+        "it_2b73ee66c8533435"
+      ]
+    },
+    {
+      "name": "社区舆论",
+      "summary": "从 Stack Overflow 的凋零到 11 月罢工号召、再到禁 LLM 政策，开发者社区正在把对 AI 的不满转化为组织化行动。",
+      "item_ids": [
+        "it_feb4caa835f163bd",
+        "it_34bccb07b60f34df",
+        "it_7f9fbf17557a1d5b",
+        "it_92d04a5f91739490",
+        "it_516d6345c17a7d96",
+        "it_24dfff5d725f2d7c",
+        "it_e6cb5a4de9e4503d",
+        "it_bc51662480332e51",
+        "it_3f3e82c4e209bb42",
+        "it_c6d25904346f640c"
+      ]
+    },
+    {
+      "name": "产业与新闻",
+      "summary": "Azure 首次亮出真实营收、Google 把 AI 搜索广告全球化，云与广告两条现金牛都在被 AI 重写。",
+      "item_ids": [
+        "it_52ced88a57d97548",
+        "it_09f762edab0d4f19",
+        "it_1134b6a1764aac4f",
+        "it_9b7dd4a7a6853f5d"
+      ]
+    }
+  ],
+  "comments": [
+    {
+      "item_id": "it_9780abeb5fce378d",
+      "one_liner": "HKUDS 开源的 DeepTutor，一个提供终身个性化辅导的 AI 学习助手项目。",
+      "why": "港大团队把个性化长期记忆做成可自托管的辅导系统，教育场景的数据主权从平台回到用户手里。",
+      "stance": "教育 AI 的护城河在记忆与陪伴，不在模型参数，开源方案会先吃掉自学市场。"
+    },
+    {
+      "item_id": "it_bf5ec6e10b8ea1d5",
+      "one_liner": "面向 Claude Code、Cursor 和 Codex 的反 AI 套路化设计技能。",
+      "why": "针对 AI 生成界面千篇一律的「塑料感」做反向约束，把审美判断写进编码代理的技能包，直接影响交付物的第一印象。",
+      "stance": "反 AI 味本身就是新赛道，但靠规则清单治标，治不了模型偏好。"
+    },
+    {
+      "item_id": "it_bf03923eb9b66885",
+      "one_liner": "elayadesign 的 ai-design-skills 仓库，汇集 AI 辅助设计相关的技能集合。",
+      "why": "把设计流程拆成可复用的技能包喂给编码代理，等于给 AI 补上审美与版式这类难以言传的隐性知识。",
+      "stance": "设计技能化是代理落地的真实瓶颈，但零说明的仓库只是占位，别急着当生产力工具。"
+    },
+    {
+      "item_id": "it_5ded0eae18819e88",
+      "one_liner": "一套设计语言，用于提升 AI harness 的设计能力",
+      "why": "把设计规范从人读的文档变成 agent 直接消费的约束层，模型输出的视觉质量不再取决于提示词运气，而取决于挂载了哪套设计语言。",
+      "stance": "这是把设计品味工程化的正确切口，但设计语言一旦标准化，产出的同质化会比现在更严重。"
+    },
+    {
+      "item_id": "it_d4f3ebd955870d03",
+      "one_liner": "一个汇总作者各类 jailbreak 提示词清单的 GitHub 仓库。",
+      "why": "越狱清单公开聚合，让安全对齐的失效模式变成可复现的测试集，红队与防御方同时受益。",
+      "stance": "公开越狱是必要的压力测试，但只堆提示词不建评测标准，等于把漏洞当收藏品。"
+    },
+    {
+      "item_id": "it_37cb70e5bf4c7c16",
+      "one_liner": "RuView 利用普通 WiFi 信号实现实时空间感知、生命体征监测与存在检测，全程无需任何视频画面。",
+      "why": "把普通 WiFi 信号当作感知传感器，意味着存在检测与体征监测不再依赖摄像头，隐私敏感场景（养老、宿舍、卫生间）的监控成本与合规阻力同时下降。",
+      "stance": "无摄像头的感知是隐私与功能之间少见的双赢，但必须提前划清「谁有权读取体征数据」的边界。"
+    },
+    {
+      "item_id": "it_5e0dde4ffdaea550",
+      "one_liner": "李笑来关于自学方法论的 GitHub 开源书籍项目。",
+      "why": "李笑来把自学方法论做成开源仓库，等于把「学习能力」从个人天赋转成可复制的操作流程，受益者是缺乏导师资源的自学者。",
+      "stance": "方法论开源比课程售卖更有价值，但把自学包装成信条容易滑向成功学，读者要拿它当工具而非信仰。"
+    },
+    {
+      "item_id": "it_178cc64b71f841b2",
+      "one_liner": "Macro 是面向团队的统一工作空间，把邮件、聊天、文档、任务、AI agent、通话和 CRM 通过 @ 关联与共享 AI 记忆整合在一起。",
+      "why": "把邮件、聊天、文档、CRM 与 AI 记忆塞进同一工作区，竞争点从单点工具转向「共享上下文」，团队换工具的迁移成本被抬高。",
+      "stance": "统一工作区的真正卖点是锁定而非效率，共享 AI 记忆越深，团队越难搬走。"
+    },
+    {
+      "item_id": "it_2d8756d68814cbfe",
+      "one_liner": "一个开源、开箱即用的 AI agent 项目",
+      "why": "开箱即用降低了 agent 的接入门槛，用户从配置工具链转向直接描述任务，竞争焦点从能力转向默认体验。",
+      "stance": "开箱即用是获客手段而非护城河，真正决定留存的是出错时能否解释清楚。"
+    },
+    {
+      "item_id": "it_c181e3f6bd83b0eb",
+      "one_liner": "基于 JavaScript 的网盘直链获取工具，支持百度网盘、阿里云盘、夸克网盘等八大网盘。",
+      "why": "八大网盘直链聚合让下载绕开客户端与限速，直接冲击网盘的会员变现模型，也让普通用户获得跨平台取数能力。",
+      "stance": "这类工具实用但脆弱，网盘一改接口就失效，且账号风控风险由使用者自担。"
+    },
+    {
+      "item_id": "it_b97c8c0da03d9889",
+      "one_liner": "针对 diffusion language model 强化学习提出的 Denoising Token Credit Assignment 方法，用于改进迭代去噪过程中的 token 级信用分配。",
+      "why": "扩散语言模型的迭代去噪让 RL 的信用分配无从下手，这篇把去噪步与 token 贡献解耦，直接决定扩散路线能否在推理任务上追平自回归模型。",
+      "stance": "扩散模型要抢推理场景，必须先解决训练信号颗粒度问题，这个方向比刷榜更有价值。"
+    },
+    {
+      "item_id": "it_0b7e877ad28523a6",
+      "one_liner": "面向真实声学场景的流式音视频目标说话人提取方法，针对近远场干扰、混响与突发噪声等条件。",
+      "why": "现有音视频目标说话人提取基准把说话人数固定为两人并忽略混响与突发噪声，真实场景的延迟敏感应用因此拿不到可用模型。",
+      "stance": "基准失真比模型落后更致命，先把评测拉回真实声学环境，再谈落地。"
+    },
+    {
+      "item_id": "it_2b73ee66c8533435",
+      "one_liner": "OmniShowcase 可从多视角参考图像生成主体一致的全景视频，补全输入中未可见的表面。",
+      "why": "单张参考图无法覆盖主体背面，多视角输入让生成视频在运镜时不再穿帮，受益的是需要环绕展示的电商与影视预演。",
+      "stance": "主体一致性是视频生成商业化的门槛，多视角条件比堆参数更对症。"
+    },
+    {
+      "item_id": "it_feb4caa835f163bd",
+      "one_liner": "一种名为 Sleep framework 的新思路，让 LLM 在持续学习中保留已学知识。",
+      "why": "持续学习中的灾难性遗忘是 LLM 长期服役的核心障碍，用「睡眠」式离线巩固机制替代全量重训，能压低长期维护成本。",
+      "stance": "把生物隐喻当架构灵感可以，但别把「睡眠」当成免于遗忘的魔法词，效果要靠基准说话。"
+    },
+    {
+      "item_id": "it_34bccb07b60f34df",
+      "one_liner": "Stack Overflow 目前每月新增提问不足 1000 条。",
+      "why": "提问量跌破每月千条，说明开发者遇到问题先问 AI 而非发帖，公共知识库的增量供给正在枯竭，后来者能检索到的人类经验随之变少。",
+      "stance": "这是知识公共品的流失，不是单纯的流量下滑；平台若不自救，下一代开发者将失去可验证的答案来源。"
+    },
+    {
+      "item_id": "it_7f9fbf17557a1d5b",
+      "one_liner": "一位 Hacker News 用户发帖称将于今年 11 月发起罢工，并在评论中说明参与方式。",
+      "why": "以「通知雇主即可」的低门槛号召罢工，把劳资博弈从工会程序转向个体自发参与，风险与动员效率同时被放大。",
+      "stance": "个体自发罢工在缺乏法律保护与集体谈判的行业里，代价由最脆弱的参与者承担，热情不能替代组织。"
+    },
+    {
+      "item_id": "it_92d04a5f91739490",
+      "one_liner": "MicroZig 项目宣布采用严格禁止 LLM 与 AI 的政策",
+      "why": "嵌入式 Zig 生态的核心项目公开拒绝 LLM 生成代码，等于给贡献者设下可执行的准入红线，其他开源项目将被迫表态站队。",
+      "stance": "支持：在安全敏感、可审计性要求高的底层代码里，拒绝黑箱生成是负责而非保守。"
+    },
+    {
+      "item_id": "it_516d6345c17a7d96",
+      "one_liner": "有观点认为 AI 高管脱离大众生活，难以做出面向普通用户的产品",
+      "why": "高管把用 AI 替代与家人交流当作卖点，暴露产品团队与普通用户生活经验的断裂，直接削弱消费级 AI 产品的说服力。",
+      "stance": "批评：把人际疏离包装成效率叙事，是产品判断力失灵的典型症状。"
+    },
+    {
+      "item_id": "it_24dfff5d725f2d7c",
+      "one_liner": "New York Times 为 Cooking 应用新增多项 AI 功能，用户反应冷淡",
+      "why": "连订阅制内容平台把 AI 塞进高频生活场景都遭用户反弹，说明用户抵触的不是技术本身，而是被强加的交互改动。",
+      "stance": "站在用户一边：烹饪应用里塞 AI 是拿留存做实验，收益归平台、摩擦归用户。"
+    },
+    {
+      "item_id": "it_e6cb5a4de9e4503d",
+      "one_liner": "Claude Code 的一行三词状态栏会消耗约 15–20% 的 token",
+      "why": "一个三词状态栏吃掉近两成 token，意味着代理式编程工具的成本结构被界面细节主导，重度用户的账单会远超预期。",
+      "stance": "该被当作缺陷修掉：状态栏开销必须可配置，否则按量计费就是隐性加价。"
+    },
+    {
+      "item_id": "it_bc51662480332e51",
+      "one_liner": "用 C++ 实现每秒十亿次查询的查找表",
+      "why": "把查表推到每秒十亿级查询，等于把过去依赖分布式缓存的路径压缩进单机内存布局，延迟敏感系统的架构选型会随之改变。",
+      "stance": "认可：这类硬核底层优化比又一层抽象更有长期价值。"
+    },
+    {
+      "item_id": "it_3f3e82c4e209bb42",
+      "one_liner": "一起泄露事件曝光 4.1 万名 Homeland Security 员工信息，含 ICE 卧底探员",
+      "why": "四万余名执法人员含卧底身份外泄，直接危及人身安全并摧毁后续渗透行动，泄露源头的权限管理会被全面追责。",
+      "stance": "严厉谴责：能一次性导出这种名单，说明数据分级与访问审计形同虚设。"
+    },
+    {
+      "item_id": "it_c6d25904346f640c",
+      "one_liner": "GitLab 发生安全事件，涉及对 CVE-2026-97229 的利用尝试",
+      "why": "代码托管平台自身成为漏洞利用目标，一旦失守，下游所有依赖其 CI 与密钥的仓库都会被连带攻破。",
+      "stance": "必须公开完整时间线：托管方是信任根，含糊其辞比漏洞本身更危险。"
+    },
+    {
+      "item_id": "it_52ced88a57d97548",
+      "one_liner": "Ted Sanders 谈 LLM 性能的多维性，指出模型规模可解释大部分性能差异",
+      "why": "指出模型能力差异大部分由规模单一变量解释，等于承认基准榜单的细分排名多数是噪声，采购与选型逻辑要简化。",
+      "stance": "认同这一判断：与其追逐榜单小数点，不如先看规模与成本曲线。"
+    },
+    {
+      "item_id": "it_09f762edab0d4f19",
+      "one_liner": "Instagram 负责人 Adam Mosseri 称围绕 AI 的负面情绪还会进一步加剧",
+      "why": "平台高管公开承认反感情绪还会恶化，意味着 AI 功能的产品节奏将受舆论约束，营销话术会从能力展示转向安抚。",
+      "stance": "这是自证：当毕业生集体喝倒彩，问题不在沟通，而在产品与人的关系。"
+    },
+    {
+      "item_id": "it_1134b6a1764aac4f",
+      "one_liner": "Microsoft 首次公布 Azure 单季营收为 332 亿美元",
+      "why": "首次披露 Azure 单季 332 亿美元营收，让云市场份额从模糊增速变成可比绝对值，AWS 的领先幅度第一次可被外部核算。",
+      "stance": "这是被竞争与监管逼出来的透明，早该如此，云市场估值逻辑要重算。"
+    },
+    {
+      "item_id": "it_9b7dd4a7a6853f5d",
+      "one_liner": "Google 将 AI Search 广告推向全球，同期 Alphabet 第三季度营收同比增长 25% 至 1276 亿美元",
+      "why": "广告收入增速放缓之际把 AI 搜索结果页的广告位推向全球，等于把变现压力直接压到搜索体验上：广告主获得新的竞价库存，用户拿到的答案区被商业内容挤占，而 Alphabet 25% 的营收增长正需要这块新库存来续力。",
+      "stance": "这是把 AI 搜索从技术展示变成现金牛的一步，短期财报好看，长期是在透支用户对搜索答案的信任。"
+    }
+  ],
+  "stats": {},
+  "items": {
+    "it_3f3e82c4e209bb42": {
+      "id": "it_3f3e82c4e209bb42",
+      "source": "hackernews",
+      "title": "Leak Exposes 41,000 Homeland Security Workers–Including Undercover ICE Agents",
+      "url": "https://www.wired.com/story/massive-leak-exposes-41000-homeland-security-workers-including-undercover-ice-agents",
+      "summary": "",
+      "hot_score": 87.0985,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-28T21:03:24+00:00",
+      "last_seen_at": "2026-10-29T04:14:55.775204+00:00",
+      "metrics": {
+        "points": 301,
+        "num_comments": 158
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_9780abeb5fce378d": {
+      "id": "it_9780abeb5fce378d",
+      "source": "github_trending",
+      "title": "HKUDS/DeepTutor",
+      "url": "https://github.com/HKUDS/DeepTutor",
+      "summary": "DeepTutor: Lifelong Personalized Tutoring. https://deeptutor.info/ .",
+      "hot_score": 86.3161,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-28T03:51:31.026947+00:00",
+      "last_seen_at": "2026-10-29T04:14:55.864383+00:00",
+      "metrics": {
+        "stars_total": 48343,
+        "stars_in_window": 2371,
+        "forks": 5992,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "Python"
+    },
+    "it_34bccb07b60f34df": {
+      "id": "it_34bccb07b60f34df",
+      "source": "hackernews",
+      "title": "StackOverflow now gets fewer than 1000 questions a month",
+      "url": "https://data.stackexchange.com/stackoverflow/query/1926661",
+      "summary": "",
+      "hot_score": 82.75,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-28T23:35:02+00:00",
+      "last_seen_at": "2026-10-29T04:14:55.778355+00:00",
+      "metrics": {
+        "points": 200,
+        "num_comments": 191
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_bf5ec6e10b8ea1d5": {
+      "id": "it_bf5ec6e10b8ea1d5",
+      "source": "github_trending",
+      "title": "Nutlope/hallmark",
+      "url": "https://github.com/Nutlope/hallmark",
+      "summary": "Anti-AI-slop design skill for Claude Code, Cursor, and Codex.",
+      "hot_score": 81.5888,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-25T03:04:13.813488+00:00",
+      "last_seen_at": "2026-10-29T04:14:55.865803+00:00",
+      "metrics": {
+        "stars_total": 40925,
+        "stars_in_window": 2830,
+        "forks": 2122,
+        "streak_days": 5
+      },
+      "streak_days": 5,
+      "language": "CSS"
+    },
+    "it_c6d25904346f640c": {
+      "id": "it_c6d25904346f640c",
+      "source": "hackernews",
+      "title": "GitLab Security Incident: Attempted Exploitation of CVE-2026-97229",
+      "url": "https://alpinelinux.org/posts/GitLab-security-incident-CVE-2026-97229.html",
+      "summary": "",
+      "hot_score": 77.75,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-28T23:45:46+00:00",
+      "last_seen_at": "2026-10-29T04:14:55.780385+00:00",
+      "metrics": {
+        "points": 114,
+        "num_comments": 44
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_bf03923eb9b66885": {
+      "id": "it_bf03923eb9b66885",
+      "source": "github_trending",
+      "title": "elayadesign/ai-design-skills",
+      "url": "https://github.com/elayadesign/ai-design-skills",
+      "summary": "",
+      "hot_score": 74.9485,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-28T03:51:31.026875+00:00",
+      "last_seen_at": "2026-10-29T04:14:55.862606+00:00",
+      "metrics": {
+        "stars_total": 11313,
+        "stars_in_window": 2139,
+        "forks": 820,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": null
+    },
+    "it_b97c8c0da03d9889": {
+      "id": "it_b97c8c0da03d9889",
+      "source": "hf_papers",
+      "title": "DTCA: Denoising Token Credit Assignment for Reinforcement Learning in Diffusion Language Models",
+      "url": "arxiv:2610.35201",
+      "summary": "Diffusion language models (DLMs) generate text through iterative denoising, enabling bidirectional context modeling and parallel token refinement. Recent studies have applied reinforcement learning (RL) to DLMs and improved their reasoning performance. However, the iterative denoising process makes credit assignment more challenging, as final outcome rewards provide limited information about how different tokens contribute to the final output. In this paper, we propose Denoising Token Credit Assignment (DTCA), a framework for token-level credit assignment in reinforcement learning for diffusion language models. DTCA estimates token contributions by measuring the improvement in prediction confidence of remaining masked positions after token commitment and groups these signals according to part-of-speech (POS) categories. These contribution weights are used to select informative denoising timesteps and assign token-level learning signals during RL training. DTCA further calibrates these learning signals according to token-level entropy changes induced by policy updates. Experiments on LLaDA-8B-Instruct show that DTCA consistently improves mathematical reasoning performance across different generation budgets, with gains of up to 9.0 points on MATH500 and 5.3 points on GSM8K over the base model.",
+      "hot_score": 71.0428,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-25T20:00:00+00:00",
+      "last_seen_at": "2026-10-29T04:14:55.872996+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 254
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_5ded0eae18819e88": {
+      "id": "it_5ded0eae18819e88",
+      "source": "github_trending",
+      "title": "pbakaus/impeccable",
+      "url": "https://github.com/pbakaus/impeccable",
+      "summary": "The design vocabulary for your coding agent. Steer with polish and bolder, review with critique and audit, catch AI slop before it ships.",
+      "hot_score": 70.2213,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-25T03:04:13.813495+00:00",
+      "last_seen_at": "2026-10-29T04:14:55.866593+00:00",
+      "metrics": {
+        "stars_total": 93139,
+        "stars_in_window": 1506,
+        "forks": 5500,
+        "streak_days": 5
+      },
+      "streak_days": 5,
+      "language": "Rust"
+    },
+    "it_24dfff5d725f2d7c": {
+      "id": "it_24dfff5d725f2d7c",
+      "source": "hackernews",
+      "title": "New York Times adds more AI features to its Cooking app. Users aren't thrilled",
+      "url": "https://www.niemanlab.org/2026/10/the-new-york-times-is-adding-more-ai-features-to-its-cooking-app-and-users-arent-thrilled",
+      "summary": "",
+      "hot_score": 67.75,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-29T00:16:08+00:00",
+      "last_seen_at": "2026-10-29T04:14:55.782644+00:00",
+      "metrics": {
+        "points": 47,
+        "num_comments": 83
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_7f9fbf17557a1d5b": {
+      "id": "it_7f9fbf17557a1d5b",
+      "source": "hackernews",
+      "title": "Tell HN: I'm going on strike this November",
+      "url": "https://news.ycombinator.com/item?id=50271808",
+      "summary": "Text too big for this (limit 4000 chars), so I'll post in comments. How to join the strike: You simplify inform your employer that you are going on strike. Feel free to send them a link to this thread. Inform them how you feel about your specific situation. There is no need to debate whether you can do this or not. If enough of us do this, it will work.",
+      "hot_score": 67.5289,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-28T11:21:28+00:00",
+      "last_seen_at": "2026-10-29T04:14:55.781249+00:00",
+      "metrics": {
+        "points": 54,
+        "num_comments": 67
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_92d04a5f91739490": {
+      "id": "it_92d04a5f91739490",
+      "source": "hackernews",
+      "title": "MicroZig to Adopt Strict No LLM / No AI Policy",
+      "url": "https://github.com/ZigEmbeddedGroup/microzig/blob/main/CODE_OF_CONDUCT.md",
+      "summary": "",
+      "hot_score": 62.75,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-29T00:30:37+00:00",
+      "last_seen_at": "2026-10-29T04:14:55.878583+00:00",
+      "metrics": {
+        "points": 49,
+        "num_comments": 62
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_516d6345c17a7d96": {
+      "id": "it_516d6345c17a7d96",
+      "source": "hackernews",
+      "title": "AI execs may be too out of touch to build for the general public",
+      "url": "https://techcrunch.com/2026/10/28/ai-execs-may-be-too-out-of-touch-to-build-for-the-general-public",
+      "summary": "Tech leaders are flaunting how out of touch they are when they brag about using AI to connect with their families.",
+      "hot_score": 62.75,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews",
+        "rss"
+      ],
+      "published_at": "2026-10-28T22:27:46+00:00",
+      "last_seen_at": "2026-10-29T04:14:55.846011+00:00",
+      "metrics": {
+        "points": 36,
+        "num_comments": 19,
+        "rank_score": 0.3077
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_d4f3ebd955870d03": {
+      "id": "it_d4f3ebd955870d03",
+      "source": "github_trending",
+      "title": "togg53192-cmd/jailbreaks",
+      "url": "https://github.com/togg53192-cmd/jailbreaks",
+      "summary": "LIST OF ALL MY JAILBREAKS",
+      "hot_score": 58.8802,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-28T03:51:31.026959+00:00",
+      "last_seen_at": "2026-10-29T04:14:55.869109+00:00",
+      "metrics": {
+        "stars_total": 7368,
+        "stars_in_window": 1477,
+        "forks": 1049,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": null
+    },
+    "it_37cb70e5bf4c7c16": {
+      "id": "it_37cb70e5bf4c7c16",
+      "source": "github_trending",
+      "title": "ruvnet/RuView",
+      "url": "https://github.com/ruvnet/RuView",
+      "summary": "π RuView turns commodity WiFi signals into real-time spatial intelligence, vital sign monitoring, and presence detection — all without a single pixel of video.",
+      "hot_score": 58.8462,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-29T04:14:48.538159+00:00",
+      "last_seen_at": "2026-10-29T04:14:55.871545+00:00",
+      "metrics": {
+        "stars_total": 101188,
+        "stars_in_window": 557,
+        "forks": 13168,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Rust"
+    },
+    "it_0b7e877ad28523a6": {
+      "id": "it_0b7e877ad28523a6",
+      "source": "hf_papers",
+      "title": "Efficient Streaming Audio-Visual Target Speaker Extraction for Real-World Acoustic Scenes",
+      "url": "arxiv:2610.32749",
+      "summary": "Streaming audio-visual target speaker extraction (AVTSE) is essential for latency-sensitive applications. However, current causal systems face two coupled gaps. First, standard benchmarks fix the number of speakers at two and ignore the near-/far-field interference, reverberation, and sudden noise of real scenes. Second, high-performance causal architectures are too heavy for edge deployment. Lightweight alternatives try to reclaim capacity by repeatedly invoking a small separator, which offsets the savings. To address the first gap, we release RealSSA, a realistic AVTSE benchmark consisting of RealSSA-Sim and RealSSA-Real. RealSSA-Sim provides controllable simulated scenes with 1--5 dynamic near-field interfering speakers; scenes with far-field interference additionally include 10--15 far-field interfering speakers. RealSSA-Real provides a held-out real-recorded evaluation set. To address the second gap, we propose Falcon, a causal AVTSE method. Its Separator performs multi-scale time-frequency separation in a single encoder--decoder pass. We train Falcon with an encoder-space speaker contrastive loss. This loss suppresses near-field leakage at zero inference cost and transfers across backbones. Falcon achieves state-of-the-art extraction quality on RealSSA-Sim, LRS2-2Mix, LRS3-2Mix, and VoxCeleb2-2Mix. Compared with the causal AV-TFGridNet baseline, it cuts parameters by 91.9%, computation by 20.2 times, and GPU inference latency by 11.1 times. Code and demo are available at https://cslikai.cn/Falcon/.",
+      "hot_score": 53.8441,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-22T20:00:00+00:00",
+      "last_seen_at": "2026-10-29T04:14:55.874150+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 9
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_5e0dde4ffdaea550": {
+      "id": "it_5e0dde4ffdaea550",
+      "source": "github_trending",
+      "title": "xiaolai/the-craft-of-selfteaching",
+      "url": "https://github.com/xiaolai/the-craft-of-selfteaching",
+      "summary": "One has no future if one couldn't teach themself.",
+      "hot_score": 51.9231,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-29T04:14:48.538165+00:00",
+      "last_seen_at": "2026-10-29T04:14:55.872299+00:00",
+      "metrics": {
+        "stars_total": 18624,
+        "stars_in_window": 148,
+        "forks": 17901,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Jupyter Notebook"
+    },
+    "it_178cc64b71f841b2": {
+      "id": "it_178cc64b71f841b2",
+      "source": "github_trending",
+      "title": "macro-inc/macro",
+      "url": "https://github.com/macro-inc/macro",
+      "summary": "Macro is a unified workspace for teams: email, chat, docs, tasks, agents, calls, and CRM — @-linked together with shared AI memory.",
+      "hot_score": 48.4615,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-29T04:14:48.538102+00:00",
+      "last_seen_at": "2026-10-29T04:14:55.865063+00:00",
+      "metrics": {
+        "stars_total": 5498,
+        "stars_in_window": 117,
+        "forks": 525,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Rust"
+    },
+    "it_feb4caa835f163bd": {
+      "id": "it_feb4caa835f163bd",
+      "source": "hackernews",
+      "title": "Sleep framework: A new way for LLMs to retain knowledge in continual learning",
+      "url": "https://research.google/blog/the-sleep-framework-a-new-way-for-llms-to-retain-knowledge-in-continual-learning",
+      "summary": "",
+      "hot_score": 47.966,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-28T12:24:25+00:00",
+      "last_seen_at": "2026-10-29T04:14:55.783460+00:00",
+      "metrics": {
+        "points": 41,
+        "num_comments": 3
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_2d8756d68814cbfe": {
+      "id": "it_2d8756d68814cbfe",
+      "source": "github_trending",
+      "title": "makecindy/cindy",
+      "url": "https://github.com/makecindy/cindy",
+      "summary": "Consider it done. The open-source AI agent that works out of the box · 想到，就能做到。开源、开箱即用的 AI Agent。",
+      "hot_score": 47.4863,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-25T03:04:13.813509+00:00",
+      "last_seen_at": "2026-10-29T04:14:55.867425+00:00",
+      "metrics": {
+        "stars_total": 8225,
+        "stars_in_window": 1465,
+        "forks": 962,
+        "streak_days": 5
+      },
+      "streak_days": 5,
+      "language": "TypeScript"
+    },
+    "it_c181e3f6bd83b0eb": {
+      "id": "it_c181e3f6bd83b0eb",
+      "source": "github_trending",
+      "title": "hmjz100/LinkSwift",
+      "url": "https://github.com/hmjz100/LinkSwift",
+      "summary": "一个基于 JavaScript 的网盘文件下载地址获取工具。基于【网盘直链下载助手】修改 ，支持 百度网盘 / 阿里云盘 / 中国移动云盘 / 天翼云盘 / 迅雷云盘 / 夸克网盘 / UC网盘 / 123云盘 八大网盘",
+      "hot_score": 47.1424,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-16T15:44:39.424253+00:00",
+      "last_seen_at": "2026-10-29T04:14:55.869802+00:00",
+      "metrics": {
+        "stars_total": 35259,
+        "stars_in_window": 1616,
+        "forks": 2502,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "JavaScript"
+    },
+    "it_f859b2d15e1457f4": {
+      "id": "it_f859b2d15e1457f4",
+      "source": "github_trending",
+      "title": "obra/superpowers",
+      "url": "https://github.com/obra/superpowers",
+      "summary": "An agentic skills framework & software development methodology that works.",
+      "hot_score": 46.1566,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-15T14:47:23.502377+00:00",
+      "last_seen_at": "2026-10-29T04:14:55.863643+00:00",
+      "metrics": {
+        "stars_total": 307570,
+        "stars_in_window": 1095,
+        "forks": 27357,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "Shell"
+    },
+    "it_3c134dd2cb3a166d": {
+      "id": "it_3c134dd2cb3a166d",
+      "source": "github_trending",
+      "title": "expo/skills",
+      "url": "https://github.com/expo/skills",
+      "summary": "A collection of AI agent skills for working with Expo projects and Expo Application Services",
+      "hot_score": 45.0,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-29T04:14:48.538154+00:00",
+      "last_seen_at": "2026-10-29T04:14:55.870840+00:00",
+      "metrics": {
+        "stars_total": 3637,
+        "stars_in_window": 90,
+        "forks": 230,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Shell"
+    },
+    "it_e31b1be02ebf018e": {
+      "id": "it_e31b1be02ebf018e",
+      "source": "github_trending",
+      "title": "JetBrains/thinkrail",
+      "url": "https://github.com/JetBrains/thinkrail",
+      "summary": "Vibe code with pi in a lightweight, real IDE that customises itself around the way you work — The Vibe You Need",
+      "hot_score": 44.2909,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-26T03:04:00.871475+00:00",
+      "last_seen_at": "2026-10-29T04:14:55.861764+00:00",
+      "metrics": {
+        "stars_total": 5258,
+        "stars_in_window": 1204,
+        "forks": 271,
+        "streak_days": 4
+      },
+      "streak_days": 4,
+      "language": "TypeScript"
+    },
+    "it_e6cb5a4de9e4503d": {
+      "id": "it_e6cb5a4de9e4503d",
+      "source": "hackernews",
+      "title": "Claude Code burns ~15–20% of your tokens on a 3-word status line",
+      "url": "https://gist.github.com/flamerix-ai/c3905705cc4205e5de3011fa2e74efce",
+      "summary": "",
+      "hot_score": 42.75,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-29T03:33:42+00:00",
+      "last_seen_at": "2026-10-29T04:14:55.877857+00:00",
+      "metrics": {
+        "points": 59,
+        "num_comments": 0
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_bc51662480332e51": {
+      "id": "it_bc51662480332e51",
+      "source": "hackernews",
+      "title": "Billion-query-per-second lookup tables in C++",
+      "url": "https://lemire.me/blog/2026/10/26/billion-query-per-second-lookup-tables-in-c",
+      "summary": "",
+      "hot_score": 41.8751,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-28T09:43:44+00:00",
+      "last_seen_at": "2026-10-29T04:14:55.785008+00:00",
+      "metrics": {
+        "points": 36,
+        "num_comments": 4
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_2b73ee66c8533435": {
+      "id": "it_2b73ee66c8533435",
+      "source": "hf_papers",
+      "title": "OmniShowcase: Omnidirectional Subject-Consistent Video Generation from Multi-View Images",
+      "url": "arxiv:2610.35684",
+      "summary": "Generating videos of a specific subject from a few reference images remains challenging when the camera reveals surfaces that are not visible in the input. Early subject-to-video (S2V) methods condition on a single reference image and must therefore infer the subject's unseen appearance and geometry as the viewpoint changes. To address this limitation, recent methods extend S2V to multiple reference views, providing more information about the subject from different viewpoints. However, they do not explicitly specify the 3D structure that connects these observations. In addition, existing training data do not guarantee that viewpoint changes preserve the same underlying 3D subject. We present OmniShowcase, built on two components: (i) a fully automated data synthesis pipeline that produces training videos along diverse camera trajectories, with viewpoint variation driven by underlying subject geometry, even spanning full 360-degree orbits; and (ii) a geometry-conditioning method that provides the video model with a turntable of surface-normal maps reconstructed from the reference views without requiring temporal alignment with the generated frames. We construct Showcase-4K, a corpus of 3D-asset-based videos covering twelve camera motions across 88 trajectory configurations with reconstruction-derived surface-normal conditioning, and ShowcaseBench, a held-out evaluation set with the source meshes and camera parameters used to render each video. Experiments show state-of-the-art subject identity and 3D consistency while maintaining competitive video quality and motion. Project page: justin4ai.github.io/OmniShowcase",
+      "hot_score": 41.0428,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-25T20:00:00+00:00",
+      "last_seen_at": "2026-10-29T04:14:55.875396+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 8
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_52ced88a57d97548": {
+      "id": "it_52ced88a57d97548",
+      "source": "rss",
+      "title": "Quoting Ted Sanders",
+      "url": "https://simonwillison.net/2026/Oct/28/ted-sanders",
+      "summary": "In general, LLM performance is incredibly multidimensional. There's no guarantee of a fixed ordering where the model that is best at math is also the model that's best at jokes. Despite that complexity, much of the variation in performance is explained by just a single variable: model size. In general, models that are bigger will (a) be more performant / reliable, (b) cost more per token, and (c) have better recall of esoteric facts. As you note, our models are ordered:\nLuna < Terra < Sol < Astra\n[ ... ] These days, version number signifies a few things at once: the order of release, the relationship to other releases, and the magnitude of improvement. So something like 6.1 would indicate it was launched after 5.6, may share some similarities to other 6.1 models in terms of training data / personality (which is why it's not 5.7), and isn't a giant enough leap to merit the headlines and expectations that would come with a 7.\n— Ted Sanders , explaining OpenAI's model naming conventions\n\nTags: generative-ai , gpt , openai , ai , llms , ted-sanders",
+      "hot_score": 39.0,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-10-28T23:23:21+00:00",
+      "last_seen_at": "2026-10-29T04:14:55.815416+00:00",
+      "metrics": {
+        "rank_score": 1.0
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_09f762edab0d4f19": {
+      "id": "it_09f762edab0d4f19",
+      "source": "rss",
+      "title": "Adam Mosseri says negativity around AI is ‘going to get worse’",
+      "url": "https://www.theverge.com/ai-artificial-intelligence/1021644/adam-mosseri-instagram-ai-negativity",
+      "summary": "Asked about AI and the trend of college students booing tech CEOs at graduation ceremonies, Instagram head Adam Mosseri acknowledged in an interview that a lot of people really don't like AI, and it's not just young people and creatives. Appearing on the Colin and Samir podcast to talk about the launch of widescreen and long-form video for Instagram , Mosseri said he thinks there's a trend of \"more anxiety and more frustration and more anger about AI,\" particularly in creative industries:\n\nIt's not only getting worse, it's going to continue to get worse. I think we're going to see more frustration and anger, some of it founded, some of it un …\nRead the full story at The Verge.",
+      "hot_score": 39.0,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-10-28T23:05:39+00:00",
+      "last_seen_at": "2026-10-29T04:14:55.825673+00:00",
+      "metrics": {
+        "rank_score": 1.0
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_1134b6a1764aac4f": {
+      "id": "it_1134b6a1764aac4f",
+      "source": "rss",
+      "title": "Microsoft just shared Azure’s actual revenue in dollars: $33.2 billion",
+      "url": "https://techcrunch.com/2026/10/28/microsoft-just-shared-azures-actual-revenue-in-dollars-33-2-billion",
+      "summary": "Microsoft has never disclosed Azure's quarterly revenue in dollars. But for the first time, we can see just how close it is getting to besting the biggest competitor in the market, AWS.",
+      "hot_score": 38.8487,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-10-28T21:58:32+00:00",
+      "last_seen_at": "2026-10-29T04:14:55.837598+00:00",
+      "metrics": {
+        "rank_score": 1.0
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_9b7dd4a7a6853f5d": {
+      "id": "it_9b7dd4a7a6853f5d",
+      "source": "rss",
+      "title": "Google expands AI Search ads globally as core ad growth slows",
+      "url": "https://techcrunch.com/2026/10/28/google-expands-ai-search-ads-globally-as-core-ad-growth-slows",
+      "summary": "The announcement came alongside parent company Alphabet's third-quarter earnings report, which saw revenue grow 25% year over year to $127.6 billion.",
+      "hot_score": 38.7578,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-10-28T21:48:37+00:00",
+      "last_seen_at": "2026-10-29T04:14:55.838565+00:00",
+      "metrics": {
+        "rank_score": 0.9231
+      },
+      "streak_days": 0,
+      "language": "en"
+    }
+  },
+  "meta": {
+    "mode": "hybrid",
+    "day": "2026-10-29",
+    "generated_at": "2026-10-29T04:15:47.089714+00:00",
+    "window": {
+      "since": "2026-10-28T04:14:48.368951+00:00",
+      "until": "2026-10-29T04:14:55.905220+00:00",
+      "hours": 24.0,
+      "since_local": "2026-10-28T12:14+08:00",
+      "until_local": "2026-10-29T12:14+08:00",
+      "tz": "Asia/Shanghai"
+    },
+    "analysis": {
+      "items": 95,
+      "scored": 95,
+      "topics": 3,
+      "new_entity_mention_rows": 98,
+      "state_items": 14
+    },
+    "llm": {
+      "degraded": false,
+      "degraded_reason": "",
+      "calls": 1
+    },
+    "collect": {
+      "ok_sources": 6,
+      "failed_sources": 1,
+      "skipped": 0,
+      "total_items": 96
+    },
+    "verify": {
+      "verified": 0,
+      "unverifiable": 0,
+      "deferred": 0,
+      "failed": 0,
+      "llm_calls": 0
+    },
+    "predictions": {
+      "total": 92,
+      "verified": 1,
+      "pending": 91,
+      "unverifiable": 0,
+      "hit_rate": 0.0,
+      "weighted_score": 0.0,
+      "brier": 0.36
+    },
+    "prediction_generation": {
+      "mode": "hybrid",
+      "generated": 4,
+      "inserted": 4,
+      "dropped": [],
+      "llm_calls": 1,
+      "candidate_pool": 20,
+      "degraded": false,
+      "degraded_reason": ""
+    },
+    "brief": {
+      "max_items_per_section": 10,
+      "velocity_board_enabled": true,
+      "velocity_board_top_n": 5
+    },
+    "signals": {
+      "entities": 427,
+      "points": 1098,
+      "with_velocity": 55,
+      "insufficient": 112,
+      "cold_start": 260,
+      "min_window_hours": 6.0
+    },
+    "enhance_total": 27,
+    "enhanced": 27,
+    "enhance_skipped_count": 0,
+    "enhance_cache_hit": 6,
+    "enhance_cost_cny": 0.010487
+  }
+}
