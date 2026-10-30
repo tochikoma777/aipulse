@@ -1,0 +1,969 @@
+{
+  "date": "2026-10-30",
+  "headline": "智能体正从演示走向工程化：多智能体集群、持久记忆与反 AI 味设计工具同日涌现，真正的瓶颈已从模型能力转向上下文与协作基础设施。",
+  "headline_item_id": "it_d8eb5a4b641ea994",
+  "overview_bullets": [
+    {
+      "icon": "🤖",
+      "topic": "智能体集群",
+      "text": "在 Minecraft 与 Mindustry 中跑智能体集群的实践登顶 HN，说明多智能体协作已从论文走进可复现的沙盒实验。"
+    },
+    {
+      "icon": "🛠️",
+      "topic": "反 AI 味工具",
+      "text": "hallmark、impeccable、ai-design-skills 三个项目同日上榜，社区开始用工程手段治理“AI 生成感”这一审美债务。"
+    },
+    {
+      "icon": "🔐",
+      "topic": "安全与越狱",
+      "text": "jailbreaks 仓库与 Proton 全面接入 AI 同时出现，能力扩张与攻击面扩张在同一天被摆上台面。"
+    },
+    {
+      "icon": "📄",
+      "topic": "扩散模型 RL",
+      "text": "DTCA 针对扩散语言模型的去噪过程做信用分配，试图补上扩散 LLM 强化学习训练的关键短板。"
+    },
+    {
+      "icon": "📉",
+      "topic": "维护者退场",
+      "text": "Pico CSS 宣布停止维护，轻量开源基础设施的可持续性问题再次暴露。"
+    }
+  ],
+  "executive_summary": "今天的热度不在某个新模型，而在“怎么把智能体用对、用稳、用得不像 AI”——工具链与工程纪律正在成为竞争主战场。",
+  "editor_note": {
+    "core": "今天最该记住的是“智能体基础设施”这个词：从 claude-mem 的跨会话记忆到 OpenBot 的每智能体独立计算机，竞争焦点已从模型智商转向让智能体可靠工作的外围系统。",
+    "cross_signal": "GitHub 上三个“反 AI 味”设计项目与 HN 上 Claude Duet 被评为“第一个有用的个人助理”形成互证：用户不再为生成能力惊叹，而为输出质量与可控性买单。",
+    "counterintuitive": "热度最高的 LLM Voice 与智能体集群讨论多是体验叙事，而真正有长期价值的是 DTCA 这类冷门训练方法论文——热度与价值在这份榜单上明显错位。",
+    "risk": "jailbreaks 仓库公开传播与 Proton 全面接入 AI 同日出现，说明能力扩散速度快于安全治理；同时 Pico CSS 停维护提醒，AI 热潮正在抽走非 AI 开源项目的维护者注意力。"
+  },
+  "contradictions": [
+    "社区一边追捧 Claude Duet 这类个人助理，一边用 hallmark、impeccable 等工具抵制 AI 生成内容，对 AI 的接受度呈明显的场景分裂。",
+    "Proton 以隐私为品牌却全面接入 AI，与其核心用户预期存在张力。"
+  ],
+  "underrated": [
+    "DTCA: Denoising Token Credit Assignment for Reinforcement Learning in Diffusion Language Models",
+    "WebAnything: From the Wild Web to Scalable Agent Environments",
+    "A tiny world model running games on a Raspberry Pi Pico 2 W",
+    "Pico CSS is no longer maintained",
+    "IgE disruptor for food allergy with Claude-enabled antibody design"
+  ],
+  "sections": [
+    {
+      "name": "开源项目",
+      "summary": "GitHub 趋势被智能体脚手架与设计规范类项目占据，社区从“能跑”转向“跑得像人做的”。",
+      "item_ids": [
+        "it_9780abeb5fce378d",
+        "it_bf5ec6e10b8ea1d5",
+        "it_5ded0eae18819e88",
+        "it_bf03923eb9b66885",
+        "it_ec8c7e5f32546a34",
+        "it_d4f3ebd955870d03",
+        "it_ebfcd2cb02eb3c5c",
+        "it_37cb70e5bf4c7c16",
+        "it_cdc5efdead963d80",
+        "it_97d171c460464ef7",
+        "it_c181e3f6bd83b0eb"
+      ]
+    },
+    {
+      "name": "论文与研究",
+      "summary": "研究侧集中在扩散语言模型 RL、多模态交错生成与智能体可执行环境三条线。",
+      "item_ids": [
+        "it_b97c8c0da03d9889",
+        "it_38e2fbad6374a0b5",
+        "it_0b7e877ad28523a6",
+        "it_9d30f0f1c0e71f14",
+        "it_c1439ed0f5b83b7a",
+        "it_234f1af6e64c01bc",
+        "it_2b73ee66c8533435"
+      ]
+    },
+    {
+      "name": "社区舆论",
+      "summary": "HN 讨论围绕个人助理形态、AI 全面渗透与开源项目生命周期展开，情绪偏审慎。",
+      "item_ids": [
+        "it_739e0b5535e3ec06",
+        "it_d8eb5a4b641ea994",
+        "it_11ef932bb8b9a008",
+        "it_9c79112b0f2e5594",
+        "it_4efde63ec719cd0d",
+        "it_923d025e66a508f8",
+        "it_221651c082755724",
+        "it_d96ea6a375e0b1f9",
+        "it_6739b061c91c2603",
+        "it_849640f5ae5bd7ed",
+        "it_796b6bd3e2181018",
+        "it_b63ff4a0230e417d"
+      ]
+    },
+    {
+      "name": "产业与新闻",
+      "summary": "AI 进入生物抗体设计与消费级硬件叙事，落地场景继续向非软件领域外溢。",
+      "item_ids": []
+    }
+  ],
+  "comments": [
+    {
+      "item_id": "it_9780abeb5fce378d",
+      "one_liner": "HKUDS 开源的 DeepTutor，一个提供终身个性化辅导的 AI 学习助手项目。",
+      "why": "港大团队把个性化长期记忆做成可自托管的辅导系统，教育场景的数据主权从平台回到用户手里。",
+      "stance": "教育 AI 的护城河在记忆与陪伴，不在模型参数，开源方案会先吃掉自学市场。"
+    },
+    {
+      "item_id": "it_bf5ec6e10b8ea1d5",
+      "one_liner": "面向 Claude Code、Cursor 和 Codex 的反 AI 套路化设计技能。",
+      "why": "针对 AI 生成界面千篇一律的「塑料感」做反向约束，把审美判断写进编码代理的技能包，直接影响交付物的第一印象。",
+      "stance": "反 AI 味本身就是新赛道，但靠规则清单治标，治不了模型偏好。"
+    },
+    {
+      "item_id": "it_5ded0eae18819e88",
+      "one_liner": "一套设计语言，用于提升 AI harness 的设计能力",
+      "why": "把设计规范从人读的文档变成 agent 直接消费的约束层，模型输出的视觉质量不再取决于提示词运气，而取决于挂载了哪套设计语言。",
+      "stance": "这是把设计品味工程化的正确切口，但设计语言一旦标准化，产出的同质化会比现在更严重。"
+    },
+    {
+      "item_id": "it_bf03923eb9b66885",
+      "one_liner": "elayadesign 的 ai-design-skills 仓库，汇集 AI 辅助设计相关的技能集合。",
+      "why": "把设计流程拆成可复用的技能包喂给编码代理，等于给 AI 补上审美与版式这类难以言传的隐性知识。",
+      "stance": "设计技能化是代理落地的真实瓶颈，但零说明的仓库只是占位，别急着当生产力工具。"
+    },
+    {
+      "item_id": "it_ec8c7e5f32546a34",
+      "one_liner": "一个开源 Grok Bot 替代方案，为 bot 提供可操作的虚拟机环境",
+      "why": "把带虚拟机的执行环境开源给 bot，等于把「agent 能自己装软件、跑命令」的能力从闭源厂商手里放出来，安全边界随之从模型层下移到沙箱层。",
+      "stance": "方向对，但给 bot 一台真机就是把攻击面也一起开源了，先看沙箱逃逸怎么防。"
+    },
+    {
+      "item_id": "it_d4f3ebd955870d03",
+      "one_liner": "作者个人 jailbreak 提示词合集仓库",
+      "why": "越狱提示词被整理成公开清单，模型厂商的对齐补丁会按这份清单逐条打，攻防节奏从零散试探变成清单式军备竞赛。",
+      "stance": "这类仓库是红队资产也是滥用入口，公开可以，但别指望它长期不被平台下架。"
+    },
+    {
+      "item_id": "it_ebfcd2cb02eb3c5c",
+      "one_liner": "为各类 AI agent 提供跨会话持久记忆，压缩历史并回注相关上下文",
+      "why": "把会话记忆压缩后回注给下一个会话，直接解决 agent 跨会话失忆这个落地最大摩擦点，且一次适配多家编码工具，迁移成本被摊薄。",
+      "stance": "记忆层正在变成 agent 工具链的标配中间件，谁先标准化谁定接口。"
+    },
+    {
+      "item_id": "it_37cb70e5bf4c7c16",
+      "one_liner": "RuView 利用普通 WiFi 信号实现实时空间感知、生命体征监测与存在检测，全程无需任何视频画面。",
+      "why": "把普通 WiFi 信号当作感知传感器，意味着存在检测与体征监测不再依赖摄像头，隐私敏感场景（养老、宿舍、卫生间）的监控成本与合规阻力同时下降。",
+      "stance": "无摄像头的感知是隐私与功能之间少见的双赢，但必须提前划清「谁有权读取体征数据」的边界。"
+    },
+    {
+      "item_id": "it_cdc5efdead963d80",
+      "one_liner": "把 Claude Code 改造成游戏开发工作室，含 49 个 agent 与 72 项工作流技能",
+      "why": "用 49 个角色化 agent 加工作流技能模拟工作室层级，把「多 agent 协作」从演示推进到可复用的组织模板，游戏开发成了第一个被完整拆解的行业。",
+      "stance": "角色扮演式编排好看但容易空转，真正的考验是产出能不能过审而不是流程像不像。"
+    },
+    {
+      "item_id": "it_97d171c460464ef7",
+      "one_liner": "开源 AI 同事框架，每个 agent 拥有独立浏览器、文件与工具，动作先决策后记录",
+      "why": "每个 AI 同事独占浏览器与文件系统，且动作先决策后留痕，把可审计性做进执行链路，企业敢把权限交出去的前提被补上。",
+      "stance": "「先决策后记录」是这类产品唯一站得住的卖点，其余都是包装。"
+    },
+    {
+      "item_id": "it_b97c8c0da03d9889",
+      "one_liner": "针对 diffusion language model 强化学习提出的 Denoising Token Credit Assignment 方法，用于改进迭代去噪过程中的 token 级信用分配。",
+      "why": "扩散语言模型的迭代去噪让 RL 的信用分配无从下手，这篇把去噪步与 token 贡献解耦，直接决定扩散路线能否在推理任务上追平自回归模型。",
+      "stance": "扩散模型要抢推理场景，必须先解决训练信号颗粒度问题，这个方向比刷榜更有价值。"
+    },
+    {
+      "item_id": "it_38e2fbad6374a0b5",
+      "one_liner": "VibeGame：用自然语言提示端到端生成可玩游戏，结合 AI 原生引擎与自进化对抗 agent 团队",
+      "why": "把代码、场景、资产、物理配置的协同交给自演化对抗 agent 团队，端到端做游戏的门槛从工程能力降到描述能力，独立开发者的产能结构被改写。",
+      "stance": "对抗式自演化听着漂亮，可玩性最终仍由人判定，别把 demo 当成品。"
+    },
+    {
+      "item_id": "it_0b7e877ad28523a6",
+      "one_liner": "面向真实声学场景的流式音视频目标说话人提取方法，针对近远场干扰、混响与突发噪声等条件。",
+      "why": "现有音视频目标说话人提取基准把说话人数固定为两人并忽略混响与突发噪声，真实场景的延迟敏感应用因此拿不到可用模型。",
+      "stance": "基准失真比模型落后更致命，先把评测拉回真实声学环境，再谈落地。"
+    },
+    {
+      "item_id": "it_9d30f0f1c0e71f14",
+      "one_liner": "WeVisCut：单一 agent 完成从旁白到长视频的全流程剪辑",
+      "why": "用单个紧凑策略替代多阶段流水线做长视频，把跨镜头一致性的成本从堆模型转到任务适配，长视频自动化的单位成本被压低。",
+      "stance": "压缩策略路线比堆大模型更值得押注，成本曲线才是这类工具能否商用的分水岭。"
+    },
+    {
+      "item_id": "it_c1439ed0f5b83b7a",
+      "one_liner": "IntReal：面向多模态交错生成的真实世界数据集与评测基准",
+      "why": "图文交错生成长期缺真实分布的数据与评测，这个基准把「模型能不能像人一样穿插输出」变成可量化指标，统一多模态模型的宣传口径被迫对齐实测。",
+      "stance": "基准比模型更稀缺，先立尺子的一方掌握话语权。"
+    },
+    {
+      "item_id": "it_234f1af6e64c01bc",
+      "one_liner": "WebAnything：从真实网页抓取构建可扩展、可重置的 web agent 训练环境",
+      "why": "把真实网站抓取重放成可重置的 agent 环境，绕开逐站人工镜像的工程成本，网页 agent 的训练与评测终于能规模化复现。",
+      "stance": "可重置环境是网页 agent 从论文走向产品的卡点，这条路比生成式造站更靠谱。"
+    },
+    {
+      "item_id": "it_2b73ee66c8533435",
+      "one_liner": "OmniShowcase：基于多视角图像生成主体一致的全向视频",
+      "why": "多视角参考补上了单图主体生成看不到的背面与侧面，主体一致视频从「正面能看」推进到可环绕观看，电商与虚拟人素材的生产方式被改写。",
+      "stance": "一致性做扎实比时长做长更有价值，这条线决定生成视频能不能进商业管线。"
+    },
+    {
+      "item_id": "it_739e0b5535e3ec06",
+      "one_liner": "一个名为 LLM Voice 的项目，在 Hacker News 上被讨论。",
+      "why": "语音作为 LLM 的输入输出通道被单独拿出来讨论，意味着交互瓶颈从文本生成转向延迟、打断与情感表达，直接决定助手类产品能否脱离屏幕。",
+      "stance": "语音是下一轮体验分水岭，但多数团队仍把它当附属功能做，会先撞上延迟与误唤醒的墙。"
+    },
+    {
+      "item_id": "it_d8eb5a4b641ea994",
+      "one_liner": "在 Minecraft 和 Mindustry 两款游戏中运行 AI agent 集群的实验记录。",
+      "why": "在 Minecraft 与 Mindustry 这类有明确规则和资源约束的环境里跑智能体集群，把多智能体协作从演示视频推进到可复现的工程压力测试，暴露调度与通信开销的真实上限。",
+      "stance": "游戏沙盒是目前最诚实的智能体试验场，比任何 benchmark 排行榜都更能筛掉纸面方案。"
+    },
+    {
+      "item_id": "it_11ef932bb8b9a008",
+      "one_liner": "Claude Duet 被介绍为首个真正好用的个人助理型 harness。",
+      "why": "个人助理型 harness 从能跑通变成用得顺手，意味着竞争焦点从模型能力转向工具编排、权限边界与上下文管理这些工程层。",
+      "stance": "harness 层的体验差距正在超过模型差距，谁把权限与上下文管好谁就赢下这一层。"
+    },
+    {
+      "item_id": "it_9c79112b0f2e5594",
+      "one_liner": "一篇讨论软件周边社区重要性的文章。",
+      "why": "软件的价值越来越取决于围绕它的社区能否持续产出文档、插件与答疑，社区断档会让技术栈在无人维护时迅速失去可用性。",
+      "stance": "选型时先看社区活跃度再看代码质量，孤岛项目再优雅也是负债。"
+    },
+    {
+      "item_id": "it_4efde63ec719cd0d",
+      "one_liner": "一个用 Swift 写的小工具，可自动关闭 macOS 的本地网络设备访问权限弹窗。",
+      "why": "系统级权限弹窗没有全局关闭开关，只能靠外部小工具抢在打断输入前关掉，说明 macOS 的隐私授权模型把选择成本转嫁给了用户。",
+      "stance": "用第三方补丁绕开系统弹窗是权宜之计，苹果该给的是全局默认拒绝开关，而不是让用户装小工具。"
+    },
+    {
+      "item_id": "it_923d025e66a508f8",
+      "one_liner": "Proton 宣布全面投入 AI 应用的消息。",
+      "why": "以隐私为卖点的服务商全面引入 AI，会迫使它在端侧处理与云端推理之间重新划线，用户对加密承诺的信任将直接受此检验。",
+      "stance": "隐私品牌做 AI 只有一条路可走：默认本地、云端需显式授权，否则卖点当场作废。"
+    },
+    {
+      "item_id": "it_221651c082755724",
+      "one_liner": "一个能在 Raspberry Pi Pico 2 W 上运行游戏的小型世界模型。",
+      "why": "把世界模型压到微控制器级别运行，证明推理可以在毫瓦级预算内完成，边缘设备上的预测式控制从论文走向可动手复现。",
+      "stance": "真正的边缘智能长这样，不是把大模型塞进手机，而是把模型缩到不需要云。"
+    },
+    {
+      "item_id": "it_d96ea6a375e0b1f9",
+      "one_liner": "CSS 框架 Pico CSS 已停止维护的消息。",
+      "why": "轻量 CSS 框架停止维护，依赖它的站点将面对浏览器演进带来的样式漂移与安全修补缺口，迁移成本被推迟而非消除。",
+      "stance": "极简框架的维护者 burnout 是常态，把它当长期基础设施的团队现在就该准备退出方案。"
+    },
+    {
+      "item_id": "it_6739b061c91c2603",
+      "one_liner": "Herdr 发布了原生应用版本。",
+      "why": "从网页或命令行转向原生应用，意味着该工具开始争夺常驻桌面与系统集成权限，用户粘性和数据落点都随之改变。",
+      "stance": "原生客户端是留存手段也是信任考验，装到本机之后隐私承诺要重新被审视一遍。"
+    },
+    {
+      "item_id": "it_849640f5ae5bd7ed",
+      "one_liner": "一篇关于用 Claude 辅助抗体设计开发食物过敏 IgE 阻断剂的 PDF 论文。",
+      "why": "用模型辅助设计抗体并针对 IgE 通路干预食物过敏，把生成式设计从文本图像推进到湿实验验证的分子层面，监管与可复现性要求随之抬高。",
+      "stance": "AI 设计抗体进入真实靶点是好事，但缺少公开实验复现前，任何疗效宣称都该被压着看。"
+    }
+  ],
+  "stats": {},
+  "items": {
+    "it_739e0b5535e3ec06": {
+      "id": "it_739e0b5535e3ec06",
+      "source": "hackernews",
+      "title": "LLM Voice",
+      "url": "https://martinfowler.com/bliki/LLM-Voice.html",
+      "summary": "",
+      "hot_score": 84.0837,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-29T14:57:55+00:00",
+      "last_seen_at": "2026-10-30T04:15:19.108277+00:00",
+      "metrics": {
+        "points": 380,
+        "num_comments": 203
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_d8eb5a4b641ea994": {
+      "id": "it_d8eb5a4b641ea994",
+      "source": "hackernews",
+      "title": "We ran AI agent swarms in Minecraft and Mindustry",
+      "url": "https://labs.ycombinator.com/projects/games/index.html",
+      "summary": "",
+      "hot_score": 81.8049,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-29T21:40:28+00:00",
+      "last_seen_at": "2026-10-30T04:15:19.111473+00:00",
+      "metrics": {
+        "points": 216,
+        "num_comments": 68
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_796b6bd3e2181018": {
+      "id": "it_796b6bd3e2181018",
+      "source": "hackernews",
+      "title": "I went to Mexico to test-drive the cars Americans can’t buy",
+      "url": "https://www.washingtonpost.com/climate-environment/2026/10/27/i-saw-future-driving-mexico-its-off-limits-americans",
+      "summary": "https://archive.ph/sGqBh",
+      "hot_score": 81.5184,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-29T15:30:22+00:00",
+      "last_seen_at": "2026-10-30T04:15:19.110208+00:00",
+      "metrics": {
+        "points": 289,
+        "num_comments": 334
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_9780abeb5fce378d": {
+      "id": "it_9780abeb5fce378d",
+      "source": "github_trending",
+      "title": "HKUDS/DeepTutor",
+      "url": "https://github.com/HKUDS/DeepTutor",
+      "summary": "DeepTutor: Lifelong Personalized Tutoring. https://deeptutor.info/ .",
+      "hot_score": 78.6435,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-28T03:51:31.026947+00:00",
+      "last_seen_at": "2026-10-30T04:15:19.147558+00:00",
+      "metrics": {
+        "stars_total": 50492,
+        "stars_in_window": 2371,
+        "forks": 6214,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "Python"
+    },
+    "it_bf5ec6e10b8ea1d5": {
+      "id": "it_bf5ec6e10b8ea1d5",
+      "source": "github_trending",
+      "title": "Nutlope/hallmark",
+      "url": "https://github.com/Nutlope/hallmark",
+      "summary": "Anti-AI-slop design skill for Claude Code, Cursor, and Codex.",
+      "hot_score": 78.1685,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-25T03:04:13.813488+00:00",
+      "last_seen_at": "2026-10-29T04:14:55.865803+00:00",
+      "metrics": {
+        "stars_total": 40925,
+        "stars_in_window": 2830,
+        "forks": 2122,
+        "streak_days": 5
+      },
+      "streak_days": 5,
+      "language": "CSS"
+    },
+    "it_11ef932bb8b9a008": {
+      "id": "it_11ef932bb8b9a008",
+      "source": "hackernews",
+      "title": "Claude Duet is the first personal-assistant-type harness that feels useful",
+      "url": "https://fig.blue/posts/duet-is-the-future",
+      "summary": "",
+      "hot_score": 76.7925,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-29T17:24:25+00:00",
+      "last_seen_at": "2026-10-30T04:15:19.111950+00:00",
+      "metrics": {
+        "points": 112,
+        "num_comments": 99
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_5ded0eae18819e88": {
+      "id": "it_5ded0eae18819e88",
+      "source": "github_trending",
+      "title": "pbakaus/impeccable",
+      "url": "https://github.com/pbakaus/impeccable",
+      "summary": "The design vocabulary for your coding agent. Steer with polish and bolder, review with critique and audit, catch AI slop before it ships.",
+      "hot_score": 76.3711,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-25T03:04:13.813495+00:00",
+      "last_seen_at": "2026-10-30T04:15:19.148703+00:00",
+      "metrics": {
+        "stars_total": 95686,
+        "stars_in_window": 2870,
+        "forks": 5637,
+        "streak_days": 6
+      },
+      "streak_days": 6,
+      "language": "Rust"
+    },
+    "it_9c79112b0f2e5594": {
+      "id": "it_9c79112b0f2e5594",
+      "source": "hackernews",
+      "title": "The importance of communities around software",
+      "url": "https://lumi.codeberg.page/blog/software-community.html",
+      "summary": "",
+      "hot_score": 75.0074,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-29T19:27:47+00:00",
+      "last_seen_at": "2026-10-30T04:15:19.112398+00:00",
+      "metrics": {
+        "points": 101,
+        "num_comments": 106
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_4efde63ec719cd0d": {
+      "id": "it_4efde63ec719cd0d",
+      "source": "hackernews",
+      "title": "Show HN: Auto Dismiss Mac OS \"Allow to find devices on local networks?\"",
+      "url": "https://github.com/johncassil/dontallow",
+      "summary": "This popup has been a constant gripe of mine for years. I almost NEVER want to allow this permission and there is no system setting to disable it globally and prevent the popup from interrupting your typing, etc. This tiny swift app I built will autoclose it in 1/4th of a second and leave behind a little notification that it did so. Would love to hear feedback!",
+      "hot_score": 72.1944,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-29T19:27:44+00:00",
+      "last_seen_at": "2026-10-30T04:15:19.158407+00:00",
+      "metrics": {
+        "points": 111,
+        "num_comments": 85
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_923d025e66a508f8": {
+      "id": "it_923d025e66a508f8",
+      "source": "hackernews",
+      "title": "Proton goes all in on using AI",
+      "url": "https://convo.casa/@b/117525936178835007",
+      "summary": "",
+      "hot_score": 70.637,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-29T21:49:28+00:00",
+      "last_seen_at": "2026-10-30T04:15:19.113249+00:00",
+      "metrics": {
+        "points": 82,
+        "num_comments": 81
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_b97c8c0da03d9889": {
+      "id": "it_b97c8c0da03d9889",
+      "source": "hf_papers",
+      "title": "DTCA: Denoising Token Credit Assignment for Reinforcement Learning in Diffusion Language Models",
+      "url": "arxiv:2610.35201",
+      "summary": "Diffusion language models (DLMs) generate text through iterative denoising, enabling bidirectional context modeling and parallel token refinement. Recent studies have applied reinforcement learning (RL) to DLMs and improved their reasoning performance. However, the iterative denoising process makes credit assignment more challenging, as final outcome rewards provide limited information about how different tokens contribute to the final output. In this paper, we propose Denoising Token Credit Assignment (DTCA), a framework for token-level credit assignment in reinforcement learning for diffusion language models. DTCA estimates token contributions by measuring the improvement in prediction confidence of remaining masked positions after token commitment and groups these signals according to part-of-speech (POS) categories. These contribution weights are used to select informative denoising timesteps and assign token-level learning signals during RL training. DTCA further calibrates these learning signals according to token-level entropy changes induced by policy updates. Experiments on LLaDA-8B-Instruct show that DTCA consistently improves mathematical reasoning performance across different generation budgets, with gains of up to 9.0 points on MATH500 and 5.3 points on GSM8K over the base model.",
+      "hot_score": 69.8053,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-25T20:00:00+00:00",
+      "last_seen_at": "2026-10-29T04:14:55.872996+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 254
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_bf03923eb9b66885": {
+      "id": "it_bf03923eb9b66885",
+      "source": "github_trending",
+      "title": "elayadesign/ai-design-skills",
+      "url": "https://github.com/elayadesign/ai-design-skills",
+      "summary": "",
+      "hot_score": 69.3297,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-28T03:51:31.026875+00:00",
+      "last_seen_at": "2026-10-30T04:15:19.150463+00:00",
+      "metrics": {
+        "stars_total": 12342,
+        "stars_in_window": 2139,
+        "forks": 895,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": null
+    },
+    "it_ec8c7e5f32546a34": {
+      "id": "it_ec8c7e5f32546a34",
+      "source": "github_trending",
+      "title": "milind-soni/OpenMausBot",
+      "url": "https://github.com/milind-soni/OpenMausBot",
+      "summary": "Open-source Grok Bot alternative with a virtual machine that bots can use",
+      "hot_score": 68.8235,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-30T04:14:36.710887+00:00",
+      "last_seen_at": "2026-10-30T04:15:19.149618+00:00",
+      "metrics": {
+        "stars_total": 7603,
+        "stars_in_window": 1199,
+        "forks": 1124,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "TypeScript"
+    },
+    "it_b63ff4a0230e417d": {
+      "id": "it_b63ff4a0230e417d",
+      "source": "hackernews",
+      "title": "After 28 years walking across the globe, he's almost home",
+      "url": "https://www.nytimes.com/2026/10/29/world/europe/karl-bushby-walking-globe-uk.html",
+      "summary": "https://archive.ph/NCeML",
+      "hot_score": 65.6883,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-29T17:42:22+00:00",
+      "last_seen_at": "2026-10-30T04:15:19.112820+00:00",
+      "metrics": {
+        "points": 88,
+        "num_comments": 66
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_38e2fbad6374a0b5": {
+      "id": "it_38e2fbad6374a0b5",
+      "source": "hf_papers",
+      "title": "VibeGame: Prompt-to-Game Development with AI-Native Engine and Self-Evolving Adversarial Agent Team",
+      "url": "arxiv:2610.33106",
+      "summary": "Large language model agents have enabled software development through natural-language interaction, but extending this paradigm to end-to-end game development remains challenging. Building a playable game requires coordinating code, scenes, assets, animations, physics, and configurations, while allowing developers to validate their integrated behavior through interactive testing. We introduce VibeGame, a framework for creating complete 2D game projects from natural-language prompts and optional reference images. Its AI-native game engine represents project state as schema-validated structured text and provides frame-synchronous runtime control, enabling agents to inspect game states, execute actions, and verify behavior at their own pace. Built upon this interface, we design an Adversarial Agent Team of eight specialized agents to separate implementation from review, so that problems are found and fixed through multi-round loops. For each conducted and accepted project, we further introduce a training-free self-evolution mechanism to distill it into reusable skeletons, modules, and collaboration contracts for future development. We evaluate prompt-assets-to-game (PA2G), where agents are given an asset library, and prompt-to-game (P2G), where agents generate their own art. On a GameCraft-Bench subset, VibeGame in P2G consistently outperforms a range of agent harnesses in either P2G or PA2G with the same underlying model, including GPT-6.1-Sol.",
+      "hot_score": 64.8407,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-21T20:00:00+00:00",
+      "last_seen_at": "2026-10-30T04:15:19.152461+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 10
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_221651c082755724": {
+      "id": "it_221651c082755724",
+      "source": "hackernews",
+      "title": "A tiny world model running games on a Raspberry Pi Pico 2 W",
+      "url": "https://github.com/SheepSeb/tinyworldformer",
+      "summary": "",
+      "hot_score": 64.32,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-29T20:32:28+00:00",
+      "last_seen_at": "2026-10-30T04:15:19.158060+00:00",
+      "metrics": {
+        "points": 163,
+        "num_comments": 9
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_d4f3ebd955870d03": {
+      "id": "it_d4f3ebd955870d03",
+      "source": "github_trending",
+      "title": "togg53192-cmd/jailbreaks",
+      "url": "https://github.com/togg53192-cmd/jailbreaks",
+      "summary": "LIST OF ALL MY JAILBREAKS",
+      "hot_score": 63.6108,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-28T03:51:31.026959+00:00",
+      "last_seen_at": "2026-10-30T04:15:19.151693+00:00",
+      "metrics": {
+        "stars_total": 9320,
+        "stars_in_window": 1594,
+        "forks": 1301,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": null
+    },
+    "it_6739b061c91c2603": {
+      "id": "it_6739b061c91c2603",
+      "source": "hackernews",
+      "title": "Herdr has released native app",
+      "url": "https://github.com/herdrdev/herdr-app",
+      "summary": "",
+      "hot_score": 62.4375,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-30T00:42:41+00:00",
+      "last_seen_at": "2026-10-30T04:15:19.159331+00:00",
+      "metrics": {
+        "points": 61,
+        "num_comments": 49
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_0b7e877ad28523a6": {
+      "id": "it_0b7e877ad28523a6",
+      "source": "hf_papers",
+      "title": "Efficient Streaming Audio-Visual Target Speaker Extraction for Real-World Acoustic Scenes",
+      "url": "arxiv:2610.32749",
+      "summary": "Streaming audio-visual target speaker extraction (AVTSE) is essential for latency-sensitive applications. However, current causal systems face two coupled gaps. First, standard benchmarks fix the number of speakers at two and ignore the near-/far-field interference, reverberation, and sudden noise of real scenes. Second, high-performance causal architectures are too heavy for edge deployment. Lightweight alternatives try to reclaim capacity by repeatedly invoking a small separator, which offsets the savings. To address the first gap, we release RealSSA, a realistic AVTSE benchmark consisting of RealSSA-Sim and RealSSA-Real. RealSSA-Sim provides controllable simulated scenes with 1--5 dynamic near-field interfering speakers; scenes with far-field interference additionally include 10--15 far-field interfering speakers. RealSSA-Real provides a held-out real-recorded evaluation set. To address the second gap, we propose Falcon, a causal AVTSE method. Its Separator performs multi-scale time-frequency separation in a single encoder--decoder pass. We train Falcon with an encoder-space speaker contrastive loss. This loss suppresses near-field leakage at zero inference cost and transfers across backbones. Falcon achieves state-of-the-art extraction quality on RealSSA-Sim, LRS2-2Mix, LRS3-2Mix, and VoxCeleb2-2Mix. Compared with the causal AV-TFGridNet baseline, it cuts parameters by 91.9%, computation by 20.2 times, and GPU inference latency by 11.1 times. Code and demo are available at https://cslikai.cn/Falcon/.",
+      "hot_score": 61.1767,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-22T20:00:00+00:00",
+      "last_seen_at": "2026-10-29T04:14:55.874150+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 9
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_d96ea6a375e0b1f9": {
+      "id": "it_d96ea6a375e0b1f9",
+      "source": "hackernews",
+      "title": "Pico CSS is no longer maintained",
+      "url": "https://github.com/picocss/pico/discussions/754",
+      "summary": "",
+      "hot_score": 59.625,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-30T01:58:44+00:00",
+      "last_seen_at": "2026-10-30T04:15:19.159026+00:00",
+      "metrics": {
+        "points": 65,
+        "num_comments": 20
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_ebfcd2cb02eb3c5c": {
+      "id": "it_ebfcd2cb02eb3c5c",
+      "source": "github_trending",
+      "title": "thedotmack/claude-mem",
+      "url": "https://github.com/thedotmack/claude-mem",
+      "summary": "Persistent Context Across Sessions for Every Agent – Captures everything your agent does during sessions, compresses it with AI, and injects relevant context back into future sessions. Works with Claude Code, OpenClaw, Codex, Gemini, Hermes, Copilot, OpenCode + More",
+      "hot_score": 58.2353,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-30T04:14:36.710902+00:00",
+      "last_seen_at": "2026-10-30T04:15:19.150823+00:00",
+      "metrics": {
+        "stars_total": 104961,
+        "stars_in_window": 336,
+        "forks": 9254,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "TypeScript"
+    },
+    "it_9d30f0f1c0e71f14": {
+      "id": "it_9d30f0f1c0e71f14",
+      "source": "hf_papers",
+      "title": "WeVisCut: The Whole Editing Room in One Agent From Narration to Long-Form Video",
+      "url": "arxiv:2610.38352",
+      "summary": "Producing long-form videos from narration requires interdependent decisions that remain coherent across shots. Existing agentic editors often use multi-stage workflows driven by general models, leaving the quality-cost trade-off of compact, task-adapted policies unclear. We address this gap with WeVisCut, a long-form script-to-video system that connects tool execution with policy learning. Its agent harness maintains shared production state so that tool feedback informs subsequent decisions and repairs. Because finished videos do not expose these decisions, our four-stage data pipeline combines editing inversion with verified replay to turn recovered editing intent into executable supervision. Applied to 3,750 finished videos, this pipeline yields over 130K training examples. We use this supervision to train a single 9B policy that coordinates production and recovers from failures within the same harness. Moreover, we introduce a 100-task benchmark and five metrics assessing editing quality and delivery reliability. Under a shared tool environment, WeVisCut substantially outperforms its base model and achieves comparable performance to Claude Opus 5 while using nearly 33x fewer generated tokens per successful output minute. It also outperforms task-matched native editors on our proposed metrics.",
+      "hot_score": 56.5768,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-27T20:00:00+00:00",
+      "last_seen_at": "2026-10-30T04:15:19.153095+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 8
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_c1439ed0f5b83b7a": {
+      "id": "it_c1439ed0f5b83b7a",
+      "source": "hf_papers",
+      "title": "IntReal: A Real-World Dataset and Benchmark for Multimodal Interleaved Generation",
+      "url": "arxiv:2610.38425",
+      "summary": "Humans routinely consume multimodal content, where textual and visual information is naturally interleaved. Although Unified Multimodal Models (UMMs) can jointly generate text and images, multimodal interleaved generation remains largely underexplored. Progress in this area is hindered by two key limitations: (1) the lack of well-defined interleaved generation tasks and corresponding training data, and (2) the absence of fine-grained evaluation protocols that can reliably diagnose model performance across different capability dimensions. To this end, we present IntReal, comprising two complementary components: IntReal-100K, a real-world dataset of multimodal interleaved samples spanning four major categories, and the IntReal Evaluation Suite, which evaluates model performance across seven complementary dimensions using specialized expert models, enabling coarse-to-fine diagnosis. Extensive experiments validate our evaluation suite through low inter-metric redundancy (max pairwise absolute Spearman's ρleq 0.42 ), high agreement with human judgments (83.3% accuracy), and strong consistency across different expert evaluators (Spearman's ρ> 0.9 ), supporting the complementarity and reliability of our metrics. By benchmarking four families of UMMs, we show that IntReal Evaluation Suite reveals distinct strengths and weaknesses across models. Post-training experiments demonstrate the utility of IntReal-100K for improving interleaved generation and further show that training unimodal generation can also benefit interleaved generation. These findings suggest that interleaved generation can benefit from modality-specific optimization, rather than requiring joint text-image training at every stage.",
+      "hot_score": 56.5768,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-27T20:00:00+00:00",
+      "last_seen_at": "2026-10-30T04:15:19.153759+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 8
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_37cb70e5bf4c7c16": {
+      "id": "it_37cb70e5bf4c7c16",
+      "source": "github_trending",
+      "title": "ruvnet/RuView",
+      "url": "https://github.com/ruvnet/RuView",
+      "summary": "π RuView turns commodity WiFi signals into real-time spatial intelligence, vital sign monitoring, and presence detection — all without a single pixel of video.",
+      "hot_score": 55.6572,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-29T04:14:48.538159+00:00",
+      "last_seen_at": "2026-10-29T04:14:55.871545+00:00",
+      "metrics": {
+        "stars_total": 101188,
+        "stars_in_window": 557,
+        "forks": 13168,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Rust"
+    },
+    "it_cdc5efdead963d80": {
+      "id": "it_cdc5efdead963d80",
+      "source": "github_trending",
+      "title": "Donchitos/Claude-Code-Game-Studios",
+      "url": "https://github.com/Donchitos/Claude-Code-Game-Studios",
+      "summary": "Turn Claude Code into a full game dev studio — 49 AI agents, 72 workflow skills, and a complete coordination system mirroring real studio hierarchy.",
+      "hot_score": 55.5882,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-30T04:14:36.710915+00:00",
+      "last_seen_at": "2026-10-30T04:15:19.152070+00:00",
+      "metrics": {
+        "stars_total": 29423,
+        "stars_in_window": 353,
+        "forks": 4063,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Shell"
+    },
+    "it_849640f5ae5bd7ed": {
+      "id": "it_849640f5ae5bd7ed",
+      "source": "hackernews",
+      "title": "IgE disruptor for food allergy with Claude-enabled antibody design [pdf]",
+      "url": "https://divergencelabs.com/publications/ige-preprint.pdf",
+      "summary": "",
+      "hot_score": 55.3029,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-29T19:25:48+00:00",
+      "last_seen_at": "2026-10-30T04:15:19.114479+00:00",
+      "metrics": {
+        "points": 44,
+        "num_comments": 32
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_234f1af6e64c01bc": {
+      "id": "it_234f1af6e64c01bc",
+      "source": "hf_papers",
+      "title": "WebAnything: From the Wild Web to Scalable Agent Environments",
+      "url": "arxiv:2610.37786",
+      "summary": "Web agents require diverse, executable, and resettable website environments for reproducible training and evaluation. Human-assisted mirrors demand per-site engineering, while generative construction can diverge from specified real websites. Capture-and-replay preserves observations, with interaction coverage constrained by captured content and replay capabilities.\nWe present WebAnything, a fully automated framework that reconstructs source-grounded, reusable Web environments from real URLs without per-site manual implementation or repair after initial setup and authorization. An Explorer-Builder collects browser-observable structures, resources, and interaction outcomes; an independent verifier checks frozen candidates and guides local repair or targeted source recapture.\nWe construct 244 website artifacts across 14 application domains and 53 categories, supporting 12,984 executed and accepted tasks. Compared with human-assisted WebHarbor, WebAnything achieves higher aggregate scores on three fidelity metrics, with 12 wins, two ties, and no losses in a blind audit. Fine-tuning Qwen3.5-9B on 5,856 interaction trajectories improves REAL success by 9.9 percentage points, Odysseys-Easy Rubric Avg and Task Avg by 6.25 and 6.32 percentage points, and WebArena-Verified Overall success by 13.33 percentage points under the fixed harness. Code: https://github.com/china-qijizhifeng/Web-Anything",
+      "hot_score": 54.1673,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-26T20:00:00+00:00",
+      "last_seen_at": "2026-10-30T04:15:19.154350+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 8
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_97d171c460464ef7": {
+      "id": "it_97d171c460464ef7",
+      "source": "github_trending",
+      "title": "CopilotKit/OpenBot",
+      "url": "https://github.com/CopilotKit/OpenBot",
+      "summary": "Open-source AI coworkers that each get a computer of their own: a browser, files and tools, with every action decided before it happens and recorded after. Bring any AG-UI agent.",
+      "hot_score": 52.9412,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-30T04:14:36.710907+00:00",
+      "last_seen_at": "2026-10-30T04:15:19.151259+00:00",
+      "metrics": {
+        "stars_total": 8245,
+        "stars_in_window": 247,
+        "forks": 1052,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "TypeScript"
+    },
+    "it_2b73ee66c8533435": {
+      "id": "it_2b73ee66c8533435",
+      "source": "hf_papers",
+      "title": "OmniShowcase: Omnidirectional Subject-Consistent Video Generation from Multi-View Images",
+      "url": "arxiv:2610.35684",
+      "summary": "Generating videos of a specific subject from a few reference images remains challenging when the camera reveals surfaces that are not visible in the input. Early subject-to-video (S2V) methods condition on a single reference image and must therefore infer the subject's unseen appearance and geometry as the viewpoint changes. To address this limitation, recent methods extend S2V to multiple reference views, providing more information about the subject from different viewpoints. However, they do not explicitly specify the 3D structure that connects these observations. In addition, existing training data do not guarantee that viewpoint changes preserve the same underlying 3D subject. We present OmniShowcase, built on two components: (i) a fully automated data synthesis pipeline that produces training videos along diverse camera trajectories, with viewpoint variation driven by underlying subject geometry, even spanning full 360-degree orbits; and (ii) a geometry-conditioning method that provides the video model with a turntable of surface-normal maps reconstructed from the reference views without requiring temporal alignment with the generated frames. We construct Showcase-4K, a corpus of 3D-asset-based videos covering twelve camera motions across 88 trajectory configurations with reconstruction-derived surface-normal conditioning, and ShowcaseBench, a held-out evaluation set with the source meshes and camera parameters used to render each video. Experiments show state-of-the-art subject identity and 3D consistency while maintaining competitive video quality and motion. Project page: justin4ai.github.io/OmniShowcase",
+      "hot_score": 52.9303,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-25T20:00:00+00:00",
+      "last_seen_at": "2026-10-29T04:14:55.875396+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 8
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_c181e3f6bd83b0eb": {
+      "id": "it_c181e3f6bd83b0eb",
+      "source": "github_trending",
+      "title": "hmjz100/LinkSwift",
+      "url": "https://github.com/hmjz100/LinkSwift",
+      "summary": "一个基于 JavaScript 的网盘文件下载地址获取工具。基于【网盘直链下载助手】修改 ，支持 百度网盘 / 阿里云盘 / 中国移动云盘 / 天翼云盘 / 迅雷云盘 / 夸克网盘 / UC网盘 / 123云盘 八大网盘",
+      "hot_score": 51.212,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-16T15:44:39.424253+00:00",
+      "last_seen_at": "2026-10-29T04:14:55.869802+00:00",
+      "metrics": {
+        "stars_total": 35259,
+        "stars_in_window": 1616,
+        "forks": 2502,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "JavaScript"
+    }
+  },
+  "meta": {
+    "mode": "hybrid",
+    "day": "2026-10-30",
+    "generated_at": "2026-10-30T04:16:07.654738+00:00",
+    "window": {
+      "since": "2026-10-29T04:14:35.277363+00:00",
+      "until": "2026-10-30T04:15:19.177417+00:00",
+      "hours": 24.0,
+      "since_local": "2026-10-29T12:14+08:00",
+      "until_local": "2026-10-30T12:15+08:00",
+      "tz": "Asia/Shanghai"
+    },
+    "analysis": {
+      "items": 102,
+      "scored": 102,
+      "topics": 0,
+      "new_entity_mention_rows": 157,
+      "state_items": 11
+    },
+    "llm": {
+      "degraded": false,
+      "degraded_reason": "",
+      "calls": 1
+    },
+    "collect": {
+      "ok_sources": 6,
+      "failed_sources": 1,
+      "skipped": 0,
+      "total_items": 91
+    },
+    "verify": {
+      "verified": 0,
+      "unverifiable": 0,
+      "deferred": 0,
+      "failed": 0,
+      "llm_calls": 0
+    },
+    "predictions": {
+      "total": 97,
+      "verified": 1,
+      "pending": 96,
+      "unverifiable": 0,
+      "hit_rate": 0.0,
+      "weighted_score": 0.0,
+      "brier": 0.36
+    },
+    "prediction_generation": {
+      "mode": "hybrid",
+      "generated": 5,
+      "inserted": 5,
+      "dropped": [],
+      "llm_calls": 1,
+      "candidate_pool": 20,
+      "degraded": false,
+      "degraded_reason": ""
+    },
+    "brief": {
+      "max_items_per_section": 10,
+      "velocity_board_enabled": true,
+      "velocity_board_top_n": 5
+    },
+    "signals": {
+      "entities": 457,
+      "points": 1135,
+      "with_velocity": 55,
+      "insufficient": 112,
+      "cold_start": 290,
+      "min_window_hours": 6.0
+    },
+    "enhance_total": 27,
+    "enhanced": 27,
+    "enhance_skipped_count": 0,
+    "enhance_cache_hit": 7,
+    "enhance_cost_cny": 0.008443
+  }
+}
