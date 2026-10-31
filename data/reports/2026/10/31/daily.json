@@ -1,0 +1,964 @@
+{
+  "date": "2026-10-31",
+  "headline": "Claude Code 官方 VS Code 扩展在 Cursor 市场被植入后门，AI 编码工具链的供应链信任第一次被公开击穿",
+  "headline_item_id": "it_bf5aaab63512aa24",
+  "overview_bullets": [
+    {
+      "icon": "🔐",
+      "topic": "供应链后门",
+      "text": "Claude Code 的 VS Code 扩展在 Cursor Marketplace 上被发现带后门，同一事件在 HN 上以三条不同标题反复上榜，说明这不是单点事故而是分发渠道的系统性风险。"
+    },
+    {
+      "icon": "🛠️",
+      "topic": "技能层军备",
+      "text": "GitHub 趋势被“Agent Skills”类仓库刷屏——anthropics/skills、obra/superpowers、mattpocock/skills、impeccable 同台，提示词工程正在固化为可复用的技能包与设计词汇表。"
+    },
+    {
+      "icon": "🤖",
+      "topic": "持久化智能体",
+      "text": "claude-mem、OpenBot、openbot、OpenMausBot 集中出现，竞争焦点从“能不能跑”转向“跨会话记忆 + 独立虚拟机 + 动作可审计”。"
+    },
+    {
+      "icon": "📉",
+      "topic": "资本退潮",
+      "text": "Anthropic 传将被评高收益垃圾级、华尔街因 AI 现金燃烧恐慌抛售科技股，两条独立信源指向同一个问题：投入产出比开始被公开定价。"
+    },
+    {
+      "icon": "📄",
+      "topic": "环境与数据",
+      "text": "WebAnything、WorkFactory、IntReal 三篇论文都在补同一块短板——可重置的网站环境、可执行的专业任务、交错多模态数据，智能体训练正从模型转向基础设施。"
+    }
+  ],
+  "executive_summary": "今天最响的信号不是某个模型变强，而是智能体生态在“信任”和“成本”两端同时承压：分发链被投毒，资本链被重估，中间层则疯狂长出自己的技能与记忆体系。",
+  "editor_note": {
+    "core": "今天最该记住的是 Claude Code 扩展后门：AI 编码工具已经从“装个插件”变成“把执行权交给第三方”，而分发市场没有对应的审计机制，信任成本被转嫁给了每一个开发者。",
+    "cross_signal": "后门事件（社区舆论）与 Anthropic 垃圾级评级预期、科技股抛售（产业新闻）指向同一件事——智能体的权限越大，其背后的组织与供应链就越被要求承担可验证的责任，资本和用户在同一周开始追问同一个问题。",
+    "counterintuitive": "热度最高的全是安全与资本坏消息，但真正改变格局的是那批几十 hot 的 skills 仓库：它们把“怎么用智能体”沉淀成可分发资产，价值远高于今天的头条，却几乎没人讨论。",
+    "risk": "最大的盲点是“技能包”本身正在成为新的攻击面——当 anthropics/skills、superpowers 这类仓库被当作标准件直接引入项目，没人审计其中的指令与工具权限，今天的扩展后门明天就会以 skill 的形式重演。"
+  },
+  "contradictions": [
+    "同一后门事件在热榜上以三条不同标题（it_bf5aaab63512aa24 / it_7e2aaf184ac3d7d5 / it_a510883f6a1bc895）重复出现，热度被拆分，掩盖了其真实影响量级。",
+    "一边是华尔街因 AI 现金燃烧恐慌抛售、Anthropic 面临垃圾级评级，另一边开源侧仍在以每天数十个仓库的速度扩张智能体工具，投入端的乐观与资本端的悲观完全脱节。",
+    "Sam Altman 称外界“浪费 DRAM”，而同期智能体项目普遍强调持久记忆与本地虚拟机，硬件节约叙事与产品实际资源消耗方向相反。"
+  ],
+  "underrated": [
+    "lightpanda-io/browser：专为 AI 与自动化设计的无头浏览器，是 WebAnything 这类环境论文的天然落地件",
+    "WebAnything: From the Wild Web to Scalable Agent Environments：可重置网站环境是智能体训练的真正瓶颈",
+    "IntReal：交错多模态生成的数据与基准，补的是 UMM 最缺的评测地基",
+    "France is getting download tax for content providers (€0.055/GB)：按流量征税会直接改写 AI 爬虫与内容分发的成本模型",
+    "JetBrains/thinkrail：老牌 IDE 厂商对 vibe coding 的正面回应，比一堆 Claude Code 套壳更值得看"
+  ],
+  "sections": [
+    {
+      "name": "开源项目",
+      "summary": "Agent Skills 与持久化智能体两条线同时爆发，开源社区在用仓库数量给“智能体工程化”投票。",
+      "item_ids": [
+        "it_9780abeb5fce378d",
+        "it_5ded0eae18819e88",
+        "it_81446f2462dee9e2",
+        "it_ebfcd2cb02eb3c5c",
+        "it_d12395c2145ab2bb",
+        "it_d4f3ebd955870d03",
+        "it_bf03923eb9b66885",
+        "it_ec8c7e5f32546a34",
+        "it_f859b2d15e1457f4",
+        "it_68fa5fb0038f21ea",
+        "it_85641ad38767c9cc",
+        "it_e31b1be02ebf018e",
+        "it_cdc5efdead963d80",
+        "it_8858b289f2eefaee",
+        "it_97d171c460464ef7",
+        "it_7bf3e06315fcbc77"
+      ]
+    },
+    {
+      "name": "论文与研究",
+      "summary": "五篇论文的共同主题是给智能体补“可执行、可重置、可评测”的底座，而非再刷一个榜单分数。",
+      "item_ids": [
+        "it_38e2fbad6374a0b5",
+        "it_9d30f0f1c0e71f14",
+        "it_c1439ed0f5b83b7a",
+        "it_234f1af6e64c01bc",
+        "it_8dccbef7ed6f9c15",
+        "it_b1160413e2d34f60"
+      ]
+    },
+    {
+      "name": "社区舆论",
+      "summary": "后门事件占据热榜前三席，叠加“PM 也不安全”的焦虑，HN 今天的主旋律是信任与职业替代。",
+      "item_ids": [
+        "it_bf5aaab63512aa24",
+        "it_7e2aaf184ac3d7d5",
+        "it_a510883f6a1bc895",
+        "it_95e0b10aaf4d50d5",
+        "it_bd6fa933a33edc29",
+        "it_1da35e307aba5bd2",
+        "it_1ad66cf690a946d3",
+        "it_ec3d416a72310edb"
+      ]
+    },
+    {
+      "name": "产业与新闻",
+      "summary": "Anthropic 的信用评级预期与科技股抛售形成闭环，AI 资本叙事首次被债市而非股市定价。",
+      "item_ids": []
+    }
+  ],
+  "comments": [
+    {
+      "item_id": "it_9780abeb5fce378d",
+      "one_liner": "HKUDS 开源的 DeepTutor，一个提供终身个性化辅导的 AI 学习助手项目。",
+      "why": "港大团队把个性化长期记忆做成可自托管的辅导系统，教育场景的数据主权从平台回到用户手里。",
+      "stance": "教育 AI 的护城河在记忆与陪伴，不在模型参数，开源方案会先吃掉自学市场。"
+    },
+    {
+      "item_id": "it_5ded0eae18819e88",
+      "one_liner": "一套设计语言，用于提升 AI harness 的设计能力",
+      "why": "把设计规范从人读的文档变成 agent 直接消费的约束层，模型输出的视觉质量不再取决于提示词运气，而取决于挂载了哪套设计语言。",
+      "stance": "这是把设计品味工程化的正确切口，但设计语言一旦标准化，产出的同质化会比现在更严重。"
+    },
+    {
+      "item_id": "it_81446f2462dee9e2",
+      "one_liner": "mattpocock 公开的 .agents 目录技能集合，面向真实工程场景的 agent skills。",
+      "why": "把个人 .agents 目录里的提示词与技能直接开源，等于把「怎么调教编码代理」从私有经验变成可复制的公共资产，压缩了团队自建技能库的摸索成本。",
+      "stance": "这类技能包的价值不在代码量，而在作者踩过的坑；跟着抄比从零试错划算得多。"
+    },
+    {
+      "item_id": "it_ebfcd2cb02eb3c5c",
+      "one_liner": "为各类 coding agent 提供跨会话持久记忆的工具，记录会话内容并用 AI 压缩后回注到后续会话。",
+      "why": "跨会话持久记忆被做成通用层并兼容 Claude Code、Codex、Gemini 等多家代理，代理的上下文从一次性消耗品变成可累积资产，切换工具的成本随之下降。",
+      "stance": "记忆层会成为代理生态里最容易被锁定的一环，谁掌握压缩与注入策略谁就掌握粘性。"
+    },
+    {
+      "item_id": "it_d12395c2145ab2bb",
+      "one_liner": "pingdotgg 开源的 t3code 项目仓库。",
+      "why": "pingdotgg 这类有影响力的开发者下场做编码代理工具，会把一批前端与全栈开发者直接带进代理工作流，加速工具链从个人脚本向产品化收敛。",
+      "stance": "没有摘要反而说明它靠作者信誉传播；先看代码再谈立场，别为名气买单。"
+    },
+    {
+      "item_id": "it_d4f3ebd955870d03",
+      "one_liner": "作者个人 jailbreak 提示词合集仓库",
+      "why": "越狱提示词被整理成公开清单，模型厂商的对齐补丁会按这份清单逐条打，攻防节奏从零散试探变成清单式军备竞赛。",
+      "stance": "这类仓库是红队资产也是滥用入口，公开可以，但别指望它长期不被平台下架。"
+    },
+    {
+      "item_id": "it_bf03923eb9b66885",
+      "one_liner": "elayadesign 的 ai-design-skills 仓库，汇集 AI 辅助设计相关的技能集合。",
+      "why": "把设计流程拆成可复用的技能包喂给编码代理，等于给 AI 补上审美与版式这类难以言传的隐性知识。",
+      "stance": "设计技能化是代理落地的真实瓶颈，但零说明的仓库只是占位，别急着当生产力工具。"
+    },
+    {
+      "item_id": "it_ec8c7e5f32546a34",
+      "one_liner": "一个开源 Grok Bot 替代方案，为 bot 提供可操作的虚拟机环境",
+      "why": "把带虚拟机的执行环境开源给 bot，等于把「agent 能自己装软件、跑命令」的能力从闭源厂商手里放出来，安全边界随之从模型层下移到沙箱层。",
+      "stance": "方向对，但给 bot 一台真机就是把攻击面也一起开源了，先看沙箱逃逸怎么防。"
+    },
+    {
+      "item_id": "it_f859b2d15e1457f4",
+      "one_liner": "obra 的 agentic skills 框架与软件开发方法论。",
+      "why": "把代理技能与软件开发方法论打包成框架，意味着「如何让代理干活」开始有可复用的流程规范，团队不必每次从零设计协作方式。",
+      "stance": "方法论框架最容易沦为仪式感，能否在真实仓库里跑通比文档漂亮更重要。"
+    },
+    {
+      "item_id": "it_68fa5fb0038f21ea",
+      "one_liner": "Lightpanda 推出的面向 AI 与自动化场景的无头浏览器。",
+      "why": "专为 AI 与自动化设计的无头浏览器，直接针对代理抓取与操作网页时的资源开销和兼容性问题，代理做网页任务的门槛因此下移。",
+      "stance": "通用浏览器给代理用本来就浪费，专用化是正确方向，但生态兼容性会是长期硬仗。"
+    },
+    {
+      "item_id": "it_38e2fbad6374a0b5",
+      "one_liner": "VibeGame：用自然语言提示端到端生成可玩游戏，结合 AI 原生引擎与自进化对抗 agent 团队",
+      "why": "把代码、场景、资产、物理配置的协同交给自演化对抗 agent 团队，端到端做游戏的门槛从工程能力降到描述能力，独立开发者的产能结构被改写。",
+      "stance": "对抗式自演化听着漂亮，可玩性最终仍由人判定，别把 demo 当成品。"
+    },
+    {
+      "item_id": "it_9d30f0f1c0e71f14",
+      "one_liner": "WeVisCut：单一 agent 完成从旁白到长视频的全流程剪辑",
+      "why": "用单个紧凑策略替代多阶段流水线做长视频，把跨镜头一致性的成本从堆模型转到任务适配，长视频自动化的单位成本被压低。",
+      "stance": "压缩策略路线比堆大模型更值得押注，成本曲线才是这类工具能否商用的分水岭。"
+    },
+    {
+      "item_id": "it_c1439ed0f5b83b7a",
+      "one_liner": "IntReal：面向多模态交错生成的真实世界数据集与评测基准",
+      "why": "图文交错生成长期缺真实分布的数据与评测，这个基准把「模型能不能像人一样穿插输出」变成可量化指标，统一多模态模型的宣传口径被迫对齐实测。",
+      "stance": "基准比模型更稀缺，先立尺子的一方掌握话语权。"
+    },
+    {
+      "item_id": "it_234f1af6e64c01bc",
+      "one_liner": "WebAnything：从真实网页抓取构建可扩展、可重置的 web agent 训练环境",
+      "why": "把真实网站抓取重放成可重置的 agent 环境，绕开逐站人工镜像的工程成本，网页 agent 的训练与评测终于能规模化复现。",
+      "stance": "可重置环境是网页 agent 从论文走向产品的卡点，这条路比生成式造站更靠谱。"
+    },
+    {
+      "item_id": "it_8dccbef7ed6f9c15",
+      "one_liner": "WorkFactory：把专业意图转成可执行工作任务、用于规模化 agent 训练的框架。",
+      "why": "把专业意图批量转成可执行任务来生成专家示范，解决的是代理监督训练里任务稀缺且信息不全的瓶颈，训练数据的供给方式从人工标注转向流水线生产。",
+      "stance": "数据工厂化是代理能力提升的现实路径，但要警惕任务同质化把模型训成只会做标准题。"
+    },
+    {
+      "item_id": "it_b1160413e2d34f60",
+      "one_liner": "EditAgent：重新设计 agent 式图像编辑，针对动作空间与观测空间受限的问题。",
+      "why": "指出图像编辑代理受限于动作空间与观测空间，等于把「加工具」和「改评判」定为提升上限的两个抓手，给后续研究划出了明确的改进坐标。",
+      "stance": "失败就重试同一套工具是当前代理的通病，这篇的诊断比它的方案更有价值。"
+    },
+    {
+      "item_id": "it_bf5aaab63512aa24",
+      "one_liner": "Cursor Marketplace 上架的 Claude Code VS Code 扩展被指存在后门。",
+      "why": "官方扩展在第三方市场被植入后门，说明代理工具链的信任边界已经从官方仓库延伸到分发渠道，开发者的编辑器插件成了新的攻击面。",
+      "stance": "装插件等于交出代码执行权，官方品牌不能当作安全背书。"
+    },
+    {
+      "item_id": "it_7e2aaf184ac3d7d5",
+      "one_liner": "讨论指出官方 Claude Code 扩展中存在后门。",
+      "why": "多起官方扩展被植入后门的事件并列出现，指向的是发布流程与供应链审核的系统性缺口，而非单次事故。",
+      "stance": "同一类问题反复发生，说明修复停留在个案层面，发布环节的权限与审计必须重做。"
+    },
+    {
+      "item_id": "it_a510883f6a1bc895",
+      "one_liner": "带后门的 Claude Code VS Code 扩展被发布到 Cursor marketplace。",
+      "why": "带后门的扩展通过 Cursor 市场分发，把风险从 Anthropic 一侧转移到第三方市场的审核机制上，市场方的准入责任被直接摆上台面。",
+      "stance": "第三方市场靠收录热门扩展换流量，就该承担同等的安全审核成本，不能只做搬运。"
+    },
+    {
+      "item_id": "it_95e0b10aaf4d50d5",
+      "one_liner": "法国对内容提供方开征下载税，按每 GB 0.055 欧元计费",
+      "why": "按流量向内容提供方收费，把网络成本从运营商和用户转嫁给平台，跨境流媒体与云服务在法国的单位经济模型直接被改写。",
+      "stance": "这是对全球内容分发商的定向征税，最终会以涨价或降低码率的形式落到法国用户头上。"
+    },
+    {
+      "item_id": "it_bd6fa933a33edc29",
+      "one_liner": "Sam Altman 谈 DRAM 使用效率，称多数人在这方面存在浪费",
+      "why": "把内存带宽而非算力定义为瓶颈，等于给推理成本划出一条硬上限，硬件采购与模型架构的取舍都要围绕显存周转重算。",
+      "stance": "这话由卖算力的人说出来，一半是技术判断，一半是给下一轮硬件叙事铺路。"
+    },
+    {
+      "item_id": "it_1da35e307aba5bd2",
+      "one_liner": "一篇讨论产品经理岗位是否同样面临被 AI 冲击风险的文章",
+      "why": "产品经理被纳入可替代名单，意味着 AI 替代的边界从执行层推进到需求定义层，中层协调岗位的组织冗余被重新定价。",
+      "stance": "真正被削掉的不是写文档的人，而是靠信息中转维持存在感的那层管理。"
+    },
+    {
+      "item_id": "it_1ad66cf690a946d3",
+      "one_liner": "Anthropic 在 IPO 后预计将被信用机构评为高收益级中的「垃圾」档",
+      "why": "垃圾级评级把融资成本抬到与烧钱速度同一量级，靠持续外部输血支撑的算力扩张在资本市场失去低成本通道。",
+      "stance": "评级机构只是把公开的现金流事实写进价格，真正的问题是这门生意至今没有自筹资金的路径。"
+    },
+    {
+      "item_id": "it_ec3d416a72310edb",
+      "one_liner": "市场对 AI 现金消耗的担忧引发科技股抛售，华尔街大幅收跌",
+      "why": "市场把 AI 资本开支从增长故事重估为现金消耗风险，科技股估值锚从营收增速切换到自由现金流，融资窗口随之收紧。",
+      "stance": "这轮抛售是定价回归而非恐慌，靠叙事融资的阶段结束了。"
+    }
+  ],
+  "stats": {},
+  "items": {
+    "it_bf5aaab63512aa24": {
+      "id": "it_bf5aaab63512aa24",
+      "source": "hackernews",
+      "title": "Backdoor in Claude Code for VS Code extension on the Cursor Marketplace",
+      "url": "https://phorion.io/blog/offical-claude-code-vsx-compromise",
+      "summary": "https://cursor.com/blog/claude-code-extension-security-notic...",
+      "hot_score": 81.0099,
+      "topic_id": "tp_f9f6738124c5",
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-30T07:09:12+00:00",
+      "last_seen_at": "2026-10-31T03:56:56.111203+00:00",
+      "metrics": {
+        "points": 818,
+        "num_comments": 503
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_9780abeb5fce378d": {
+      "id": "it_9780abeb5fce378d",
+      "source": "github_trending",
+      "title": "HKUDS/DeepTutor",
+      "url": "https://github.com/HKUDS/DeepTutor",
+      "summary": "DeepTutor: Lifelong Personalized Tutoring. https://deeptutor.info/ .",
+      "hot_score": 80.5425,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-28T03:51:31.026947+00:00",
+      "last_seen_at": "2026-10-31T03:56:56.210764+00:00",
+      "metrics": {
+        "stars_total": 51889,
+        "stars_in_window": 2371,
+        "forks": 6360,
+        "streak_days": 4
+      },
+      "streak_days": 4,
+      "language": "Python"
+    },
+    "it_5ded0eae18819e88": {
+      "id": "it_5ded0eae18819e88",
+      "source": "github_trending",
+      "title": "pbakaus/impeccable",
+      "url": "https://github.com/pbakaus/impeccable",
+      "summary": "The design vocabulary for your coding agent. Steer with polish and bolder, review with critique and audit, catch AI slop before it ships.",
+      "hot_score": 77.089,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-25T03:04:13.813495+00:00",
+      "last_seen_at": "2026-10-31T03:56:56.205320+00:00",
+      "metrics": {
+        "stars_total": 97217,
+        "stars_in_window": 2870,
+        "forks": 5728,
+        "streak_days": 7
+      },
+      "streak_days": 7,
+      "language": "Rust"
+    },
+    "it_7e2aaf184ac3d7d5": {
+      "id": "it_7e2aaf184ac3d7d5",
+      "source": "hackernews",
+      "title": "Backdoors in official Claude Code extensions",
+      "url": "https://cyberplace.social/@GossiTheDog/117528831681803563",
+      "summary": "",
+      "hot_score": 76.9204,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-30T11:05:53+00:00",
+      "last_seen_at": "2026-10-31T03:56:56.114234+00:00",
+      "metrics": {
+        "points": 653,
+        "num_comments": 17
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_95e0b10aaf4d50d5": {
+      "id": "it_95e0b10aaf4d50d5",
+      "source": "hackernews",
+      "title": "France is getting download tax for content providers (€0.055/GB)",
+      "url": "https://www.resetera.com/threads/france-is-getting-download-tax-for-content-providers-%E2%82%AC0-055-gb-for-data-delivered-to-french-users.1675109",
+      "summary": "",
+      "hot_score": 76.5,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-30T22:10:12+00:00",
+      "last_seen_at": "2026-10-31T03:56:56.116920+00:00",
+      "metrics": {
+        "points": 94,
+        "num_comments": 81
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_81446f2462dee9e2": {
+      "id": "it_81446f2462dee9e2",
+      "source": "github_trending",
+      "title": "mattpocock/skills",
+      "url": "https://github.com/mattpocock/skills",
+      "summary": "Skills for Real Engineers. Straight from my .agents directory.",
+      "hot_score": 74.1176,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-31T03:55:58.260523+00:00",
+      "last_seen_at": "2026-10-31T03:56:56.209500+00:00",
+      "metrics": {
+        "stars_total": 307582,
+        "stars_in_window": 876,
+        "forks": 25894,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Shell"
+    },
+    "it_ebfcd2cb02eb3c5c": {
+      "id": "it_ebfcd2cb02eb3c5c",
+      "source": "github_trending",
+      "title": "thedotmack/claude-mem",
+      "url": "https://github.com/thedotmack/claude-mem",
+      "summary": "Persistent Context Across Sessions for Every Agent – Captures everything your agent does during sessions, compresses it with AI, and injects relevant context back into future sessions. Works with Claude Code, OpenClaw, Codex, Gemini, Hermes, Copilot, OpenCode + More",
+      "hot_score": 73.995,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-30T04:14:36.710902+00:00",
+      "last_seen_at": "2026-10-31T03:56:56.203226+00:00",
+      "metrics": {
+        "stars_total": 106476,
+        "stars_in_window": 1140,
+        "forks": 9372,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "TypeScript"
+    },
+    "it_d12395c2145ab2bb": {
+      "id": "it_d12395c2145ab2bb",
+      "source": "github_trending",
+      "title": "pingdotgg/t3code",
+      "url": "https://github.com/pingdotgg/t3code",
+      "summary": "",
+      "hot_score": 71.4706,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-31T03:55:58.260529+00:00",
+      "last_seen_at": "2026-10-31T03:56:56.210142+00:00",
+      "metrics": {
+        "stars_total": 32877,
+        "stars_in_window": 930,
+        "forks": 8668,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "TypeScript"
+    },
+    "it_d4f3ebd955870d03": {
+      "id": "it_d4f3ebd955870d03",
+      "source": "github_trending",
+      "title": "togg53192-cmd/jailbreaks",
+      "url": "https://github.com/togg53192-cmd/jailbreaks",
+      "summary": "LIST OF ALL MY JAILBREAKS",
+      "hot_score": 70.9347,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-28T03:51:31.026959+00:00",
+      "last_seen_at": "2026-10-31T03:56:56.212973+00:00",
+      "metrics": {
+        "stars_total": 11281,
+        "stars_in_window": 2055,
+        "forks": 1643,
+        "streak_days": 4
+      },
+      "streak_days": 4,
+      "language": null
+    },
+    "it_1ad66cf690a946d3": {
+      "id": "it_1ad66cf690a946d3",
+      "source": "hackernews",
+      "title": "Anthropic to receive high 'junk' rating from credit agencies following IPO",
+      "url": "https://techcrunch.com/2026/10/30/anthropic-expected-to-receive-high-junk-rating-from-credit-agencies-following-ipo-report-says",
+      "summary": "Blackstone's forecast is just a prediction, but naturally, a high junk rating would make it more difficult and costlier for Anthropic to raise the money to keep funding its massive spending that has undergirded its business.",
+      "hot_score": 70.25,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews",
+        "rss"
+      ],
+      "published_at": "2026-10-30T23:08:12+00:00",
+      "last_seen_at": "2026-10-31T03:56:56.183249+00:00",
+      "metrics": {
+        "points": 79,
+        "num_comments": 56,
+        "rank_score": 0.7692
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_bf03923eb9b66885": {
+      "id": "it_bf03923eb9b66885",
+      "source": "github_trending",
+      "title": "elayadesign/ai-design-skills",
+      "url": "https://github.com/elayadesign/ai-design-skills",
+      "summary": "",
+      "hot_score": 68.5817,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-28T03:51:31.026875+00:00",
+      "last_seen_at": "2026-10-30T04:15:19.150463+00:00",
+      "metrics": {
+        "stars_total": 12342,
+        "stars_in_window": 2139,
+        "forks": 895,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": null
+    },
+    "it_38e2fbad6374a0b5": {
+      "id": "it_38e2fbad6374a0b5",
+      "source": "hf_papers",
+      "title": "VibeGame: Prompt-to-Game Development with AI-Native Engine and Self-Evolving Adversarial Agent Team",
+      "url": "arxiv:2610.33106",
+      "summary": "Large language model agents have enabled software development through natural-language interaction, but extending this paradigm to end-to-end game development remains challenging. Building a playable game requires coordinating code, scenes, assets, animations, physics, and configurations, while allowing developers to validate their integrated behavior through interactive testing. We introduce VibeGame, a framework for creating complete 2D game projects from natural-language prompts and optional reference images. Its AI-native game engine represents project state as schema-validated structured text and provides frame-synchronous runtime control, enabling agents to inspect game states, execute actions, and verify behavior at their own pace. Built upon this interface, we design an Adversarial Agent Team of eight specialized agents to separate implementation from review, so that problems are found and fixed through multi-round loops. For each conducted and accepted project, we further introduce a training-free self-evolution mechanism to distill it into reusable skeletons, modules, and collaboration contracts for future development. We evaluate prompt-assets-to-game (PA2G), where agents are given an asset library, and prompt-to-game (P2G), where agents generate their own art. On a GameCraft-Bench subset, VibeGame in P2G consistently outperforms a range of agent harnesses in either P2G or PA2G with the same underlying model, including GPT-6.1-Sol.",
+      "hot_score": 68.547,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-21T20:00:00+00:00",
+      "last_seen_at": "2026-10-30T04:15:19.152461+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 10
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_bd6fa933a33edc29": {
+      "id": "it_bd6fa933a33edc29",
+      "source": "hackernews",
+      "title": "Sam Altman Thinks You're Wasting DRAM",
+      "url": "https://frvr.com/blog/news/openai-ceo-sam-altman-says-its-terrible-to-have-everybody-have-a-bunch-of-the-worlds-limited-supply-of-dram-instead-of-shoving-it-all-in-datacentres",
+      "summary": "",
+      "hot_score": 67.8181,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-30T15:58:39+00:00",
+      "last_seen_at": "2026-10-31T03:56:56.117705+00:00",
+      "metrics": {
+        "points": 81,
+        "num_comments": 92
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_ec8c7e5f32546a34": {
+      "id": "it_ec8c7e5f32546a34",
+      "source": "github_trending",
+      "title": "milind-soni/OpenMausBot",
+      "url": "https://github.com/milind-soni/OpenMausBot",
+      "summary": "Open-source Grok Bot alternative with a virtual machine that bots can use",
+      "hot_score": 62.7205,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-30T04:14:36.710887+00:00",
+      "last_seen_at": "2026-10-31T03:56:56.204232+00:00",
+      "metrics": {
+        "stars_total": 8795,
+        "stars_in_window": 1199,
+        "forks": 1212,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "TypeScript"
+    },
+    "it_f859b2d15e1457f4": {
+      "id": "it_f859b2d15e1457f4",
+      "source": "github_trending",
+      "title": "obra/superpowers",
+      "url": "https://github.com/obra/superpowers",
+      "summary": "An agentic skills framework & software development methodology that works.",
+      "hot_score": 61.3733,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-15T14:47:23.502377+00:00",
+      "last_seen_at": "2026-10-31T03:56:56.213649+00:00",
+      "metrics": {
+        "stars_total": 309507,
+        "stars_in_window": 1259,
+        "forks": 27542,
+        "streak_days": 4
+      },
+      "streak_days": 4,
+      "language": "Shell"
+    },
+    "it_9d30f0f1c0e71f14": {
+      "id": "it_9d30f0f1c0e71f14",
+      "source": "hf_papers",
+      "title": "WeVisCut: The Whole Editing Room in One Agent From Narration to Long-Form Video",
+      "url": "arxiv:2610.38352",
+      "summary": "Producing long-form videos from narration requires interdependent decisions that remain coherent across shots. Existing agentic editors often use multi-stage workflows driven by general models, leaving the quality-cost trade-off of compact, task-adapted policies unclear. We address this gap with WeVisCut, a long-form script-to-video system that connects tool execution with policy learning. Its agent harness maintains shared production state so that tool feedback informs subsequent decisions and repairs. Because finished videos do not expose these decisions, our four-stage data pipeline combines editing inversion with verified replay to turn recovered editing intent into executable supervision. Applied to 3,750 finished videos, this pipeline yields over 130K training examples. We use this supervision to train a single 9B policy that coordinates production and recovers from failures within the same harness. Moreover, we introduce a 100-task benchmark and five metrics assessing editing quality and delivery reliability. Under a shared tool environment, WeVisCut substantially outperforms its base model and achieves comparable performance to Claude Opus 5 while using nearly 33x fewer generated tokens per successful output minute. It also outperforms task-matched native editors on our proposed metrics.",
+      "hot_score": 59.8141,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-27T20:00:00+00:00",
+      "last_seen_at": "2026-10-30T04:15:19.153095+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 8
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_c1439ed0f5b83b7a": {
+      "id": "it_c1439ed0f5b83b7a",
+      "source": "hf_papers",
+      "title": "IntReal: A Real-World Dataset and Benchmark for Multimodal Interleaved Generation",
+      "url": "arxiv:2610.38425",
+      "summary": "Humans routinely consume multimodal content, where textual and visual information is naturally interleaved. Although Unified Multimodal Models (UMMs) can jointly generate text and images, multimodal interleaved generation remains largely underexplored. Progress in this area is hindered by two key limitations: (1) the lack of well-defined interleaved generation tasks and corresponding training data, and (2) the absence of fine-grained evaluation protocols that can reliably diagnose model performance across different capability dimensions. To this end, we present IntReal, comprising two complementary components: IntReal-100K, a real-world dataset of multimodal interleaved samples spanning four major categories, and the IntReal Evaluation Suite, which evaluates model performance across seven complementary dimensions using specialized expert models, enabling coarse-to-fine diagnosis. Extensive experiments validate our evaluation suite through low inter-metric redundancy (max pairwise absolute Spearman's ρleq 0.42 ), high agreement with human judgments (83.3% accuracy), and strong consistency across different expert evaluators (Spearman's ρ> 0.9 ), supporting the complementarity and reliability of our metrics. By benchmarking four families of UMMs, we show that IntReal Evaluation Suite reveals distinct strengths and weaknesses across models. Post-training experiments demonstrate the utility of IntReal-100K for improving interleaved generation and further show that training unimodal generation can also benefit interleaved generation. These findings suggest that interleaved generation can benefit from modality-specific optimization, rather than requiring joint text-image training at every stage.",
+      "hot_score": 59.8141,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-27T20:00:00+00:00",
+      "last_seen_at": "2026-10-30T04:15:19.153759+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 8
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_234f1af6e64c01bc": {
+      "id": "it_234f1af6e64c01bc",
+      "source": "hf_papers",
+      "title": "WebAnything: From the Wild Web to Scalable Agent Environments",
+      "url": "arxiv:2610.37786",
+      "summary": "Web agents require diverse, executable, and resettable website environments for reproducible training and evaluation. Human-assisted mirrors demand per-site engineering, while generative construction can diverge from specified real websites. Capture-and-replay preserves observations, with interaction coverage constrained by captured content and replay capabilities.\nWe present WebAnything, a fully automated framework that reconstructs source-grounded, reusable Web environments from real URLs without per-site manual implementation or repair after initial setup and authorization. An Explorer-Builder collects browser-observable structures, resources, and interaction outcomes; an independent verifier checks frozen candidates and guides local repair or targeted source recapture.\nWe construct 244 website artifacts across 14 application domains and 53 categories, supporting 12,984 executed and accepted tasks. Compared with human-assisted WebHarbor, WebAnything achieves higher aggregate scores on three fidelity metrics, with 12 wins, two ties, and no losses in a blind audit. Fine-tuning Qwen3.5-9B on 5,856 interaction trajectories improves REAL success by 9.9 percentage points, Odysseys-Easy Rubric Avg and Task Avg by 6.25 and 6.32 percentage points, and WebArena-Verified Overall success by 13.33 percentage points under the fixed harness. Code: https://github.com/china-qijizhifeng/Web-Anything",
+      "hot_score": 58.5664,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-26T20:00:00+00:00",
+      "last_seen_at": "2026-10-30T04:15:19.154350+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 8
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_68fa5fb0038f21ea": {
+      "id": "it_68fa5fb0038f21ea",
+      "source": "github_trending",
+      "title": "lightpanda-io/browser",
+      "url": "https://github.com/lightpanda-io/browser",
+      "summary": "Lightpanda: the headless browser designed for AI and automation",
+      "hot_score": 58.2353,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-31T03:55:58.260566+00:00",
+      "last_seen_at": "2026-10-31T03:56:56.214354+00:00",
+      "metrics": {
+        "stars_total": 38503,
+        "stars_in_window": 626,
+        "forks": 1876,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Zig"
+    },
+    "it_a510883f6a1bc895": {
+      "id": "it_a510883f6a1bc895",
+      "source": "hackernews",
+      "title": "Claude Code VS Code extension with backdoor released on Cursor marketplace",
+      "url": "https://doublepulsar.com/anthropic-hacked-to-deliver-remote-access-trojan-to-claude-developer-laptops-worldwide-1148a92baae2",
+      "summary": "",
+      "hot_score": 54.1286,
+      "topic_id": "tp_f9f6738124c5",
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-30T10:22:51+00:00",
+      "last_seen_at": "2026-10-31T03:56:56.116095+00:00",
+      "metrics": {
+        "points": 399,
+        "num_comments": 1
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_1da35e307aba5bd2": {
+      "id": "it_1da35e307aba5bd2",
+      "source": "hackernews",
+      "title": "Product Managers aren't safe either",
+      "url": "https://lucaskostka.com/posts/ai-challenges-more-than-devs",
+      "summary": "",
+      "hot_score": 53.075,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-30T20:14:39+00:00",
+      "last_seen_at": "2026-10-31T03:56:56.119214+00:00",
+      "metrics": {
+        "points": 54,
+        "num_comments": 75
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_85641ad38767c9cc": {
+      "id": "it_85641ad38767c9cc",
+      "source": "github_trending",
+      "title": "anthropics/skills",
+      "url": "https://github.com/anthropics/skills",
+      "summary": "Public repository for Agent Skills",
+      "hot_score": 52.9412,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-31T03:55:58.260542+00:00",
+      "last_seen_at": "2026-10-31T03:56:56.211515+00:00",
+      "metrics": {
+        "stars_total": 185409,
+        "stars_in_window": 295,
+        "forks": 21904,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_ec3d416a72310edb": {
+      "id": "it_ec3d416a72310edb",
+      "source": "hackernews",
+      "title": "Wall Street closes sharply lower as AI cash burn fears spark tech selloff",
+      "url": "https://www.reuters.com/business/nasdaq-futures-tumble-amazon-intel-results-deepen-ai-spending-woes-2026-10-30",
+      "summary": "",
+      "hot_score": 48.1508,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-30T21:32:35+00:00",
+      "last_seen_at": "2026-10-31T03:56:56.119931+00:00",
+      "metrics": {
+        "points": 43,
+        "num_comments": 6
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_8dccbef7ed6f9c15": {
+      "id": "it_8dccbef7ed6f9c15",
+      "source": "hf_papers",
+      "title": "WorkFactory: Turning Professional Intents into Executable Work for Scalable Agent Training",
+      "url": "arxiv:2610.37161",
+      "summary": "Scaling supervised training for working agents requires diverse professional tasks that yield reliable expert demonstrations. However, missing or inconsistent task information can obstruct teacher execution and weaken the resulting supervision. We propose WorkFactory, a scalable framework for constructing coherent and executable professional tasks. Starting from professional intents, information-level planning builds an information support graph to guide task instantiation, explicitly representing the dependencies and locations of information required for the intended outputs. Probe executions then identify support failures and guide repairs while preserving the intended work. We construct 112,686 tasks spanning 612 occupations and use the collected teacher trajectories to fine-tune Qwen models at 4B, 27B, and 35B-A3B scales, yielding the WorkPilot family. All three models improve over their respective base models across four professional-work benchmarks, with WorkPilot-35B-A3B improving from 879 to 1565 Elo on GDPval-AA v2.1. Scaling analyses reveal model-dependent diminishing returns, with execution length first increasing and then decreasing. Controlled component analyses show that planning and repair reduce probe-diagnosed task environment defects and improve downstream performance. The data and models are available at https://github.com/IQuestLab/WorkFactory.",
+      "hot_score": 47.3164,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-26T20:00:00+00:00",
+      "last_seen_at": "2026-10-30T04:15:19.154913+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 6
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_b1160413e2d34f60": {
+      "id": "it_b1160413e2d34f60",
+      "source": "hf_papers",
+      "title": "EditAgent: Rethinking Agentic Image Editing",
+      "url": "arxiv:2610.39664",
+      "summary": "Agentic image editors decompose complex requests into steps, but when a step fails, they mostly retry with the same narrow set of tools and a judge that scores each output by eye directly. We argue that such agents are bounded by two spaces: the action space of what the agent can do, and the observation space of what its judge can see. On our expert-annotated benchmark, a general-purpose editor yields no usable result in over 40% of the cases, and no judge is reliable across edit types. We present EditAgent, which expands both spaces. It routes each step to general editors and specialized methods, and attaches to each candidate a verification record. With these records, off-the-shelf VLM judges outperform finetuned reward models. Candidates are generated in parallel and judged in one listwise call: experts prefer this to sequential refinement in 78.5% of decided comparisons, at no more than half the judge calls. EditAgent improves two open-weight editors on three benchmarks and serves as a data engine for training stronger editors.",
+      "hot_score": 45.3691,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-28T20:00:00+00:00",
+      "last_seen_at": "2026-10-30T04:15:19.155450+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 4
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_e31b1be02ebf018e": {
+      "id": "it_e31b1be02ebf018e",
+      "source": "github_trending",
+      "title": "JetBrains/thinkrail",
+      "url": "https://github.com/JetBrains/thinkrail",
+      "summary": "Vibe code with pi in a lightweight, real IDE that customises itself around the way you work — The Vibe You Need",
+      "hot_score": 44.3519,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-26T03:04:00.871475+00:00",
+      "last_seen_at": "2026-10-31T03:56:56.212149+00:00",
+      "metrics": {
+        "stars_total": 6634,
+        "stars_in_window": 1204,
+        "forks": 359,
+        "streak_days": 6
+      },
+      "streak_days": 6,
+      "language": "TypeScript"
+    },
+    "it_cdc5efdead963d80": {
+      "id": "it_cdc5efdead963d80",
+      "source": "github_trending",
+      "title": "Donchitos/Claude-Code-Game-Studios",
+      "url": "https://github.com/Donchitos/Claude-Code-Game-Studios",
+      "summary": "Turn Claude Code into a full game dev studio — 49 AI agents, 72 workflow skills, and a complete coordination system mirroring real studio hierarchy.",
+      "hot_score": 42.5244,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-30T04:14:36.710915+00:00",
+      "last_seen_at": "2026-10-30T04:15:19.152070+00:00",
+      "metrics": {
+        "stars_total": 29423,
+        "stars_in_window": 353,
+        "forks": 4063,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Shell"
+    },
+    "it_8858b289f2eefaee": {
+      "id": "it_8858b289f2eefaee",
+      "source": "github_trending",
+      "title": "Renhuai123/ziwei-doushu",
+      "url": "https://github.com/Renhuai123/ziwei-doushu",
+      "summary": "紫微斗数开源排盘引擎 — 基于倪海厦《天纪》体系，含完整排盘算法、四化系统、格局知识库、古籍原文数据",
+      "hot_score": 41.3938,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-24T03:09:27.367517+00:00",
+      "last_seen_at": "2026-10-31T03:56:56.207032+00:00",
+      "metrics": {
+        "stars_total": 11386,
+        "stars_in_window": 1126,
+        "forks": 2261,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "TypeScript"
+    },
+    "it_97d171c460464ef7": {
+      "id": "it_97d171c460464ef7",
+      "source": "github_trending",
+      "title": "CopilotKit/OpenBot",
+      "url": "https://github.com/CopilotKit/OpenBot",
+      "summary": "Open-source AI coworkers that each get a computer of their own: a browser, files and tools, with every action decided before it happens and recorded after. Bring any AG-UI agent.",
+      "hot_score": 41.1518,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-30T04:14:36.710907+00:00",
+      "last_seen_at": "2026-10-31T03:56:56.206137+00:00",
+      "metrics": {
+        "stars_total": 8867,
+        "stars_in_window": 706,
+        "forks": 1110,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "TypeScript"
+    },
+    "it_7bf3e06315fcbc77": {
+      "id": "it_7bf3e06315fcbc77",
+      "source": "github_trending",
+      "title": "nightly-labs/openbot",
+      "url": "https://github.com/nightly-labs/openbot",
+      "summary": "A local-first desktop workspace for persistent AI teammates. Run Codex, Claude, and Grok with dedicated workspaces, task queues, file sharing, browser control, and agent-to-agent collaboration.",
+      "hot_score": 40.8412,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-27T03:35:32.061755+00:00",
+      "last_seen_at": "2026-10-30T04:15:19.149985+00:00",
+      "metrics": {
+        "stars_total": 3965,
+        "stars_in_window": 1054,
+        "forks": 367,
+        "streak_days": 4
+      },
+      "streak_days": 4,
+      "language": "TypeScript"
+    }
+  },
+  "meta": {
+    "mode": "hybrid",
+    "day": "2026-10-31",
+    "generated_at": "2026-10-31T03:58:00.218672+00:00",
+    "window": {
+      "since": "2026-10-30T03:55:56.790377+00:00",
+      "until": "2026-10-31T03:56:56.236949+00:00",
+      "hours": 24.0,
+      "since_local": "2026-10-30T11:55+08:00",
+      "until_local": "2026-10-31T11:56+08:00",
+      "tz": "Asia/Shanghai"
+    },
+    "analysis": {
+      "items": 102,
+      "scored": 102,
+      "topics": 6,
+      "new_entity_mention_rows": 121,
+      "state_items": 15
+    },
+    "llm": {
+      "degraded": false,
+      "degraded_reason": "",
+      "calls": 1
+    },
+    "collect": {
+      "ok_sources": 6,
+      "failed_sources": 1,
+      "skipped": 0,
+      "total_items": 91
+    },
+    "verify": {
+      "verified": 0,
+      "unverifiable": 0,
+      "deferred": 1,
+      "failed": 0,
+      "llm_calls": 0
+    },
+    "predictions": {
+      "total": 101,
+      "verified": 1,
+      "pending": 100,
+      "unverifiable": 0,
+      "hit_rate": 0.0,
+      "weighted_score": 0.0,
+      "brier": 0.36
+    },
+    "prediction_generation": {
+      "mode": "hybrid",
+      "generated": 4,
+      "inserted": 4,
+      "dropped": [],
+      "llm_calls": 2,
+      "candidate_pool": 20,
+      "degraded": false,
+      "degraded_reason": ""
+    },
+    "brief": {
+      "max_items_per_section": 10,
+      "velocity_board_enabled": true,
+      "velocity_board_top_n": 5
+    },
+    "signals": {
+      "entities": 470,
+      "points": 1159,
+      "with_velocity": 60,
+      "insufficient": 112,
+      "cold_start": 298,
+      "min_window_hours": 6.0
+    },
+    "enhance_total": 24,
+    "enhanced": 24,
+    "enhance_skipped_count": 0,
+    "enhance_cache_hit": 9,
+    "enhance_cost_cny": 0.006813
+  }
+}
