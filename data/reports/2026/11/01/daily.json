@@ -1,0 +1,955 @@
+{
+  "date": "2026-11-01",
+  "headline": "恶意软件开始用 LLM 给受害者「估值」排序，AI 攻击链从生成内容升级到决策定价",
+  "headline_item_id": "it_5b0ac3b976a1c0a5",
+  "overview_bullets": [
+    {
+      "icon": "🔐",
+      "topic": "AI 攻击定价",
+      "text": "恶意软件用 LLM 按「值多少钱」给受害者排序，攻击从批量撒网转向按 ROI 精准打击，这是 LLM 被武器化为决策层而非文案工具的第一个清晰样本。"
+    },
+    {
+      "icon": "🤖",
+      "topic": "小模型协作",
+      "text": "Memdoor 用 5 个 Qwen3.8-27B 组队击败 Fable 5，说明多智能体编排正在把「单模型能力」问题转化为「系统设计」问题。"
+    },
+    {
+      "icon": "🛠️",
+      "topic": "智能体基建",
+      "text": "GitHub 热榜被 impeccable、claude-mem、superpowers、Orkas 等「给 agent 装技能、记忆、团队」的项目占满，工具层正在围绕智能体而非人类开发者重构。"
+    },
+    {
+      "icon": "🏢",
+      "topic": "厂商收紧",
+      "text": "Anthropic 阻止 Claude 逆向工程与克隆游戏，模型厂商开始主动划定「能做什么」的边界，能力开放度成为可调参数。"
+    },
+    {
+      "icon": "📄",
+      "topic": "批判性思维",
+      "text": "微软研究显示生成式 AI 对批判性思维的影响已被自评数据量化，但这类研究热度远低于模型跑分，认知代价仍被低估。"
+    }
+  ],
+  "executive_summary": "今天的主线不是模型更强，而是 AI 正被嵌入决策与流程的每一层——攻击者用它排序目标，开发者用它搭团队，厂商用它设边界，而人类认知的代价被排在最后。",
+  "editor_note": {
+    "core": "最该记住的是恶意软件用 LLM 给受害者估值排序：它证明 LLM 的价值不在「写得像人」，而在「替人做取舍」，一旦这个能力落到攻击者手里，防御的成本结构会被彻底改写。",
+    "cross_signal": "开源侧 claude-mem、Orkas、superpowers 都在给智能体加记忆与团队协作，与 Memdoor 的「5 个小模型组队」互相印证——能力增长正从单模型参数转向系统编排，攻击侧同理。",
+    "counterintuitive": "热度最高的是数字极简和 GPT 打 Factorio，但真正改变格局的是热度 39 的 ChatGPT 账户接管与 46.6 的水印质量损失——越贴近「AI 的隐性成本」，讨论越冷。",
+    "risk": "厂商以「防逆向」为名收紧模型行为边界（Anthropic 两连发），短期保护了 IP，长期可能把可解释性与安全审计一并关在门外；同时水印带来的质量损失若被默认接受，输出可信度会被悄悄稀释。"
+  },
+  "contradictions": [
+    "Apple CEO 称不「为 AI 而 AI」，但同日产业新闻里 AI 数据中心的污染诉讼与账户接管事件，说明「不为 AI 而 AI」并不等于「不为算力而扩张」。",
+    "社区一边追捧 agent 技能框架（impeccable、superpowers），一边数字极简冲上热榜第一，工具扩张与注意力收缩同时发生。"
+  ],
+  "underrated": [
+    "How We Took Over ChatGPT Accounts：artifacts/HTML 预览沙箱的账户接管链，安全影响远超其 39 的热度",
+    "AI text watermarking and quality loss：水印与生成质量的权衡，是内容可信度的地基问题",
+    "The Impact of Generative AI on Critical Thinking：认知代价的实证研究，被模型跑分新闻淹没",
+    "Judge allows NAACP lawsuit over xAI data center pollution：AI 算力的环境外部性首次进入司法程序"
+  ],
+  "sections": [
+    {
+      "name": "开源项目",
+      "summary": "热榜几乎清一色是「给智能体加技能、记忆与协作」的脚手架，开源社区已把 agent 当作新的运行时。",
+      "item_ids": [
+        "it_5ded0eae18819e88",
+        "it_d12395c2145ab2bb",
+        "it_9780abeb5fce378d",
+        "it_ebfcd2cb02eb3c5c",
+        "it_81446f2462dee9e2",
+        "it_936efb88bf354f45",
+        "it_ec8c7e5f32546a34",
+        "it_68fa5fb0038f21ea",
+        "it_b31ae32ac90f9443",
+        "it_f859b2d15e1457f4",
+        "it_7f1af3fd25b5bee9",
+        "it_94fc877f233f2fa8",
+        "it_cdc5efdead963d80"
+      ]
+    },
+    {
+      "name": "论文与研究",
+      "summary": "从多小模型协作到水印质量损失，研究侧在追问「系统组合」与「生成代价」两个被跑分掩盖的问题。",
+      "item_ids": []
+    },
+    {
+      "name": "社区舆论",
+      "summary": "社区在数字极简、Qwen 对话手感、Proton 内部爆料之间摇摆，情绪集中在「工具越强、人越想退一步」。",
+      "item_ids": [
+        "it_1d109e872ed6cf66",
+        "it_aa4997f9eba15998",
+        "it_567c750dad4150c2",
+        "it_73acf00ea16812b9",
+        "it_82785ab4f152db3e",
+        "it_f51f1bb0c5273aa4",
+        "it_69a6545b4437b83a",
+        "it_daeae1bce20af8c8",
+        "it_f9b76a950f0a3145",
+        "it_5b0ac3b976a1c0a5",
+        "it_71145972f162b48a",
+        "it_94697ec49ac5116b"
+      ]
+    },
+    {
+      "name": "产业与新闻",
+      "summary": "安全事件、厂商策略与监管诉讼同日出现，AI 产业的「外部性账单」开始集中到期。",
+      "item_ids": [
+        "it_4c77a0dfd6338deb",
+        "it_dd35d009aad680f7",
+        "it_9f56e268b05ea691",
+        "it_5a4bff0c2db23b04",
+        "it_e07dacdb45dcc75e"
+      ]
+    }
+  ],
+  "comments": [
+    {
+      "item_id": "it_5ded0eae18819e88",
+      "one_liner": "一套设计语言，用于提升 AI harness 的设计能力",
+      "why": "把设计规范从人读的文档变成 agent 直接消费的约束层，模型输出的视觉质量不再取决于提示词运气，而取决于挂载了哪套设计语言。",
+      "stance": "这是把设计品味工程化的正确切口，但设计语言一旦标准化，产出的同质化会比现在更严重。"
+    },
+    {
+      "item_id": "it_d12395c2145ab2bb",
+      "one_liner": "pingdotgg 开源的 t3code 项目仓库。",
+      "why": "pingdotgg 这类有影响力的开发者下场做编码代理工具，会把一批前端与全栈开发者直接带进代理工作流，加速工具链从个人脚本向产品化收敛。",
+      "stance": "没有摘要反而说明它靠作者信誉传播；先看代码再谈立场，别为名气买单。"
+    },
+    {
+      "item_id": "it_9780abeb5fce378d",
+      "one_liner": "HKUDS 开源的 DeepTutor，一个提供终身个性化辅导的 AI 学习助手项目。",
+      "why": "港大团队把个性化长期记忆做成可自托管的辅导系统，教育场景的数据主权从平台回到用户手里。",
+      "stance": "教育 AI 的护城河在记忆与陪伴，不在模型参数，开源方案会先吃掉自学市场。"
+    },
+    {
+      "item_id": "it_ebfcd2cb02eb3c5c",
+      "one_liner": "为各类 coding agent 提供跨会话持久记忆的工具，记录会话内容并用 AI 压缩后回注到后续会话。",
+      "why": "跨会话持久记忆被做成通用层并兼容 Claude Code、Codex、Gemini 等多家代理，代理的上下文从一次性消耗品变成可累积资产，切换工具的成本随之下降。",
+      "stance": "记忆层会成为代理生态里最容易被锁定的一环，谁掌握压缩与注入策略谁就掌握粘性。"
+    },
+    {
+      "item_id": "it_81446f2462dee9e2",
+      "one_liner": "mattpocock 公开的 .agents 目录技能集合，面向真实工程场景的 agent skills。",
+      "why": "把个人 .agents 目录里的提示词与技能直接开源，等于把「怎么调教编码代理」从私有经验变成可复制的公共资产，压缩了团队自建技能库的摸索成本。",
+      "stance": "这类技能包的价值不在代码量，而在作者踩过的坑；跟着抄比从零试错划算得多。"
+    },
+    {
+      "item_id": "it_936efb88bf354f45",
+      "one_liner": "Orkas 是一个开源的本地优先桌面 AI 团队应用，由 Commander 把目标拆成待办并调度 16 个内置专家 agent 及 Claude Code、Codex 等外部工具，支持项目、定时自动化与连接器，提供 macOS 与 Windows 免费版。",
+      "why": "把多智能体编排从云端 SaaS 搬到桌面本地，指挥官加 16 个专职代理并兼容多家编码代理，直接压缩了团队级 AI 工作流的部署成本与数据外流面。",
+      "stance": "本地优先加多代理编排是正确方向，但 16 个代理的协调开销会先劝退小团队。"
+    },
+    {
+      "item_id": "it_ec8c7e5f32546a34",
+      "one_liner": "OpenMausBot 是一个开源的 Grok Bot 替代方案，内置可供 bot 操作的虚拟机。",
+      "why": "给机器人配一台可操作的虚拟机，等于把执行环境从沙箱对话升级为可读写真实系统的执行体，能力上限和风险面同时被拉高。",
+      "stance": "方向诱人但危险，没有强隔离与审计日志的开源 VM 代理不该被随意跑在主力机上。"
+    },
+    {
+      "item_id": "it_68fa5fb0038f21ea",
+      "one_liner": "Lightpanda 推出的面向 AI 与自动化场景的无头浏览器。",
+      "why": "专为 AI 与自动化设计的无头浏览器，直接针对代理抓取与操作网页时的资源开销和兼容性问题，代理做网页任务的门槛因此下移。",
+      "stance": "通用浏览器给代理用本来就浪费，专用化是正确方向，但生态兼容性会是长期硬仗。"
+    },
+    {
+      "item_id": "it_b31ae32ac90f9443",
+      "one_liner": "vorssaint-utils 是一个免费开源的 macOS 菜单栏工具集。",
+      "why": "macOS 菜单栏工具是低门槛高频入口，开源实现会挤压同类付费小工具的生存空间，也让系统级快捷操作更易被定制。",
+      "stance": "小而实用的开源工具价值被低估，但菜单栏赛道已过度拥挤，差异化才是生死线。"
+    },
+    {
+      "item_id": "it_f859b2d15e1457f4",
+      "one_liner": "superpowers 是一个面向 agent 的技能框架与软件开发方法论。",
+      "why": "把代理技能与开发方法论打包成框架，意味着竞争从模型能力转向流程规范，团队可复用的工程约束开始取代提示词技巧。",
+      "stance": "方法论框架比又一个代理壳更有长期价值，但“能跑通”和“团队真用”之间隔着巨大鸿沟。"
+    },
+    {
+      "item_id": "it_1d109e872ed6cf66",
+      "one_liner": "Memdoor 用 5 个 Qwen3.8-27B 模型组成的团队，在 LiveCodeBench Hard 上超过了 Fable 5。",
+      "why": "多个中等规模模型组队超过单一强模型，说明测试时扩展与集成策略正在削弱参数规模的决定权，小模型部署方的议价能力上升。",
+      "stance": "多模型集成是当下最被低估的性价比路线，但单点基准的胜利不等于真实任务可靠。"
+    },
+    {
+      "item_id": "it_aa4997f9eba15998",
+      "one_liner": "一项关于生成式 AI 对批判性思维影响的研究，基于用户自述数据（2025 年）。",
+      "why": "自评数据显示生成式 AI 使用与批判性思维投入呈负相关，这会把企业采购逻辑从“提效”推向“能力退化风险”的评估。",
+      "stance": "自评数据不能证明因果，但把它当噪音忽略的组织是在拿员工判断力做无记账实验。"
+    },
+    {
+      "item_id": "it_567c750dad4150c2",
+      "one_liner": "一篇讨论 AI 文本水印技术及其带来的文本质量损失的文章。",
+      "why": "水印与文本质量之间的取舍决定了内容溯源能否落地，若检测必然损伤输出，合规要求就会转嫁成产品体验的隐性成本。",
+      "stance": "以牺牲生成质量为代价的水印是伪解法，溯源该做在流程与签名层而非逐字扰动。"
+    },
+    {
+      "item_id": "it_73acf00ea16812b9",
+      "one_liner": "一篇关于数字极简主义（digital minimalism）的讨论。",
+      "why": "在 AI 生成内容泛滥的背景下，主动削减数字输入从个人习惯上升为对抗信息噪音的策略，影响工具设计与注意力经济。",
+      "stance": "极简主义是对注意力被系统性收割的合理反制，但它容易变成少数人的特权式自律。"
+    },
+    {
+      "item_id": "it_82785ab4f152db3e",
+      "one_liner": "GPT-5.6 Sol 能在和平模式下通关 Factorio。",
+      "why": "在长周期、强状态的游戏里取胜，检验的是规划与记忆的持续性，这比单轮问答更接近真实自动化任务的难点。",
+      "stance": "游戏通关是规划能力的有效压力测试，但和平模式的成功离生产环境的鲁棒性还很远。"
+    },
+    {
+      "item_id": "it_f51f1bb0c5273aa4",
+      "one_liner": "一位用户称赞 Qwen3.8 27B 的对话风格，认为比 Claude Opus 的语气更自然。",
+      "why": "用户对模型语气的偏好开始影响选型，说明对话风格正从软性体验变成可量化的留存因素，本地可跑的中等模型因此获得情感层面的竞争力。",
+      "stance": "语气不是小事，云端大模型那种居高临下的腔调正在把用户推向更小更顺手的本地模型。"
+    },
+    {
+      "item_id": "it_69a6545b4437b83a",
+      "one_liner": "一名 Proton 员工公开披露公司内部情况的帖子",
+      "why": "内部员工公开喊话把加密邮件服务商的治理与信任问题从技术层拉到人事层，用户对'端到端加密'的信任开始取决于公司内部异议是否被听见。",
+      "stance": "内部人发声比任何隐私白皮书都更能暴露组织的真实优先级，公司若只回应公关话术就是在消耗最后的信任存量。"
+    },
+    {
+      "item_id": "it_daeae1bce20af8c8",
+      "one_liner": "名为 Altoids Project 的项目在 Hacker News 上被讨论",
+      "why": "把硬件/固件级的复古改造项目放上公共讨论场，等于给'可维修、可改造的实体设备'这条小众路线提供可复制的样板，影响的是厌倦封闭生态的硬件玩家。",
+      "stance": "这类项目价值不在怀旧，而在证明消费电子仍可被用户拆开重写——支持，且应当被更多工程师当作默认姿态。"
+    },
+    {
+      "item_id": "it_f9b76a950f0a3145",
+      "one_liner": "把 1987 年 NES 版《魂斗罗》从 6502 汇编逐步移植为 C 再编译成 WebAssembly 的项目",
+      "why": "把 6502 汇编逐例程翻成 C 再编译到 WebAssembly，等于给老游戏做了一次可验证、可移植的'源码级复活'，让浏览器成为复古游戏的合法运行环境而非模拟器黑盒。",
+      "stance": "逐帧对照原版验证的做法才是这类移植的含金量所在，比跑得起来更值得称赞。"
+    },
+    {
+      "item_id": "it_5b0ac3b976a1c0a5",
+      "one_liner": "一种恶意软件利用 LLM 评估受害者的价值并据此排序",
+      "why": "攻击者用模型给受害者按支付能力排序，把勒索从'广撒网'变成'精准定价'，直接抬高高净值个人与小企业的被攻击概率。",
+      "stance": "这是 LLM 落地最恶劣的一条路径：能力越强，受害者分层越细，防守方必须假设自己已被估价。"
+    },
+    {
+      "item_id": "it_4c77a0dfd6338deb",
+      "one_liner": "datasette-llm 插件发布 0.1a9 版，可自动沿用 LLM 的默认模型",
+      "why": "插件自动继承 LLM 的默认模型，意味着数据查询代理的接入门槛从'配置模型'降到'装好即用'，把 SQL 与自然语言之间的摩擦成本压到接近零。",
+      "stance": "小版本号里藏着真正的采用率杠杆，这种默认值收敛比任何新功能都更能推动工具进入日常。"
+    },
+    {
+      "item_id": "it_dd35d009aad680f7",
+      "one_liner": "Parameter Labs 披露针对 ChatGPT artifacts（HTML 预览）沙箱的账号接管漏洞",
+      "why": "沙箱化 HTML 预览被攻破意味着'把模型输出当代码跑'这一交互范式本身存在账户级风险，所有做 artifact/canvas 类功能的厂商都要重估隔离边界。",
+      "stance": "把生成的 HTML 直接渲染给用户看，本质是把攻击面交给模型，这类功能在隔离模型被证明可靠前不该默认开启。"
+    },
+    {
+      "item_id": "it_9f56e268b05ea691",
+      "one_liner": "Apple CEO 表示公司不会为了 AI 而做 AI",
+      "why": "苹果公开否认'为 AI 而 AI'，等于把竞争维度从模型能力转向体验筛选，给不愿被功能轰炸的用户一个留在生态内的理由。",
+      "stance": "这是聪明的差异化，但也是落后的托词——真正的考验是它能否在少讲 AI 的同时不把关键能力让给对手。"
+    },
+    {
+      "item_id": "it_5a4bff0c2db23b04",
+      "one_liner": "TechCrunch Founder Summit 活动宣传，距开幕还有 4 天，主打创业者人脉对接",
+      "why": "以'连接质量'而非展位规模卖票的创投活动，反映早期融资正从曝光逻辑转向关系密度，参会者的时间回报率成为卖点。",
+      "stance": "把 networking 当产品卖说明融资市场已进入存量博弈，但付费买人脉的转化率从来没人敢公开。"
+    },
+    {
+      "item_id": "it_e07dacdb45dcc75e",
+      "one_liner": "法官裁定 NAACP 就 xAI 数据中心污染提起的诉讼可以继续推进",
+      "why": "法院放行清洁空气法诉讼，把 AI 数据中心的电力与排放外部性第一次实质性地推上法庭，选址与供电成本将开始计入法律风险。",
+      "stance": "算力扩张的账单终于有人来收：数据中心不能再把污染成本转嫁给周边社区，这一判例方向应当被更多地方复制。"
+    }
+  ],
+  "stats": {},
+  "items": {
+    "it_73acf00ea16812b9": {
+      "id": "it_73acf00ea16812b9",
+      "source": "hackernews",
+      "title": "Digital minimalism",
+      "url": "https://vitalik.eth.limo/general/2026/10/31/digital_minimalism.html",
+      "summary": "",
+      "hot_score": 80.6039,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-31T06:16:36+00:00",
+      "last_seen_at": "2026-11-01T04:11:30.089633+00:00",
+      "metrics": {
+        "points": 313,
+        "num_comments": 231
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_5b0ac3b976a1c0a5": {
+      "id": "it_5b0ac3b976a1c0a5",
+      "source": "hackernews",
+      "title": "Malware uses LLMs to rank victims by how much they're worth",
+      "url": "https://blog.talosintelligence.com/appraisal-by-ai-model-driven-victim-prioritization-in-the-volta-infostealer",
+      "summary": "",
+      "hot_score": 79.8045,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-31T14:29:03+00:00",
+      "last_seen_at": "2026-11-01T04:11:30.092504+00:00",
+      "metrics": {
+        "points": 237,
+        "num_comments": 130
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_5ded0eae18819e88": {
+      "id": "it_5ded0eae18819e88",
+      "source": "github_trending",
+      "title": "pbakaus/impeccable",
+      "url": "https://github.com/pbakaus/impeccable",
+      "summary": "The design vocabulary for your coding agent. Steer with polish and bolder, review with critique and audit, catch AI slop before it ships.",
+      "hot_score": 77.9931,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-25T03:04:13.813495+00:00",
+      "last_seen_at": "2026-11-01T04:11:30.152169+00:00",
+      "metrics": {
+        "stars_total": 98427,
+        "stars_in_window": 2870,
+        "forks": 5809,
+        "streak_days": 8
+      },
+      "streak_days": 8,
+      "language": "Rust"
+    },
+    "it_82785ab4f152db3e": {
+      "id": "it_82785ab4f152db3e",
+      "source": "hackernews",
+      "title": "GPT-5.6 Sol can beat Factorio on peaceful mode",
+      "url": "https://ryanmadden.net/gpt-56-beats-factorio",
+      "summary": "",
+      "hot_score": 77.7916,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-31T18:50:34+00:00",
+      "last_seen_at": "2026-11-01T04:11:30.094421+00:00",
+      "metrics": {
+        "points": 161,
+        "num_comments": 176
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_1d109e872ed6cf66": {
+      "id": "it_1d109e872ed6cf66",
+      "source": "hackernews",
+      "title": "Memdoor: A team of 5 Qwen3.8-27B models beats Fable 5 on LiveCodeBench Hard",
+      "url": "https://github.com/guregodevo/memdoor/tree/main/examples/workflows/team-solve",
+      "summary": "",
+      "hot_score": 75.4773,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-31T22:46:12+00:00",
+      "last_seen_at": "2026-11-01T04:11:30.232830+00:00",
+      "metrics": {
+        "points": 124,
+        "num_comments": 69
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_d12395c2145ab2bb": {
+      "id": "it_d12395c2145ab2bb",
+      "source": "github_trending",
+      "title": "pingdotgg/t3code",
+      "url": "https://github.com/pingdotgg/t3code",
+      "summary": "",
+      "hot_score": 74.736,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-31T03:55:58.260529+00:00",
+      "last_seen_at": "2026-11-01T04:11:30.149743+00:00",
+      "metrics": {
+        "stars_total": 35845,
+        "stars_in_window": 1148,
+        "forks": 8803,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "TypeScript"
+    },
+    "it_9780abeb5fce378d": {
+      "id": "it_9780abeb5fce378d",
+      "source": "github_trending",
+      "title": "HKUDS/DeepTutor",
+      "url": "https://github.com/HKUDS/DeepTutor",
+      "summary": "DeepTutor: Lifelong Personalized Tutoring. https://deeptutor.info/ .",
+      "hot_score": 73.7206,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-28T03:51:31.026947+00:00",
+      "last_seen_at": "2026-11-01T04:11:30.154426+00:00",
+      "metrics": {
+        "stars_total": 52978,
+        "stars_in_window": 2371,
+        "forks": 6485,
+        "streak_days": 5
+      },
+      "streak_days": 5,
+      "language": "Python"
+    },
+    "it_ebfcd2cb02eb3c5c": {
+      "id": "it_ebfcd2cb02eb3c5c",
+      "source": "github_trending",
+      "title": "thedotmack/claude-mem",
+      "url": "https://github.com/thedotmack/claude-mem",
+      "summary": "Persistent Context Across Sessions for Every Agent – Captures everything your agent does during sessions, compresses it with AI, and injects relevant context back into future sessions. Works with Claude Code, OpenClaw, Codex, Gemini, Hermes, Copilot, OpenCode + More",
+      "hot_score": 72.6473,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-30T04:14:36.710902+00:00",
+      "last_seen_at": "2026-11-01T04:11:30.146742+00:00",
+      "metrics": {
+        "stars_total": 108040,
+        "stars_in_window": 1723,
+        "forks": 9479,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "TypeScript"
+    },
+    "it_71145972f162b48a": {
+      "id": "it_71145972f162b48a",
+      "source": "hackernews",
+      "title": "Anthropic takes steps to block Claude from reverse-engineering video games",
+      "url": "https://mashable.com/tech/anthropic-takes-steps-to-block-video-game-cloning-and-reverse-engineering",
+      "summary": "",
+      "hot_score": 70.8066,
+      "topic_id": "tp_9b1e4535e6d4",
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-31T21:07:58+00:00",
+      "last_seen_at": "2026-11-01T04:11:30.095226+00:00",
+      "metrics": {
+        "points": 115,
+        "num_comments": 72
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_81446f2462dee9e2": {
+      "id": "it_81446f2462dee9e2",
+      "source": "github_trending",
+      "title": "mattpocock/skills",
+      "url": "https://github.com/mattpocock/skills",
+      "summary": "Skills for Real Engineers. Straight from my .agents directory.",
+      "hot_score": 67.0864,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-31T03:55:58.260523+00:00",
+      "last_seen_at": "2026-11-01T04:11:30.147815+00:00",
+      "metrics": {
+        "stars_total": 308536,
+        "stars_in_window": 883,
+        "forks": 25966,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "Shell"
+    },
+    "it_aa4997f9eba15998": {
+      "id": "it_aa4997f9eba15998",
+      "source": "hackernews",
+      "title": "The Impact of Generative AI on Critical Thinking: Self-Reported (2025)",
+      "url": "https://dl.acm.org/doi/full/10.1145/3706598.3713778",
+      "summary": "https://www.microsoft.com/en-us/research/wp-content/uploads/...",
+      "hot_score": 65.1176,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-31T18:02:29+00:00",
+      "last_seen_at": "2026-11-01T04:11:30.096005+00:00",
+      "metrics": {
+        "points": 75,
+        "num_comments": 53
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_f9b76a950f0a3145": {
+      "id": "it_f9b76a950f0a3145",
+      "source": "hackernews",
+      "title": "Show HN: NES Contra (1987) port (ASM –> C and then C –> WebAssembly)",
+      "url": "https://epoyraz.github.io/nes-contra-us",
+      "summary": "Based on vermiceli's annotated disassembly of Contra: https://github.com/vermiceli/nes-contra-us . Thanks for the great work. I ported it in two steps. First to C: the game logic is translated routine by routine from the 6502 assembly, and checked frame by frame against the original in the Mesen emulator. Then the C code to WebAssembly so it runs in the browser. The cherry on top: online multiplayer, so two players can play co-op over the internet. Source: https://github.com/epoyraz/nes-contra-u",
+      "hot_score": 61.6677,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-31T19:18:48+00:00",
+      "last_seen_at": "2026-11-01T04:11:30.097527+00:00",
+      "metrics": {
+        "points": 71,
+        "num_comments": 40
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_936efb88bf354f45": {
+      "id": "it_936efb88bf354f45",
+      "source": "github_trending",
+      "title": "Orkas-AI/Orkas",
+      "url": "https://github.com/Orkas-AI/Orkas",
+      "summary": "Orkas is an open-source (MIT), local-first AI team for your desktop: a Commander turns your goal into to-dos and coordinates 16 built-in specialist agents plus Claude Code, Codex, OpenCode, OpenClaw and Hermes, with projects, scheduled automations and connectors. Free app for macOS & Windows; built-in models or your own keys.",
+      "hot_score": 58.8462,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-01T04:11:24.099095+00:00",
+      "last_seen_at": "2026-11-01T04:11:30.155104+00:00",
+      "metrics": {
+        "stars_total": 6594,
+        "stars_in_window": 1044,
+        "forks": 401,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "JavaScript"
+    },
+    "it_ec8c7e5f32546a34": {
+      "id": "it_ec8c7e5f32546a34",
+      "source": "github_trending",
+      "title": "milind-soni/OpenMausBot",
+      "url": "https://github.com/milind-soni/OpenMausBot",
+      "summary": "Open-source Grok Bot alternative with a virtual machine that bots can use",
+      "hot_score": 56.5789,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-30T04:14:36.710887+00:00",
+      "last_seen_at": "2026-11-01T04:11:30.151349+00:00",
+      "metrics": {
+        "stars_total": 9769,
+        "stars_in_window": 1303,
+        "forks": 1357,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "TypeScript"
+    },
+    "it_94697ec49ac5116b": {
+      "id": "it_94697ec49ac5116b",
+      "source": "hackernews",
+      "title": "Anthropic's Claude AI blocks video game cloning and reverse-engineering",
+      "url": "https://www.tomshardware.com/tech-industry/artificial-intelligence/anthropics-ai-model-is-now-blocking-attempts-at-video-game-recreation-and-cloning-users-also-claim-non-malicious-generic-reverse-engineering-tasks-are-blocked",
+      "summary": "",
+      "hot_score": 54.7873,
+      "topic_id": "tp_9b1e4535e6d4",
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-31T13:25:00+00:00",
+      "last_seen_at": "2026-11-01T04:11:30.099046+00:00",
+      "metrics": {
+        "points": 67,
+        "num_comments": 41
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_69a6545b4437b83a": {
+      "id": "it_69a6545b4437b83a",
+      "source": "hackernews",
+      "title": "I'm a Proton employee and I'm breaking my silence",
+      "url": "https://www.reddit.com/r/ProtonMail/comments/1xkezig/im_a_proton_employee_and_im_breaking_my_silence",
+      "summary": "",
+      "hot_score": 52.4458,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-31T17:13:34+00:00",
+      "last_seen_at": "2026-11-01T04:11:30.099835+00:00",
+      "metrics": {
+        "points": 49,
+        "num_comments": 30
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_68fa5fb0038f21ea": {
+      "id": "it_68fa5fb0038f21ea",
+      "source": "github_trending",
+      "title": "lightpanda-io/browser",
+      "url": "https://github.com/lightpanda-io/browser",
+      "summary": "Lightpanda: the headless browser designed for AI and automation",
+      "hot_score": 52.2574,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-31T03:55:58.260566+00:00",
+      "last_seen_at": "2026-11-01T04:11:30.153696+00:00",
+      "metrics": {
+        "stars_total": 39338,
+        "stars_in_window": 929,
+        "forks": 1913,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "Zig"
+    },
+    "it_b31ae32ac90f9443": {
+      "id": "it_b31ae32ac90f9443",
+      "source": "github_trending",
+      "title": "vorssaint/vorssaint-utils",
+      "url": "https://github.com/vorssaint/vorssaint-utils",
+      "summary": "Free and open-source macOS menu bar toolkit.",
+      "hot_score": 51.9231,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-01T04:11:24.099111+00:00",
+      "last_seen_at": "2026-11-01T04:11:30.157677+00:00",
+      "metrics": {
+        "stars_total": 31995,
+        "stars_in_window": 501,
+        "forks": 1543,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Swift"
+    },
+    "it_daeae1bce20af8c8": {
+      "id": "it_daeae1bce20af8c8",
+      "source": "hackernews",
+      "title": "Altoids Project",
+      "url": "https://uvdn7.github.io/altoids-project",
+      "summary": "",
+      "hot_score": 50.9318,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-31T22:54:55+00:00",
+      "last_seen_at": "2026-11-01T04:11:30.096850+00:00",
+      "metrics": {
+        "points": 72,
+        "num_comments": 4
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_f859b2d15e1457f4": {
+      "id": "it_f859b2d15e1457f4",
+      "source": "github_trending",
+      "title": "obra/superpowers",
+      "url": "https://github.com/obra/superpowers",
+      "summary": "An agentic skills framework & software development methodology that works.",
+      "hot_score": 49.6158,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-15T14:47:23.502377+00:00",
+      "last_seen_at": "2026-11-01T04:11:30.152988+00:00",
+      "metrics": {
+        "stars_total": 310141,
+        "stars_in_window": 1259,
+        "forks": 27595,
+        "streak_days": 5
+      },
+      "streak_days": 5,
+      "language": "Shell"
+    },
+    "it_7f1af3fd25b5bee9": {
+      "id": "it_7f1af3fd25b5bee9",
+      "source": "github_trending",
+      "title": "bregman-arie/devops-exercises",
+      "url": "https://github.com/bregman-arie/devops-exercises",
+      "summary": "Linux, Jenkins, AWS, SRE, Prometheus, Docker, Python, Ansible, Git, Kubernetes, Terraform, OpenStack, SQL, NoSQL, Azure, GCP, DNS, Elastic, Network, Virtualization. DevOps Interview Questions",
+      "hot_score": 48.4615,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-01T04:11:24.099106+00:00",
+      "last_seen_at": "2026-11-01T04:11:30.156897+00:00",
+      "metrics": {
+        "stars_total": 86068,
+        "stars_in_window": 342,
+        "forks": 20552,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_567c750dad4150c2": {
+      "id": "it_567c750dad4150c2",
+      "source": "hackernews",
+      "title": "AI text watermarking and quality loss",
+      "url": "https://blog.keyvan.net/p/ai-text-watermarking-and-quality",
+      "summary": "",
+      "hot_score": 46.6448,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-10-31T21:50:13+00:00",
+      "last_seen_at": "2026-11-01T04:11:30.100565+00:00",
+      "metrics": {
+        "points": 36,
+        "num_comments": 6
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_94fc877f233f2fa8": {
+      "id": "it_94fc877f233f2fa8",
+      "source": "github_trending",
+      "title": "THU-MAIC/OpenMAIC",
+      "url": "https://github.com/THU-MAIC/OpenMAIC",
+      "summary": "Open Multi-Agent Interactive Classroom — Get an immersive, multi-agent learning experience in just one click",
+      "hot_score": 45.0,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-01T04:11:24.099100+00:00",
+      "last_seen_at": "2026-11-01T04:11:30.156121+00:00",
+      "metrics": {
+        "stars_total": 42239,
+        "stars_in_window": 116,
+        "forks": 6518,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "TypeScript"
+    },
+    "it_dd35d009aad680f7": {
+      "id": "it_dd35d009aad680f7",
+      "source": "rss",
+      "title": "How We Took Over ChatGPT Accounts",
+      "url": "https://simonwillison.net/2026/Oct/31/how-we-took-over-chatgpt-accounts",
+      "summary": "How We Took Over ChatGPT Accounts\nParameter Labs describe an exploit they found against ChatGPT's implementation of the artifacts pattern (OpenAI used to call this \"Canvas\" but it looks like the latest revision is called HTML previews ), where interactive custom HTML apps are displayed in a sandboxed iframe.\nIt's important that HTML in these stays tightly sandboxed to avoid untrusted code interacting with OpenAI APIs and accessing private data.\nParameter found quite a complex attack chain. OpenAI use the MathLive JavaScript library as part of their graph support, and that library includes its own virtual keyboard , which can be triggered in the parent page via postMessage() from the sandboxed iframe.\nThat message receiving code uses innerHTML , so anything that sends a message can add custom HTML to the parent - and there was no mechanism to prevent other sandboxed frames, including HTML preview frames, from calling that method.\nThis meant untrusted code in an iframe could insert HTML, and while innerHTML doesn't directly execute script elements it could be used to inject a new iframe without sandbox restrictions.\nOpenAI’s CSP rules blocked inline scripts entirely, and only allowed script loading from a handful of domains, but one of those was YouTube - and the YouTube oEmbed endpoint could be used to reflect JavaScript back in a way that executed it.\nOnce the attack had JavaScript execution on ChatGPT, it was trivial to fetch private user data from APIs and exfiltrate it via an image reference.\nThe end result: you could create a ChatGPT share URL which, when visited by another signed-in user, could exfiltrate their private data or take actions on their behalf.\nOpenAI closed the hole and paid out a $5,000 bug bounty, which I think was a bit cheap for a vulnerability this serious.\n\nVia Hacker News\n\nTags: iframes , javascript , sandboxing , security , xss , openai , chatgpt , content-security-policy",
+      "hot_score": 39.0,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-10-31T23:15:22+00:00",
+      "last_seen_at": "2026-11-01T04:11:30.134260+00:00",
+      "metrics": {
+        "rank_score": 1.0
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_4c77a0dfd6338deb": {
+      "id": "it_4c77a0dfd6338deb",
+      "source": "rss",
+      "title": "datasette-llm 0.1a9",
+      "url": "https://simonwillison.net/2026/Oct/31/datasette-llm",
+      "summary": "Release: datasette-llm 0.1a9\nI have some big upgrades to Datasette Agent in the pipeline, but in the meantime here's a tiny user experience improvement to the underlying datasette-llm plugin.\nIt now picks up the default model used by LLM , which means you can start using Datasette Agent without needing to explicitly configure a default model:\nuvx --with datasette-agent datasette content.db --internal internal.db\n\nPreviously you would also need to specify a model with -s plugins.datasette-agent.default_model gpt-6-astra .\n\n\nTags: datasette , llm , datasette-agent",
+      "hot_score": 38.9862,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-10-31T22:10:01+00:00",
+      "last_seen_at": "2026-11-01T04:11:30.135527+00:00",
+      "metrics": {
+        "rank_score": 0.5
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_9f56e268b05ea691": {
+      "id": "it_9f56e268b05ea691",
+      "source": "rss",
+      "title": "Apple CEO says the company doesn’t ‘want to ship AI for AI’s sake’",
+      "url": "https://techcrunch.com/2026/10/31/apple-ceo-says-the-company-doesnt-want-to-ship-ai-for-ais-sake",
+      "summary": "Apple's new CEO defended the company's current position in the AI landscape.",
+      "hot_score": 38.7195,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-10-31T21:41:00+00:00",
+      "last_seen_at": "2026-11-01T04:11:30.141046+00:00",
+      "metrics": {
+        "rank_score": 1.0
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_5a4bff0c2db23b04": {
+      "id": "it_5a4bff0c2db23b04",
+      "source": "rss",
+      "title": "4 days left: How TechCrunch Founder Summit helps you make more useful connections to scale",
+      "url": "https://techcrunch.com/2026/10/31/4-days-left-how-techcrunch-founder-summit-helps-you-make-more-useful-connections-to-scale",
+      "summary": "On November 4 at Boston’s SoWa Power Station, get ready for a full day packed with meaningful networking opportunities, actionable insights, and connections that could change the trajectory of your idea and startup. Register before all prices go up at the door.",
+      "hot_score": 38.675,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-10-31T21:36:07+00:00",
+      "last_seen_at": "2026-11-01T04:11:30.141861+00:00",
+      "metrics": {
+        "rank_score": 0.75
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_e07dacdb45dcc75e": {
+      "id": "it_e07dacdb45dcc75e",
+      "source": "rss",
+      "title": "Judge allows NAACP lawsuit over xAI data center pollution to move forward",
+      "url": "https://techcrunch.com/2026/10/31/judge-allows-naacp-lawsuit-over-xai-data-center-pollution-to-move-forward",
+      "summary": "An NAACP lawsuit accuses the SpaceX-owned AI company of violating the Clean Air Act.",
+      "hot_score": 38.5021,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-10-31T21:17:03+00:00",
+      "last_seen_at": "2026-11-01T04:11:30.142895+00:00",
+      "metrics": {
+        "rank_score": 0.5
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_cdc5efdead963d80": {
+      "id": "it_cdc5efdead963d80",
+      "source": "github_trending",
+      "title": "Donchitos/Claude-Code-Game-Studios",
+      "url": "https://github.com/Donchitos/Claude-Code-Game-Studios",
+      "summary": "Turn Claude Code into a full game dev studio — 49 AI agents, 72 workflow skills, and a complete coordination system mirroring real studio hierarchy.",
+      "hot_score": 38.2883,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-30T04:14:36.710915+00:00",
+      "last_seen_at": "2026-11-01T04:11:30.148897+00:00",
+      "metrics": {
+        "stars_total": 31282,
+        "stars_in_window": 742,
+        "forks": 4285,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Shell"
+    },
+    "it_f51f1bb0c5273aa4": {
+      "id": "it_f51f1bb0c5273aa4",
+      "source": "reddit",
+      "title": "+1 for Qwen 27Bs character/chat style",
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1xkngat/1_for_qwen_27bs_characterchat_style",
+      "summary": "Maybe uninteresting to most, but i just wanted to say that qwen3.8 27B is actually very nice to talk to, when arguing about issues or solving problems- while for example regarding cloud models claude opus (since v5) for me has quite an annoying tone - it has this \"chop-chop\" or \"CEO attitude\"- IDK how else to describe. I am not a native english speaker. chatGPT I abandoned long ago because it is sycophantic in my opinion. gemini pro is ok, tho yes there are chat templates for our modles and top-k/..anything to adjust but that doesn't change the character profoundly imo maybe you have also models of which you do like the chat style more, just aside from coding or doing their task submitted by /u/vogelvogelvogelvogel [link] [comments]",
+      "hot_score": 38.25,
+      "topic_id": null,
+      "seen_in": [
+        "reddit"
+      ],
+      "published_at": "2026-10-31T22:41:41+00:00",
+      "last_seen_at": "2026-11-01T04:11:30.122499+00:00",
+      "metrics": {
+        "score": 0,
+        "rank_score": 0.36
+      },
+      "streak_days": 0,
+      "language": "en"
+    }
+  },
+  "meta": {
+    "mode": "hybrid",
+    "day": "2026-11-01",
+    "generated_at": "2026-11-01T04:12:26.458936+00:00",
+    "window": {
+      "since": "2026-10-31T04:11:22.629157+00:00",
+      "until": "2026-11-01T04:11:30.258076+00:00",
+      "hours": 24.0,
+      "since_local": "2026-10-31T12:11+08:00",
+      "until_local": "2026-11-01T12:11+08:00",
+      "tz": "Asia/Shanghai"
+    },
+    "analysis": {
+      "items": 123,
+      "scored": 123,
+      "topics": 3,
+      "new_entity_mention_rows": 155,
+      "state_items": 14
+    },
+    "llm": {
+      "degraded": false,
+      "degraded_reason": "",
+      "calls": 1
+    },
+    "collect": {
+      "ok_sources": 7,
+      "failed_sources": 0,
+      "skipped": 0,
+      "total_items": 123
+    },
+    "verify": {
+      "verified": 0,
+      "unverifiable": 0,
+      "deferred": 1,
+      "failed": 0,
+      "llm_calls": 0
+    },
+    "predictions": {
+      "total": 106,
+      "verified": 1,
+      "pending": 105,
+      "unverifiable": 0,
+      "hit_rate": 0.0,
+      "weighted_score": 0.0,
+      "brier": 0.36
+    },
+    "prediction_generation": {
+      "mode": "hybrid",
+      "generated": 5,
+      "inserted": 5,
+      "dropped": [],
+      "llm_calls": 1,
+      "candidate_pool": 20,
+      "degraded": false,
+      "degraded_reason": ""
+    },
+    "brief": {
+      "max_items_per_section": 10,
+      "velocity_board_enabled": true,
+      "velocity_board_top_n": 5
+    },
+    "signals": {
+      "entities": 486,
+      "points": 1185,
+      "with_velocity": 64,
+      "insufficient": 112,
+      "cold_start": 310,
+      "min_window_hours": 6.0
+    },
+    "enhance_total": 25,
+    "enhanced": 25,
+    "enhance_skipped_count": 0,
+    "enhance_cache_hit": 6,
+    "enhance_cost_cny": 0.008336
+  }
+}
