@@ -80,6 +80,24 @@
       "status": "dropped",
       "resolved_on": "2026-10-25",
       "resolved_hot": null
+    },
+    {
+      "issue": "2026-11-01",
+      "item_id": "it_7e2aaf184ac3d7d5",
+      "check_on": "2026-11-02",
+      "expectation": "第二个对象是 it_7e2aaf184ac3d7d5",
+      "status": "dropped",
+      "resolved_on": "2026-11-02",
+      "resolved_hot": null
+    },
+    {
+      "issue": "2026-11-01",
+      "item_id": "it_bf5aaab63512aa24",
+      "check_on": "2026-11-02",
+      "expectation": "先盯 it_bf5aaab63512aa24：10-31 热度 81.01，在榜 1 天（0→1），这个 0→1 只说明它首日进入榜单，不能把单日热度当作社区舆论持续升温",
+      "status": "dropped",
+      "resolved_on": "2026-11-02",
+      "resolved_hot": null
     }
   ]
 }
