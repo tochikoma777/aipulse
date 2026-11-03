@@ -1,0 +1,980 @@
+{
+  "date": "2026-11-03",
+  "headline": "智能体的成本已经真实到超过员工工资——Anthropic 内部 AI 支出反超人力薪酬，AI 从工具变成了要算账的\"同事\"",
+  "headline_item_id": "it_b997047b855185ef",
+  "overview_bullets": [
+    {
+      "icon": "🏢",
+      "topic": "AI 成本反超",
+      "text": "Anthropic 内部按零售价计算的 AI 使用成本已超过员工薪酬总额，这是\"AI 替代人\"叙事第一次以财务账单的形式落地。"
+    },
+    {
+      "icon": "🤖",
+      "topic": "智能体工程化",
+      "text": "从 agent-desktop 的计算机操作 CLI、claude-mem 的跨会话记忆到 49 个 agent 组成的\"游戏工作室\"，智能体正从 demo 走向可编排的工程流水线。"
+    },
+    {
+      "icon": "🔐",
+      "topic": "安全连环爆",
+      "text": "Ubuntu 近三周未修 Linux 0day RCE、WorkOS 承认数据泄露、预训练投毒可植入智能体后门——供应链与底层安全同时告急。"
+    },
+    {
+      "icon": "📉",
+      "topic": "芯片股崩",
+      "text": "Intel 股价跌势加剧、3.5 万亿美元芯片板块抛售蔓延，与 AI 应用层的火热形成刺眼反差。"
+    },
+    {
+      "icon": "📄",
+      "topic": "视频生成转向",
+      "text": "多篇论文把视频生成推向\"智能体化\"与\"世界模型\"，Wave Forcing 直指实时光流式生成，生成范式正在换轨。"
+    }
+  ],
+  "executive_summary": "今天的主线不是模型又强了多少，而是智能体开始产生真实账单、真实漏洞和真实后门——AI 正从\"能力展示\"进入\"要负责\"的阶段。",
+  "editor_note": {
+    "core": "今天最该记住的是 Anthropic 内部 AI 使用成本超过员工薪酬这条——它把\"AI 替代人\"从情绪话题变成了财务事实。一旦 AI 支出成为公司最大单项成本之一，采购、审计和 ROI 考核就会压过能力竞赛，模型厂商的定价权将第一次被客户财务部门正面挑战。",
+    "cross_signal": "智能体工程化（agent-desktop、claude-mem、paperclip、Momentic）与\"成本反超\"互相印证：智能体越能自主干活，token 消耗就越像人力开支，于是记忆压缩、本地推理（colibri、FreeToken、nanochat）这类降本工具才有真实需求，而不是玩具。",
+    "counterintuitive": "热度最高的都是\"更强的智能体\"，但真正决定它们能否上岗的是最不性感的两件事：Ubuntu 三周不修的 0day 和预训练投毒后门。能力越自主，未修补的底层漏洞杀伤力越大——安全欠账正在被智能体放大，而非被解决。",
+    "risk": "最值得警惕的盲点是\"智能体后门\"：预训练投毒可以在模型层面植入行为触发，而企业正在把越来越多权限交给 agent-desktop 这类计算机操作工具。叠加 WorkOS 泄露与未修补 RCE，一旦被串联，攻击面从\"数据泄露\"升级为\"自主执行\"。"
+  },
+  "contradictions": [
+    "AI 应用层智能体项目热度爆棚、开源生态繁荣，但芯片股（Intel、3.5 万亿美元板块）却在崩盘——应用热度与硬件资本市场走势背离。",
+    "Anthropic 一边被曝内部 AI 成本超过薪酬（说明 AI 极贵），一边开源社区在推 colibri、FreeToken、nanochat 把前沿模型压到桌面和 100 美元成本——同一技术的成本叙事两个极端。",
+    "Claude Opus 5.5 被称能画出报批级建筑图纸（能力跃升），但同日多条安全条目显示底层补丁与泄露响应严重滞后——能力前进、治理后退。"
+  ],
+  "underrated": [
+    "Agentic backdoors via pretraining poisoning：预训练投毒植入智能体后门，热度仅 60.7，却是所有 agent 部署的隐性炸弹。",
+    "Ubuntu still has not released patch for Linux 0day RCE in almost 3 weeks：三周不修的远程执行漏洞，在智能体大规模接管机器的当下被严重低估。",
+    "Diagnosing the Reference Gap：多模态推理失败的根因被误判为感知问题，实际是\"引用鸿沟\"，对多步视觉推理产品有直接指导意义。",
+    "From Fragmentation to Fusion: Omnimodal Embeddings 综述：嵌入模型按模态各自为战，这份路线图可能定义下一轮检索基础设施。",
+    "WorkOS reports security breach：官方渠道尚未披露，仅靠邮件通知，信息透明度本身是风险信号。"
+  ],
+  "sections": [
+    {
+      "name": "开源项目",
+      "summary": "智能体基础设施集中爆发：桌面操作、持久记忆、本地大模型推理与去审查工具同日登上热榜。",
+      "item_ids": [
+        "it_a4e85f0863890b24",
+        "it_d12395c2145ab2bb",
+        "it_ebfcd2cb02eb3c5c",
+        "it_f7fc24d300640e30",
+        "it_050e4f83d6eddeaa",
+        "it_cdc5efdead963d80",
+        "it_81446f2462dee9e2",
+        "it_9a691a92e2c9c0eb",
+        "it_017ebe025971dc52",
+        "it_e95edf9e703a97dd",
+        "it_671f4fbff0f57a20",
+        "it_060d86899698f554"
+      ]
+    },
+    {
+      "name": "论文与研究",
+      "summary": "视频生成与计算机使用智能体成为论文双热点，同时多模态嵌入与 RAG 在补基础工程的课。",
+      "item_ids": [
+        "it_04f56b52c4358763",
+        "it_2a9dfe71c25fa67e",
+        "it_c90a52c1ce6e4b92",
+        "it_42da0213eeb6fa65",
+        "it_f954b07c153995ae",
+        "it_420c7409c05b7e7d",
+        "it_743d9611d21b90f6",
+        "it_8f9b0e0b60da34e3"
+      ]
+    },
+    {
+      "name": "社区舆论",
+      "summary": "HN 上最热的不是模型能力，而是 AI 的真实成本、底层安全欠账与招聘市场的冷清。",
+      "item_ids": [
+        "it_b997047b855185ef",
+        "it_0d7890576a84033a",
+        "it_9eb94daec01316a4",
+        "it_fd613bbbc38c4a34",
+        "it_46e0171cedf68260",
+        "it_fc62d69d866a3038",
+        "it_de4cf53f9db96311",
+        "it_92e88048ec861081",
+        "it_66c488cac1410701",
+        "it_4c0c8ed6a2230f7f"
+      ]
+    },
+    {
+      "name": "产业与新闻",
+      "summary": "芯片股大跌与多起安全事件构成产业面的双重压力，OpenAI 则在为 Codex 级别的开发规模重建 Git 底座。",
+      "item_ids": []
+    }
+  ],
+  "comments": [
+    {
+      "item_id": "it_a4e85f0863890b24",
+      "one_liner": "vercel-labs 推出的面向 AI agent 的 computer use 命令行工具",
+      "why": "把「操作电脑」这一层抽象成 CLI，代理就能脱离浏览器沙箱直接驱动桌面应用，自动化边界从网页扩展到本地软件栈。",
+      "stance": "方向对，但让代理拿到桌面控制权，权限与审计问题会被推到每个使用者头上。"
+    },
+    {
+      "item_id": "it_d12395c2145ab2bb",
+      "one_liner": "pingdotgg 开源的 t3code 代码项目仓库",
+      "why": "知名开源作者的新仓库冲上趋势榜，说明社区对个人品牌驱动的脚手架项目仍愿意用 star 投票，新项目冷启动的门槛被作者信誉直接抹平。",
+      "stance": "个人 IP 已成为开源项目最便宜的获客渠道，代码质量反而排在第二位。"
+    },
+    {
+      "item_id": "it_ebfcd2cb02eb3c5c",
+      "one_liner": "为各类 coding agent 提供跨会话持久记忆的工具，记录会话内容并用 AI 压缩后回注到后续会话。",
+      "why": "跨会话持久记忆被做成通用层并兼容 Claude Code、Codex、Gemini 等多家代理，代理的上下文从一次性消耗品变成可累积资产，切换工具的成本随之下降。",
+      "stance": "记忆层会成为代理生态里最容易被锁定的一环，谁掌握压缩与注入策略谁就掌握粘性。"
+    },
+    {
+      "item_id": "it_f7fc24d300640e30",
+      "one_liner": "Scrapling 是一个 Web 抓取框架，覆盖从单次请求到大规模爬取的场景",
+      "why": "把单请求抓取到全站爬取的适配层收进一个框架，降低了数据采集的工程门槛，也让反爬与合规压力集中到同一处。",
+      "stance": "工具本身中性，但摘要里塞 Discord 和推广链接，说明维护者更在意流量而非工程严谨。"
+    },
+    {
+      "item_id": "it_050e4f83d6eddeaa",
+      "one_liner": "纯 C 编写、零依赖的推理引擎，从磁盘流式加载专家权重，在本地硬件上运行前沿 MoE 模型",
+      "why": "纯 C、零依赖、专家从磁盘流式加载，意味着 MoE 大模型的显存门槛被换成磁盘 IO 门槛，消费级硬件能跑起前沿规模模型。",
+      "stance": "这是本轮最硬的一条：把「大模型必须上云」的前提直接拆掉。"
+    },
+    {
+      "item_id": "it_cdc5efdead963d80",
+      "one_liner": "把 Claude Code 配置成游戏开发工作室，包含 49 个 AI agent 与 72 个工作流技能",
+      "why": "用 49 个代理和 72 个技能模拟工作室层级，把单代理编码变成多代理编排，验证的是协调系统而非模型能力。",
+      "stance": "噱头大于实用，代理数量堆到几十个只会放大编排开销，真正稀缺的是收敛机制。"
+    },
+    {
+      "item_id": "it_81446f2462dee9e2",
+      "one_liner": "mattpocock 公开的 .agents 目录中的工程技能集合",
+      "why": "把个人 .agents 目录里的技能直接公开，等于把「提示词工程」沉淀为可复用资产，工程师的编码习惯开始被版本化分发。",
+      "stance": "有价值，但技能包高度依赖作者个人工作流，复制到别人机器上多半水土不服。"
+    },
+    {
+      "item_id": "it_9a691a92e2c9c0eb",
+      "one_liner": "paperclipai 开源的 agent 工作管理应用",
+      "why": "把工作场景的代理管理做成开源应用，代理从个人玩具进入团队协作流程，权限、任务分派与结果追溯成为刚需。",
+      "stance": "定位准，但「大家都在用」这种自我描述说明它还没证明自己。"
+    },
+    {
+      "item_id": "it_017ebe025971dc52",
+      "one_liner": "FlashML-org 推出的本地桌面端大模型推理服务工具",
+      "why": "把数据中心级服务栈搬到桌面，本地推理的瓶颈从算力转向调度与内存管理，个人设备能承载的模型规模被重新定义。",
+      "stance": "和 colibri 撞在同一条赛道上，谁先把易用性做出来谁赢，光喊「桌面级数据中心」没用。"
+    },
+    {
+      "item_id": "it_e95edf9e703a97dd",
+      "one_liner": "无需训练即可修改语言模型行为的工具，可去除审查、抑制套话与谄媚倾向",
+      "why": "免训练直接改模型行为，去掉审查、抑制套话、降低谄媚，意味着对齐从训练阶段后移到部署阶段的权重编辑。",
+      "stance": "技术上漂亮，但「去审查」和「去谄媚」被打包在同一把工具里，滥用成本几乎为零。"
+    },
+    {
+      "item_id": "it_04f56b52c4358763",
+      "one_liner": "一篇论文，探讨视频生成与 agent 框架结合，涵盖 agentic 视频生成、世界建模与递归自我改进",
+      "why": "视频生成从端到端合成转向规划加工具调用加反馈的代理式流程，多镜头一致性靠编排而非单次生成解决，世界模型同时充当可交互环境。",
+      "stance": "这是视频生成真正走向可控的路径，但代理循环带来的延迟和成本会被严重低估。"
+    },
+    {
+      "item_id": "it_2a9dfe71c25fa67e",
+      "one_liner": "提出 uni-robot-agent 统一框架，用开源权重模型开展 robot-use agent 研究",
+      "why": "用开放权重模型加统一 harness 替代专有前沿模型做机器人操作，研究门槛从 API 预算降到本地算力，可复现性随之提升。",
+      "stance": "开放权重在机器人领域追平专有模型只是时间问题，这类 harness 是必要的基础设施。"
+    },
+    {
+      "item_id": "it_c90a52c1ce6e4b92",
+      "one_liner": "一篇综述与路线图，主张把分散在各模态社区中的 embedding 研究整合为统一的 omnimodal embeddings 方向",
+      "why": "把文本、图像、音频等各模态的嵌入研究从各自为战推向统一框架，直接决定跨模态检索与推荐系统能否共享一套表征底座。",
+      "stance": "方向正确，但综述加路线图最容易沦为口号，真正的检验是能否给出可复现的统一评测基准。"
+    },
+    {
+      "item_id": "it_42da0213eeb6fa65",
+      "one_liner": "提出 Wave Forcing 方法，用于流式长视频生成，目标是逼近光速级的实时生成速度",
+      "why": "把流式长视频生成的两遍前向压缩到接近光速，意味着实时连续视频从演示走向可部署，算力成本结构随之改变。",
+      "stance": "效率突破比画质提升更有价值，但长视频一致性若仍靠缓存修补，实时只是把问题推后。"
+    },
+    {
+      "item_id": "it_f954b07c153995ae",
+      "one_liner": "NorthCUA 技术报告，介绍一套通过大规模经验积累来加速 computer-use agents 的集成系统",
+      "why": "用规模化执行经验把计算机操作智能体从单步动作推向完整软件工作流，决定这类智能体能否真正替代人工操作而非演示。",
+      "stance": "经验飞轮是正确路径，但技术报告若只报自家基准，说服力有限。"
+    },
+    {
+      "item_id": "it_420c7409c05b7e7d",
+      "one_liner": "分析多模态大模型在多步推理中的 reference gap 问题，并考察视觉辅助信息能修复与不能修复的部分",
+      "why": "把多模态推理失败归因于指代缺失而非感知不足，纠正了业界长期误诊，直接影响模型架构与训练数据的投入方向。",
+      "stance": "这是本批最有诊断价值的结论：视觉脚手架修不好指代问题，继续堆感知能力是浪费。"
+    },
+    {
+      "item_id": "it_743d9611d21b90f6",
+      "one_liner": "DecisionRank：用 on-policy 蒸馏把生成式 LLM 的排序知识迁移到决策模型 reranker 上",
+      "why": "把生成式大模型的排序知识蒸馏进无自回归解码的决策模型，直接削减重排序环节的延迟，影响搜索与推荐的线上成本。",
+      "stance": "用排序列表做教师信号是务实做法，但决策模型的可解释性代价需要明说。"
+    },
+    {
+      "item_id": "it_8f9b0e0b60da34e3",
+      "one_liner": "DeFT-RAG：把多跳问题拆成带可复用答案的自包含子问题，以改进 RAG 的多跳推理",
+      "why": "把多跳问题拆成自包含子问题并复用答案，缓解了 RAG 在跨文档链式推理上的断链问题，直接提升问答系统的可用上限。",
+      "stance": "拆解加复用是正确工程方向，但子问题拆错会放大错误，需给出误差传播的量化。"
+    },
+    {
+      "item_id": "it_b997047b855185ef",
+      "one_liner": "报道称 Anthropic 内部按零售价计算的 AI 使用成本已超过其员工薪酬总额",
+      "why": "内部 AI 使用成本按零售价计已超过员工薪酬，说明 AI 支出正从工具预算变成与人力直接竞争的生产要素。",
+      "stance": "这个对比刺眼但真实：企业该重新算人力与算力的账，而不是继续把 AI 当降本附属品。"
+    },
+    {
+      "item_id": "it_0d7890576a84033a",
+      "one_liner": "Ubuntu 近三周仍未发布针对某个 Linux 0day 远程代码执行漏洞的补丁",
+      "why": "内核级远程执行漏洞近三周无补丁，意味着大量 Ubuntu 服务器暴露在已知攻击面下，运维方被迫自行缓解。",
+      "stance": "发行版响应速度是信任底线，三周空窗足以让企业重新评估长期支持承诺的含金量。"
+    },
+    {
+      "item_id": "it_9eb94daec01316a4",
+      "one_liner": "Hacker News 的「谁想被雇用」月度求职帖，供求职者按固定格式发布个人信息",
+      "why": "求职帖的供需结构是就业市场的实时温度计，技术栈与远程意愿的分布直接反映哪些技能还在被买单。",
+      "stance": "这类帖子比任何招聘报告都诚实，但只反映主动发声者，别当全市场样本。"
+    },
+    {
+      "item_id": "it_fd613bbbc38c4a34",
+      "one_liner": "有帖子称 Claude Opus 5.5 能绘制达到报建级别的建筑图纸",
+      "why": "模型能产出报审级别的建筑图纸，意味着设计院初级绘图岗位的工作内容被直接触及，而非仅停留在概念图。",
+      "stance": "能力展示不等于可交付，报审图纸的责任主体仍是人，别把演示当资质。"
+    },
+    {
+      "item_id": "it_46e0171cedf68260",
+      "one_liner": "一个把可见图案刻录到 CD、DVD 和 Blu-ray 光盘上的工具 DiscImageStudio",
+      "why": "把可见图案烧录进光盘物理层，让数据载体本身成为防伪与品牌标识，绕开了软件层的验证机制。",
+      "stance": "物理层防伪是数字版权体系里被长期低估的一环，值得动手试。"
+    },
+    {
+      "item_id": "it_fc62d69d866a3038",
+      "one_liner": "Intel 股价跌势加剧，3.5 万亿美元规模的芯片板块抛售蔓延",
+      "why": "3.5万亿美元市值蒸发从单一公司扩散为板块性抛售，说明市场对AI算力资本开支的定价逻辑正在被重新评估。",
+      "stance": "把英特尔的下跌当成孤立事件是误判，这是整个芯片叙事在挤泡沫。"
+    },
+    {
+      "item_id": "it_de4cf53f9db96311",
+      "one_liner": "OpenAI 介绍其为支撑 Codex 规模开发而构建的 Git 兼容后端 Pando",
+      "why": "代码生成代理把提交频率推到传统Git后端无法承受的量级，迫使OpenAI自建兼容后端，意味着版本控制正从通用工具变成需要按规模定制的基建。",
+      "stance": "Git的二十年架构第一次被AI工作负载真正逼到墙角，自研后端是必然而非炫技。"
+    },
+    {
+      "item_id": "it_92e88048ec861081",
+      "one_liner": "YC W24 项目 Momentic 推出 QA 智能体，通过自主操作 Web、iOS、Android 应用来发现 bug",
+      "why": "让代理自主探索并攻击应用界面，把QA从写用例转向观察行为，测试成本结构从人力密集转为算力密集。",
+      "stance": "自主探索式测试会先吃掉回归测试预算，但误报率决定它能否活过试用期。"
+    },
+    {
+      "item_id": "it_66c488cac1410701",
+      "one_liner": "一种通过预训练数据投毒植入智能体后门的方法",
+      "why": "在预训练阶段植入触发条件，使后门不依赖任何运行时注入，模型交付后无法通过代码审计发现，供应链信任模型被整体推翻。",
+      "stance": "这是当前AI安全最脏的一类攻击，权重来源审查必须升级为强制项。"
+    },
+    {
+      "item_id": "it_4c0c8ed6a2230f7f",
+      "one_liner": "WorkOS 向客户通报一起数据安全事件，官网与 Trust center 尚未披露",
+      "why": "身份认证基础设施被攻破，下游所有依赖其SSO的客户在不知情窗口内暴露，而通知先于官网公告发出，暴露了披露流程的滞后。",
+      "stance": "认证服务商是单点信任枢纽，出事却靠邮件通知，这种披露节奏不可接受。"
+    }
+  ],
+  "stats": {},
+  "items": {
+    "it_b997047b855185ef": {
+      "id": "it_b997047b855185ef",
+      "source": "hackernews",
+      "title": "Anthropic's internal AI use, at retail prices, now exceeds its employee pay",
+      "url": "https://www.businessinsider.com/anthropic-claude-internal-ai-use-exceeds-employee-pay-tokens-2026-11",
+      "summary": "",
+      "hot_score": 84.4196,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-02T16:40:29+00:00",
+      "last_seen_at": "2026-11-03T05:13:54.935187+00:00",
+      "metrics": {
+        "points": 302,
+        "num_comments": 245
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_a4e85f0863890b24": {
+      "id": "it_a4e85f0863890b24",
+      "source": "github_trending",
+      "title": "vercel-labs/agent-desktop",
+      "url": "https://github.com/vercel-labs/agent-desktop",
+      "summary": "Computer use CLI for AI agents",
+      "hot_score": 83.5714,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-03T05:13:22.901772+00:00",
+      "last_seen_at": "2026-11-03T05:13:54.976797+00:00",
+      "metrics": {
+        "stars_total": 10490,
+        "stars_in_window": 2275,
+        "forks": 703,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Rust"
+    },
+    "it_d12395c2145ab2bb": {
+      "id": "it_d12395c2145ab2bb",
+      "source": "github_trending",
+      "title": "pingdotgg/t3code",
+      "url": "https://github.com/pingdotgg/t3code",
+      "summary": "",
+      "hot_score": 83.0843,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-31T03:55:58.260529+00:00",
+      "last_seen_at": "2026-11-03T05:13:54.979960+00:00",
+      "metrics": {
+        "stars_total": 42377,
+        "stars_in_window": 3229,
+        "forks": 9130,
+        "streak_days": 4
+      },
+      "streak_days": 4,
+      "language": "TypeScript"
+    },
+    "it_0d7890576a84033a": {
+      "id": "it_0d7890576a84033a",
+      "source": "hackernews",
+      "title": "Ubuntu still has not released patch for Linux 0day RCE in almost 3 weeks",
+      "url": "https://freenode.net/article/ubuntu-lts-kernels-still-unfixed-for-critical-cve-2026-98432",
+      "summary": "",
+      "hot_score": 81.2741,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-02T18:39:38+00:00",
+      "last_seen_at": "2026-11-03T05:13:54.932366+00:00",
+      "metrics": {
+        "points": 394,
+        "num_comments": 114
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_fc62d69d866a3038": {
+      "id": "it_fc62d69d866a3038",
+      "source": "hackernews",
+      "title": "Intel stock collapse worsens as $3.5T chip rout spreads",
+      "url": "https://finance.yahoo.com/markets/article/the-intel-stock-collapse-is-getting-worse--and-the-37-trillion-chip-rout-is-spreading-212154947.html",
+      "summary": "",
+      "hot_score": 79.5682,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-03T00:08:53+00:00",
+      "last_seen_at": "2026-11-03T05:13:54.936655+00:00",
+      "metrics": {
+        "points": 155,
+        "num_comments": 104
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_de4cf53f9db96311": {
+      "id": "it_de4cf53f9db96311",
+      "source": "hackernews",
+      "title": "Scaling Git at OpenAI",
+      "url": "https://openai.com/index/scaling-git-at-openai",
+      "summary": "How OpenAI built Pando, a Git-compatible backend designed for the scale of development that Codex makes possible.",
+      "hot_score": 76.3864,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews",
+        "rss"
+      ],
+      "published_at": "2026-11-02T23:47:56+00:00",
+      "last_seen_at": "2026-11-03T05:13:54.961423+00:00",
+      "metrics": {
+        "points": 115,
+        "num_comments": 49,
+        "rank_score": 1.0
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_ebfcd2cb02eb3c5c": {
+      "id": "it_ebfcd2cb02eb3c5c",
+      "source": "github_trending",
+      "title": "thedotmack/claude-mem",
+      "url": "https://github.com/thedotmack/claude-mem",
+      "summary": "Persistent Context Across Sessions for Every Agent – Captures everything your agent does during sessions, compresses it with AI, and injects relevant context back into future sessions. Works with Claude Code, OpenClaw, Codex, Gemini, Hermes, Copilot, OpenCode + More",
+      "hot_score": 75.5258,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-30T04:14:36.710902+00:00",
+      "last_seen_at": "2026-11-03T05:13:54.977107+00:00",
+      "metrics": {
+        "stars_total": 110971,
+        "stars_in_window": 1803,
+        "forks": 9673,
+        "streak_days": 5
+      },
+      "streak_days": 5,
+      "language": "TypeScript"
+    },
+    "it_92e88048ec861081": {
+      "id": "it_92e88048ec861081",
+      "source": "hackernews",
+      "title": "Launch HN: Momentic (YC W24) – Agents that catch bugs by using your app",
+      "url": "https://momentic.ai/",
+      "summary": "Hey HN, we’re Wei-Wei and Jeff. We’re building Momentic, QA agents that autonomously plan, explore, and bug-bash controls and user flows in your web, iOS, Android, and (soon) desktop apps to catch bugs. Here’s a demo: https://youtu.be/BFsM-Se1Fh8 We’re both software engineers that spent our careers on dev tooling and infra across companies like Robinhood, Retool, WeWork, and Qualtrics. Testing was always a pain in the ass (esp Playwright and Selenium), so we built agents to do it for us. Modern ",
+      "hot_score": 72.3404,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-02T17:05:25+00:00",
+      "last_seen_at": "2026-11-03T05:13:54.937155+00:00",
+      "metrics": {
+        "points": 135,
+        "num_comments": 91
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_f7fc24d300640e30": {
+      "id": "it_f7fc24d300640e30",
+      "source": "github_trending",
+      "title": "D4Vinci/Scrapling",
+      "url": "https://github.com/D4Vinci/Scrapling",
+      "summary": "🕷️ The BEST Web Scraping framework that handles everything from a single request to a full-scale crawl! Don't be shy, join here: https://discord.gg/EMgGbDceNQ and follow here for daily tips and tricks: https://x.com/Scrapling_dev",
+      "hot_score": 70.7143,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-03T05:13:22.901795+00:00",
+      "last_seen_at": "2026-11-03T05:13:54.977726+00:00",
+      "metrics": {
+        "stars_total": 93235,
+        "stars_in_window": 706,
+        "forks": 9808,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_04f56b52c4358763": {
+      "id": "it_04f56b52c4358763",
+      "source": "hf_papers",
+      "title": "Video Generation Meets Agent Harness: Agentic Video Generation, Agentic World Modeling and Recursive Self-Improvement",
+      "url": "arxiv:2610.40191",
+      "summary": "Video generation is shifting from end-to-end synthesis toward agentic generation, where planning, tool use, and feedback enable coherent, controllable multi-shot videos. In parallel, video world models provide action-conditioned observations and predicted futures, serving as interactive environments for agents. We study their intersection through the agent harness: an executable runtime that constructs context, exposes tools, maintains state, routes feedback, and manages budgets around video models. This report examines three directions. First, agentic video generation, where harnesses coordinate scripting, shot planning, asset management, production, and editing, alongside the evaluation challenges of these systems. Second, agentic world modeling, where harnesses mediate observation, control, execution, and state. We discuss hybrid designs in which game engines or agent-written programs maintain world state while video models render observations, and how agents and world models can mutually evaluate and improve one another. Third, recursive self-improvement (RSI) in video model development, distinguishing output revisions, updates to harness state, generator parameters, and evaluators, and changes to the improvement procedure itself. We identify how these improvements feed back into subsequent development. Across these directions, we analyze essential agent capabilities, including audiovisual perception, long-horizon planning, memory, code-based interaction, feedback-guided control, skill reuse, and multi-agent coordination. We conclude with challenges in autonomous video production, lifelong memory, programmable hybrid control, autonomous model development, provenance, cost accounting, and evaluation linking video quality and task performance to sustained improvements in models and harnesses.",
+      "hot_score": 69.4837,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-29T10:47:39+00:00",
+      "last_seen_at": "2026-11-03T05:13:54.983200+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 23
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_050e4f83d6eddeaa": {
+      "id": "it_050e4f83d6eddeaa",
+      "source": "github_trending",
+      "title": "JustVugg/colibri",
+      "url": "https://github.com/JustVugg/colibri",
+      "summary": "Run frontier MoE models on hardware you already own — pure C, zero deps, experts streamed from disk. Tiny engine, immense model. 🐦",
+      "hot_score": 67.5,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-03T05:13:22.901832+00:00",
+      "last_seen_at": "2026-11-03T05:13:54.981086+00:00",
+      "metrics": {
+        "stars_total": 46713,
+        "stars_in_window": 675,
+        "forks": 5394,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "C"
+    },
+    "it_2a9dfe71c25fa67e": {
+      "id": "it_2a9dfe71c25fa67e",
+      "source": "hf_papers",
+      "title": "Democratizing Robot-Use Agents: A Unified Harness with Open Models",
+      "url": "arxiv:2611.01560",
+      "summary": "Robot-use Agents (RUAs) have shown promising zero-shot manipulation capabilities, but reliance on frontier, proprietary models limits research into further training. To democratize RUA research, we introduce uni-robot-agent, a unified harness for competitive open-weight robot use that supports further training. Without privileged inputs, an out-of-the-box Qwen3.8-Flash-Next achieves a RoboDojo Score of 31.39, surpassing the published GPT-6 Astra-RoboProbe result of 28.97 and many VLA/WAM baselines, and performs competitively on 19 real-world tasks. Our analysis across model generations, families, and sizes links effective robot use to four general capabilities, suggesting that future RUA training should develop them jointly.",
+      "hot_score": 66.3962,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-31T20:00:00+00:00",
+      "last_seen_at": "2026-11-03T05:13:54.984399+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 14
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_c90a52c1ce6e4b92": {
+      "id": "it_c90a52c1ce6e4b92",
+      "source": "hf_papers",
+      "title": "From Fragmentation to Fusion: A Survey and Roadmap for Omnimodal Embeddings",
+      "url": "arxiv:2611.00172",
+      "summary": "Embedding models underpin virtually every modern AI system, from search engines to recommendation systems. Despite shared mathematical foundations, research on embedding models remains fragmented by modality: the communities develop largely in isolation, seldom exchanging insights. We argue that this fragmentation obscures a deeper convergence. Driven by contrastive learning, Transformer architectures, and a granularity shift, embedding research across modalities is converging toward a common set of principles, even as modality-specific challenges remain underexplored. To reason across this convergence without conflating it, we propose a framework of three progressively harder capabilities: coverage, comparability, and compositionality. Three paths toward unification satisfy these in turn: transformation broadens coverage, alignment enables comparability, and joint embedding, the terminus we advocate, aims at compositionality. This position paper traces the resulting evolution, providing the first unified, cross-cutting treatment of omnimodal embedding research.",
+      "hot_score": 66.3088,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-29T20:00:00+00:00",
+      "last_seen_at": "2026-11-03T05:13:54.983808+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 16
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_cdc5efdead963d80": {
+      "id": "it_cdc5efdead963d80",
+      "source": "github_trending",
+      "title": "Donchitos/Claude-Code-Game-Studios",
+      "url": "https://github.com/Donchitos/Claude-Code-Game-Studios",
+      "summary": "Turn Claude Code into a full game dev studio — 49 AI agents, 72 workflow skills, and a complete coordination system mirroring real studio hierarchy.",
+      "hot_score": 66.2401,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-30T04:14:36.710915+00:00",
+      "last_seen_at": "2026-11-03T05:13:54.979068+00:00",
+      "metrics": {
+        "stars_total": 33798,
+        "stars_in_window": 1379,
+        "forks": 4534,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "Shell"
+    },
+    "it_9eb94daec01316a4": {
+      "id": "it_9eb94daec01316a4",
+      "source": "hackernews",
+      "title": "Ask HN: Who wants to be hired? (November 2026)",
+      "url": "https://news.ycombinator.com/item?id=50338726",
+      "summary": "Share your information if you are looking for work. Please use this format: Location:\nRemote:\nWilling to relocate:\nTechnologies:\nRésumé/CV:\nEmail:\n\nPlease only post if you are personally looking for work. Agencies, recruiters, job boards,\nand so on, are off topic here. Readers: please only email these addresses to discuss work opportunities. Searchers: try https://www.wantstobehired.com .",
+      "hot_score": 63.6678,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-02T16:01:37+00:00",
+      "last_seen_at": "2026-11-03T05:13:54.940086+00:00",
+      "metrics": {
+        "points": 41,
+        "num_comments": 308
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_81446f2462dee9e2": {
+      "id": "it_81446f2462dee9e2",
+      "source": "github_trending",
+      "title": "mattpocock/skills",
+      "url": "https://github.com/mattpocock/skills",
+      "summary": "Skills for Real Engineers. Straight from my .agents directory.",
+      "hot_score": 61.6557,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-31T03:55:58.260523+00:00",
+      "last_seen_at": "2026-11-03T05:13:54.981481+00:00",
+      "metrics": {
+        "stars_total": 310431,
+        "stars_in_window": 883,
+        "forks": 26111,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Shell"
+    },
+    "it_66c488cac1410701": {
+      "id": "it_66c488cac1410701",
+      "source": "hackernews",
+      "title": "Agentic backdoors via pretraining poisoning",
+      "url": "arxiv:2610.37741",
+      "summary": "",
+      "hot_score": 60.749,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-02T18:30:58+00:00",
+      "last_seen_at": "2026-11-03T05:13:54.991886+00:00",
+      "metrics": {
+        "points": 94,
+        "num_comments": 28
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_42da0213eeb6fa65": {
+      "id": "it_42da0213eeb6fa65",
+      "source": "hf_papers",
+      "title": "Wave Forcing: Towards Speed-of-Light Streaming Video Generation",
+      "url": "arxiv:2611.00859",
+      "summary": "Real-time long-video generation requires continuous output with consistent appearance and natural motion. Existing chunk-wise autoregressive methods face challenges in both generation efficiency and long-video quality: serialized denoising and history-cache refresh require two forward passes even with one-step denoising, and longer rollouts can degrade quality and cause camera drift. We propose Wave Forcing (WF), which co-designs generation, training, and execution for continuous video output with multi-step denoising. WF uses chunk-wise causal attention to access earlier, cleaner chunks before their denoising is complete, and distributes staggered denoising and cache-refresh stages across full-model replicas to achieve 1F1C: one output chunk per concurrent forward round after pipeline fill. To adapt the model to this continuous generation process, we develop a three-stage training procedure that successively introduces mixed-noise denoising, motion supervision, and causal adaptation using self-generated history. To execute this process efficiently, Wave Runtime (WaveRT) uses Wave Parallelism (WP) for early K/V delivery and communication-computation overlap, together with optimized kernels and pipelined VAE decoding. Experiments on Wan2.1-T2V-1.3B show that 5-step WF maintains overall quality comparable to Rolling Forcing while achieving higher Dynamic Degree on both short and long videos. Our system efficiency experiments show that 4-step WF achieves 147.6 DiT FPS and 134.8 end-to-end FPS on eight H200 GPUs, yielding 7.07x the single-GPU end-to-end throughput. In DiT-only tests with matched SageAttention+W8A8 backends, denoising steps, and GPU counts, WP delivers up to 2.53x the throughput of the faster of the Ulysses and Ring context-parallel baselines across six model scales (1.3B-14B).",
+      "hot_score": 60.5897,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-30T20:00:00+00:00",
+      "last_seen_at": "2026-11-03T05:13:54.985057+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 13
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_f954b07c153995ae": {
+      "id": "it_f954b07c153995ae",
+      "source": "hf_papers",
+      "title": "NorthCUA Technical Report: Turbocharging Computer-Use Agents through Experience at Scale",
+      "url": "arxiv:2611.02102",
+      "summary": "Scaling computer-use agents from individual actions to complex software work requires experience that connects decisions to complete outcomes. We present NorthCUA, an integrated system for turbocharging computer-use agents through experience at scale. Its Experience Flywheel supplies diverse executable tasks to the NorthCUA Harness, which sustains long interactions, records decisions, and checks task outcomes. The Flywheel uses these records to curate verified trajectories. For unsolved tasks, recursive self-improvement evolves reusable skills and preserves verified milestones so later attempts build on earlier progress. Staged Learning combines this experience with grounding data from the Flywheel to develop GUI competence through mid-training and long-horizon supervised fine-tuning. The policy then learns from fresh attempts in the same Harness through joint desktop-web reinforcement learning, closing the loop between experience production and policy improvement. The resulting Nano, Mini, and Pro family achieves state-of-the-art results among open-source models across GUI grounding, desktop execution, and Web interaction under the reported evaluation settings. For more responsive Web workflows, NorthCUA-Ultrafast pairs direct action selection with open-ended generation on pre-RL Nano, offering a measured quality-latency tradeoff. Together, these advances establish NorthCUA as a high-performing model family and a reusable foundation for agents that carry complex software work from intent to completion.",
+      "hot_score": 59.4731,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-31T20:00:00+00:00",
+      "last_seen_at": "2026-11-03T05:13:54.985643+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 11
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_9a691a92e2c9c0eb": {
+      "id": "it_9a691a92e2c9c0eb",
+      "source": "github_trending",
+      "title": "paperclipai/paperclip",
+      "url": "https://github.com/paperclipai/paperclip",
+      "summary": "The open-source app everyone uses to manage agents at work",
+      "hot_score": 57.8571,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-03T05:13:22.901844+00:00",
+      "last_seen_at": "2026-11-03T05:13:54.982203+00:00",
+      "metrics": {
+        "stars_total": 110523,
+        "stars_in_window": 412,
+        "forks": 18297,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "TypeScript"
+    },
+    "it_fd613bbbc38c4a34": {
+      "id": "it_fd613bbbc38c4a34",
+      "source": "hackernews",
+      "title": "Claude Opus 5.5 Can Draw Permit-Level Architectural Drawings",
+      "url": "https://stephenjgallagher.substack.com/p/ai-can-draw-blueprints-now",
+      "summary": "",
+      "hot_score": 55.6684,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-02T16:25:33+00:00",
+      "last_seen_at": "2026-11-03T05:13:54.938503+00:00",
+      "metrics": {
+        "points": 89,
+        "num_comments": 31
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_46e0171cedf68260": {
+      "id": "it_46e0171cedf68260",
+      "source": "hackernews",
+      "title": "DiscImageStudio: burn visible artwork onto CDs, DVDs and Blu-ray discs",
+      "url": "https://github.com/JiaFeiMiao-K-Cat/DiscImageStudio",
+      "summary": "",
+      "hot_score": 55.0227,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-03T01:33:43+00:00",
+      "last_seen_at": "2026-11-03T05:13:54.991567+00:00",
+      "metrics": {
+        "points": 100,
+        "num_comments": 24
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_017ebe025971dc52": {
+      "id": "it_017ebe025971dc52",
+      "source": "github_trending",
+      "title": "FlashML-org/FreeToken",
+      "url": "https://github.com/FlashML-org/FreeToken",
+      "summary": "FreeToken brings datacenter-scale model serving to your desktop. Run massive models locally, fast and efficiently.",
+      "hot_score": 54.6609,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-02T04:14:55.362812+00:00",
+      "last_seen_at": "2026-11-03T05:13:54.979575+00:00",
+      "metrics": {
+        "stars_total": 16219,
+        "stars_in_window": 653,
+        "forks": 1595,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "Python"
+    },
+    "it_e95edf9e703a97dd": {
+      "id": "it_e95edf9e703a97dd",
+      "source": "github_trending",
+      "title": "p-e-w/heretic",
+      "url": "https://github.com/p-e-w/heretic",
+      "summary": "Training-free language model modification: Remove censorship, suppress slop, reduce sycophancy, and more",
+      "hot_score": 54.6429,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-03T05:13:22.901852+00:00",
+      "last_seen_at": "2026-11-03T05:13:54.982865+00:00",
+      "metrics": {
+        "stars_total": 38220,
+        "stars_in_window": 420,
+        "forks": 4333,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_420c7409c05b7e7d": {
+      "id": "it_420c7409c05b7e7d",
+      "source": "hf_papers",
+      "title": "Diagnosing the Reference Gap: What Visual Scaffolds Can and Cannot Fix in Multimodal Reasoning",
+      "url": "arxiv:2610.39419",
+      "summary": "Multimodal large language models can recognize visual content yet struggle to reason reliably over it across multiple steps. In counting, a model may see all objects but lose track of which ones it has counted. We argue that such failures, commonly attributed to perception, reveal a reference gap: the failure to bind language to the relevant visual entities, regions, or locations. Motivated by the theory of visual routines, we test whether external references such as numbering can narrow this gap. We introduce ReGap-Bench, a paired benchmark of five visual reasoning tasks in which the scene, question, and answer are fixed and only the reference varies. Results show that task-matched references improve accuracy by up to 25\\%, while mismatched references provide little benefit or even hurt performance. These findings identify the reference gap as a bottleneck distinct from visual perception and show that constructing task-appropriate visual references can serve as a training-free visual skill for improving multimodal reasoning.",
+      "hot_score": 51.963,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-29T02:00:35+00:00",
+      "last_seen_at": "2026-11-03T05:13:54.986218+00:00",
+      "metrics": {
+        "num_comments": 2,
+        "upvotes": 9
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_671f4fbff0f57a20": {
+      "id": "it_671f4fbff0f57a20",
+      "source": "github_trending",
+      "title": "karpathy/nanochat",
+      "url": "https://github.com/karpathy/nanochat",
+      "summary": "The best ChatGPT that $100 can buy.",
+      "hot_score": 51.4286,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-03T05:13:22.901848+00:00",
+      "last_seen_at": "2026-11-03T05:13:54.982550+00:00",
+      "metrics": {
+        "stars_total": 59999,
+        "stars_in_window": 321,
+        "forks": 8419,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_060d86899698f554": {
+      "id": "it_060d86899698f554",
+      "source": "github_trending",
+      "title": "hyprwm/Hyprland",
+      "url": "https://github.com/hyprwm/Hyprland",
+      "summary": "Hyprland is an independent, highly customizable, dynamic tiling Wayland compositor that doesn't sacrifice on its looks.",
+      "hot_score": 48.5895,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-02T04:14:55.362817+00:00",
+      "last_seen_at": "2026-11-03T05:13:54.978596+00:00",
+      "metrics": {
+        "stars_total": 40036,
+        "stars_in_window": 509,
+        "forks": 2158,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "C++"
+    },
+    "it_743d9611d21b90f6": {
+      "id": "it_743d9611d21b90f6",
+      "source": "hf_papers",
+      "title": "DecisionRank: On-Policy Distillation for Decision-Model Rerankers",
+      "url": "arxiv:2610.42128",
+      "summary": "Decision models target structured tasks by directly predicting choices or scores, avoiding autoregressive decoding latency. However, transferring a generative LLM's ranking knowledge to a decision model remains challenging: the teacher expresses preferences through a ranked list of document ID sequences, while the student determines the ranking using scores from the first-token position. To bridge this gap, we introduce DecisionRank, a decision model trained through item-space on-policy distillation (OPD). Item-space OPD constructs the student's rollout by sorting its document scores into a ranked sequence. A generative teacher takes the resulting ranking list as inputs and provides conditional feedback to directly supervise those scores. Combined with offline ranking supervision, DecisionRank achieves state-of-the-art performance on both general and reasoning-intensive retrieval benchmarks such as TREC DL, BEIR, and BRIGHT. Across four benchmarks, item-space OPD consistently outperforms alternative training objectives. Even at 1.7B parameters, DecisionRank surpasses its 27B generative teacher on TREC DL19--23. At 8B, it outperforms its generative listwise counterpart while running 24.5times faster on TREC DL and 16.7times faster on BRIGHT.",
+      "hot_score": 47.2703,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-29T20:00:00+00:00",
+      "last_seen_at": "2026-11-03T05:13:54.986861+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 5
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_8f9b0e0b60da34e3": {
+      "id": "it_8f9b0e0b60da34e3",
+      "source": "hf_papers",
+      "title": "DeFT-RAG: Decomposing Multi-Hop Questions into Self-Contained Sub-Questions with Reusable Answers",
+      "url": "arxiv:2610.37826",
+      "summary": "Retrieval-augmented generation (RAG) lets a large language model (LLM) answer questions by retrieving relevant passages from a large corpus. However, RAG struggles with multi-hop questions, which require chaining facts spread across several documents through intermediate entities that the question never mentions. Graph-based RAG methods retrieve once from the entities a question names and so rarely recover the full evidence chain. Iterative RAG methods recover it step by step, but their accuracy is limited by the many tasks they ask the LLM to perform, such as planning the sub-questions, deciding their dependencies, rewriting them as answers arrive, and keeping track of what is known. We propose DeFT-RAG, a RAG framework built on three components. First, DeFT-RAG generates one self-contained sub-question at a time from the original question and the sub-questions answered so far with their answers (QA pairs). Each sub-question names every entity it asks about, which removes the need to plan, track dependencies or rewrite, and lets the LLM focus on a single fine-grained task at a time. Second, DeFT-RAG moves the remaining LLM work outside the LLM: rule-based updates to a QA table that keeps track of what is known, and yes/no decisions made by a fine-tuned lightweight decision model. Third, DeFT-RAG caches the QA pairs and reuses an answer when a later question asks a sub-question with the same meaning. On MuSiQue, 2WikiMultiHopQA and HotpotQA, DeFT-RAG achieves the best accuracy among thirteen baselines with both gpt-4o-mini and Qwen3.6 as the backbone, while giving the LLM fewer input tokens than any other iterative method. With a QA cache shared across 1,000 MuSiQue questions, 23.1% of sub-questions are answered from the cache, which reduces LLM calls by 12.9% without lowering accuracy.",
+      "hot_score": 47.2703,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-29T20:00:00+00:00",
+      "last_seen_at": "2026-11-03T05:13:54.987419+00:00",
+      "metrics": {
+        "num_comments": 2,
+        "upvotes": 5
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_4c0c8ed6a2230f7f": {
+      "id": "it_4c0c8ed6a2230f7f",
+      "source": "hackernews",
+      "title": "WorkOS reports security breach",
+      "url": "https://news.ycombinator.com/item?id=50345712",
+      "summary": "It's not on their website or Trust center yet, but we received the following breach notification from WorkOS: We are writing to notify you of a data security incident that we detected on October 30, 2026 and are continuing to investigate. We value your trust and want to keep you informed while our investigation continues. What Happened On October 30, 2026, at 16:39 UTC, WorkOS detected anomalous traffic to an internal business system. Our investigation identified evidence the attack was likely d",
+      "hot_score": 46.8409,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-02T23:30:59+00:00",
+      "last_seen_at": "2026-11-03T05:13:54.938919+00:00",
+      "metrics": {
+        "points": 62,
+        "num_comments": 7
+      },
+      "streak_days": 0,
+      "language": "en"
+    }
+  },
+  "meta": {
+    "mode": "hybrid",
+    "day": "2026-11-03",
+    "generated_at": "2026-11-03T05:14:57.253691+00:00",
+    "window": {
+      "since": "2026-11-02T05:13:21.210773+00:00",
+      "until": "2026-11-03T05:13:55.009677+00:00",
+      "hours": 24.0,
+      "since_local": "2026-11-02T13:13+08:00",
+      "until_local": "2026-11-03T13:13+08:00",
+      "tz": "Asia/Shanghai"
+    },
+    "analysis": {
+      "items": 102,
+      "scored": 102,
+      "topics": 3,
+      "new_entity_mention_rows": 126,
+      "state_items": 15
+    },
+    "llm": {
+      "degraded": false,
+      "degraded_reason": "",
+      "calls": 1
+    },
+    "collect": {
+      "ok_sources": 6,
+      "failed_sources": 1,
+      "skipped": 0,
+      "total_items": 103
+    },
+    "verify": {
+      "verified": 0,
+      "unverifiable": 0,
+      "deferred": 1,
+      "failed": 0,
+      "llm_calls": 0
+    },
+    "predictions": {
+      "total": 116,
+      "verified": 1,
+      "pending": 115,
+      "unverifiable": 0,
+      "hit_rate": 0.0,
+      "weighted_score": 0.0,
+      "brier": 0.36
+    },
+    "prediction_generation": {
+      "mode": "hybrid",
+      "generated": 5,
+      "inserted": 5,
+      "dropped": [],
+      "llm_calls": 1,
+      "candidate_pool": 20,
+      "degraded": false,
+      "degraded_reason": ""
+    },
+    "brief": {
+      "max_items_per_section": 10,
+      "velocity_board_enabled": true,
+      "velocity_board_top_n": 5
+    },
+    "signals": {
+      "entities": 547,
+      "points": 1263,
+      "with_velocity": 67,
+      "insufficient": 112,
+      "cold_start": 368,
+      "min_window_hours": 6.0
+    },
+    "enhance_total": 28,
+    "enhanced": 28,
+    "enhance_skipped_count": 0,
+    "enhance_cache_hit": 2,
+    "enhance_cost_cny": 0.012004
+  }
+}
