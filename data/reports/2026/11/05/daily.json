@@ -1,0 +1,959 @@
+{
+  "date": "2026-11-05",
+  "headline": "英伟达固件加密把 Linux 推理速度砍到 35%，而开源侧正用纯 C 单 CPU 跑 2.78 万亿参数模型——算力护城河正被两头夹击",
+  "headline_item_id": "it_88c23216a431785a",
+  "overview_bullets": [
+    {
+      "icon": "🔐",
+      "topic": "固件锁速",
+      "text": "Nvidia RTX Spark 加密固件让 Linux 推理速度只剩 35%，硬件厂商用固件而非芯片本身设卡，开源推理栈的性价比优势被行政性削弱。"
+    },
+    {
+      "icon": "🛠️",
+      "topic": "端侧奇观",
+      "text": "kimi-k3-in-c 号称在单 CPU、8.24GB 内存、无 BLAS 无框架的 C99 环境跑 2.78 万亿参数模型，无论真伪都说明端侧推理的工程想象空间被严重低估。"
+    },
+    {
+      "icon": "🤖",
+      "topic": "智能体基建",
+      "text": "GitHub 热榜被 agent 周边占满：agent-desktop 的 computer use CLI、claude-mem 的跨会话记忆、worktrunk 的并行 worktree，智能体正从模型能力转向工程管道。"
+    },
+    {
+      "icon": "📄",
+      "topic": "具身智能",
+      "text": "今日 HF 论文密集指向 VLA 与机器人数据：像素到动作的原生策略、LLM 代理替代遥操作、人到机器人迁移，机器人数据采集成本成为核心瓶颈。"
+    },
+    {
+      "icon": "💬",
+      "topic": "信任赤字",
+      "text": "HN 同时出现「Everything is an AI scam now」与「你需要钢铁般的神经才能和 agent 共事」，热度不高但情绪一致：落地摩擦正在取代能力惊叹。"
+    }
+  ],
+  "executive_summary": "今天的主线不是模型更强，而是围绕推理成本、智能体工程与机器人数据的三场「降本战」同时开打，而硬件固件与信任赤字是两条被低估的暗线。",
+  "editor_note": {
+    "core": "今天最该记住的是英伟达固件加密导致 Linux 推理速度降至 35%：当模型层竞争趋于同质，控制权正从算法回撤到固件与驱动，这比任何榜单排名都更能决定谁能低成本跑推理。",
+    "cross_signal": "开源侧的 kimi-k3-in-c 用纯 C 单 CPU 跑超大模型，与论文侧 LLM 代理替代遥操作降数据成本、GitHub 侧 agent 工具链降工程成本，三处独立信号共同指向「把单位任务成本压到极限」这一主题。",
+    "counterintuitive": "热榜第一是 agent-desktop 这类工具，但 HN 上真正引发共鸣的是「和 agent 共事需要钢铁般的神经」——热度在能力展示，价值却在摩擦治理，claude-mem 这类记忆与上下文工具被低估正是证据。",
+    "risk": "kimi-k3-in-c 这类「单 CPU 跑万亿参数」的项目极易被当作能力突破传播，实际更可能是量化/稀疏或演示性实现，若不加验证就引用，会污染对端侧推理真实边界的判断。"
+  },
+  "contradictions": [
+    "一边是 Ripple-65B 宣称美国开源权重在智能体编码上达到 SOTA，一边是社区抱怨 AI 骗局泛滥、agent 难伺候，能力叙事与使用体验明显脱节。",
+    "Nvidia 用固件加密限制自家 GPU 的 Linux 推理性能，与其在 AI 算力叙事中被视为「赋能者」的定位自相矛盾。",
+    "kimi-k3-in-c 声称 2.78 万亿参数在 8.24GB 内存单 CPU 运行，与常规参数量-内存换算严重不符，需以实际代码验证。"
+  ],
+  "underrated": [
+    "Progress on provable inference for large language models：可证明推理是合规与高可靠场景的刚需，但热度仅 65.5，远低于工具类项目。",
+    "VeriSpoof: Beyond Real or Fake with One Audio LLM：把音频鉴伪从二分类扩展到来源溯源，是深伪治理里真正缺的一环。",
+    "GameVerse: Minute-Scale Gameplay Dataset for Long-Horizon Interactive World Modeling：指出世界模型一分钟失真的根因是数据稀缺而非容量，判断精准但热度平平。",
+    "max-sixty/worktrunk：并行 agent 工作流的 Git worktree 管理，是 agent 规模化落地最脏最累的那块基建。",
+    "If you're on Replit Pro, you have until November 8 to opt out of arbitration：开发者平台用仲裁条款转移风险，值得每个付费用户留意。"
+  ],
+  "sections": [
+    {
+      "name": "开源项目",
+      "summary": "GitHub 热榜几乎被智能体工具链承包，从桌面操作、记忆持久化到并行 worktree，工程层创新密度远高于模型层。",
+      "item_ids": [
+        "it_a4e85f0863890b24",
+        "it_f7fc24d300640e30",
+        "it_94d74ac121344dda",
+        "it_c4f530cdd1a930e9",
+        "it_272a08b9ea67bd4c",
+        "it_ebfcd2cb02eb3c5c",
+        "it_e49944455d9ba6a5",
+        "it_81446f2462dee9e2",
+        "it_fc370ae94ba2edfb",
+        "it_576ebc58d2e940ac",
+        "it_234b8cb2ffad5d07",
+        "it_9fc1aebb67ab0b7e",
+        "it_56c36dc037a21e1b",
+        "it_c950dcef3940fcca",
+        "it_b72ae434cf4573bb"
+      ]
+    },
+    {
+      "name": "论文与研究",
+      "summary": "VLA 与机器人数据采集是今日论文绝对重心，另有世界模型长时程数据集与音频鉴伪、可证明推理等偏基础的方向。",
+      "item_ids": [
+        "it_d850be8f18b20931",
+        "it_e546a8a5f340091d",
+        "it_1af61d25d2008e91",
+        "it_5e8dd7e746d65857",
+        "it_4095e8db6c04dd9d",
+        "it_6ee79c0f1b869d08",
+        "it_78e987e8323ba36d"
+      ]
+    },
+    {
+      "name": "社区舆论",
+      "summary": "HN 讨论从「怎么用 agent」转向「agent 有多难伺候」与「AI 骗局泛滥」，实用主义与怀疑主义同时升温。",
+      "item_ids": [
+        "it_d94c9f77ddafc83a",
+        "it_793baf0e54548bea",
+        "it_46f48fe387468cbc",
+        "it_45c552d60f93189e",
+        "it_887e8f45c286f252",
+        "it_0f35e299c97c927a",
+        "it_2b5f926b26c14ac6"
+      ]
+    },
+    {
+      "name": "产业与新闻",
+      "summary": "美国开源权重模型 Ripple-65B 主打智能体编码 SOTA，YC 系 Kino 把 agent 塞进视频协作时间线，商业侧在抢 agent 工作流入口。",
+      "item_ids": []
+    }
+  ],
+  "comments": [
+    {
+      "item_id": "it_a4e85f0863890b24",
+      "one_liner": "vercel-labs 推出的面向 AI agent 的 computer use 命令行工具",
+      "why": "把「操作电脑」这一层抽象成 CLI，代理就能脱离浏览器沙箱直接驱动桌面应用，自动化边界从网页扩展到本地软件栈。",
+      "stance": "方向对，但让代理拿到桌面控制权，权限与审计问题会被推到每个使用者头上。"
+    },
+    {
+      "item_id": "it_f7fc24d300640e30",
+      "one_liner": "Scrapling 是一个 Python 网页抓取框架，覆盖从单次请求到大规模爬取的全流程。",
+      "why": "把单请求抓取到全站爬取的适配层收进一个框架，降低了中小团队自建采集管线的门槛，也让反爬对抗从自研转向依赖社区维护。",
+      "stance": "抓取框架的竞争点已从功能多少转向反封锁存活率，谁先被主流站点识别谁就出局。"
+    },
+    {
+      "item_id": "it_94d74ac121344dda",
+      "one_liner": "NVIDIA 开源的 Python 框架，用于在数据之上构建语义化、基于图的推理层，为 LLM 与 agent 工作流提供确定性查询生成与更可解释的检索。",
+      "why": "把本体论/知识图谱层塞进 LLM 与 agent 的推理链路，让查询生成从概率采样变成可复现的确定性过程，直接决定 agent 输出能否被审计。",
+      "stance": "方向对：agent 落地卡在可解释性，语义层比再堆参数更值钱。"
+    },
+    {
+      "item_id": "it_c4f530cdd1a930e9",
+      "one_liner": "GitHub 官方推出的工具包，帮助开发者上手 SDD（规格驱动开发）等流程。",
+      "why": "把「先写规格再写代码」固化成可复用的工具链，意味着 AI 编码的瓶颈从生成速度转移到需求约束的显式表达。",
+      "stance": "规格驱动是被低估的路线，但工具本身只是脚手架，成败在团队肯不肯写规格。"
+    },
+    {
+      "item_id": "it_272a08b9ea67bd4c",
+      "one_liner": "基于 AI 大模型与自动化工作流，根据主题或关键词一键生成高清短视频的工具。",
+      "why": "把选题、脚本、素材、剪辑串成一条自动化流水线，短视频的边际生产成本被压到接近零，内容供给端将迅速过剩。",
+      "stance": "生产力真实，但同质化内容会淹没平台，价值在分发而非生成。"
+    },
+    {
+      "item_id": "it_ebfcd2cb02eb3c5c",
+      "one_liner": "为各类 coding agent 提供跨会话持久记忆的工具，记录会话内容并用 AI 压缩后回注到后续会话。",
+      "why": "跨会话持久记忆被做成通用层并兼容 Claude Code、Codex、Gemini 等多家代理，代理的上下文从一次性消耗品变成可累积资产，切换工具的成本随之下降。",
+      "stance": "记忆层会成为代理生态里最容易被锁定的一环，谁掌握压缩与注入策略谁就掌握粘性。"
+    },
+    {
+      "item_id": "it_e49944455d9ba6a5",
+      "one_liner": "Garry Tan 公开的 Claude Code 配置，包含 23 个分别扮演 CEO、设计师、工程经理、发布经理、文档工程师和 QA 的工具。",
+      "why": "把一整套角色化 agent 配置当作可复制资产分发，等于把「怎么用 AI 干活」从个人经验变成可安装的组织流程。",
+      "stance": "23 个角色是营销包装，真正可迁移的是分工拆解思路，别照抄。"
+    },
+    {
+      "item_id": "it_81446f2462dee9e2",
+      "one_liner": "mattpocock 公开的 .agents 目录中的工程技能集合",
+      "why": "把个人 .agents 目录里的技能直接公开，等于把「提示词工程」沉淀为可复用资产，工程师的编码习惯开始被版本化分发。",
+      "stance": "有价值，但技能包高度依赖作者个人工作流，复制到别人机器上多半水土不服。"
+    },
+    {
+      "item_id": "it_fc370ae94ba2edfb",
+      "one_liner": "用可移植 C99 在单颗 CPU、8.24 GB 内存上运行 2.78 万亿参数 Kimi K3 推理的实现，不依赖 BLAS、框架或 GPU。",
+      "why": "以纯 C99 在单 CPU、8GB 内存上跑万亿级参数模型，把大模型推理从 GPU 集群拉回普通机器，硬件门槛与云依赖同时被削弱。",
+      "stance": "工程炫技成分大，但方向值得押注：推理去 GPU 化会重画成本曲线。"
+    },
+    {
+      "item_id": "it_576ebc58d2e940ac",
+      "one_liner": "floci 是一个轻量、免费、可本地运行的 AWS 服务模拟器，作为 LocalStack 的替代方案。",
+      "why": "本地模拟 AWS 服务让开发与测试摆脱真实云账号和计费，直接压缩了 CI 环境成本与凭据泄露面。",
+      "stance": "LocalStack 的免费边界正在被侵蚀，这类替代品的胜负取决于服务覆盖度而非轻量。"
+    },
+    {
+      "item_id": "it_d850be8f18b20931",
+      "one_liner": "一篇论文，探讨让视觉-语言-动作模型直接从像素进行动作推理，而非先经视觉编码器压缩感知。",
+      "why": "指出视觉编码器压缩掉的局部几何与边界恰是操作任务最依赖的信号，等于质疑当前 VLA 的感知前置范式本身。",
+      "stance": "这是对主流架构的正面挑战，比再刷一个 benchmark 更有分量。"
+    },
+    {
+      "item_id": "it_e546a8a5f340091d",
+      "one_liner": "PyRUA-DataFarm 提出用 LLM 编码 agent 代替人类遥操作，为真实机器人采集演示数据。",
+      "why": "让编码 agent 顶替人类遥操作员采集机器人演示，把每条数据的机器人机时与人力成本转成算力成本，数据规模的天花板被抬高。",
+      "stance": "数据采集自动化是具身智能最该被自动化的环节，这条踩在要害上。"
+    },
+    {
+      "item_id": "it_1af61d25d2008e91",
+      "one_liner": "GameVerse 是一个分钟级游戏画面数据集，用于训练长时程交互式世界模型。",
+      "why": "把交互式世界模型的失稳归因于长时序数据稀缺而非模型容量，为后续工作把问题从架构竞赛改道到数据集建设。",
+      "stance": "诊断比结论更有价值：一分钟就崩的世界模型，谈应用为时过早。"
+    },
+    {
+      "item_id": "it_5e8dd7e746d65857",
+      "one_liner": "Solv3R 将 3D 循环 Transformer 用作多视图求解器，以迭代方式完成结构光重建。",
+      "why": "用循环 Transformer 模拟 SfM 的迭代精化，使新增视角无需重算已有几何，三维重建从离线批处理转向可增量扩展。",
+      "stance": "把经典几何流程学成网络是稳妥路线，增量能力才是真差异点。"
+    },
+    {
+      "item_id": "it_4095e8db6c04dd9d",
+      "one_liner": "一篇论文，研究通过桥接表征与动作空间，把人类演示迁移到 VLA 策略以适配目标机器人。",
+      "why": "通过桥接人类与机器人的表征与动作空间，让易采集的人类演示替代昂贵的本体专属示教，VLA 的适配成本随之下降。",
+      "stance": "跨本体迁移是 VLA 商业化的必经关口，这条路径比堆真机数据更划算。"
+    },
+    {
+      "item_id": "it_6ee79c0f1b869d08",
+      "one_liner": "StreamDuo 提出跨游戏直播解说任务：模型在一款游戏上训练，却要为从未见过的游戏做实时解说，并搭配一个研究型 agent。",
+      "why": "把评测从同游戏内推到跨游戏，暴露直播解说模型只学到节奏、没学到游戏知识的短板，直接决定这类模型能否用于新游戏上线首日。",
+      "stance": "跨游戏泛化才是直播解说的真门槛，同游戏刷分没有说服力。"
+    },
+    {
+      "item_id": "it_78e987e8323ba36d",
+      "one_liner": "VeriSpoof 是一个音频语言模型，用共享权重统一处理语音深伪检测、来源归属等五项取证任务。",
+      "why": "把语音鉴伪从二分类扩到溯源与证据链，取证结论要能指向具体生成系统，这会让只输出真假概率的检测器失去采购价值。",
+      "stance": "鉴伪不给来源和证据就是不可用的结论，统一五任务的路线是对的。"
+    },
+    {
+      "item_id": "it_d94c9f77ddafc83a",
+      "one_liner": "一篇讨论大语言模型可证明推理（provable inference）进展的文章。",
+      "why": "把大模型推理从经验调参推向可证明的保证，一旦成立，高风险场景的验收标准会从跑分转向形式化保证，评测话语权随之转移。",
+      "stance": "可证明推理是让 LLM 进入受监管流程的前提，比再刷一个榜单重要得多。"
+    },
+    {
+      "item_id": "it_793baf0e54548bea",
+      "one_liner": "Hacker News 上的讨论帖，征集大家日常使用的 AI agent 配置与订阅方案。",
+      "why": "真实用户的订阅清单与工作流拼装，比厂商发布会更能反映 agent 落地的实际形态，也暴露哪些环节仍靠人工兜底。",
+      "stance": "看真实配置比看 demo 有用，多数所谓 agent 工作流仍是人肉胶水。"
+    },
+    {
+      "item_id": "it_46f48fe387468cbc",
+      "one_liner": "一篇评论文章，讨论当下各类产品与服务纷纷贴上 AI 标签的骗局现象。",
+      "why": "AI 标签被滥用后，用户对一切新产品的默认预期转为怀疑，正经做 AI 的团队要额外付出信任成本来证明自己不是套壳。",
+      "stance": "骗局泛滥的代价由诚实团队承担，行业需要可验证的能力披露而非口号。"
+    },
+    {
+      "item_id": "it_45c552d60f93189e",
+      "one_liner": "一篇讲述与 AI agent 协作需要极强心理承受力的文章。",
+      "why": "agent 的不确定性把审查负担转移给操作者，团队的组织成本从写代码变成盯输出，直接影响 agent 在企业的推广速度。",
+      "stance": "agent 越自主，人的精神负担越重，这不是效率工具该有的样子。"
+    },
+    {
+      "item_id": "it_887e8f45c286f252",
+      "one_liner": "提醒 Replit Pro 用户须在 11 月 8 日前选择退出仲裁条款。",
+      "why": "仲裁条款的退出窗口把平台与开发者的纠纷处理方式摆上台面，错过期限即丧失诉讼选择权，对依赖该平台交付的团队是实质法律风险。",
+      "stance": "默认捆绑仲裁是平台转嫁风险，开发者应把退出期限当成上线检查项。"
+    },
+    {
+      "item_id": "it_0f35e299c97c927a",
+      "one_liner": "Ripple-65B 预览版发布，宣称在 agentic coding 上达到美国开源权重模型的 SOTA。",
+      "why": "美国开源权重模型主打 agentic coding，把竞争焦点从通用对话挪到代码代理，闭源 API 的定价与迁移成本会被重新评估。",
+      "stance": "开源权重在编码代理上追平，闭源模型的溢价空间被压缩。"
+    },
+    {
+      "item_id": "it_2b5f926b26c14ac6",
+      "one_liner": "YC S23 项目 Kino AI 在 Launch HN 上发布，集素材存储、视频编辑与团队评审链接于一体的 AI 媒体管理与剪辑工具。",
+      "why": "让编码 agent 直接操作视频时间线，把 AI 编程能力接到媒体生产管线，剪辑协作的接口从 GUI 变成可被 agent 调用的时间线。",
+      "stance": "让 agent 进时间线是对的方向，但素材管理与权限边界才是成败关键。"
+    }
+  ],
+  "stats": {},
+  "items": {
+    "it_a4e85f0863890b24": {
+      "id": "it_a4e85f0863890b24",
+      "source": "github_trending",
+      "title": "vercel-labs/agent-desktop",
+      "url": "https://github.com/vercel-labs/agent-desktop",
+      "summary": "Computer use CLI for AI agents",
+      "hot_score": 86.2706,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-03T05:13:22.901772+00:00",
+      "last_seen_at": "2026-11-05T04:58:40.365749+00:00",
+      "metrics": {
+        "stars_total": 15523,
+        "stars_in_window": 3791,
+        "forks": 1076,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "Rust"
+    },
+    "it_88c23216a431785a": {
+      "id": "it_88c23216a431785a",
+      "source": "hackernews",
+      "title": "Nvidia RTX Spark encrypted firmware slows inference speed to 35% on Linux",
+      "url": "https://www.mindstudio.ai/blog/linux-nvidia-rtx-spark-laptop",
+      "summary": "",
+      "hot_score": 81.2299,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-04T08:46:29+00:00",
+      "last_seen_at": "2026-11-05T04:58:40.278783+00:00",
+      "metrics": {
+        "points": 595,
+        "num_comments": 275
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_f7fc24d300640e30": {
+      "id": "it_f7fc24d300640e30",
+      "source": "github_trending",
+      "title": "D4Vinci/Scrapling",
+      "url": "https://github.com/D4Vinci/Scrapling",
+      "summary": "🕷️ The BEST Web Scraping framework that handles everything from a single request to a full-scale crawl! Don't be shy, join here: https://discord.gg/EMgGbDceNQ and follow here for daily tips and tricks: https://x.com/Scrapling_dev",
+      "hot_score": 79.0563,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-03T05:13:22.901795+00:00",
+      "last_seen_at": "2026-11-05T04:58:40.372360+00:00",
+      "metrics": {
+        "stars_total": 96850,
+        "stars_in_window": 2005,
+        "forks": 10149,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "Python"
+    },
+    "it_793baf0e54548bea": {
+      "id": "it_793baf0e54548bea",
+      "source": "hackernews",
+      "title": "Ask HN: What's your current AI agentic setup?",
+      "url": "https://news.ycombinator.com/item?id=50366117",
+      "summary": "I'm curious how people on HN are using AI day to day, and came up with a list of questions I thought could be interesting to know. No need to answer every question of course, just wanted to get a gut feel how people are using AI. 1) What AI subscriptions are you personally paying for? (Claude, ChatGPT/Codex, Cursor, etc) - Which tiers? - Have you purchased multiple subscriptions from the same provider (eg two Claude accounts)? 2) Are you using models outside (or instead) of those subscriptions? ",
+      "hot_score": 77.179,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-04T14:37:22+00:00",
+      "last_seen_at": "2026-11-05T04:58:40.283977+00:00",
+      "metrics": {
+        "points": 202,
+        "num_comments": 213
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_94d74ac121344dda": {
+      "id": "it_94d74ac121344dda",
+      "source": "github_trending",
+      "title": "NVIDIA/auto-ontology",
+      "url": "https://github.com/NVIDIA/auto-ontology",
+      "summary": "Auto Ontology is a Python framework for building semantic, graph-based reasoning layers over data. It enables deterministic query generation, better context retrieval, and more explainable AI for LLM and agent workflows.",
+      "hot_score": 77.1429,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-05T04:58:09.254260+00:00",
+      "last_seen_at": "2026-11-05T04:58:40.361184+00:00",
+      "metrics": {
+        "stars_total": 5523,
+        "stars_in_window": 2050,
+        "forks": 436,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_c4f530cdd1a930e9": {
+      "id": "it_c4f530cdd1a930e9",
+      "source": "github_trending",
+      "title": "github/spec-kit",
+      "url": "https://github.com/github/spec-kit",
+      "summary": "💫 Toolkit to help you get started with SDD or any other process!",
+      "hot_score": 73.9286,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-05T04:58:09.254314+00:00",
+      "last_seen_at": "2026-11-05T04:58:40.366470+00:00",
+      "metrics": {
+        "stars_total": 147435,
+        "stars_in_window": 808,
+        "forks": 13230,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_0f35e299c97c927a": {
+      "id": "it_0f35e299c97c927a",
+      "source": "hackernews",
+      "title": "Ripple-65B Preview: U.S. Open-Weight SOTA on Agentic Coding",
+      "url": "https://www.ricursive.com/ripple",
+      "summary": "",
+      "hot_score": 72.7467,
+      "topic_id": "tp_d419c18b122a",
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-04T18:53:29+00:00",
+      "last_seen_at": "2026-11-05T04:58:40.281994+00:00",
+      "metrics": {
+        "points": 258,
+        "num_comments": 91
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_d850be8f18b20931": {
+      "id": "it_d850be8f18b20931",
+      "source": "hf_papers",
+      "title": "From Pixels to Actions - Towards Native Vision-Language-Action Policies",
+      "url": "arxiv:2611.06918",
+      "summary": "Vision-language-action models are typically built on a simple premise: perception is first compressed by visual encoders, and action reasoning begins only afterwards. Yet manipulation often hinges on precisely the visual signals most vulnerable to this abstraction, e.g., local geometry, boundaries, depth, and subtle state changes. This raises a fundamental question: should action policies inherit a fixed visual endpoint, or directly access evolving visual computation? We introduce NEO-VLA, a structurally encoder-free vision-language-action framework. Images are tokenized by lightweight patch convolutional layers and evolve jointly with language throughout the backbone, allowing a flow-matching action expert to draw from instruction-conditioned visual representations at different depths. This simple change reveals a consistent pattern. Native architectures outperform encoder-based counterparts under controlled comparisons; full fine-tuning reduces but does not erase the gap, and additional scale alone cannot recover it. More strikingly, layer-wise probing shows that the action-critical signals often peak well before the final visual representation. Across diverse manipulation settings and distribution shifts, NEO-VLA consequently achieves stronger and more robust control. Together, these results suggest that embodied control benefits from access to visual representations across the computational hierarchy, rather than a fixed encoder output.",
+      "hot_score": 71.5853,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-11-04T13:59:58+00:00",
+      "last_seen_at": "2026-11-05T04:58:40.377689+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 8
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_e546a8a5f340091d": {
+      "id": "it_e546a8a5f340091d",
+      "source": "hf_papers",
+      "title": "PyRUA-DataFarm: LLM Agent as a Cost-Efficient Teleoperator for Real-Ready Robot Data",
+      "url": "arxiv:2611.05320",
+      "summary": "Teleoperation remains the default way to collect robot demonstrations, but every episode costs robot and operator time, and every new task starts from scratch. We ask whether a coding agent can take over the teleoperator's job. In our DataFarm, the agent receives a data request and one calibration episode of the robot in the target scene and rebuilds the task in simulation: it writes the scene, an expert controller, and a success judge. The simulator supplies exact actions, and a video model conditioned on real images renders each rollout as photographic video, generating all camera views together consistently. The output is real-ready data: synchronized camera views labelled with the robot's actions, on which a policy can be trained directly and deployed on the real robot. Independent judges certify the expert and every rendered episode before admission. On five real-robot tasks, policies trained only on farm data match policies trained on as many teleoperated episodes (93 vs. 84 successes in 100 trials), and under an unseen tablecloth and coloured light they keep 87 successes where the teleoperation-trained policies fall to 46. Adapting a task is fully automatic and costs \\21 of API usage on average, paid once per task, plus 5 for a render contract; every further episode costs \\0.80 on average for simulation, rendering, and review, with no robot or operator. One hour of three-view data for a task costs 107 on average, these costs included, slightly below a quote of \\117 for teleoperation in China and below 290 in labour alone in North America.",
+      "hot_score": 71.3741,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-11-03T13:25:14+00:00",
+      "last_seen_at": "2026-11-05T04:58:40.376295+00:00",
+      "metrics": {
+        "num_comments": 2,
+        "upvotes": 9
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_1af61d25d2008e91": {
+      "id": "it_1af61d25d2008e91",
+      "source": "hf_papers",
+      "title": "GameVerse: A Minute-Scale Gameplay Dataset for Long-Horizon Interactive World Modeling",
+      "url": "arxiv:2610.37257",
+      "summary": "Recent advances in interactive world models have made it possible to generate controllable, dynamic environments from action inputs. Yet current models struggle to maintain coherence beyond roughly one minute of rollout, a limitation rooted not in model capacity but in the scarcity of long-horizon training data. Existing gameplay video datasets typically consist of clips under ten seconds, with captions that describe whole clips in coarse and undifferentiated text, which is insufficient for controllable long-horizon generation. We address this with GameVerse, a minute-scale gameplay video dataset purpose-built for long-horizon interactive world modeling. GameVerse contains 69.7K clips spanning 1,655 hours and 349.6 million frames across diverse first- and third-person gameplay, including 1,358 hours of continuous two-minute sequences, an order of magnitude longer than prior datasets. Clips pass through a unified pipeline of scene-consistent segmentation, quality filtering, camera pose estimation, and event-based caption annotation. Each clip is paired with a temporally stable camera trajectory that remains coherent across minutes, together with captions that separate static scene context from dynamic foreground events and align to event boundaries rather than fixed time windows. Comprehensive analysis shows that GameVerse surpasses existing public datasets in scale, diversity, and annotation quality. Experiments further demonstrate that training on GameVerse substantially extends the temporal horizon of interactive world models.",
+      "hot_score": 69.1568,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-30T20:00:00+00:00",
+      "last_seen_at": "2026-11-05T04:58:40.375078+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 16
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_272a08b9ea67bd4c": {
+      "id": "it_272a08b9ea67bd4c",
+      "source": "github_trending",
+      "title": "harry0703/MoneyPrinterTurbo",
+      "url": "https://github.com/harry0703/MoneyPrinterTurbo",
+      "summary": "利用 AI 大模型和自动化工作流，根据主题或关键词一键生成高清短视频。Generate HD short videos from a topic or keyword with an automated AI workflow.",
+      "hot_score": 67.5,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-05T04:58:09.254329+00:00",
+      "last_seen_at": "2026-11-05T04:58:40.367954+00:00",
+      "metrics": {
+        "stars_total": 139187,
+        "stars_in_window": 617,
+        "forks": 22207,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_ebfcd2cb02eb3c5c": {
+      "id": "it_ebfcd2cb02eb3c5c",
+      "source": "github_trending",
+      "title": "thedotmack/claude-mem",
+      "url": "https://github.com/thedotmack/claude-mem",
+      "summary": "Persistent Context Across Sessions for Every Agent – Captures everything your agent does during sessions, compresses it with AI, and injects relevant context back into future sessions. Works with Claude Code, OpenClaw, Codex, Gemini, Hermes, Copilot, OpenCode + More",
+      "hot_score": 65.9954,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-30T04:14:36.710902+00:00",
+      "last_seen_at": "2026-11-05T04:58:40.364783+00:00",
+      "metrics": {
+        "stars_total": 113012,
+        "stars_in_window": 1803,
+        "forks": 9811,
+        "streak_days": 7
+      },
+      "streak_days": 7,
+      "language": "TypeScript"
+    },
+    "it_d94c9f77ddafc83a": {
+      "id": "it_d94c9f77ddafc83a",
+      "source": "hackernews",
+      "title": "Progress on provable inference for large language models",
+      "url": "https://www.anthropic.com/research/provable-inference",
+      "summary": "",
+      "hot_score": 65.5442,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-04T17:17:46+00:00",
+      "last_seen_at": "2026-11-05T04:58:40.285515+00:00",
+      "metrics": {
+        "points": 197,
+        "num_comments": 87
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_e49944455d9ba6a5": {
+      "id": "it_e49944455d9ba6a5",
+      "source": "github_trending",
+      "title": "garrytan/gstack",
+      "url": "https://github.com/garrytan/gstack",
+      "summary": "Use Garry Tan's exact Claude Code setup: 23 opinionated tools that serve as CEO, Designer, Eng Manager, Release Manager, Doc Engineer, and QA",
+      "hot_score": 61.0714,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-05T04:58:09.254335+00:00",
+      "last_seen_at": "2026-11-05T04:58:40.368897+00:00",
+      "metrics": {
+        "stars_total": 139447,
+        "stars_in_window": 290,
+        "forks": 20647,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "TypeScript"
+    },
+    "it_46f48fe387468cbc": {
+      "id": "it_46f48fe387468cbc",
+      "source": "hackernews",
+      "title": "Everything is an AI scam now",
+      "url": "https://www.davidralphlewis.co.uk/posts/everything-is-an-ai-scam-now",
+      "summary": "",
+      "hot_score": 61.0132,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-04T21:05:19+00:00",
+      "last_seen_at": "2026-11-05T04:58:40.286275+00:00",
+      "metrics": {
+        "points": 132,
+        "num_comments": 49
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_5e8dd7e746d65857": {
+      "id": "it_5e8dd7e746d65857",
+      "source": "hf_papers",
+      "title": "Solv3R: 3D Looped Transformer as a Multi-view Solver",
+      "url": "arxiv:2611.02857",
+      "summary": "Classical structure-from-motion reconstruction proceeds iteratively, refining camera poses and scene geometry from a current estimate. This allows maps to easily expand without recomputing already computed views, or geometry estimates to improve as more observations are provided. Most geometric foundation models, however, predict entire geometry in a single forward pass or update a recurrent state as frames arrive sequentially, making this expansion and refinement non-trivial. We introduce Solv3R, a looped transformer that learns to continue solving multi-view geometry from its current state. Importantly, its update operator is independent of the iteration count, allowing previously refined and newly introduced views to be jointly updated regardless of how ``solved'' they are. We train the operator to preserve accurate reconstructions under continued iteration and correct inaccurate states, enabling refinement of fixed image collections and integration of new observations. Representations of solved views can also be cached once and reused as geometric context across iterations, enabling compact and efficient key-value caching. We analyze the solver dynamics and compare it with the state-of-the-art, demonstrating that a single learned solver supports offline reconstruction, incremental reconstruction, relocalization, and streaming without task-specific training or modules. The code and models will be made publicly available at https://ubc-vision.github.io/solv3r/.",
+      "hot_score": 59.1992,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-11-02T04:59:45+00:00",
+      "last_seen_at": "2026-11-05T04:58:40.378896+00:00",
+      "metrics": {
+        "num_comments": 2,
+        "upvotes": 8
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_81446f2462dee9e2": {
+      "id": "it_81446f2462dee9e2",
+      "source": "github_trending",
+      "title": "mattpocock/skills",
+      "url": "https://github.com/mattpocock/skills",
+      "summary": "Skills for Real Engineers. Straight from my .agents directory.",
+      "hot_score": 59.1759,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-31T03:55:58.260523+00:00",
+      "last_seen_at": "2026-11-05T04:58:40.362901+00:00",
+      "metrics": {
+        "stars_total": 313608,
+        "stars_in_window": 1379,
+        "forks": 26297,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "Shell"
+    },
+    "it_fc370ae94ba2edfb": {
+      "id": "it_fc370ae94ba2edfb",
+      "source": "github_trending",
+      "title": "FareedKhan-dev/kimi-k3-in-c",
+      "url": "https://github.com/FareedKhan-dev/kimi-k3-in-c",
+      "summary": "A 2.78-trillion-parameter Kimi K3 running inference on a single CPU in 8.24 GB of RAM. Portable C99: no BLAS, no framework, no GPU.",
+      "hot_score": 57.8571,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-05T04:58:09.254341+00:00",
+      "last_seen_at": "2026-11-05T04:58:40.369761+00:00",
+      "metrics": {
+        "stars_total": 10442,
+        "stars_in_window": 351,
+        "forks": 1643,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "C"
+    },
+    "it_576ebc58d2e940ac": {
+      "id": "it_576ebc58d2e940ac",
+      "source": "github_trending",
+      "title": "floci-io/floci",
+      "url": "https://github.com/floci-io/floci",
+      "summary": "Light, fluffy, and always free - The AWS Local Emulator alternative",
+      "hot_score": 56.7585,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-04T04:43:14.498119+00:00",
+      "last_seen_at": "2026-11-05T04:58:40.364015+00:00",
+      "metrics": {
+        "stars_total": 29755,
+        "stars_in_window": 1090,
+        "forks": 3285,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "Java"
+    },
+    "it_234b8cb2ffad5d07": {
+      "id": "it_234b8cb2ffad5d07",
+      "source": "github_trending",
+      "title": "The-PR-Agent/pr-agent",
+      "url": "https://github.com/The-PR-Agent/pr-agent",
+      "summary": "🚀 PR Agent: The Original Open-Source PR Reviewer. This project is not the Qodo free tier.",
+      "hot_score": 54.6429,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-05T04:58:09.254323+00:00",
+      "last_seen_at": "2026-11-05T04:58:40.367142+00:00",
+      "metrics": {
+        "stars_total": 14867,
+        "stars_in_window": 280,
+        "forks": 2098,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_2b5f926b26c14ac6": {
+      "id": "it_2b5f926b26c14ac6",
+      "source": "hackernews",
+      "title": "Launch HN: Kino AI (YC S23) – AI media manager and video editor",
+      "url": "https://news.ycombinator.com/item?id=50368804",
+      "summary": "Hi HN! I'm Luke from Kino ( https://kino.ai ). Kino lets you make great videos with your agents and your teammates. Storage of footage and assets, a rich video editor, and review links for teammates are all bundled into one. Your colleagues and Codex / Claude Code can work on the same timeline with review notes and footage all in one place. See a basic overview at https://kino.ai/walkthrough-video and our launch video (made entirely with Kino!) at https://kino.ai/launch-video Opus 5.5 can edit v",
+      "hot_score": 52.7991,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-04T17:31:53+00:00",
+      "last_seen_at": "2026-11-05T04:58:40.287101+00:00",
+      "metrics": {
+        "points": 80,
+        "num_comments": 31
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_9fc1aebb67ab0b7e": {
+      "id": "it_9fc1aebb67ab0b7e",
+      "source": "github_trending",
+      "title": "scenario-labs/skills",
+      "url": "https://github.com/scenario-labs/skills",
+      "summary": "Get production-ready images, video, audio, and 3D from any AI agent: skills that pick the right model, price before spending, and keep characters and brands consistent through the Scenario MCP, plus expert teams that drive Blender, Maya, ZBrush, Unreal, and Unity.",
+      "hot_score": 51.4286,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-05T04:58:09.254370+00:00",
+      "last_seen_at": "2026-11-05T04:58:40.374130+00:00",
+      "metrics": {
+        "stars_total": 2558,
+        "stars_in_window": 224,
+        "forks": 250,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_4095e8db6c04dd9d": {
+      "id": "it_4095e8db6c04dd9d",
+      "source": "hf_papers",
+      "title": "Human-to-Robot Transfer via Bridging Representation and Action Space in VLAs",
+      "url": "arxiv:2611.04391",
+      "summary": "Pretrained Vision-Language-Action (VLA) policies provide a strong starting point for deployment, but adapting them to a target robot and environment still requires costly embodiment-specific demonstrations. Human demonstrations are far easier to collect, yet directly leveraging them is challenging due to the substantial human-robot embodiment gap, particularly when the underlying VLA has been pretrained primarily on robot data. We introduce H2RB (Human-To-Robot Bridge), a human-robot co-training framework for adapting pretrained VLA policies from unpaired human and robot demonstrations. H2RB bridges the embodiment gap at both interfaces: geometry-anchored alignment grounds human and robot observations in a compatible representation, while a decoupled-decoder tokenizer shares action latents without forcing both domains through a single action mapping. This design allows human demonstrations to provide useful behavioral supervision while retaining the rich visual, semantic, and control priors of the pretrained VLA. Across real-world tasks, H2RB substantially improves object transfer performance from 8.0 to 51.8 and enables skill transfer to score 62.7, in settings where co-train baselines totally fail to transfer human-demonstrated skills. The benefit also persists under object-placement shifts, improving out-of-distribution transfer from 6.0 to 45.3. H2RB suggests a way for human demonstrations to serve as a scalable supervision source for adapting pretrained robotic policies, reducing the dependence on costly target-robot data collection.",
+      "hot_score": 50.7204,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-11-02T19:00:00+00:00",
+      "last_seen_at": "2026-11-05T04:58:40.381381+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 5
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_45c552d60f93189e": {
+      "id": "it_45c552d60f93189e",
+      "source": "hackernews",
+      "title": "You'll need nerves of steel to work with AI agents",
+      "url": "https://orchidfiles.com/youll-need-nerves-of-steel-to-work-with-ai-agents",
+      "summary": "",
+      "hot_score": 49.1786,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-05T00:01:30+00:00",
+      "last_seen_at": "2026-11-05T04:58:40.290780+00:00",
+      "metrics": {
+        "points": 43,
+        "num_comments": 55
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_56c36dc037a21e1b": {
+      "id": "it_56c36dc037a21e1b",
+      "source": "github_trending",
+      "title": "Thysrael/Horizon",
+      "url": "https://github.com/Thysrael/Horizon",
+      "summary": "📡 Your own AI-powered news radar. Generates daily briefings in English & Chinese. | 用 AI 构建你专属的新闻雷达",
+      "hot_score": 48.2143,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-05T04:58:09.254364+00:00",
+      "last_seen_at": "2026-11-05T04:58:40.373362+00:00",
+      "metrics": {
+        "stars_total": 12637,
+        "stars_in_window": 121,
+        "forks": 1829,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_6ee79c0f1b869d08": {
+      "id": "it_6ee79c0f1b869d08",
+      "source": "hf_papers",
+      "title": "StreamDuo: A Live Commentator and a Research Agent for Unseen Games",
+      "url": "arxiv:2611.01120",
+      "summary": "Streaming video LLMs can now commentate live gameplay, but they are trained and tested on the same games. We study cross-game streaming commentary, in which a model trained on one game commentates games it has never seen, and find that current commentators transfer their timing but not their knowledge of the game world. We propose StreamDuo, which pairs a trainable commentator with a frozen research agent that reads the wiki of the game being played. When the commentator sees something it cannot name, it sends the current frames, and the research agent returns a few wiki entries two seconds later while the stream continues. We train only the commentator, on a single game, in two stages. Information-gain labels teach it to ask only where an answer would help it say what the human caster said, and on-policy self-distillation from a copy of itself that sees the ideal answer teaches it to use noisy answers. Trained on Baldur's Gate 3 and tested on ten unseen games, StreamDuo raises entity recall from 0.082 to 0.116 over Proact-VL trained on the same data, cuts source-game leakage from 9.9% to 1.0%, and achieves the best timing and the highest judged liveliness and overall quality among streaming models.",
+      "hot_score": 46.6568,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-30T20:00:00+00:00",
+      "last_seen_at": "2026-11-05T04:58:40.380087+00:00",
+      "metrics": {
+        "num_comments": 2,
+        "upvotes": 5
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_c950dcef3940fcca": {
+      "id": "it_c950dcef3940fcca",
+      "source": "github_trending",
+      "title": "MichaelCade/90DaysOfDevOps",
+      "url": "https://github.com/MichaelCade/90DaysOfDevOps",
+      "summary": "This repository started out as a learning in public project for myself and has now become a structured learning map for many in the community. We have 3 years under our belt covering all things DevOps, including Principles, Processes, Tooling and Use Cases surrounding this vast topic.",
+      "hot_score": 45.0,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-05T04:58:09.254354+00:00",
+      "last_seen_at": "2026-11-05T04:58:40.371345+00:00",
+      "metrics": {
+        "stars_total": 30541,
+        "stars_in_window": 97,
+        "forks": 6794,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Shell"
+    },
+    "it_78e987e8323ba36d": {
+      "id": "it_78e987e8323ba36d",
+      "source": "hf_papers",
+      "title": "VeriSpoof: Beyond Real or Fake with One Audio LLM",
+      "url": "arxiv:2611.04634",
+      "summary": "A speech deepfake detector estimates whether a recording is synthetic, but a forensic analyst also asks which system produced it, whether recordings share a source, and what evidence supports each conclusion. We present VeriSpoof, an audio language model that unifies five tasks with shared weights: deepfake detection, generator attribution (generator, acoustic model and vocoder), recording-condition analysis, synthesized-span localisation, and source verification. Each decision is supported by grounded rationales whose statements can be independently verified. Answers are scored by sentence likelihood, allowing detection and source verification to be thresholded without separate heads. Rationale statements can be checked against waveform measurements, span labels, or generator metadata. Counterfactual examples train decisions to follow the stated evidence. Across the 14 Speech-DF-Arena test sets, VeriSpoof-Plus achieves 2.14% pooled EER, ranking third of 28 systems and first among open-weight systems. VeriSpoof-Base, trained only on official training splits of eight corpora, achieves 4.43% EER, less than half that of the next open-weight detector. With the same weights, VeriSpoof-Plus verifies whether recordings from generators unseen in training share a source at 6.2% EER. Controlled studies show that the audio representation governs detection, the LLM governs recording comparison, and source supervision is necessary for neural-codec fakes. Statement-checkable rationales catch partial fakes missed by one-step answers (99.6% vs. 78.4% on PartialEdit) and determine decisions under edits unseen in training (99.5%). Training updates only 29.7M of 2.85B parameters, fitting a single 24 GB GPU with gradient checkpointing. We release both models, inference code, a demo, and VeriSpoof-Bench, the evaluation suite covering these questions.",
+      "hot_score": 43.2204,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-11-02T19:00:00+00:00",
+      "last_seen_at": "2026-11-05T04:58:40.382711+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 3
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_887e8f45c286f252": {
+      "id": "it_887e8f45c286f252",
+      "source": "hackernews",
+      "title": "If you're on Replit Pro, you have until November 8 to opt out of arbitration",
+      "url": "https://readthediff.substack.com/p/replit-pro-arbitration-opt-out-november-8",
+      "summary": "",
+      "hot_score": 41.6185,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-04T20:52:53+00:00",
+      "last_seen_at": "2026-11-05T04:58:40.289594+00:00",
+      "metrics": {
+        "points": 48,
+        "num_comments": 7
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_b72ae434cf4573bb": {
+      "id": "it_b72ae434cf4573bb",
+      "source": "github_trending",
+      "title": "max-sixty/worktrunk",
+      "url": "https://github.com/max-sixty/worktrunk",
+      "summary": "Worktrunk is a CLI for Git worktree management, designed for parallel AI agent workflows",
+      "hot_score": 40.5563,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-03T05:13:22.901840+00:00",
+      "last_seen_at": "2026-11-05T04:58:40.362045+00:00",
+      "metrics": {
+        "stars_total": 11149,
+        "stars_in_window": 531,
+        "forks": 418,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "Rust"
+    }
+  },
+  "meta": {
+    "mode": "hybrid",
+    "day": "2026-11-05",
+    "generated_at": "2026-11-05T04:59:41.438329+00:00",
+    "window": {
+      "since": "2026-11-04T04:58:07.840965+00:00",
+      "until": "2026-11-05T04:58:40.417314+00:00",
+      "hours": 24.0,
+      "since_local": "2026-11-04T12:58+08:00",
+      "until_local": "2026-11-05T12:58+08:00",
+      "tz": "Asia/Shanghai"
+    },
+    "analysis": {
+      "items": 97,
+      "scored": 97,
+      "topics": 4,
+      "new_entity_mention_rows": 110,
+      "state_items": 15
+    },
+    "llm": {
+      "degraded": false,
+      "degraded_reason": "",
+      "calls": 1
+    },
+    "collect": {
+      "ok_sources": 6,
+      "failed_sources": 1,
+      "skipped": 0,
+      "total_items": 100
+    },
+    "verify": {
+      "verified": 0,
+      "unverifiable": 0,
+      "deferred": 1,
+      "failed": 0,
+      "llm_calls": 0
+    },
+    "predictions": {
+      "total": 126,
+      "verified": 1,
+      "pending": 125,
+      "unverifiable": 0,
+      "hit_rate": 0.0,
+      "weighted_score": 0.0,
+      "brier": 0.36
+    },
+    "prediction_generation": {
+      "mode": "hybrid",
+      "generated": 5,
+      "inserted": 5,
+      "dropped": [],
+      "llm_calls": 1,
+      "candidate_pool": 20,
+      "degraded": false,
+      "degraded_reason": ""
+    },
+    "brief": {
+      "max_items_per_section": 10,
+      "velocity_board_enabled": true,
+      "velocity_board_top_n": 5
+    },
+    "signals": {
+      "entities": 608,
+      "points": 1340,
+      "with_velocity": 74,
+      "insufficient": 112,
+      "cold_start": 422,
+      "min_window_hours": 6.0
+    },
+    "enhance_total": 24,
+    "enhanced": 24,
+    "enhance_skipped_count": 0,
+    "enhance_cache_hit": 5,
+    "enhance_cost_cny": 0.008693
+  }
+}
