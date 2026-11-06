@@ -1,0 +1,961 @@
+{
+  "date": "2026-11-06",
+  "headline": "AI 的账单正从两个方向同时到期：纳斯达克因 AI 恐慌蒸发 2.5 万亿美元，而 Facebook 被指靠深度伪造诈骗广告年入 160 亿美元——泡沫与灰产是同一枚硬币的两面。",
+  "headline_item_id": "it_b2be5ed40b08cafe",
+  "overview_bullets": [
+    {
+      "icon": "📉",
+      "topic": "估值回调",
+      "text": "纳斯达克单日蒸发 2.5 万亿美元、市场把「蓝色浪潮」直接读成 AI 利空，说明资金已从为叙事付费转向为现金流定价。"
+    },
+    {
+      "icon": "🔐",
+      "topic": "平台灰产",
+      "text": "Cuban 指控 Facebook 明知 AI 深度伪造诈骗广告仍放任，文件显示相关欺诈收入达 160 亿美元，生成式 AI 的第一批规模化变现场景竟是诈骗投放。"
+    },
+    {
+      "icon": "🛠️",
+      "topic": "智能体基建",
+      "text": "Vercel 连发 agent-desktop 与 agent-browser 两个 CLI、Rivet 用 S3 上的轻量 actor 替代重型沙箱，智能体的竞争焦点正从模型能力转向运行时与编排层。"
+    },
+    {
+      "icon": "🤖",
+      "topic": "技能标准化",
+      "text": "Google、mattpocock、scenario-labs、ConardLi 同日冒出多个 skills 仓库，agent「技能包」正在形成事实上的分发格式，但尚无标准可言。"
+    },
+    {
+      "icon": "📄",
+      "topic": "决策模型",
+      "text": "Drex 提出基础决策模型，直指长链推理在生产中答案不一致、输出需解析、成本高的痛点，是今天最值得读的一篇论文。"
+    }
+  ],
+  "executive_summary": "今天真正的主角不是任何一个模型，而是 AI 从「能力演示」滑向「生产系统」时暴露的账本问题：资本在重新定价，平台在默许灰产变现，工程侧则在补运行时与技能分发的课。",
+  "editor_note": {
+    "core": "今天最该记住的是「AI 的变现路径正在被灰产先行验证」：Facebook 被指靠深度伪造诈骗广告拿到 160 亿美元收入，说明生成式 AI 最先跑通规模化的不是生产力工具，而是欺诈投放。这比任何模型发布都更能解释监管与平台治理为何会突然收紧。",
+    "cross_signal": "三条线互相印证：HN 上 Cuban 的指控、纳斯达克 2.5 万亿美元蒸发、以及 GitHub 上 agent-browser/agent-desktop 这类自动化工具的爆发，共同指向「AI 已进入真实生产与真实滥用阶段」——能力越自动化，滥用与估值的杠杆同时放大。",
+    "counterintuitive": "热度最高的不是最有价值的：kimi-k3-in-c 用「2.78 万亿参数、8.24GB 内存、纯 C99 单 CPU」的标题吸走注意力，但真正会改变工程实践的是 Drex 的决策模型和 BestRand 的基准压缩——前者解决生产不一致，后者直接砍掉评测成本。",
+    "risk": "最大的盲点是「技能包」生态的无标准扩张：Google、Vercel、个人开发者同日发布 skills 仓库，格式、权限、供应链均无约束，agent 技能很可能成为下一个被投毒的 npm 包；同时平台对深度伪造广告的默许若被证实，整个 AI 广告变现链条都会面临追溯性监管。"
+  },
+  "contradictions": [
+    "腾讯发布 Hy4 显示大厂仍在加注模型能力，而纳斯达克因 AI 恐慌蒸发 2.5 万亿美元，产业投入与资本定价方向相反。",
+    "社区一边追捧 kimi-k3-in-c 的「单 CPU 跑万亿参数」标题，一边对同类夸张性能宣称普遍持怀疑态度，热度与可信度错位。",
+    "Rivet 主张用 S3 上的轻量 actor 替代重型沙箱以提升密度，但 agent-desktop/agent-browser 这类 computer-use 工具恰恰需要更重的真实环境，两条路线在资源模型上相互矛盾。"
+  ],
+  "underrated": [
+    "Towards Foundation Decision Models: Drex——直指长链推理在生产中答案不一致、输出需解析、成本高的核心痛点",
+    "Random Is Almost Enough? Stable and Low-Cost Benchmark Compression via BestRand——基准压缩可大幅削减评测成本，却几乎无人讨论",
+    "PyRUA-DataFarm: LLM Agent as a Cost-Efficient Teleoperator for Real-Ready Robot Data——用编码智能体替代遥操作采集机器人数据，是具身智能降本的关键一环",
+    "floci-io/floci——AWS 本地模拟器替代品，智能体与后端开发的基础设施级工具"
+  ],
+  "sections": [
+    {
+      "name": "开源项目",
+      "summary": "智能体工具链集中爆发：Vercel 的 computer-use 与浏览器 CLI、Rivet 的 S3 actor 编排、claude-mem 的跨会话记忆，加上一批 skills 仓库，工程层正在抢在标准之前占位。",
+      "item_ids": [
+        "it_a4e85f0863890b24",
+        "it_94d74ac121344dda",
+        "it_f7fc24d300640e30",
+        "it_c4f530cdd1a930e9",
+        "it_81446f2462dee9e2",
+        "it_ebfcd2cb02eb3c5c",
+        "it_272a08b9ea67bd4c",
+        "it_4343ce049ba19829",
+        "it_576ebc58d2e940ac",
+        "it_e49944455d9ba6a5",
+        "it_9fc1aebb67ab0b7e",
+        "it_fc370ae94ba2edfb",
+        "it_5d1070aaeb2b84b3",
+        "it_8292947de71d6092",
+        "it_234b8cb2ffad5d07",
+        "it_e58a4a81eb63fae6"
+      ]
+    },
+    {
+      "name": "论文与研究",
+      "summary": "研究侧从「更大模型」转向「更可靠的系统」：决策模型、长时程世界模型数据、VLA 原生策略、基准压缩与机器人数据自动化，全部在补生产可用性的短板。",
+      "item_ids": [
+        "it_6c55f1bca7452ffd",
+        "it_1af61d25d2008e91",
+        "it_a4f95935e39bb782",
+        "it_e546a8a5f340091d",
+        "it_d850be8f18b20931",
+        "it_5e8dd7e746d65857",
+        "it_85738bce2380d1e8"
+      ]
+    },
+    {
+      "name": "社区舆论",
+      "summary": "HN 今日的情绪分裂：一边是对平台纵容 AI 诈骗的愤怒，一边是对 AI 估值崩塌的恐慌，中间夹着对「2.78 万亿参数跑在单 CPU 上」这类标题的怀疑。",
+      "item_ids": [
+        "it_6f78e24cdb5b04f2",
+        "it_1955590be05d9953",
+        "it_0d63b75b618b190d",
+        "it_7486a9a8c5dfbdf5",
+        "it_c1a909c956652f0b",
+        "it_394d8279e3728a39",
+        "it_b2be5ed40b08cafe"
+      ]
+    },
+    {
+      "name": "产业与新闻",
+      "summary": "产业面两条相反信号：腾讯发布 Hy4 继续加注模型，而资本市场用 2.5 万亿美元蒸发给出对 AI 叙事的重新定价。",
+      "item_ids": []
+    }
+  ],
+  "comments": [
+    {
+      "item_id": "it_a4e85f0863890b24",
+      "one_liner": "vercel-labs 推出的面向 AI agent 的 computer use 命令行工具",
+      "why": "把「操作电脑」这一层抽象成 CLI，代理就能脱离浏览器沙箱直接驱动桌面应用，自动化边界从网页扩展到本地软件栈。",
+      "stance": "方向对，但让代理拿到桌面控制权，权限与审计问题会被推到每个使用者头上。"
+    },
+    {
+      "item_id": "it_94d74ac121344dda",
+      "one_liner": "NVIDIA 开源的 Python 框架，用于在数据之上构建语义化、基于图的推理层，为 LLM 与 agent 工作流提供确定性查询生成与更可解释的检索。",
+      "why": "把本体论/知识图谱层塞进 LLM 与 agent 的推理链路，让查询生成从概率采样变成可复现的确定性过程，直接决定 agent 输出能否被审计。",
+      "stance": "方向对：agent 落地卡在可解释性，语义层比再堆参数更值钱。"
+    },
+    {
+      "item_id": "it_f7fc24d300640e30",
+      "one_liner": "Scrapling 是一个 Python 网页抓取框架，覆盖从单次请求到大规模爬取的全流程。",
+      "why": "把单请求抓取到全站爬取的适配层收进一个框架，降低了中小团队自建采集管线的门槛，也让反爬对抗从自研转向依赖社区维护。",
+      "stance": "抓取框架的竞争点已从功能多少转向反封锁存活率，谁先被主流站点识别谁就出局。"
+    },
+    {
+      "item_id": "it_c4f530cdd1a930e9",
+      "one_liner": "GitHub 官方推出的工具包，帮助开发者上手 SDD（规格驱动开发）等流程。",
+      "why": "把「先写规格再写代码」固化成可复用的工具链，意味着 AI 编码的瓶颈从生成速度转移到需求约束的显式表达。",
+      "stance": "规格驱动是被低估的路线，但工具本身只是脚手架，成败在团队肯不肯写规格。"
+    },
+    {
+      "item_id": "it_81446f2462dee9e2",
+      "one_liner": "mattpocock 公开的 .agents 目录中的工程技能集合",
+      "why": "把个人 .agents 目录里的技能直接公开，等于把「提示词工程」沉淀为可复用资产，工程师的编码习惯开始被版本化分发。",
+      "stance": "有价值，但技能包高度依赖作者个人工作流，复制到别人机器上多半水土不服。"
+    },
+    {
+      "item_id": "it_ebfcd2cb02eb3c5c",
+      "one_liner": "为各类 coding agent 提供跨会话持久记忆的工具，记录会话内容并用 AI 压缩后回注到后续会话。",
+      "why": "跨会话持久记忆被做成通用层并兼容 Claude Code、Codex、Gemini 等多家代理，代理的上下文从一次性消耗品变成可累积资产，切换工具的成本随之下降。",
+      "stance": "记忆层会成为代理生态里最容易被锁定的一环，谁掌握压缩与注入策略谁就掌握粘性。"
+    },
+    {
+      "item_id": "it_272a08b9ea67bd4c",
+      "one_liner": "基于 AI 大模型与自动化工作流，根据主题或关键词一键生成高清短视频的工具。",
+      "why": "把选题、脚本、素材、剪辑串成一条自动化流水线，短视频的边际生产成本被压到接近零，内容供给端将迅速过剩。",
+      "stance": "生产力真实，但同质化内容会淹没平台，价值在分发而非生成。"
+    },
+    {
+      "item_id": "it_4343ce049ba19829",
+      "one_liner": "微软开源的 Frontier 级语音 AI 项目 VibeVoice",
+      "why": "微软把前沿语音模型开源，等于把高保真语音合成与克隆的门槛从云端 API 拉到本地可部署，直接冲击商业语音 API 的定价与合规护城河。",
+      "stance": "开源语音是双刃剑，能力扩散快过治理，滥用成本被压到接近零。"
+    },
+    {
+      "item_id": "it_576ebc58d2e940ac",
+      "one_liner": "floci 是一个轻量、免费、可本地运行的 AWS 服务模拟器，作为 LocalStack 的替代方案。",
+      "why": "本地模拟 AWS 服务让开发与测试摆脱真实云账号和计费，直接压缩了 CI 环境成本与凭据泄露面。",
+      "stance": "LocalStack 的免费边界正在被侵蚀，这类替代品的胜负取决于服务覆盖度而非轻量。"
+    },
+    {
+      "item_id": "it_e49944455d9ba6a5",
+      "one_liner": "Garry Tan 公开的 Claude Code 配置，包含 23 个分别扮演 CEO、设计师、工程经理、发布经理、文档工程师和 QA 的工具。",
+      "why": "把一整套角色化 agent 配置当作可复制资产分发，等于把「怎么用 AI 干活」从个人经验变成可安装的组织流程。",
+      "stance": "23 个角色是营销包装，真正可迁移的是分工拆解思路，别照抄。"
+    },
+    {
+      "item_id": "it_6c55f1bca7452ffd",
+      "one_liner": "提出 Drex 基础决策模型，用自回归方式做决策推理",
+      "why": "把决策问题改造成自回归序列生成，意味着生产系统里那些输出不可解析、延迟不稳的老毛病会被带进决策层，而决策错误比文本错误更难回滚。",
+      "stance": "方向对，但拿链式推理去做实时决策是在用准确率换可靠性，工程上不划算。"
+    },
+    {
+      "item_id": "it_1af61d25d2008e91",
+      "one_liner": "GameVerse 是一个分钟级游戏画面数据集，用于训练长时程交互式世界模型。",
+      "why": "把交互式世界模型的失稳归因于长时序数据稀缺而非模型容量，为后续工作把问题从架构竞赛改道到数据集建设。",
+      "stance": "诊断比结论更有价值：一分钟就崩的世界模型，谈应用为时过早。"
+    },
+    {
+      "item_id": "it_a4f95935e39bb782",
+      "one_liner": "提出 BestRand 方法，通过随机采样实现稳定低成本的基准压缩",
+      "why": "证明随机子集就能逼近全量评测结果，直接砍掉模型评估的时间与算力开销，让中小团队也能高频跑基准，评测从大厂特权变成日常动作。",
+      "stance": "评测成本下降是好事，但压缩带来的估计误差必须公开，否则排行榜会变成噪声放大器。"
+    },
+    {
+      "item_id": "it_e546a8a5f340091d",
+      "one_liner": "PyRUA-DataFarm 提出用 LLM 编码 agent 代替人类遥操作，为真实机器人采集演示数据。",
+      "why": "让编码 agent 顶替人类遥操作员采集机器人演示，把每条数据的机器人机时与人力成本转成算力成本，数据规模的天花板被抬高。",
+      "stance": "数据采集自动化是具身智能最该被自动化的环节，这条踩在要害上。"
+    },
+    {
+      "item_id": "it_d850be8f18b20931",
+      "one_liner": "探讨从像素直接到动作的原生 Vision-Language-Action 策略",
+      "why": "指出视觉编码器先压缩再推理会丢掉局部几何与边界信息，这恰恰是抓取和操作最依赖的信号，等于给现有 VLA 架构的精度上限判了刑。",
+      "stance": "端到端原生策略是正确路线，继续在压缩后的特征上打补丁是浪费算力。"
+    },
+    {
+      "item_id": "it_5e8dd7e746d65857",
+      "one_liner": "Solv3R 将 3D 循环 Transformer 用作多视图求解器，以迭代方式完成结构光重建。",
+      "why": "用循环 Transformer 模拟 SfM 的迭代精化，使新增视角无需重算已有几何，三维重建从离线批处理转向可增量扩展。",
+      "stance": "把经典几何流程学成网络是稳妥路线，增量能力才是真差异点。"
+    },
+    {
+      "item_id": "it_85738bce2380d1e8",
+      "one_liner": "EDGAR：利用合成失败样本的扩散驱动 Gaussian 头像精修方法",
+      "why": "用合成失败样本反向驱动扩散精修，绕开单目视频重建的欠约束问题，让低成本头像重建从能看走向可用，直接压低数字人制作成本。",
+      "stance": "拿失败样本当训练信号是聪明的工程取巧，比堆数据更值得复制。"
+    },
+    {
+      "item_id": "it_6f78e24cdb5b04f2",
+      "one_liner": "报道称 Facebook 明知故犯地投放 AI 深度伪造诈骗广告，文件显示相关欺诈收入达 160 亿美元",
+      "why": "若文件所述成立，平台在明知的情况下仍从深度伪造诈骗广告中抽成，说明广告变现机制与反欺诈投入存在结构性冲突，监管抓手会从内容审核转向收入链条。",
+      "stance": "把诈骗广告收入计入财报增长，是平台治理彻底失效的证据，不是技术问题。"
+    },
+    {
+      "item_id": "it_1955590be05d9953",
+      "one_liner": "一位双侧人工耳蜗使用者分享自身的心理物理学体验",
+      "why": "双侧人工耳蜗使用者的第一手心理物理学记录，暴露了当前听觉假体在音高、定位与噪声环境下的真实短板，为信号处理研究提供了厂商白皮书不会写的对照。",
+      "stance": "这类患者自述比论文摘要更有价值，器械厂商应当把它当作产品需求文档。"
+    },
+    {
+      "item_id": "it_0d63b75b618b190d",
+      "one_liner": "匈牙利公开共产主义时期档案，涉及多达 6 万名前情报人员",
+      "why": "六万名线人档案公开，把线人网络从历史叙事变成可检索的个人风险，会波及仍在世的当事人及其家属，并给其他前共产主义国家的档案开放设定压力基准。",
+      "stance": "公开是对的，但必须配套脱敏与申诉机制，否则清算会误伤被胁迫者。"
+    },
+    {
+      "item_id": "it_7486a9a8c5dfbdf5",
+      "one_liner": "Inkling 2 Small 相关发布或讨论",
+      "why": "小尺寸模型迭代的意义在于把推理成本压到端侧可承受区间，决定的是哪些应用能脱离云端跑起来，而不是榜单分数。",
+      "stance": "小模型才是真正改变产品形态的那一类，大模型军备竞赛的边际收益已经很低。"
+    },
+    {
+      "item_id": "it_c1a909c956652f0b",
+      "one_liner": "Rivet（YC W23）在 HN 发布：基于 S3 的 Agent 扩展与编排方案",
+      "why": "用轻量 actor 加 S3 替代每 agent 一个重型沙箱，把编排成本从内存常驻转向对象存储，直接决定大规模 agent 集群的单位经济性。",
+      "stance": "沙箱隔离是当前 agent 基础设施最大的成本黑洞，往对象存储迁移是正确的一刀。"
+    },
+    {
+      "item_id": "it_394d8279e3728a39",
+      "one_liner": "腾讯发布 Hy4 模型",
+      "why": "腾讯把自研模型推到公开舞台，直接进入与国内外头部实验室的正面比价区间，云客户与开发者会据此重新评估供应商锁定成本。",
+      "stance": "发布节奏值得盯，但缺少基准与开放程度，先当作市场信号而非技术结论。"
+    },
+    {
+      "item_id": "it_b2be5ed40b08cafe",
+      "one_liner": "纳斯达克市值蒸发 2.5 万亿美元，市场因「蓝色浪潮」引发 AI 担忧",
+      "why": "2.5万亿美元市值蒸发把AI叙事从增长故事切换成估值风险源，算力与芯片链条的融资成本随之抬升，资本开支计划被迫重排优先级。",
+      "stance": "这是情绪驱动的估值重定价，不是AI需求见顶，回调反而给长期买家让出价格。"
+    }
+  ],
+  "stats": {},
+  "items": {
+    "it_6f78e24cdb5b04f2": {
+      "id": "it_6f78e24cdb5b04f2",
+      "source": "hackernews",
+      "title": "Cuban: Facebook knowingly runs AI deepfake scam ads; docs say $16B fraud revenue",
+      "url": "https://finance.yahoo.com/technology/ai/articles/mark-cuban-says-facebook-knowingly-213000020.html",
+      "summary": "",
+      "hot_score": 87.75,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-05T23:09:57+00:00",
+      "last_seen_at": "2026-11-06T04:57:45.368445+00:00",
+      "metrics": {
+        "points": 191,
+        "num_comments": 95
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_a4e85f0863890b24": {
+      "id": "it_a4e85f0863890b24",
+      "source": "github_trending",
+      "title": "vercel-labs/agent-desktop",
+      "url": "https://github.com/vercel-labs/agent-desktop",
+      "summary": "Computer use CLI for AI agents",
+      "hot_score": 83.2208,
+      "topic_id": "tp_89ce6b5b21ca",
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-03T05:13:22.901772+00:00",
+      "last_seen_at": "2026-11-06T04:57:45.451001+00:00",
+      "metrics": {
+        "stars_total": 17161,
+        "stars_in_window": 3791,
+        "forks": 1217,
+        "streak_days": 4
+      },
+      "streak_days": 4,
+      "language": "Rust"
+    },
+    "it_94d74ac121344dda": {
+      "id": "it_94d74ac121344dda",
+      "source": "github_trending",
+      "title": "NVIDIA/auto-ontology",
+      "url": "https://github.com/NVIDIA/auto-ontology",
+      "summary": "Auto Ontology is a Python framework for building semantic, graph-based reasoning layers over data. It enables deterministic query generation, better context retrieval, and more explainable AI for LLM and agent workflows.",
+      "hot_score": 81.5614,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-05T04:58:09.254260+00:00",
+      "last_seen_at": "2026-11-06T04:57:45.445962+00:00",
+      "metrics": {
+        "stars_total": 7681,
+        "stars_in_window": 2679,
+        "forks": 615,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "Python"
+    },
+    "it_1955590be05d9953": {
+      "id": "it_1955590be05d9953",
+      "source": "hackernews",
+      "title": "My psychophysics as a bilateral cochlear implant user",
+      "url": "https://claude.ai/artifact/L8qsMc3SorytGW3LA81nYf",
+      "summary": "",
+      "hot_score": 77.9669,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-05T16:21:12+00:00",
+      "last_seen_at": "2026-11-06T04:57:45.373203+00:00",
+      "metrics": {
+        "points": 172,
+        "num_comments": 77
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_f7fc24d300640e30": {
+      "id": "it_f7fc24d300640e30",
+      "source": "github_trending",
+      "title": "D4Vinci/Scrapling",
+      "url": "https://github.com/D4Vinci/Scrapling",
+      "summary": "🕷️ The BEST Web Scraping framework that handles everything from a single request to a full-scale crawl! Don't be shy, join here: https://discord.gg/EMgGbDceNQ and follow here for daily tips and tricks: https://x.com/Scrapling_dev",
+      "hot_score": 74.9351,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-03T05:13:22.901795+00:00",
+      "last_seen_at": "2026-11-06T04:57:45.450027+00:00",
+      "metrics": {
+        "stars_total": 98204,
+        "stars_in_window": 2005,
+        "forks": 10288,
+        "streak_days": 4
+      },
+      "streak_days": 4,
+      "language": "Python"
+    },
+    "it_0d63b75b618b190d": {
+      "id": "it_0d63b75b618b190d",
+      "source": "hackernews",
+      "title": "Hungary: Communist-era files released, up to 60k former agents revealed",
+      "url": "https://www.euronews.com/2026/11/04/hungary-communist-era-files-opened-up-to-60000-former-agents-revealed",
+      "summary": "",
+      "hot_score": 72.9461,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-05T19:16:34+00:00",
+      "last_seen_at": "2026-11-06T04:57:45.371342+00:00",
+      "metrics": {
+        "points": 180,
+        "num_comments": 41
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_c4f530cdd1a930e9": {
+      "id": "it_c4f530cdd1a930e9",
+      "source": "github_trending",
+      "title": "github/spec-kit",
+      "url": "https://github.com/github/spec-kit",
+      "summary": "💫 Toolkit to help you get started with SDD or any other process!",
+      "hot_score": 71.4185,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-05T04:58:09.254314+00:00",
+      "last_seen_at": "2026-11-05T04:58:40.366470+00:00",
+      "metrics": {
+        "stars_total": 147435,
+        "stars_in_window": 808,
+        "forks": 13230,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_81446f2462dee9e2": {
+      "id": "it_81446f2462dee9e2",
+      "source": "github_trending",
+      "title": "mattpocock/skills",
+      "url": "https://github.com/mattpocock/skills",
+      "summary": "Skills for Real Engineers. Straight from my .agents directory.",
+      "hot_score": 70.2777,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-31T03:55:58.260523+00:00",
+      "last_seen_at": "2026-11-06T04:57:45.446945+00:00",
+      "metrics": {
+        "stars_total": 315551,
+        "stars_in_window": 2071,
+        "forks": 26417,
+        "streak_days": 4
+      },
+      "streak_days": 4,
+      "language": "Shell"
+    },
+    "it_6c55f1bca7452ffd": {
+      "id": "it_6c55f1bca7452ffd",
+      "source": "hf_papers",
+      "title": "Towards Foundation Decision Models: Drex",
+      "url": "arxiv:2611.07854",
+      "summary": "Autoregressive approaches with large language models, such as long chain-of-thought reasoning, have become the default for new AI applications because they reach higher accuracy on a wide range of tasks. In production, however, they give inconsistent answers, require parsing of outputs, and add cost and latency. Decision models address this: given a question and a set of options supplied by the user, they return a probability distribution over the options without autoregressive decoding. We present Drex, a family of four open decision models with 8B (DLM), 9B (v1.5), 35B with 3B active (v2.0), and 27B (Max) parameters. Each request consists of a state (a document, record, or agent context, optionally with images) and questions about it, each asking for a choice among options, a yes/no judgment, or a score on an ordered scale. Training combines supervised fine-tuning with reinforcement learning from adjusted feedback (RLAF), plus vision tuning for Max. Ablations show that RLAF improves accuracy and that consistency losses improve robustness to option order. On Decision Index 0.4.1, Max sets a new state of the art among the decision models we compare (67.52 on the public suite vs. 60.70 for Jev 1.14.0). On Decision Bench v4, it is statistically tied with d3-turbo and GPT-6 Sol and trails Claude Opus 5.5 by 1.6 points, and it has the highest accuracy among decision models on DecideBench. Max answers a typical request in 183 ms, against about 2.0 s for GPT-6 Sol and 3.5 s for Claude Opus 5.5, and its outputs are stable under option reordering. All four models are open source: https://github.com/nace-ai/drex-decision-models",
+      "hot_score": 69.0442,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-11-04T19:00:00+00:00",
+      "last_seen_at": "2026-11-06T04:57:45.532121+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 9
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_1af61d25d2008e91": {
+      "id": "it_1af61d25d2008e91",
+      "source": "hf_papers",
+      "title": "GameVerse: A Minute-Scale Gameplay Dataset for Long-Horizon Interactive World Modeling",
+      "url": "arxiv:2610.37257",
+      "summary": "Recent advances in interactive world models have made it possible to generate controllable, dynamic environments from action inputs. Yet current models struggle to maintain coherence beyond roughly one minute of rollout, a limitation rooted not in model capacity but in the scarcity of long-horizon training data. Existing gameplay video datasets typically consist of clips under ten seconds, with captions that describe whole clips in coarse and undifferentiated text, which is insufficient for controllable long-horizon generation. We address this with GameVerse, a minute-scale gameplay video dataset purpose-built for long-horizon interactive world modeling. GameVerse contains 69.7K clips spanning 1,655 hours and 349.6 million frames across diverse first- and third-person gameplay, including 1,358 hours of continuous two-minute sequences, an order of magnitude longer than prior datasets. Clips pass through a unified pipeline of scene-consistent segmentation, quality filtering, camera pose estimation, and event-based caption annotation. Each clip is paired with a temporally stable camera trajectory that remains coherent across minutes, together with captions that separate static scene context from dynamic foreground events and align to event boundaries rather than fixed time windows. Comprehensive analysis shows that GameVerse surpasses existing public datasets in scale, diversity, and annotation quality. Experiments further demonstrate that training on GameVerse substantially extends the temporal horizon of interactive world models.",
+      "hot_score": 68.8374,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-30T20:00:00+00:00",
+      "last_seen_at": "2026-11-05T04:58:40.375078+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 16
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_7486a9a8c5dfbdf5": {
+      "id": "it_7486a9a8c5dfbdf5",
+      "source": "hackernews",
+      "title": "Inkling 2 Small",
+      "url": "https://thinkingmachines.ai/news/inkling-2-small",
+      "summary": "",
+      "hot_score": 68.4643,
+      "topic_id": "tp_c54ffff6f42c",
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-06T00:00:24+00:00",
+      "last_seen_at": "2026-11-06T04:57:45.374025+00:00",
+      "metrics": {
+        "points": 127,
+        "num_comments": 52
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_ebfcd2cb02eb3c5c": {
+      "id": "it_ebfcd2cb02eb3c5c",
+      "source": "github_trending",
+      "title": "thedotmack/claude-mem",
+      "url": "https://github.com/thedotmack/claude-mem",
+      "summary": "Persistent Context Across Sessions for Every Agent – Captures everything your agent does during sessions, compresses it with AI, and injects relevant context back into future sessions. Works with Claude Code, OpenClaw, Codex, Gemini, Hermes, Copilot, OpenCode + More",
+      "hot_score": 67.7892,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-30T04:14:36.710902+00:00",
+      "last_seen_at": "2026-11-05T04:58:40.364783+00:00",
+      "metrics": {
+        "stars_total": 113012,
+        "stars_in_window": 1803,
+        "forks": 9811,
+        "streak_days": 7
+      },
+      "streak_days": 7,
+      "language": "TypeScript"
+    },
+    "it_272a08b9ea67bd4c": {
+      "id": "it_272a08b9ea67bd4c",
+      "source": "github_trending",
+      "title": "harry0703/MoneyPrinterTurbo",
+      "url": "https://github.com/harry0703/MoneyPrinterTurbo",
+      "summary": "利用 AI 大模型和自动化工作流，根据主题或关键词一键生成高清短视频。Generate HD short videos from a topic or keyword with an automated AI workflow.",
+      "hot_score": 67.1328,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-05T04:58:09.254329+00:00",
+      "last_seen_at": "2026-11-05T04:58:40.367954+00:00",
+      "metrics": {
+        "stars_total": 139187,
+        "stars_in_window": 617,
+        "forks": 22207,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_a4f95935e39bb782": {
+      "id": "it_a4f95935e39bb782",
+      "source": "hf_papers",
+      "title": "Random Is Almost Enough? Stable and Low-Cost Benchmark Compression via BestRand",
+      "url": "arxiv:2611.00883",
+      "summary": "Benchmark compression reduces the often prohibitive time and cost of model evaluation by evaluating models on a small benchmark subset that closely matches full-benchmark results. To quantify estimation error, we derive an accurate analytical approximation to the error distribution when estimating full-benchmark scores from a subset, showing that most subsets yield small errors, while a few produce much larger errors, resulting in a long-tailed distribution. This means random sampling alone can achieve surprisingly strong performance with high probability, but remains unstable due to rare large errors. We further show that this instability is inherent to modern foundation models and persists even as more models are evaluated. Based on these findings, we introduce BestRand, a stable and low-cost benchmark compression method that preserves the efficiency of random sampling while substantially reducing its high-error tail. We validate BestRand on 70+ text, multimodal, and agent benchmarks, and further extend it to VLA evaluation. Compared with competitive methods, BestRand reduces high-error risk by 50.2% and estimation error by 16.4% on average, while requiring only 51.3% of the construction cost. It further reduces OOD estimation error by 21.8% on average across score-range, model-family, and temporal shifts. Together, our theory provides practical guidance for understanding and predicting the accuracy and reliability of benchmark compression, while BestRand enables stable and accurate compression at low cost. The code and data are publicly available onhttps://github.com/George-Ling3/BestRand.",
+      "hot_score": 65.3758,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-30T20:00:00+00:00",
+      "last_seen_at": "2026-11-06T04:57:45.530923+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 12
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_4343ce049ba19829": {
+      "id": "it_4343ce049ba19829",
+      "source": "github_trending",
+      "title": "microsoft/VibeVoice",
+      "url": "https://github.com/microsoft/VibeVoice",
+      "summary": "Open-Source Frontier Voice AI",
+      "hot_score": 64.2857,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-06T04:57:37.763114+00:00",
+      "last_seen_at": "2026-11-06T04:57:45.456119+00:00",
+      "metrics": {
+        "stars_total": 56116,
+        "stars_in_window": 223,
+        "forks": 6317,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_e546a8a5f340091d": {
+      "id": "it_e546a8a5f340091d",
+      "source": "hf_papers",
+      "title": "PyRUA-DataFarm: LLM Agent as a Cost-Efficient Teleoperator for Real-Ready Robot Data",
+      "url": "arxiv:2611.05320",
+      "summary": "Teleoperation remains the default way to collect robot demonstrations, but every episode costs robot and operator time, and every new task starts from scratch. We ask whether a coding agent can take over the teleoperator's job. In our DataFarm, the agent receives a data request and one calibration episode of the robot in the target scene and rebuilds the task in simulation: it writes the scene, an expert controller, and a success judge. The simulator supplies exact actions, and a video model conditioned on real images renders each rollout as photographic video, generating all camera views together consistently. The output is real-ready data: synchronized camera views labelled with the robot's actions, on which a policy can be trained directly and deployed on the real robot. Independent judges certify the expert and every rendered episode before admission. On five real-robot tasks, policies trained only on farm data match policies trained on as many teleoperated episodes (93 vs. 84 successes in 100 trials), and under an unseen tablecloth and coloured light they keep 87 successes where the teleoperation-trained policies fall to 46. Adapting a task is fully automatic and costs \\21 of API usage on average, paid once per task, plus 5 for a render contract; every further episode costs \\0.80 on average for simulation, rendering, and review, with no robot or operator. One hour of three-view data for a task costs 107 on average, these costs included, slightly below a quote of \\117 for teleoperation in China and below 290 in labour alone in North America.",
+      "hot_score": 63.8906,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-11-03T13:25:14+00:00",
+      "last_seen_at": "2026-11-05T04:58:40.376295+00:00",
+      "metrics": {
+        "num_comments": 2,
+        "upvotes": 9
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_576ebc58d2e940ac": {
+      "id": "it_576ebc58d2e940ac",
+      "source": "github_trending",
+      "title": "floci-io/floci",
+      "url": "https://github.com/floci-io/floci",
+      "summary": "Light, fluffy, and always free - The AWS Local Emulator alternative",
+      "hot_score": 63.3292,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-04T04:43:14.498119+00:00",
+      "last_seen_at": "2026-11-06T04:57:45.456772+00:00",
+      "metrics": {
+        "stars_total": 30529,
+        "stars_in_window": 1090,
+        "forks": 3337,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "Java"
+    },
+    "it_e49944455d9ba6a5": {
+      "id": "it_e49944455d9ba6a5",
+      "source": "github_trending",
+      "title": "garrytan/gstack",
+      "url": "https://github.com/garrytan/gstack",
+      "summary": "Use Garry Tan's exact Claude Code setup: 23 opinionated tools that serve as CEO, Designer, Eng Manager, Release Manager, Doc Engineer, and QA",
+      "hot_score": 60.99,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-05T04:58:09.254335+00:00",
+      "last_seen_at": "2026-11-06T04:57:45.448110+00:00",
+      "metrics": {
+        "stars_total": 140070,
+        "stars_in_window": 612,
+        "forks": 20702,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "TypeScript"
+    },
+    "it_d850be8f18b20931": {
+      "id": "it_d850be8f18b20931",
+      "source": "hf_papers",
+      "title": "From Pixels to Actions - Towards Native Vision-Language-Action Policies",
+      "url": "arxiv:2611.06918",
+      "summary": "Vision-language-action models are typically built on a simple premise: perception is first compressed by visual encoders, and action reasoning begins only afterwards. Yet manipulation often hinges on precisely the visual signals most vulnerable to this abstraction, e.g., local geometry, boundaries, depth, and subtle state changes. This raises a fundamental question: should action policies inherit a fixed visual endpoint, or directly access evolving visual computation? We introduce NEO-VLA, a structurally encoder-free vision-language-action framework. Images are tokenized by lightweight patch convolutional layers and evolve jointly with language throughout the backbone, allowing a flow-matching action expert to draw from instruction-conditioned visual representations at different depths. This simple change reveals a consistent pattern. Native architectures outperform encoder-based counterparts under controlled comparisons; full fine-tuning reduces but does not erase the gap, and additional scale alone cannot recover it. More strikingly, layer-wise probing shows that the action-critical signals often peak well before the final visual representation. Across diverse manipulation settings and distribution shifts, NEO-VLA consequently achieves stronger and more robust control. Together, these results suggest that embodied control benefits from access to visual representations across the computational hierarchy, rather than a fixed encoder output.",
+      "hot_score": 60.9282,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-11-04T13:59:58+00:00",
+      "last_seen_at": "2026-11-05T04:58:40.377689+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 8
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_c1a909c956652f0b": {
+      "id": "it_c1a909c956652f0b",
+      "source": "hackernews",
+      "title": "Launch HN: Rivet (YC W23) – Scale and Orchestrate Agents on S3",
+      "url": "https://github.com/rivet-dev/rivet",
+      "summary": "Hey HN, this is Nathan and Nicholas from Rivet ( https://rivet.dev ) – a fast, high-density, and scalable orchestrator for agentic workloads using the actor model. Rather than running a heavyweight sandbox per agent, each agent gets a lightweight actor backed by S3. Actors provide a long-lived process for long agent turns, in-memory state for context, a WebSocket server for multiplayer, durable SQLite storage backed by S3, and hibernation when idle. It's a similar model to Cloudflare Durable Obj",
+      "hot_score": 59.1224,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-05T17:17:42+00:00",
+      "last_seen_at": "2026-11-06T04:57:45.535288+00:00",
+      "metrics": {
+        "points": 84,
+        "num_comments": 45
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_9fc1aebb67ab0b7e": {
+      "id": "it_9fc1aebb67ab0b7e",
+      "source": "github_trending",
+      "title": "scenario-labs/skills",
+      "url": "https://github.com/scenario-labs/skills",
+      "summary": "Get production-ready images, video, audio, and 3D from any AI agent: skills that pick the right model, price before spending, and keep characters and brands consistent through the Scenario MCP, plus expert teams that drive Blender, Maya, ZBrush, Unreal, and Unity.",
+      "hot_score": 58.7043,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-05T04:58:09.254370+00:00",
+      "last_seen_at": "2026-11-06T04:57:45.454409+00:00",
+      "metrics": {
+        "stars_total": 3184,
+        "stars_in_window": 667,
+        "forks": 278,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "Python"
+    },
+    "it_fc370ae94ba2edfb": {
+      "id": "it_fc370ae94ba2edfb",
+      "source": "github_trending",
+      "title": "FareedKhan-dev/kimi-k3-in-c",
+      "url": "https://github.com/FareedKhan-dev/kimi-k3-in-c",
+      "summary": "A 2.78-trillion-parameter Kimi K3 running inference on a single CPU in 8.24 GB of RAM. Portable C99: no BLAS, no framework, no GPU.",
+      "hot_score": 58.5614,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-05T04:58:09.254341+00:00",
+      "last_seen_at": "2026-11-05T04:58:40.369761+00:00",
+      "metrics": {
+        "stars_total": 10442,
+        "stars_in_window": 351,
+        "forks": 1643,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "C"
+    },
+    "it_5d1070aaeb2b84b3": {
+      "id": "it_5d1070aaeb2b84b3",
+      "source": "github_trending",
+      "title": "google/skills",
+      "url": "https://github.com/google/skills",
+      "summary": "Agent Skills for Google products and technologies",
+      "hot_score": 55.7143,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-06T04:57:37.763094+00:00",
+      "last_seen_at": "2026-11-06T04:57:45.453076+00:00",
+      "metrics": {
+        "stars_total": 22467,
+        "stars_in_window": 211,
+        "forks": 1894,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_5e8dd7e746d65857": {
+      "id": "it_5e8dd7e746d65857",
+      "source": "hf_papers",
+      "title": "Solv3R: 3D Looped Transformer as a Multi-view Solver",
+      "url": "arxiv:2611.02857",
+      "summary": "Classical structure-from-motion reconstruction proceeds iteratively, refining camera poses and scene geometry from a current estimate. This allows maps to easily expand without recomputing already computed views, or geometry estimates to improve as more observations are provided. Most geometric foundation models, however, predict entire geometry in a single forward pass or update a recurrent state as frames arrive sequentially, making this expansion and refinement non-trivial. We introduce Solv3R, a looped transformer that learns to continue solving multi-view geometry from its current state. Importantly, its update operator is independent of the iteration count, allowing previously refined and newly introduced views to be jointly updated regardless of how ``solved'' they are. We train the operator to preserve accurate reconstructions under continued iteration and correct inaccurate states, enabling refinement of fixed image collections and integration of new observations. Representations of solved views can also be cached once and reused as geometric context across iterations, enabling compact and efficient key-value caching. We analyze the solver dynamics and compare it with the state-of-the-art, demonstrating that a single learned solver supports offline reconstruction, incremental reconstruction, relocalization, and streaming without task-specific training or modules. The code and models will be made publicly available at https://ubc-vision.github.io/solv3r/.",
+      "hot_score": 54.5663,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-11-02T04:59:45+00:00",
+      "last_seen_at": "2026-11-05T04:58:40.378896+00:00",
+      "metrics": {
+        "num_comments": 2,
+        "upvotes": 8
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_394d8279e3728a39": {
+      "id": "it_394d8279e3728a39",
+      "source": "hackernews",
+      "title": "Tencent launches Hy4",
+      "url": "https://www.tencent.com/tencent-launches-hy4-joining-the-ranks-of-the-worlds-leading-open-source-ai-models",
+      "summary": "",
+      "hot_score": 54.2133,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-05T20:21:43+00:00",
+      "last_seen_at": "2026-11-06T04:57:45.374765+00:00",
+      "metrics": {
+        "points": 95,
+        "num_comments": 3
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_8292947de71d6092": {
+      "id": "it_8292947de71d6092",
+      "source": "github_trending",
+      "title": "vercel-labs/agent-browser",
+      "url": "https://github.com/vercel-labs/agent-browser",
+      "summary": "Browser automation CLI for AI agents",
+      "hot_score": 53.5714,
+      "topic_id": "tp_89ce6b5b21ca",
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-06T04:57:37.763100+00:00",
+      "last_seen_at": "2026-11-06T04:57:45.453763+00:00",
+      "metrics": {
+        "stars_total": 46022,
+        "stars_in_window": 150,
+        "forks": 3150,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Rust"
+    },
+    "it_85738bce2380d1e8": {
+      "id": "it_85738bce2380d1e8",
+      "source": "hf_papers",
+      "title": "EDGAR: Efficient Diffusion-Driven Gaussian Avatar Refinement via Synthetic Failure",
+      "url": "arxiv:2611.07909",
+      "summary": "Recent advances in Gaussian splatting have enabled efficient and photorealistic head avatar reconstruction, yet monocular video-based or image-based methods still suffer from under-constrained geometry and texture, leading to artifacts such as blurring, stretching, and temporal instability. We present EDGAR (Efficient Diffusion-Driven Gaussian Avatar Refinement), a conditional diffusion framework designed to enhance the quality of Gaussian avatars by correcting artifacts while preserving identity fidelity. To train EDGAR, we construct EDGAR-SET, a hybrid triplet dataset composed of real-captured and synthetic-rendered samples, which simulates realistic Gaussian avatar failure cases by pairing degraded renderings with ground-truth and reference images. EDGAR refines degraded frames through a fusion block that injects identity features extracted by the self-supervised Sapiens model into a one-step diffusion backbone, enabling effective artifact removal without sacrificing efficiency. Our EDGAR model incorporates a Mixture-of-Experts (MoE) architecture to address diverse degradation types and severity levels. The refined multi-view renderings are subsequently used as pseudo-targets to optimize a single underlying Gaussian avatar, so that the final avatar can be rendered without applying EDGAR to every output frame. Experiments on three different Gaussian avatar reconstruction methods, each evaluated under three different settings, show improvements in both perceptual and reconstruction measures over the raw outputs and an SDEdit-style refinement baseline. In addition, cross-view evaluation demonstrates improved calibrated consistency, while tests under large yaw and open-mouth expressions verify robustness under extreme settings. These results collectively indicate a useful operating regime for recoverable appearance artifacts. The code is available at https://kwanyun.github.io/edgar/",
+      "hot_score": 53.4673,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-11-04T19:00:00+00:00",
+      "last_seen_at": "2026-11-06T04:57:45.533382+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 5
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_234b8cb2ffad5d07": {
+      "id": "it_234b8cb2ffad5d07",
+      "source": "github_trending",
+      "title": "The-PR-Agent/pr-agent",
+      "url": "https://github.com/The-PR-Agent/pr-agent",
+      "summary": "🚀 PR Agent: The Original Open-Source PR Reviewer. This project is not the Qodo free tier.",
+      "hot_score": 52.1328,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-05T04:58:09.254323+00:00",
+      "last_seen_at": "2026-11-05T04:58:40.367142+00:00",
+      "metrics": {
+        "stars_total": 14867,
+        "stars_in_window": 280,
+        "forks": 2098,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_e58a4a81eb63fae6": {
+      "id": "it_e58a4a81eb63fae6",
+      "source": "github_trending",
+      "title": "ConardLi/garden-skills",
+      "url": "https://github.com/ConardLi/garden-skills",
+      "summary": "ConardLi's open-source Skills collection, featuring web design, knowledge retrieval, image generation, and more.",
+      "hot_score": 51.4286,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-06T04:57:37.763110+00:00",
+      "last_seen_at": "2026-11-06T04:57:45.455409+00:00",
+      "metrics": {
+        "stars_total": 14253,
+        "stars_in_window": 175,
+        "forks": 1654,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "JavaScript"
+    },
+    "it_b2be5ed40b08cafe": {
+      "id": "it_b2be5ed40b08cafe",
+      "source": "hackernews",
+      "title": "Investors wipe $2.5T off Nasdaq as blue tsunami prompts AI fears",
+      "url": "https://www.reuters.com/legal/transactional/ai-data-center-stocks-slip-democratic-sweep-clouds-expansion-plans-2026-11-05",
+      "summary": "",
+      "hot_score": 49.1786,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-06T01:11:40+00:00",
+      "last_seen_at": "2026-11-06T04:57:45.375415+00:00",
+      "metrics": {
+        "points": 39,
+        "num_comments": 11
+      },
+      "streak_days": 0,
+      "language": "en"
+    }
+  },
+  "meta": {
+    "mode": "hybrid",
+    "day": "2026-11-06",
+    "generated_at": "2026-11-06T04:58:39.299846+00:00",
+    "window": {
+      "since": "2026-11-05T04:57:36.078383+00:00",
+      "until": "2026-11-06T04:57:45.561614+00:00",
+      "hours": 24.0,
+      "since_local": "2026-11-05T12:57+08:00",
+      "until_local": "2026-11-06T12:57+08:00",
+      "tz": "Asia/Shanghai"
+    },
+    "analysis": {
+      "items": 162,
+      "scored": 162,
+      "topics": 9,
+      "new_entity_mention_rows": 212,
+      "state_items": 14
+    },
+    "llm": {
+      "degraded": false,
+      "degraded_reason": "",
+      "calls": 1
+    },
+    "collect": {
+      "ok_sources": 7,
+      "failed_sources": 0,
+      "skipped": 0,
+      "total_items": 146
+    },
+    "verify": {
+      "verified": 0,
+      "unverifiable": 0,
+      "deferred": 1,
+      "failed": 0,
+      "llm_calls": 0
+    },
+    "predictions": {
+      "total": 131,
+      "verified": 1,
+      "pending": 130,
+      "unverifiable": 0,
+      "hit_rate": 0.0,
+      "weighted_score": 0.0,
+      "brier": 0.36
+    },
+    "prediction_generation": {
+      "mode": "hybrid",
+      "generated": 5,
+      "inserted": 5,
+      "dropped": [],
+      "llm_calls": 1,
+      "candidate_pool": 20,
+      "degraded": false,
+      "degraded_reason": ""
+    },
+    "brief": {
+      "max_items_per_section": 10,
+      "velocity_board_enabled": true,
+      "velocity_board_top_n": 5
+    },
+    "signals": {
+      "entities": 626,
+      "points": 1368,
+      "with_velocity": 79,
+      "insufficient": 112,
+      "cold_start": 435,
+      "min_window_hours": 6.0
+    },
+    "enhance_total": 24,
+    "enhanced": 24,
+    "enhance_skipped_count": 0,
+    "enhance_cache_hit": 12,
+    "enhance_cost_cny": 0.006211
+  }
+}
