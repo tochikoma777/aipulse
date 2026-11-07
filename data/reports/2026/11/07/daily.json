@@ -1,0 +1,933 @@
+{
+  "date": "2026-11-07",
+  "headline": "智能体开始学会「外包」：小模型调用大模型即可拿到 Opus 级准确率，成本却只有四分之一，模型能力正被工程化拆解重组",
+  "headline_item_id": "it_ef2a83f7f3a44d74",
+  "overview_bullets": [
+    {
+      "icon": "🤖",
+      "topic": "模型套利",
+      "text": "HN 热帖证明让廉价 Jev 在需要时向 Opus 求助，就能以 4 倍低成本逼近 Opus 准确率，模型能力第一次被当作可调度资源而非单一产品。"
+    },
+    {
+      "icon": "🛠️",
+      "topic": "智能体基建",
+      "text": "vercel-labs 同日放出 agent-desktop 与 agent-browser 两个 CLI，worktrunk 专攻并行智能体的 Git worktree 管理，智能体的「手脚」层正在被快速标准化。"
+    },
+    {
+      "icon": "🔐",
+      "topic": "安全技能化",
+      "text": "Cloudflare 开源 security-audit-skill，把多阶段安全审计封装成编码智能体可调用的技能，并强调发现结果可机器读取、独立验证。"
+    },
+    {
+      "icon": "🏢",
+      "topic": "产品化落地",
+      "text": "Perplexity 推出面向工作场景的 AI 智能体，与 Anthropic 披露科研人员如何使用 Claude 形成呼应：智能体正从演示走向具体职业工作流。"
+    },
+    {
+      "icon": "📄",
+      "topic": "评测降本",
+      "text": "BestRand 用随机子集压缩基准评测并给出误差解析近似，与 Drex 对自回归长链推理「生产环境不稳定」的批评同向——学界开始给评测与推理的虚高成本挤水分。"
+    }
+  ],
+  "executive_summary": "今天的信号集中在一件事上：智能体的竞争力不再取决于单模型多强，而取决于能否把模型、工具、技能与评测成本重新编排成一条更便宜、更可控的流水线。",
+  "editor_note": {
+    "core": "今天最该记住的是那条 4 倍成本换 Opus 级准确率的实验：它说明模型能力可以被拆成「便宜主力 + 昂贵顾问」的调度问题，而不是必须买最强模型。一旦这个模式被验证可复制，模型厂商的定价权会被智能体编排层侵蚀，因为用户付费的对象从「模型」变成了「调用策略」。",
+    "cross_signal": "开源侧 vercel-labs 的桌面/浏览器 CLI、worktrunk 的并行 worktree、Cloudflare 的安全审计技能，与 HN 上的模型套利帖指向同一件事：智能体的瓶颈已从「脑子」转到「手脚与调度」。论文侧 Drex 批评长链推理在生产中答案不稳、输出难解析，恰好解释了为什么工程界在拼命补工具层而不是等更强模型。",
+    "counterintuitive": "热度最高的几条其实是老牌仓库（vscode、react、rust、prometheus），它们与 AI 毫无关系却占据榜单，说明 GitHub Trending 的注意力仍被存量生态吸走；真正有信息量的 agent-desktop、security-audit-skill 热度反而更低。另一个错位是：大家都在谈更强推理，而 BestRand 和 Drex 在说「少算一点、算稳一点」才是生产刚需。",
+    "risk": "「小模型问大模型」的套利方案在基准上成立，但真实任务中求助时机的判断本身就是误差来源，且多一次调用就多一个失败点与延迟；若团队据此砍掉强模型预算，可能在长尾难题上集体失准。同时，安全审计被封装成智能体技能后，审计结论的可信度依赖技能本身未被污染，这类「用 AI 审 AI」的闭环目前缺少独立校验机制。"
+  },
+  "contradictions": [
+    "HN 头条主张用小模型+求助逼近 Opus 准确率以省成本，而 Drex 论文指出自回归长链推理在生产中答案不一致、输出需解析且成本高——两者对「堆推理换准确率」的价值判断相反。",
+    "GitHub 热榜前列多为 vscode、react、rust 等与 AI 无关的存量项目，与实体频次中「智能体」出现 30 次的热度叙事形成明显错位。"
+  ],
+  "underrated": [
+    "Memorilla: Latent Semantic Memory for LLMs——语义记忆是智能体长期运行的真瓶颈，热度仅 55.4 明显偏低",
+    "Towards Foundation Decision Models: Drex——对长链推理生产可用性的批评比多数智能体工具更触及根本",
+    "Random Is Almost Enough? Stable and Low-Cost Benchmark Compression via BestRand——评测成本问题被普遍忽视",
+    "cloudflare/security-audit-skill——把安全审计做成可验证技能，是智能体进入企业的最小可信切口",
+    "max-sixty/worktrunk——并行智能体工作流的 Git 管理，属于没人愿意做但绕不开的脏活"
+  ],
+  "sections": [
+    {
+      "name": "开源项目",
+      "summary": "GitHub 热榜被智能体工具链刷屏，浏览器/桌面操作、安全审计、技能库与并行工作流管理构成新的基础设施层。",
+      "item_ids": [
+        "it_a4e85f0863890b24",
+        "it_8292947de71d6092",
+        "it_b72ae434cf4573bb",
+        "it_77f9ddd43bbeeb71",
+        "it_94d74ac121344dda",
+        "it_5d1070aaeb2b84b3",
+        "it_81446f2462dee9e2",
+        "it_e49944455d9ba6a5",
+        "it_9fc1aebb67ab0b7e",
+        "it_4343ce049ba19829",
+        "it_f7fc24d300640e30",
+        "it_576ebc58d2e940ac",
+        "it_ee4da02d4a5e8d37",
+        "it_df21541ba45a72aa",
+        "it_e868ad0d204ab7c9",
+        "it_7ac2c685b6e09bd8",
+        "it_4ad3267dacd73cb8",
+        "it_68a29c8e68293e4a",
+        "it_1f8d29662555e895",
+        "it_3ef6c4ce8b9e3166",
+        "it_f6990adac66dca7b",
+        "it_a6822920714e1eb5",
+        "it_3a1d582755586fd3"
+      ]
+    },
+    {
+      "name": "论文与研究",
+      "summary": "两篇论文分别质疑「长链推理即最优」与「全量基准评测必要」，指向生产可用性与成本效率这两个被忽视的维度。",
+      "item_ids": [
+        "it_a4f95935e39bb782",
+        "it_6c55f1bca7452ffd"
+      ]
+    },
+    {
+      "name": "社区舆论",
+      "summary": "HN 讨论集中在模型能力复用与语义记忆两条线，前者是成本套利，后者是长期上下文的结构性解法。",
+      "item_ids": [
+        "it_ef2a83f7f3a44d74",
+        "it_6ab14526eebbea57",
+        "it_3b78672d47e119ba",
+        "it_feae6a47e061bc9c",
+        "it_eb4a2c6a72538e9a"
+      ]
+    },
+    {
+      "name": "产业与新闻",
+      "summary": "Perplexity 把智能体包装成职场产品，Anthropic 则用科研场景为 Claude 找落地叙事，两家都在争夺「智能体干什么活」的定义权。",
+      "item_ids": []
+    }
+  ],
+  "comments": [
+    {
+      "item_id": "it_a4e85f0863890b24",
+      "one_liner": "vercel-labs 推出的面向 AI agent 的 computer use 命令行工具",
+      "why": "把「操作电脑」这一层抽象成 CLI，代理就能脱离浏览器沙箱直接驱动桌面应用，自动化边界从网页扩展到本地软件栈。",
+      "stance": "方向对，但让代理拿到桌面控制权，权限与审计问题会被推到每个使用者头上。"
+    },
+    {
+      "item_id": "it_8292947de71d6092",
+      "one_liner": "vercel-labs 推出的浏览器自动化 CLI，供 AI agent 调用",
+      "why": "把浏览器操作封装成 CLI，等于给 AI agent 一个不依赖图形界面的确定性执行层，网页抓取与流程自动化的接入成本被压到一条命令。",
+      "stance": "方向正确，但浏览器自动化是权限与反爬的高危地带，谁掌握执行层谁就掌握 agent 的落地边界。"
+    },
+    {
+      "item_id": "it_b72ae434cf4573bb",
+      "one_liner": "面向并行 AI agent 工作流的 Git worktree 管理 CLI",
+      "why": "并行 agent 同时改代码时，冲突从合并阶段前移到工作区隔离阶段，worktree 管理从个人习惯变成多 agent 协作的基础设施。",
+      "stance": "这是被低估的刚需：agent 越多，版本控制层的隔离能力越决定团队吞吐上限。"
+    },
+    {
+      "item_id": "it_77f9ddd43bbeeb71",
+      "one_liner": "Cloudflare 开源的 coding-agent 技能，用于分阶段执行安全审计并输出可独立验证的机器可读结果",
+      "why": "把安全审计拆成多阶段并输出可机器校验的结论，让编码代理的审计结果从「人读报告」变成可接入 CI 的判定信号，审计责任从人转移到流水线。",
+      "stance": "方向对，但审计结论一旦可自动化，误报就会被当成合规证据，必须保留人工复核闸门。"
+    },
+    {
+      "item_id": "it_94d74ac121344dda",
+      "one_liner": "NVIDIA 开源的 Python 框架，用于在数据之上构建语义化、基于图的推理层，为 LLM 与 agent 工作流提供确定性查询生成与更可解释的检索。",
+      "why": "把本体论/知识图谱层塞进 LLM 与 agent 的推理链路，让查询生成从概率采样变成可复现的确定性过程，直接决定 agent 输出能否被审计。",
+      "stance": "方向对：agent 落地卡在可解释性，语义层比再堆参数更值钱。"
+    },
+    {
+      "item_id": "it_5d1070aaeb2b84b3",
+      "one_liner": "Google 官方发布的 Agent Skills 集合，覆盖其产品与技术栈",
+      "why": "厂商亲自发布技能包，意味着 agent 能力从社区拼装转向官方认证，第三方技能包被迫按官方接口重新分层。",
+      "stance": "官方收编技能是平台化信号，生态会迅速向少数几家厂商的技能目录收敛。"
+    },
+    {
+      "item_id": "it_81446f2462dee9e2",
+      "one_liner": "mattpocock 公开的 .agents 目录中的工程技能集合",
+      "why": "把个人 .agents 目录里的技能直接公开，等于把「提示词工程」沉淀为可复用资产，工程师的编码习惯开始被版本化分发。",
+      "stance": "有价值，但技能包高度依赖作者个人工作流，复制到别人机器上多半水土不服。"
+    },
+    {
+      "item_id": "it_e49944455d9ba6a5",
+      "one_liner": "Garry Tan 公开的 Claude Code 配置，包含 23 个分别扮演 CEO、设计师、工程经理、发布经理、文档工程师和 QA 的工具。",
+      "why": "把一整套角色化 agent 配置当作可复制资产分发，等于把「怎么用 AI 干活」从个人经验变成可安装的组织流程。",
+      "stance": "23 个角色是营销包装，真正可迁移的是分工拆解思路，别照抄。"
+    },
+    {
+      "item_id": "it_9fc1aebb67ab0b7e",
+      "one_liner": "Scenario 的 agent skills 库，可生成图像、视频、音频与 3D 资产并驱动 Blender、Maya、Unreal 等工具",
+      "why": "把选模型、先报价再花钱、角色与品牌一致性打包成技能，生成式内容从试错式调用变成带成本约束的生产流程。",
+      "stance": "先计价再生成是真正的差异化，创意工具的门槛从会不会用模型变成敢不敢控预算。"
+    },
+    {
+      "item_id": "it_4343ce049ba19829",
+      "one_liner": "微软开源的 Frontier 级语音 AI 项目 VibeVoice",
+      "why": "微软把前沿语音模型开源，等于把高保真语音合成与克隆的门槛从云端 API 拉到本地可部署，直接冲击商业语音 API 的定价与合规护城河。",
+      "stance": "开源语音是双刃剑，能力扩散快过治理，滥用成本被压到接近零。"
+    },
+    {
+      "item_id": "it_a4f95935e39bb782",
+      "one_liner": "提出 BestRand 方法，通过随机采样实现稳定低成本的基准压缩",
+      "why": "证明随机子集就能逼近全量评测结果，直接砍掉模型评估的时间与算力开销，让中小团队也能高频跑基准，评测从大厂特权变成日常动作。",
+      "stance": "评测成本下降是好事，但压缩带来的估计误差必须公开，否则排行榜会变成噪声放大器。"
+    },
+    {
+      "item_id": "it_6c55f1bca7452ffd",
+      "one_liner": "提出 Drex，一种面向决策任务的基础模型，试图替代自回归 LLM 在生产中的不稳定输出",
+      "why": "把决策问题从长链推理转向自回归决策模型，直指生产环境中答案不一致、输出需解析、成本高这三个痛点。",
+      "stance": "推理链不是终点，把不确定性收进模型结构里才是生产可用的前提，这个方向该被认真对待。"
+    },
+    {
+      "item_id": "it_ef2a83f7f3a44d74",
+      "one_liner": "让较小的 Jev 模型在需要时向 Opus 求助，以约四分之一成本达到 Opus 的准确率",
+      "why": "让小模型在不确定时向强模型求助，把算力花在难题上，同等准确率下成本降到四分之一，直接改写推理预算的分配方式。",
+      "stance": "级联求助比一味堆大模型更务实，成本曲线才是决定 agent 能否规模部署的那根线。"
+    },
+    {
+      "item_id": "it_6ab14526eebbea57",
+      "one_liner": "Memorilla：为 LLM 设计的潜在语义记忆机制",
+      "why": "把记忆放在潜空间而非检索文本，绕开向量库与上下文窗口的容量限制，长期对话的召回质量与延迟结构随之改变。",
+      "stance": "记忆是当前 agent 最薄弱的一环，潜空间路线值得押注，但可解释性代价必须提前算清。"
+    },
+    {
+      "item_id": "it_3b78672d47e119ba",
+      "one_liner": "介绍科研人员如何用 Claude 辅助科学发现的案例汇总",
+      "why": "科研场景的用法被公开成案例，等于给实验室提供可复制的提示与流程模板，AI 在论文产出链条中的位置从辅助写作前移到假设生成。",
+      "stance": "科研是 AI 最能证明价值也最容易被夸大的领域，案例要落到可复现的方法而非宣传口径。"
+    },
+    {
+      "item_id": "it_feae6a47e061bc9c",
+      "one_liner": "一篇 2016 年的生态观察记录：木蚁被困于巨大陷阱坑中的生存极限现象",
+      "why": "一个天然陷阱让整个蚁群持续死亡却无法自救，为群体行为与个体信号失效提供了罕见的长期观测样本。",
+      "stance": "与 AI 无关但值得留在日报里：集体盲区不分物种，也不分系统。"
+    },
+    {
+      "item_id": "it_eb4a2c6a72538e9a",
+      "one_liner": "Perplexity 推出面向工作场景的 AI agent 产品",
+      "why": "搜索产品转向可执行的工作型 agent，把入口从回答问题变成代替操作，直接挤压办公软件与 RPA 的中间层。",
+      "stance": "搜索公司做 agent 是必然的防守动作，胜负取决于能否拿到企业数据与权限，而非模型强弱。"
+    }
+  ],
+  "stats": {},
+  "items": {
+    "it_ef2a83f7f3a44d74": {
+      "id": "it_ef2a83f7f3a44d74",
+      "source": "hackernews",
+      "title": "A Jev that can ask Opus for help gives Opus accuracy at 4x lower cost",
+      "url": "https://hightouch.com/blog/llm-judges-identity-resolution",
+      "summary": "",
+      "hot_score": 86.3045,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-06T19:48:51+00:00",
+      "last_seen_at": "2026-11-07T04:30:53.394588+00:00",
+      "metrics": {
+        "points": 387,
+        "num_comments": 87
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_a4e85f0863890b24": {
+      "id": "it_a4e85f0863890b24",
+      "source": "github_trending",
+      "title": "vercel-labs/agent-desktop",
+      "url": "https://github.com/vercel-labs/agent-desktop",
+      "summary": "Computer use CLI for AI agents",
+      "hot_score": 80.0672,
+      "topic_id": "tp_0796cffecf3a",
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-03T05:13:22.901772+00:00",
+      "last_seen_at": "2026-11-06T04:57:45.451001+00:00",
+      "metrics": {
+        "stars_total": 17161,
+        "stars_in_window": 3791,
+        "forks": 1217,
+        "streak_days": 4
+      },
+      "streak_days": 4,
+      "language": "Rust"
+    },
+    "it_94d74ac121344dda": {
+      "id": "it_94d74ac121344dda",
+      "source": "github_trending",
+      "title": "NVIDIA/auto-ontology",
+      "url": "https://github.com/NVIDIA/auto-ontology",
+      "summary": "Auto Ontology is a Python framework for building semantic, graph-based reasoning layers over data. It enables deterministic query generation, better context retrieval, and more explainable AI for LLM and agent workflows.",
+      "hot_score": 78.0604,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-05T04:58:09.254260+00:00",
+      "last_seen_at": "2026-11-07T04:30:53.433714+00:00",
+      "metrics": {
+        "stars_total": 9233,
+        "stars_in_window": 2679,
+        "forks": 734,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "Python"
+    },
+    "it_77f9ddd43bbeeb71": {
+      "id": "it_77f9ddd43bbeeb71",
+      "source": "github_trending",
+      "title": "cloudflare/security-audit-skill",
+      "url": "https://github.com/cloudflare/security-audit-skill",
+      "summary": "A coding-agent skill for multi-phase security audits with independently verified, machine-readable findings",
+      "hot_score": 76.3639,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-21T03:11:29.651293+00:00",
+      "last_seen_at": "2026-11-07T04:30:53.438870+00:00",
+      "metrics": {
+        "stars_total": 64302,
+        "stars_in_window": 2979,
+        "forks": 4165,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "JavaScript"
+    },
+    "it_ee4da02d4a5e8d37": {
+      "id": "it_ee4da02d4a5e8d37",
+      "source": "github_trending",
+      "title": "microsoft/vscode",
+      "url": "https://github.com/microsoft/vscode",
+      "summary": "Visual Studio Code",
+      "hot_score": 75.5357,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-07T04:30:11.298093+00:00",
+      "last_seen_at": "2026-11-07T04:30:53.437196+00:00",
+      "metrics": {
+        "stars_total": 195061,
+        "stars_in_window": 301,
+        "forks": 44432,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "TypeScript"
+    },
+    "it_feae6a47e061bc9c": {
+      "id": "it_feae6a47e061bc9c",
+      "source": "hackernews",
+      "title": "Living beyond the limits of survival: wood ants trapped in a gigantic pitfall (2016)",
+      "url": "https://jhr.pensoft.net/articles.php?id=9096",
+      "summary": "",
+      "hot_score": 74.5168,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-06T10:21:15+00:00",
+      "last_seen_at": "2026-11-07T04:30:53.396873+00:00",
+      "metrics": {
+        "points": 166,
+        "num_comments": 52
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_df21541ba45a72aa": {
+      "id": "it_df21541ba45a72aa",
+      "source": "github_trending",
+      "title": "zed-industries/zed",
+      "url": "https://github.com/zed-industries/zed",
+      "summary": "Code at the speed of thought – Zed is a high-performance, multiplayer code editor from the creators of Atom and Tree-sitter.",
+      "hot_score": 72.3214,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-07T04:30:11.298036+00:00",
+      "last_seen_at": "2026-11-07T04:30:53.433344+00:00",
+      "metrics": {
+        "stars_total": 93754,
+        "stars_in_window": 306,
+        "forks": 11507,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Rust"
+    },
+    "it_f7fc24d300640e30": {
+      "id": "it_f7fc24d300640e30",
+      "source": "github_trending",
+      "title": "D4Vinci/Scrapling",
+      "url": "https://github.com/D4Vinci/Scrapling",
+      "summary": "🕷️ The BEST Web Scraping framework that handles everything from a single request to a full-scale crawl! Don't be shy, join here: https://discord.gg/EMgGbDceNQ and follow here for daily tips and tricks: https://x.com/Scrapling_dev",
+      "hot_score": 71.3983,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-03T05:13:22.901795+00:00",
+      "last_seen_at": "2026-11-06T04:57:45.450027+00:00",
+      "metrics": {
+        "stars_total": 98204,
+        "stars_in_window": 2005,
+        "forks": 10288,
+        "streak_days": 4
+      },
+      "streak_days": 4,
+      "language": "Python"
+    },
+    "it_7ac2c685b6e09bd8": {
+      "id": "it_7ac2c685b6e09bd8",
+      "source": "github_trending",
+      "title": "react/react",
+      "url": "https://github.com/react/react",
+      "summary": "The library for web and native user interfaces.",
+      "hot_score": 70.7143,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-07T04:30:11.298069+00:00",
+      "last_seen_at": "2026-11-07T04:30:53.435608+00:00",
+      "metrics": {
+        "stars_total": 252288,
+        "stars_in_window": 248,
+        "forks": 51819,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "JavaScript"
+    },
+    "it_81446f2462dee9e2": {
+      "id": "it_81446f2462dee9e2",
+      "source": "github_trending",
+      "title": "mattpocock/skills",
+      "url": "https://github.com/mattpocock/skills",
+      "summary": "Skills for Real Engineers. Straight from my .agents directory.",
+      "hot_score": 69.7316,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-31T03:55:58.260523+00:00",
+      "last_seen_at": "2026-11-07T04:30:53.438513+00:00",
+      "metrics": {
+        "stars_total": 316866,
+        "stars_in_window": 2071,
+        "forks": 26512,
+        "streak_days": 5
+      },
+      "streak_days": 5,
+      "language": "Shell"
+    },
+    "it_4ad3267dacd73cb8": {
+      "id": "it_4ad3267dacd73cb8",
+      "source": "github_trending",
+      "title": "rust-lang/rust",
+      "url": "https://github.com/rust-lang/rust",
+      "summary": "Empowering everyone to build reliable and efficient software.",
+      "hot_score": 69.1071,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-07T04:30:11.298065+00:00",
+      "last_seen_at": "2026-11-07T04:30:53.435281+00:00",
+      "metrics": {
+        "stars_total": 121496,
+        "stars_in_window": 192,
+        "forks": 17369,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Rust"
+    },
+    "it_a4f95935e39bb782": {
+      "id": "it_a4f95935e39bb782",
+      "source": "hf_papers",
+      "title": "Random Is Almost Enough? Stable and Low-Cost Benchmark Compression via BestRand",
+      "url": "arxiv:2611.00883",
+      "summary": "Benchmark compression reduces the often prohibitive time and cost of model evaluation by evaluating models on a small benchmark subset that closely matches full-benchmark results. To quantify estimation error, we derive an accurate analytical approximation to the error distribution when estimating full-benchmark scores from a subset, showing that most subsets yield small errors, while a few produce much larger errors, resulting in a long-tailed distribution. This means random sampling alone can achieve surprisingly strong performance with high probability, but remains unstable due to rare large errors. We further show that this instability is inherent to modern foundation models and persists even as more models are evaluated. Based on these findings, we introduce BestRand, a stable and low-cost benchmark compression method that preserves the efficiency of random sampling while substantially reducing its high-error tail. We validate BestRand on 70+ text, multimodal, and agent benchmarks, and further extend it to VLA evaluation. Compared with competitive methods, BestRand reduces high-error risk by 50.2% and estimation error by 16.4% on average, while requiring only 51.3% of the construction cost. It further reduces OOD estimation error by 21.8% on average across score-range, model-family, and temporal shifts. Together, our theory provides practical guidance for understanding and predicting the accuracy and reliability of benchmark compression, while BestRand enables stable and accurate compression at low cost. The code and data are publicly available onhttps://github.com/George-Ling3/BestRand.",
+      "hot_score": 68.6754,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-30T20:00:00+00:00",
+      "last_seen_at": "2026-11-06T04:57:45.530923+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 12
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_3b78672d47e119ba": {
+      "id": "it_3b78672d47e119ba",
+      "source": "hackernews",
+      "title": "AI for scientific discovery: How researchers use Claude",
+      "url": "https://www.anthropic.com/research/how-researchers-use-claude",
+      "summary": "",
+      "hot_score": 66.5763,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-06T09:13:30+00:00",
+      "last_seen_at": "2026-11-07T04:30:53.398219+00:00",
+      "metrics": {
+        "points": 90,
+        "num_comments": 37
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_576ebc58d2e940ac": {
+      "id": "it_576ebc58d2e940ac",
+      "source": "github_trending",
+      "title": "floci-io/floci",
+      "url": "https://github.com/floci-io/floci",
+      "summary": "Light, fluffy, and always free - The AWS Local Emulator alternative",
+      "hot_score": 66.0893,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-04T04:43:14.498119+00:00",
+      "last_seen_at": "2026-11-06T04:57:45.456772+00:00",
+      "metrics": {
+        "stars_total": 30529,
+        "stars_in_window": 1090,
+        "forks": 3337,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "Java"
+    },
+    "it_e49944455d9ba6a5": {
+      "id": "it_e49944455d9ba6a5",
+      "source": "github_trending",
+      "title": "garrytan/gstack",
+      "url": "https://github.com/garrytan/gstack",
+      "summary": "Use Garry Tan's exact Claude Code setup: 23 opinionated tools that serve as CEO, Designer, Eng Manager, Release Manager, Doc Engineer, and QA",
+      "hot_score": 63.937,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-05T04:58:09.254335+00:00",
+      "last_seen_at": "2026-11-06T04:57:45.448110+00:00",
+      "metrics": {
+        "stars_total": 140070,
+        "stars_in_window": 612,
+        "forks": 20702,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "TypeScript"
+    },
+    "it_eb4a2c6a72538e9a": {
+      "id": "it_eb4a2c6a72538e9a",
+      "source": "hackernews",
+      "title": "Perplexity launches AI agents for work",
+      "url": "https://www.perplexity.ai/en-GB/hub/blog/teammates-are-agents-for-complex-ongoing-work",
+      "summary": "",
+      "hot_score": 62.8901,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-06T17:59:41+00:00",
+      "last_seen_at": "2026-11-07T04:30:53.398735+00:00",
+      "metrics": {
+        "points": 60,
+        "num_comments": 52
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_e868ad0d204ab7c9": {
+      "id": "it_e868ad0d204ab7c9",
+      "source": "github_trending",
+      "title": "astral-sh/ruff",
+      "url": "https://github.com/astral-sh/ruff",
+      "summary": "An extremely fast Python linter and code formatter, written in Rust.",
+      "hot_score": 62.6786,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-07T04:30:11.298115+00:00",
+      "last_seen_at": "2026-11-07T04:30:53.439280+00:00",
+      "metrics": {
+        "stars_total": 50730,
+        "stars_in_window": 169,
+        "forks": 2613,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Rust"
+    },
+    "it_68a29c8e68293e4a": {
+      "id": "it_68a29c8e68293e4a",
+      "source": "github_trending",
+      "title": "prometheus/prometheus",
+      "url": "https://github.com/prometheus/prometheus",
+      "summary": "The Prometheus monitoring system and time series database.",
+      "hot_score": 61.0714,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-07T04:30:11.298084+00:00",
+      "last_seen_at": "2026-11-07T04:30:53.436541+00:00",
+      "metrics": {
+        "stars_total": 67222,
+        "stars_in_window": 148,
+        "forks": 10989,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Go"
+    },
+    "it_5d1070aaeb2b84b3": {
+      "id": "it_5d1070aaeb2b84b3",
+      "source": "github_trending",
+      "title": "google/skills",
+      "url": "https://github.com/google/skills",
+      "summary": "Agent Skills for Google products and technologies",
+      "hot_score": 61.0317,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-06T04:57:37.763094+00:00",
+      "last_seen_at": "2026-11-07T04:30:53.436848+00:00",
+      "metrics": {
+        "stars_total": 22905,
+        "stars_in_window": 534,
+        "forks": 1926,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "Python"
+    },
+    "it_4343ce049ba19829": {
+      "id": "it_4343ce049ba19829",
+      "source": "github_trending",
+      "title": "microsoft/VibeVoice",
+      "url": "https://github.com/microsoft/VibeVoice",
+      "summary": "Open-Source Frontier Voice AI",
+      "hot_score": 59.7817,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-06T04:57:37.763114+00:00",
+      "last_seen_at": "2026-11-06T04:57:45.456119+00:00",
+      "metrics": {
+        "stars_total": 56116,
+        "stars_in_window": 223,
+        "forks": 6317,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_1f8d29662555e895": {
+      "id": "it_1f8d29662555e895",
+      "source": "github_trending",
+      "title": "angular/angular",
+      "url": "https://github.com/angular/angular",
+      "summary": "Deliver web apps with confidence 🚀",
+      "hot_score": 59.4643,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-07T04:30:11.298073+00:00",
+      "last_seen_at": "2026-11-07T04:30:53.435915+00:00",
+      "metrics": {
+        "stars_total": 101402,
+        "stars_in_window": 135,
+        "forks": 28912,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "TypeScript"
+    },
+    "it_9fc1aebb67ab0b7e": {
+      "id": "it_9fc1aebb67ab0b7e",
+      "source": "github_trending",
+      "title": "scenario-labs/skills",
+      "url": "https://github.com/scenario-labs/skills",
+      "summary": "Get production-ready images, video, audio, and 3D from any AI agent: skills that pick the right model, price before spending, and keep characters and brands consistent through the Scenario MCP, plus expert teams that drive Blender, Maya, ZBrush, Unreal, and Unity.",
+      "hot_score": 59.3267,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-05T04:58:09.254370+00:00",
+      "last_seen_at": "2026-11-06T04:57:45.454409+00:00",
+      "metrics": {
+        "stars_total": 3184,
+        "stars_in_window": 667,
+        "forks": 278,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "Python"
+    },
+    "it_6c55f1bca7452ffd": {
+      "id": "it_6c55f1bca7452ffd",
+      "source": "hf_papers",
+      "title": "Towards Foundation Decision Models: Drex",
+      "url": "arxiv:2611.07854",
+      "summary": "Autoregressive approaches with large language models, such as long chain-of-thought reasoning, have become the default for new AI applications because they reach higher accuracy on a wide range of tasks. In production, however, they give inconsistent answers, require parsing of outputs, and add cost and latency. Decision models address this: given a question and a set of options supplied by the user, they return a probability distribution over the options without autoregressive decoding. We present Drex, a family of four open decision models with 8B (DLM), 9B (v1.5), 35B with 3B active (v2.0), and 27B (Max) parameters. Each request consists of a state (a document, record, or agent context, optionally with images) and questions about it, each asking for a choice among options, a yes/no judgment, or a score on an ordered scale. Training combines supervised fine-tuning with reinforcement learning from adjusted feedback (RLAF), plus vision tuning for Max. Ablations show that RLAF improves accuracy and that consistency losses improve robustness to option order. On Decision Index 0.4.1, Max sets a new state of the art among the decision models we compare (67.52 on the public suite vs. 60.70 for Jev 1.14.0). On Decision Bench v4, it is statistically tied with d3-turbo and GPT-6 Sol and trails Claude Opus 5.5 by 1.6 points, and it has the highest accuracy among decision models on DecideBench. Max answers a typical request in 183 ms, against about 2.0 s for GPT-6 Sol and 3.5 s for Claude Opus 5.5, and its outputs are stable under option reordering. All four models are open source: https://github.com/nace-ai/drex-decision-models",
+      "hot_score": 58.2815,
+      "topic_id": "tp_46ba996195ec",
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-11-04T19:00:00+00:00",
+      "last_seen_at": "2026-11-06T04:57:45.532121+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 9
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_3ef6c4ce8b9e3166": {
+      "id": "it_3ef6c4ce8b9e3166",
+      "source": "github_trending",
+      "title": "rails/rails",
+      "url": "https://github.com/rails/rails",
+      "summary": "Ruby on Rails",
+      "hot_score": 56.25,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-07T04:30:11.298057+00:00",
+      "last_seen_at": "2026-11-07T04:30:53.434221+00:00",
+      "metrics": {
+        "stars_total": 59045,
+        "stars_in_window": 142,
+        "forks": 23833,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Ruby"
+    },
+    "it_6ab14526eebbea57": {
+      "id": "it_6ab14526eebbea57",
+      "source": "hackernews",
+      "title": "Memorilla: Latent Semantic Memory for LLMs",
+      "url": "arxiv:2610.21375",
+      "summary": "",
+      "hot_score": 55.4217,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-06T18:03:33+00:00",
+      "last_seen_at": "2026-11-07T04:30:53.439636+00:00",
+      "metrics": {
+        "points": 95,
+        "num_comments": 10
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_f6990adac66dca7b": {
+      "id": "it_f6990adac66dca7b",
+      "source": "github_trending",
+      "title": "etcd-io/etcd",
+      "url": "https://github.com/etcd-io/etcd",
+      "summary": "Distributed reliable key-value store for the most critical data of a distributed system",
+      "hot_score": 53.0357,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-07T04:30:11.298101+00:00",
+      "last_seen_at": "2026-11-07T04:30:53.437825+00:00",
+      "metrics": {
+        "stars_total": 52631,
+        "stars_in_window": 128,
+        "forks": 10590,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Go"
+    },
+    "it_a6822920714e1eb5": {
+      "id": "it_a6822920714e1eb5",
+      "source": "github_trending",
+      "title": "nushell/nushell",
+      "url": "https://github.com/nushell/nushell",
+      "summary": "A new type of shell",
+      "hot_score": 51.4286,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-07T04:30:11.298097+00:00",
+      "last_seen_at": "2026-11-07T04:30:53.437525+00:00",
+      "metrics": {
+        "stars_total": 41006,
+        "stars_in_window": 131,
+        "forks": 2343,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Rust"
+    },
+    "it_b72ae434cf4573bb": {
+      "id": "it_b72ae434cf4573bb",
+      "source": "github_trending",
+      "title": "max-sixty/worktrunk",
+      "url": "https://github.com/max-sixty/worktrunk",
+      "summary": "Worktrunk is a CLI for Git worktree management, designed for parallel AI agent workflows",
+      "hot_score": 50.6354,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-03T05:13:22.901840+00:00",
+      "last_seen_at": "2026-11-06T04:57:45.451696+00:00",
+      "metrics": {
+        "stars_total": 11595,
+        "stars_in_window": 546,
+        "forks": 442,
+        "streak_days": 4
+      },
+      "streak_days": 4,
+      "language": "Rust"
+    },
+    "it_8292947de71d6092": {
+      "id": "it_8292947de71d6092",
+      "source": "github_trending",
+      "title": "vercel-labs/agent-browser",
+      "url": "https://github.com/vercel-labs/agent-browser",
+      "summary": "Browser automation CLI for AI agents",
+      "hot_score": 50.1389,
+      "topic_id": "tp_0796cffecf3a",
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-06T04:57:37.763100+00:00",
+      "last_seen_at": "2026-11-06T04:57:45.453763+00:00",
+      "metrics": {
+        "stars_total": 46022,
+        "stars_in_window": 150,
+        "forks": 3150,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Rust"
+    },
+    "it_3a1d582755586fd3": {
+      "id": "it_3a1d582755586fd3",
+      "source": "github_trending",
+      "title": "symfony/symfony",
+      "url": "https://github.com/symfony/symfony",
+      "summary": "The Symfony PHP framework",
+      "hot_score": 49.8214,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-07T04:30:11.298080+00:00",
+      "last_seen_at": "2026-11-07T04:30:53.436207+00:00",
+      "metrics": {
+        "stars_total": 31459,
+        "stars_in_window": 128,
+        "forks": 9949,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "PHP"
+    }
+  },
+  "meta": {
+    "mode": "hybrid",
+    "day": "2026-11-07",
+    "generated_at": "2026-11-07T04:31:48.774019+00:00",
+    "window": {
+      "since": "2026-11-06T04:30:10.915556+00:00",
+      "until": "2026-11-07T04:30:53.452822+00:00",
+      "hours": 24.0,
+      "since_local": "2026-11-06T12:30+08:00",
+      "until_local": "2026-11-07T12:30+08:00",
+      "tz": "Asia/Shanghai"
+    },
+    "analysis": {
+      "items": 155,
+      "scored": 155,
+      "topics": 6,
+      "new_entity_mention_rows": 209,
+      "state_items": 17
+    },
+    "llm": {
+      "degraded": false,
+      "degraded_reason": "",
+      "calls": 1
+    },
+    "collect": {
+      "ok_sources": 6,
+      "failed_sources": 1,
+      "skipped": 0,
+      "total_items": 80
+    },
+    "verify": {
+      "verified": 0,
+      "unverifiable": 0,
+      "deferred": 1,
+      "failed": 0,
+      "llm_calls": 0
+    },
+    "predictions": {
+      "total": 136,
+      "verified": 1,
+      "pending": 135,
+      "unverifiable": 0,
+      "hit_rate": 0.0,
+      "weighted_score": 0.0,
+      "brier": 0.36
+    },
+    "prediction_generation": {
+      "mode": "hybrid",
+      "generated": 5,
+      "inserted": 5,
+      "dropped": [],
+      "llm_calls": 1,
+      "candidate_pool": 20,
+      "degraded": false,
+      "degraded_reason": ""
+    },
+    "brief": {
+      "max_items_per_section": 10,
+      "velocity_board_enabled": true,
+      "velocity_board_top_n": 5
+    },
+    "signals": {
+      "entities": 646,
+      "points": 1392,
+      "with_velocity": 80,
+      "insufficient": 112,
+      "cold_start": 454,
+      "min_window_hours": 6.0
+    },
+    "enhance_total": 17,
+    "enhanced": 17,
+    "enhance_skipped_count": 0,
+    "enhance_cache_hit": 7,
+    "enhance_cost_cny": 0.003964
+  }
+}
