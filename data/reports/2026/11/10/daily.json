@@ -1,0 +1,970 @@
+{
+  "date": "2026-11-10",
+  "headline": "Claude Fable 5.2 登顶 Artificial Analysis 榜首，但同一天 CoreWeave 债券收益率破 16% 提醒：模型能力曲线与 AI 信用曲线正在分道扬镳。",
+  "headline_item_id": "it_255b56db4a4a44d0",
+  "overview_bullets": [
+    {
+      "icon": "🤖",
+      "topic": "模型登顶",
+      "text": "Claude Fable 5.2 以 65 分拿下 Artificial Analysis 最高分，Mythos 5.2 同日发布，Anthropic 用一次双发把前沿模型的竞争节奏又压紧了一档。"
+    },
+    {
+      "icon": "📉",
+      "topic": "信用承压",
+      "text": "CoreWeave 债券收益率突破 16%，算力扩张的融资成本正在用最直白的方式给 AI 基建热降温。"
+    },
+    {
+      "icon": "🛠️",
+      "topic": "智能体工具链",
+      "text": "从 anthropics/skills、agent-browser 到 ha-mcp、OpenMausBot，今日 GitHub 热榜几乎被“给智能体装手脚”的项目占满。"
+    },
+    {
+      "icon": "💬",
+      "topic": "AI 代码债",
+      "text": "“100% AI 编程一年后没人看得懂我们的代码”冲上热榜，与 Fable 5.2 在代码归属提示下的行为观察形成对照。"
+    },
+    {
+      "icon": "📄",
+      "topic": "世界模型",
+      "text": "WorldFoundry 提出统一世界智能基础设施，直指“视觉逼真≠世界建模”的行业通病。"
+    }
+  ],
+  "executive_summary": "今天的能力新闻很亮、资本新闻很冷，而真正决定这一年成败的，是智能体工具链的铺开速度能否跑赢 AI 生成代码留下的维护债。",
+  "editor_note": {
+    "core": "今天最该记住的不是 Fable 5.2 拿了 65 分，而是模型能力榜与 AI 信用市场在同一天给出相反信号——能力还在陡升，资本已经在给算力扩张重新定价。",
+    "cross_signal": "GitHub 热榜上 skills、agent-browser、ha-mcp、OpenMausBot 集中出现，与 Fable 5.2 的发布形成互证：竞争重心正从“模型多强”转向“智能体能接管多少真实工作流”。",
+    "counterintuitive": "“100% AI 编程一年后没人看得懂代码”这条热度不及新模型发布，但它才是 AI 落地真实成本的样本；同时 DeepX 宣称 5W 内跑 100B 推理，说明效率路线可能比参数竞赛更早改变格局。",
+    "risk": "最大的盲点是可维护性债与金融杠杆同时累积：AI 生成代码的隐性成本尚未计入任何 benchmark，而 CoreWeave 16% 的债券收益率说明融资端已开始怀疑回报周期，两者叠加会在下一轮调整中同时暴露。"
+  },
+  "contradictions": [
+    "Anthropic 一边推进 IPO、一边发布宣称“解决黑洞物理开放问题”的 Fable 5.2，能力叙事与资本叙事被同时推到高位，但 CoreWeave 债券收益率破 16% 显示市场对 AI 基建回报的定价正在反向走。",
+    "“100% AI 编程”被当作效率标杆推广，而同社区热帖却在抱怨一年后无人能读懂代码，效率与可维护性在同一批实践者内部互相打脸。",
+    "Fable 5.2 在代码归属提示下倾向“在既有结构上叠加”，与“AI 全量接管代码库”的叙事并不一致。"
+  ],
+  "underrated": [
+    "DeepX claims inference up to 100B parameters at less than 5 W",
+    "Flide: Accelerating Decision Inference with Exact State Forking",
+    "WorldFoundry: Towards Unified Infrastructure for World Intelligence",
+    "A year after the 100% AI mandate nobody understands our code",
+    "6 Hours of YouTube and 85 handtyped pages of notes on LLM Inference – Start here"
+  ],
+  "sections": [
+    {
+      "name": "开源项目",
+      "summary": "GitHub 热榜被智能体基础设施与开发者工具承包，从技能库、浏览器自动化到设计系统都在为“agent ready”改造。",
+      "item_ids": [
+        "it_c98d9678d269d780",
+        "it_8689a4b04d08f36d",
+        "it_ec8c7e5f32546a34",
+        "it_e07ae0cfd157b113",
+        "it_85641ad38767c9cc",
+        "it_8292947de71d6092",
+        "it_980619fecdfac93c",
+        "it_93e99bdd1f801572",
+        "it_46e21bce8a0943f6",
+        "it_53b9c41342b927eb"
+      ]
+    },
+    {
+      "name": "论文与研究",
+      "summary": "两篇论文分别从世界模型的基础设施与智能体决策推理的引擎效率切入，指向“生成之外”的下一层问题。",
+      "item_ids": [
+        "it_43430aa80d84228d",
+        "it_dc5f077b93d90441",
+        "it_c5eba880b9232aa1"
+      ]
+    },
+    {
+      "name": "社区舆论",
+      "summary": "热榜情绪集中在两处：AI 全量写码后的可维护性反噬，以及 Claude 新模型带来的能力惊叹与工具链跟进。",
+      "item_ids": [
+        "it_e32955d193042fab",
+        "it_f0a7364ef803e186",
+        "it_0455cc60d8a2324d",
+        "it_7d448a8186e96a4e",
+        "it_796a7f7ee338b70f",
+        "it_6c999d4d92eb634c",
+        "it_f030f28d129b69a7",
+        "it_fc4a571674d2808c",
+        "it_dd92abb0e1d40f6b",
+        "it_255b56db4a4a44d0",
+        "it_53d4a4a12968e84d",
+        "it_9c5da62bab376f7f"
+      ]
+    },
+    {
+      "name": "产业与新闻",
+      "summary": "一边是 Anthropic 推进 IPO、派拉蒙看好 AI 创作，一边是 CoreWeave 债券收益率飙升与超低功耗推理的硬件挑战。",
+      "item_ids": [
+        "it_6f6fff482120edaf",
+        "it_baaf713b11e387f5",
+        "it_6289435bdbbde177",
+        "it_8d28cfa5555a578e",
+        "it_ac841c16ab1a0f7b"
+      ]
+    }
+  ],
+  "comments": [
+    {
+      "item_id": "it_c98d9678d269d780",
+      "one_liner": "一个通过用户名在多个社交网络上追踪对应账号的开源工具",
+      "why": "按用户名跨平台批量定位社交账号，把公开信息聚合成一份可被任何人（包括骚扰者、招聘方、执法方）使用的画像，隐私边界被进一步压缩。",
+      "stance": "工具本身中立，但默认把「可被找到」当成常态，这是对普通用户不利的默认值。"
+    },
+    {
+      "item_id": "it_8689a4b04d08f36d",
+      "one_liner": "一个完全可定制、面向 agent 的开源设计系统",
+      "why": "设计系统开始把「agent 可直接消费」写进核心定位，意味着组件库的交付对象从人类设计师扩展到自动生成 UI 的模型，前端团队选型标准会被迫加入机器可读性一项。",
+      "stance": "方向对，但「agent ready」目前多是营销词，谁先给出可验证的 schema 与 token 契约谁才算数。"
+    },
+    {
+      "item_id": "it_ec8c7e5f32546a34",
+      "one_liner": "一个开源的 Grok Bot 替代方案，内置可供 bot 使用的虚拟机",
+      "why": "把虚拟机交给机器人操作，等于给自动化代理一个可执行代码、可持久化的落脚点，开源复刻让这类能力从厂商封闭产品扩散到任意开发者手中。",
+      "stance": "能力扩散快于安全护栏，先跑起来再补边界是这一波代理项目的通病。"
+    },
+    {
+      "item_id": "it_e07ae0cfd157b113",
+      "one_liner": "LLM 驱动的多市场股票智能分析系统，整合多源行情、实时新闻、决策看板与自动推送，支持零成本定时运行",
+      "why": "把行情、新闻、决策看板与推送串成零成本定时流水线，等于把原本需要付费终端的散户工作流压到一台机器上跑，门槛下降直接放大 LLM 荐股内容的传播面。",
+      "stance": "工程上讨巧，风险上危险：把 LLM 输出包装成「决策看板」，亏钱时没人负责。"
+    },
+    {
+      "item_id": "it_85641ad38767c9cc",
+      "one_liner": "Anthropic 官方维护的 Agent Skills 公开仓库。",
+      "why": "厂商亲自维护公开技能仓库，技能格式从社区约定升级为官方标准，第三方技能包将围绕它分层并接受兼容性审查。",
+      "stance": "官方入场是技能生态的分水岭，但标准由单一厂商把持，长期看是锁定风险。"
+    },
+    {
+      "item_id": "it_8292947de71d6092",
+      "one_liner": "vercel-labs 推出的浏览器自动化 CLI，供 AI agent 调用",
+      "why": "把浏览器操作封装成 CLI，等于给 AI agent 一个不依赖图形界面的确定性执行层，网页抓取与流程自动化的接入成本被压到一条命令。",
+      "stance": "方向正确，但浏览器自动化是权限与反爬的高危地带，谁掌握执行层谁就掌握 agent 的落地边界。"
+    },
+    {
+      "item_id": "it_980619fecdfac93c",
+      "one_liner": "Garry Tan 开源的 OpenClaw/Hermes Agent 大脑配置",
+      "why": "知名投资人公开自己的 agent 大脑配置，会把「提示词+工具编排」从私有经验变成可 fork 的模板，个人 agent 的差异化随之从配置转向数据与执行环境。",
+      "stance": "个人观点仓库被当成基础设施传播，是当前 agent 生态最典型的虚火。"
+    },
+    {
+      "item_id": "it_93e99bdd1f801572",
+      "one_liner": "通过 Claude、ChatGPT 等 AI 助手配置和自动化 Home Assistant 的 MCP 集成",
+      "why": "让通用助手直接改智能家居配置，把 MCP 从「读状态」推进到「写自动化规则」，家庭网络的权限边界因此从设备厂商转移到模型供应商。",
+      "stance": "实用价值高，但让云端模型持有家居写权限，是把家门钥匙交给一个会幻觉的租客。"
+    },
+    {
+      "item_id": "it_46e21bce8a0943f6",
+      "one_liner": "DeepMind 的通用物理仿真器，支持多关节动力学与接触模拟",
+      "why": "通用物理仿真器是机器人学习与具身智能的底座，持续活跃意味着训练环境与真实硬件之间的迁移成本在下降。",
+      "stance": "这类基础设施比任何单个模型发布都更能决定具身智能的落地速度。"
+    },
+    {
+      "item_id": "it_53b9c41342b927eb",
+      "one_liner": "Anthropic 官方示例项目集，帮助开发者用 Claude API 快速搭建可部署应用",
+      "why": "官方给出可直接部署的起步项目，把开发者从「读文档试错」拉到「改模板上线」，缩短了从 API 到产品的路径，也把生态锁定提前到第一行代码。",
+      "stance": "降低门槛的同时在培养路径依赖，这是标准的平台圈地动作。"
+    },
+    {
+      "item_id": "it_43430aa80d84228d",
+      "one_liner": "提出 WorldFoundry，一套面向世界智能的统一基础设施框架",
+      "why": "把「视觉逼真」与「世界模型成立」明确切开，等于给一批只会生成好看视频的项目判了不合格，评价标准转向状态持久性与因果一致性。",
+      "stance": "该泼的冷水，视觉拟真度被当成世界理解力的日子该结束了。"
+    },
+    {
+      "item_id": "it_dc5f077b93d90441",
+      "one_liner": "Flide：通过精确状态分叉加速 Jev 等决策模型的推理",
+      "why": "针对决策类小模型做状态分叉的推理引擎，补的是现有生成式引擎的结构性缺口，agent 的「快思考」环节从此有了专用运行时而非硬套 token 生成。",
+      "stance": "这类底层加速比又一个 agent 框架有价值得多，只是受众窄、声量注定小。"
+    },
+    {
+      "item_id": "it_c5eba880b9232aa1",
+      "one_liner": "JoVox：用联合分层 flow matching 实现轻量级体素生成",
+      "why": "在体素这一天然轻量的表示上做层级流匹配，试图同时拿到保真度与低算力，若成立会把 3D 生成的成本曲线往下压一个档位。",
+      "stance": "问题选得准，但体素路线的天花板一直在，别把单点改进说成范式转移。"
+    },
+    {
+      "item_id": "it_e32955d193042fab",
+      "one_liner": "DBDelve：用 Rust 和 GPUI 打造的开源数据库客户端，主打性能与手感",
+      "why": "用 Rust 与 GPUI 重做数据库客户端，赌的是「手感」这一被 Electron 长期牺牲的维度，若成立会推动一批桌面工具从 Web 技术栈回流原生。",
+      "stance": "支持，数据库客户端这种每天开八小时的工具，卡顿就是真实的工时损失。"
+    },
+    {
+      "item_id": "it_f0a7364ef803e186",
+      "one_liner": "MeowDisplay：把 iPhone 屏幕反向镜像到电脑的开源工具",
+      "why": "把手机画面反向投到桌面并复用开源屏幕捕获栈，等于给跨设备调试与演示开了条不依赖厂商协议的路，苹果的镜像单向限制被绕开。",
+      "stance": "有趣且诚实标注了 fork 来源，但反向投屏的真实使用频次撑不起一个产品。"
+    },
+    {
+      "item_id": "it_0455cc60d8a2324d",
+      "one_liner": "Exact：一个全新的跨平台 UI 框架",
+      "why": "又一个跨平台 UI 框架出现，说明现有方案在性能与一致性上的裂缝仍在扩大，但生态与组件积累才是决定开发者是否迁移的真正门槛。",
+      "stance": "没有摘要就是没有诚意：连一句话定位都不给的新框架，先别指望别人押注。"
+    },
+    {
+      "item_id": "it_7d448a8186e96a4e",
+      "one_liner": "一篇讨论帖：全面推行 AI 写代码一年后，团队发现没人能看懂自己的代码库。",
+      "why": "强制全员用 AI 写码一年后，团队丧失了对自有代码库的解释权，维护成本从写代码转移到逆向理解代码，直接抬高后续迭代与故障排查的门槛。",
+      "stance": "这是把技术债换成了认知债，用 AI 提效却不留人类可读的决策记录，等于给未来埋雷。"
+    },
+    {
+      "item_id": "it_796a7f7ee338b70f",
+      "one_liner": "Hacker News 上关于 Claude Fable 5.2 与 Mythos 5.2 两个模型的讨论帖。",
+      "why": "同一代模型以两个代号并列出现，说明发布节奏已从单点版本转向并行产品线，用户选型与迁移成本随之上升。",
+      "stance": "双代号并列更像营销分层而非能力分层，先看清差异再谈升级。"
+    },
+    {
+      "item_id": "it_6c999d4d92eb634c",
+      "one_liner": "Hacker News 上关于 Claude Fable 5.2 模型的讨论帖。",
+      "why": "同一模型名在信息流里重复出现两次，挤占了本应给其他技术议题的曝光位，读者注意力被同一事件稀释。",
+      "stance": "重复条目该在聚合层去重，而不是让读者自己辨认。"
+    },
+    {
+      "item_id": "it_f030f28d129b69a7",
+      "one_liner": "Ask HN 提问：在 C++ 因复杂度和特性膨胀饱受批评的当下，你是否还享受写 C++。",
+      "why": "C++ 的争议焦点已从语言能力转向心智负担：模板与特性膨胀让新人上手周期变长，老手则在 const 与智能指针带来的安全感里留下。",
+      "stance": "C++ 不是变差了，是它把复杂度当成了护城河，愿意付费的人留下，其余人流向更简单的语言。"
+    },
+    {
+      "item_id": "it_fc4a571674d2808c",
+      "one_liner": "一份 LLM 推理入门资料合集，含 6 小时 YouTube 视频与 85 页手写笔记。",
+      "why": "把推理优化这类硬核主题压缩成可跟读的六小时路径加手写笔记，降低了从调 API 到理解底层调度的跨越成本。",
+      "stance": "手写笔记这种低效方式反而是理解 LLM 推理的关键，速成视频替代不了它。"
+    },
+    {
+      "item_id": "it_dd92abb0e1d40f6b",
+      "one_liner": "一则关于 Jensen Huang 相关风波引发离婚猜测的报道。",
+      "why": "把芯片公司掌门人的私生活推上技术社区头条，说明 AI 硬件叙事已被娱乐化，公众讨论重心从算力供给偏移到人物八卦。",
+      "stance": "这类条目不该占据技术信息流的位置，它消耗的是对产业判断的信任。"
+    },
+    {
+      "item_id": "it_255b56db4a4a44d0",
+      "one_liner": "Claude Fable 5.2 在 Artificial Analysis 评测中拿到 65 分，为目前最高。",
+      "why": "第三方基准给出迄今最高分，把竞争焦点从参数规模拉到可复现的评测排名，采购方会拿这个数字当谈判筹码。",
+      "stance": "单一榜单的 65 分不足以定胜负，但它已经足够改变预算流向。"
+    },
+    {
+      "item_id": "it_6f6fff482120edaf",
+      "one_liner": "一段引述：Claude Fable 5.2 对提示中关于代码归属的表述相当敏感，会据此调整改动方式。",
+      "why": "模型对代码归属的措辞敏感——提示里说清是谁的代码，它就倾向沿用既有结构而非另起炉灶，这意味着所有权表述成了影响产出的隐性开关。",
+      "stance": "把归属写进提示词不是礼貌问题，是控制模型行为最便宜的一根杠杆。"
+    },
+    {
+      "item_id": "it_baaf713b11e387f5",
+      "one_liner": "作者借助 Claude 定位家中储物间里间歇性蜂鸣声的来源。",
+      "why": "用模型辅助定位间歇性异响，把 AI 从写代码扩展到物理世界的排查流程，说明它的价值在缩小搜索空间而非给出答案。",
+      "stance": "这才是 AI 的合理用法：当助手缩小范围，而不是替人下结论。"
+    },
+    {
+      "item_id": "it_6289435bdbbde177",
+      "one_liner": "据《华尔街日报》报道，Anthropic 计划推进 IPO，预计本周确定估值区间。",
+      "why": "若本周敲定估值区间，Anthropic 将从模型供应商变成有公开市场压力的公司，定价与安全策略都要向财报节奏让步。",
+      "stance": "上市会把安全叙事变成季度指标，我对此持保留态度。"
+    },
+    {
+      "item_id": "it_8d28cfa5555a578e",
+      "one_liner": "Paramount Skydance CEO David Ellison 在财报电话会上表示，AI 对电影行业的影响可能超过 CGI，或将成为现代史上最大的创作解放。",
+      "why": "派拉蒙合并后首位掌门人在财报电话会上把生成式 AI 抬到超越 CGI 的量级，等于向华尔街和制作工会同时释放资本开支与人力结构重估的信号，制片管线预算将向 AI 工具倾斜。",
+      "stance": "CEO 在财报场合谈创作解放，本质是给裁员和外包提前铺垫叙事，别把降本说成艺术。"
+    },
+    {
+      "item_id": "it_ac841c16ab1a0f7b",
+      "one_liner": "llm-anthropic 插件发布 0.31 版本，新增对 Anthropic 当日推出的 Fable 5.2 与 Mythos 5.2 模型的支持。",
+      "why": "插件跟进新模型版本，使命令行与脚本侧的批量调用不必再自行封装 API，评测榜首的模型因此直接进入个人与小型团队的日常流水线。",
+      "stance": "工具链跟得上模型迭代节奏，比模型本身多刷几分更能决定谁真正用得上。"
+    }
+  ],
+  "stats": {},
+  "items": {
+    "it_c98d9678d269d780": {
+      "id": "it_c98d9678d269d780",
+      "source": "github_trending",
+      "title": "sherlock-project/sherlock",
+      "url": "https://github.com/sherlock-project/sherlock",
+      "summary": "Hunt down social media accounts by username across social networks",
+      "hot_score": 85.9582,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-08T04:16:20.914333+00:00",
+      "last_seen_at": "2026-11-10T05:52:01.687793+00:00",
+      "metrics": {
+        "stars_total": 107608,
+        "stars_in_window": 4267,
+        "forks": 12448,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "Python"
+    },
+    "it_255b56db4a4a44d0": {
+      "id": "it_255b56db4a4a44d0",
+      "source": "hackernews",
+      "title": "Claude Fable 5.2 scores 65 on Artificial Analysis, highest so far",
+      "url": "https://artificialanalysis.ai/models/claude-fable-5-2",
+      "summary": "",
+      "hot_score": 85.7539,
+      "topic_id": "tp_c99d8a4a6a16",
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-09T20:04:55+00:00",
+      "last_seen_at": "2026-11-10T05:52:01.608407+00:00",
+      "metrics": {
+        "points": 323,
+        "num_comments": 232
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_796a7f7ee338b70f": {
+      "id": "it_796a7f7ee338b70f",
+      "source": "hackernews",
+      "title": "Claude Fable 5.2 and Mythos 5.2",
+      "url": "https://www.anthropic.com/claude-fable-and-mythos-5-2",
+      "summary": "",
+      "hot_score": 81.1015,
+      "topic_id": "tp_c99d8a4a6a16",
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-09T18:56:29+00:00",
+      "last_seen_at": "2026-11-10T05:52:01.605376+00:00",
+      "metrics": {
+        "points": 969,
+        "num_comments": 6
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_7d448a8186e96a4e": {
+      "id": "it_7d448a8186e96a4e",
+      "source": "hackernews",
+      "title": "A year after the 100% AI mandate nobody understands our code",
+      "url": "https://www.reddit.com/r/ClaudeCode/comments/1xq2n3t/a_year_after_the_100_ai_mandate_nobody",
+      "summary": "https://redlib.catsarch.com/r/ClaudeCode/comments/1xq2n3t/a_...",
+      "hot_score": 78.7269,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-09T22:19:12+00:00",
+      "last_seen_at": "2026-11-10T05:52:01.611227+00:00",
+      "metrics": {
+        "points": 119,
+        "num_comments": 152
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_8689a4b04d08f36d": {
+      "id": "it_8689a4b04d08f36d",
+      "source": "github_trending",
+      "title": "meta/astryx",
+      "url": "https://github.com/meta/astryx",
+      "summary": "An open source design system that's fully customizable and agent ready",
+      "hot_score": 78.6011,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-08T04:16:20.914319+00:00",
+      "last_seen_at": "2026-11-10T05:52:01.686593+00:00",
+      "metrics": {
+        "stars_total": 20726,
+        "stars_in_window": 3278,
+        "forks": 1572,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "TypeScript"
+    },
+    "it_53d4a4a12968e84d": {
+      "id": "it_53d4a4a12968e84d",
+      "source": "hackernews",
+      "title": "DeepX claims inference up to 100B parameters at less than 5 W",
+      "url": "https://www.eetimes.com/deepx-tapes-out-second-gen-chip-projects-6-7x-performance-gain-with-lpddr5x-pim",
+      "summary": "",
+      "hot_score": 72.7388,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-09T18:33:58+00:00",
+      "last_seen_at": "2026-11-10T05:52:01.610378+00:00",
+      "metrics": {
+        "points": 149,
+        "num_comments": 22
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_43430aa80d84228d": {
+      "id": "it_43430aa80d84228d",
+      "source": "hf_papers",
+      "title": "WorldFoundry: Towards Unified Infrastructure for World Intelligence",
+      "url": "arxiv:2611.10771",
+      "summary": "Visual generative models increasingly blur the line between synthesizing observations and simulating environments. Yet visual plausibility alone does not constitute successful world modeling: compelling outputs may lack persistent state, physical dynamics, or causally consistent responses to interactions. We define a generative world model as a predictive dynamical system that maintains a persistent, history-conditioned representation of an environment, updates that representation in response to actions or interventions, and generates temporally coherent trajectories that reflect outcomes under observed and counterfactual interventions. From this definition, we derive an intelligence-oriented framework spanning perceptual grounding, persistent state modeling, controllable transformation, dynamics-aware prediction, and closed-loop interaction. We present WorldFoundry, open-source infrastructure for reproducible inference and evaluation across video, 3D and 4D, embodied action, and interactive world systems. WorldFoundry unifies model and benchmark discovery, runtime and asset preparation, execution orchestration, artifact management, and interactive visualization, while modality-specific adapters preserve native inputs, execution semantics, output representations, and evaluation protocols. Explicit manifests, durable artifact contracts, and evidence-aware scorecards separate execution readiness from evaluative claims, making each claim traceable to its supporting artifacts. The catalog contains 270 model entries, 74 benchmarks, and 62 registered metric entries, with readiness and execution evidence recorded separately. WorldFoundry enables reproducible comparison of persistent, controllable dynamics across heterogeneous systems, advancing the field from perceptual synthesis toward measurable world intelligence.",
+      "hot_score": 72.0855,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-11-07T09:59:22+00:00",
+      "last_seen_at": "2026-11-10T05:52:01.694642+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 21
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_0455cc60d8a2324d": {
+      "id": "it_0455cc60d8a2324d",
+      "source": "hackernews",
+      "title": "Exact – a new cross platform UI framework",
+      "url": "https://github.com/expo/exact",
+      "summary": "",
+      "hot_score": 70.9033,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-09T22:59:13+00:00",
+      "last_seen_at": "2026-11-10T05:52:01.701633+00:00",
+      "metrics": {
+        "points": 99,
+        "num_comments": 47
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_ec8c7e5f32546a34": {
+      "id": "it_ec8c7e5f32546a34",
+      "source": "github_trending",
+      "title": "milind-soni/OpenMausBot",
+      "url": "https://github.com/milind-soni/OpenMausBot",
+      "summary": "Open-source Grok Bot alternative with a virtual machine that bots can use",
+      "hot_score": 65.3005,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-30T04:14:36.710887+00:00",
+      "last_seen_at": "2026-11-10T05:52:01.693853+00:00",
+      "metrics": {
+        "stars_total": 20012,
+        "stars_in_window": 1955,
+        "forks": 2735,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "TypeScript"
+    },
+    "it_e32955d193042fab": {
+      "id": "it_e32955d193042fab",
+      "source": "hackernews",
+      "title": "Show HN: DBDelve – Open-Source DB Client Made with Rust and GPUI",
+      "url": "https://news.ycombinator.com/item?id=50427934",
+      "summary": "Hi HN, I’m Shayan and a few months ago I started building a DB Client DBDelve with a focus on performance and just making something that feels good to use (in the spirit of Zed, Ghostty, and other tools that just feel pleasant to use). For my workflow I’ve always looked for performance, especially since some time ago I had a really outdated machine and any kind of bloat was really noticeable, I remember using DBeaver and it just crashing on me multiple times, I also had to use postGIS which just",
+      "hot_score": 63.6443,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-09T16:36:38+00:00",
+      "last_seen_at": "2026-11-10T05:52:01.612039+00:00",
+      "metrics": {
+        "points": 98,
+        "num_comments": 38
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_e07ae0cfd157b113": {
+      "id": "it_e07ae0cfd157b113",
+      "source": "github_trending",
+      "title": "ZhuLinsen/daily_stock_analysis",
+      "url": "https://github.com/ZhuLinsen/daily_stock_analysis",
+      "summary": "LLM 驱动的多市场股票智能分析系统：多源行情、实时新闻、决策看板与自动推送，支持零成本定时运行。 LLM-powered multi-market stock analysis system with multi-source market data, real-time news, decision dashboard, automated notifications, and cost-free scheduled runs.",
+      "hot_score": 63.0,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-10T05:51:29.067536+00:00",
+      "last_seen_at": "2026-11-10T05:52:01.692194+00:00",
+      "metrics": {
+        "stars_total": 69162,
+        "stars_in_window": 506,
+        "forks": 56455,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_f0a7364ef803e186": {
+      "id": "it_f0a7364ef803e186",
+      "source": "hackernews",
+      "title": "Show HN: MeowDisplay Is iPhone Mirroring, but in Reverse",
+      "url": "https://meowdisplay.app/",
+      "summary": "Hey HN and Cats, thank you for checking this out! Github:\nhttps://github.com/raiseCatError/meowdisplay EDIT 2: I should've mentioned that MeowDisplay started as a fork of OpenDisplay: https://github.com/peetzweg/opendisplay\nwhich provided the foundational screen capture, virtual display, encoding and iPhone/iPad receivers. I've since taken it in a more phone-first direction, with work on the interaction, streaming and security layers. I've credited OpenDisplay and its developer Philip in the REA",
+      "hot_score": 60.5093,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-09T18:39:22+00:00",
+      "last_seen_at": "2026-11-10T05:52:01.613477+00:00",
+      "metrics": {
+        "points": 85,
+        "num_comments": 34
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_dc5f077b93d90441": {
+      "id": "it_dc5f077b93d90441",
+      "source": "hf_papers",
+      "title": "Flide: Accelerating Decision Inference with Exact State Forking",
+      "url": "arxiv:2610.42148",
+      "summary": "Decision models such as Jev have emerged as a highly promising paradigm for LLM agent systems, providing lightweight and reliable categorical reasoning for rapid System One execution. However, existing generation-oriented inference engines fail to support these workloads effectively, suffering from severe prefix recomputation overheads or distorted output probabilities. To address this challenge, we propose Flide, an efficient and exact inference engine that decouples the logical tree structure of a decision request from its physical execution within a single flattened token stream. Through ForkAttention, Flide navigates request dependencies using GPU-resident indices across both standard attention and recurrent Gated DeltaNet layers, guaranteeing in exact arithmetic that every query branch evaluates identically to an isolated forward pass. By expressing branch topologies directly in GPU-resident metadata, Flide accommodates diverse request mixtures with a compact set of pre-recorded execution graphs while enabling expanding agent histories to resume from checkpoints saved in earlier passes. Extensive evaluations on public hybrid and decision models demonstrate that Flide answers queries up to 9.5 times faster than vLLM and SGLang while staying closest to a float32 reference in total variation distance. By unifying physical execution throughput with mathematical exactness, Flide establishes a principled foundation for scalable, latency-critical decision intelligence in agent systems.",
+      "hot_score": 57.2693,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-30T13:59:38+00:00",
+      "last_seen_at": "2026-11-10T05:52:01.696736+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 4
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_85641ad38767c9cc": {
+      "id": "it_85641ad38767c9cc",
+      "source": "github_trending",
+      "title": "anthropics/skills",
+      "url": "https://github.com/anthropics/skills",
+      "summary": "Public repository for Agent Skills",
+      "hot_score": 55.0999,
+      "topic_id": "tp_836a9d42b964",
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-31T03:55:58.260542+00:00",
+      "last_seen_at": "2026-11-10T05:52:01.685873+00:00",
+      "metrics": {
+        "stars_total": 191322,
+        "stars_in_window": 1038,
+        "forks": 22465,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "Python"
+    },
+    "it_8292947de71d6092": {
+      "id": "it_8292947de71d6092",
+      "source": "github_trending",
+      "title": "vercel-labs/agent-browser",
+      "url": "https://github.com/vercel-labs/agent-browser",
+      "summary": "Browser automation CLI for AI agents",
+      "hot_score": 55.0294,
+      "topic_id": "tp_0796cffecf3a",
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-06T04:57:37.763100+00:00",
+      "last_seen_at": "2026-11-10T05:52:01.690603+00:00",
+      "metrics": {
+        "stars_total": 48673,
+        "stars_in_window": 916,
+        "forks": 3316,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "Rust"
+    },
+    "it_9c5da62bab376f7f": {
+      "id": "it_9c5da62bab376f7f",
+      "source": "hackernews",
+      "title": "CoreWeave bond yield tops 16% as AI credit stress rises",
+      "url": "https://www.cnbc.com/2026/11/06/coreweave-bond-yield-tops-16percent-as-ai-credit-stress-rises.html",
+      "summary": "",
+      "hot_score": 55.0227,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-10T03:20:06+00:00",
+      "last_seen_at": "2026-11-10T05:52:01.614763+00:00",
+      "metrics": {
+        "points": 74,
+        "num_comments": 30
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_f030f28d129b69a7": {
+      "id": "it_f030f28d129b69a7",
+      "source": "hackernews",
+      "title": "Ask HN: Do you still enjoy coding in C++?",
+      "url": "https://news.ycombinator.com/item?id=50423371",
+      "summary": "In the recent years C++ received a lot of backlash due to its complexity and (perceived) feature creep. However, since C++11 I really enjoyed writing C++ with its strict type system (including const), range-based for loops, smart pointers, and how much you can do with templates. On the other hand, I know that it can be very tricky to write, for instance, a correct iterator, to get handling of rvalue references right, or to read error messages that involve templates. So, do you enjoy or dislike w",
+      "hot_score": 52.6574,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-09T09:50:03+00:00",
+      "last_seen_at": "2026-11-10T05:52:01.615503+00:00",
+      "metrics": {
+        "points": 54,
+        "num_comments": 74
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_dd92abb0e1d40f6b": {
+      "id": "it_dd92abb0e1d40f6b",
+      "source": "hackernews",
+      "title": "Jensen Huang scandal sparks divorce speculation",
+      "url": "https://www.forbes.com/sites/alisondurkee/2026/11/09/jensen-huang-scandal-sparks-divorce-speculation-billionaires-wife-could-get-half-his-155-biliion-fortune",
+      "summary": "",
+      "hot_score": 50.3709,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-09T22:50:35+00:00",
+      "last_seen_at": "2026-11-10T05:52:01.616855+00:00",
+      "metrics": {
+        "points": 43,
+        "num_comments": 64
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_980619fecdfac93c": {
+      "id": "it_980619fecdfac93c",
+      "source": "github_trending",
+      "title": "garrytan/gbrain",
+      "url": "https://github.com/garrytan/gbrain",
+      "summary": "Garry's Opinionated OpenClaw/Hermes Agent Brain",
+      "hot_score": 49.5,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-10T05:51:29.067497+00:00",
+      "last_seen_at": "2026-11-10T05:52:01.689982+00:00",
+      "metrics": {
+        "stars_total": 32281,
+        "stars_in_window": 216,
+        "forks": 4778,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "TypeScript"
+    },
+    "it_c5eba880b9232aa1": {
+      "id": "it_c5eba880b9232aa1",
+      "source": "hf_papers",
+      "title": "JoVox: Joint Hierarchical Flow Matching for Lightweight Voxel Generation",
+      "url": "arxiv:2611.10690",
+      "summary": "Generating high-fidelity voxels while keeping their lightweight nature remains an open problem in computer vision. Current generators are either high-fidelity but computationally heavy, or lightweight but of lower fidelity. Hierarchical methods keep the lightweight nature of voxels. However, their coarse levels, which decide where all finer cells can appear, are generated with the least information about the shape and are never revisited, so they are often plausible but wrong. Our key insight is to let finer cells take part in deciding coarse cells. To this end, we propose JoVox, a discrete flow matching framework that learns the joint distribution of all levels of the voxel hierarchy, instead of a separate distribution for each level, so that coarse cells can be predicted with finer cells already generated nearby. Within this framework, we further introduce a two-level prediction, which outputs the cells two levels finer at once instead of one level finer, halving the number of levels that the network processes and yielding voxels of higher fidelity. We also introduce an unmasking strategy that revisits early decisions once finer cells are generated and corrects inconsistencies in masked diffusion models. Our framework outperforms the baselines on both unconditional and image-conditioned voxel generation. Compared with the current state-of-the-art TRELLIS.2, we achieve 8x higher training throughput, 1/15 of the FLOPs in a forward pass, train on 4 vs. 32 GPUs, and obtain higher quality with an 11% lower Chamfer distance.",
+      "hot_score": 49.3327,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-11-07T07:21:25+00:00",
+      "last_seen_at": "2026-11-10T05:52:01.698131+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 2
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_93e99bdd1f801572": {
+      "id": "it_93e99bdd1f801572",
+      "source": "github_trending",
+      "title": "homeassistant-ai/ha-mcp",
+      "url": "https://github.com/homeassistant-ai/ha-mcp",
+      "summary": "Configure and automate Home Assistant with Claude, ChatGPT, and other AI assistants.",
+      "hot_score": 45.0,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-10T05:51:29.067545+00:00",
+      "last_seen_at": "2026-11-10T05:52:01.693191+00:00",
+      "metrics": {
+        "stars_total": 6132,
+        "stars_in_window": 31,
+        "forks": 299,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_46e21bce8a0943f6": {
+      "id": "it_46e21bce8a0943f6",
+      "source": "github_trending",
+      "title": "google-deepmind/mujoco",
+      "url": "https://github.com/google-deepmind/mujoco",
+      "summary": "Multi-Joint dynamics with Contact. A general purpose physics simulator.",
+      "hot_score": 43.038,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-09T04:30:24.965029+00:00",
+      "last_seen_at": "2026-11-10T05:52:01.688540+00:00",
+      "metrics": {
+        "stars_total": 17026,
+        "stars_in_window": 574,
+        "forks": 2009,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "C++"
+    },
+    "it_53b9c41342b927eb": {
+      "id": "it_53b9c41342b927eb",
+      "source": "github_trending",
+      "title": "anthropics/claude-quickstarts",
+      "url": "https://github.com/anthropics/claude-quickstarts",
+      "summary": "A collection of projects designed to help developers quickly get started with building deployable applications using the Claude API",
+      "hot_score": 41.3951,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-09T04:30:24.965004+00:00",
+      "last_seen_at": "2026-11-10T05:52:01.689237+00:00",
+      "metrics": {
+        "stars_total": 20135,
+        "stars_in_window": 551,
+        "forks": 3323,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "Python"
+    },
+    "it_fc4a571674d2808c": {
+      "id": "it_fc4a571674d2808c",
+      "source": "hackernews",
+      "title": "6 Hours of YouTube and 85 handtyped pages of notes on LLM Inference – Start here",
+      "url": "https://github.com/samir-sarwar/samir-vllm",
+      "summary": "",
+      "hot_score": 41.0716,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-09T11:36:55+00:00",
+      "last_seen_at": "2026-11-10T05:52:01.702279+00:00",
+      "metrics": {
+        "points": 77,
+        "num_comments": 12
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_6c999d4d92eb634c": {
+      "id": "it_6c999d4d92eb634c",
+      "source": "hackernews",
+      "title": "Claude Fable 5.2",
+      "url": "https://twitter.com/claudeai/status/2119867114450268322",
+      "summary": "",
+      "hot_score": 40.2094,
+      "topic_id": "tp_c99d8a4a6a16",
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-09T18:58:35+00:00",
+      "last_seen_at": "2026-11-10T05:52:01.617507+00:00",
+      "metrics": {
+        "points": 32,
+        "num_comments": 6
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_6f6fff482120edaf": {
+      "id": "it_6f6fff482120edaf",
+      "source": "rss",
+      "title": "Quoting Prompting Claude Fable 5.2",
+      "url": "https://simonwillison.net/2026/Nov/10/prompting-claude-fable-52",
+      "summary": "Claude Fable 5.2 responds closely to what the prompt says about who owns the code it works on. In Anthropic’s testing on small coding tasks, when a prompt said nothing about ownership or presented the code base as someone else’s, the model tended to add to the existing structure, even when that repeated existing code. [...]\nIf you want the model to improve the structure as it works, say that the code is its own:\n\nThis codebase is yours: what it's for and how it's built are your call, and you'll keep building on it.\n\nIn Anthropic’s testing on small coding tasks, the model merged repeated code in about half of the tries with this sentence, and in under a tenth of the tries without it.\n— Prompting Claude Fable 5.2 , Anthropic documentation\n\nTags: prompt-engineering , anthropic , generative-ai , ai , llms , claude-mythos-fable",
+      "hot_score": 39.0,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-10T05:34:14+00:00",
+      "last_seen_at": "2026-11-10T05:52:01.645314+00:00",
+      "metrics": {
+        "rank_score": 1.0
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_6289435bdbbde177": {
+      "id": "it_6289435bdbbde177",
+      "source": "rss",
+      "title": "Anthropic reportedly plans to move forward with IPO plans",
+      "url": "https://techcrunch.com/2026/11/09/anthropic-reportedly-plans-to-move-forward-with-ipo-plans",
+      "summary": "The AI company is expected to set its valuation range this week, the Wall Street Journal reported.",
+      "hot_score": 39.0,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-10T01:27:12+00:00",
+      "last_seen_at": "2026-11-10T05:52:01.667340+00:00",
+      "metrics": {
+        "rank_score": 1.0
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_8d28cfa5555a578e": {
+      "id": "it_8d28cfa5555a578e",
+      "source": "rss",
+      "title": "David Ellison says AI could be the ‘biggest creative unlock in modern history’",
+      "url": "https://www.theverge.com/entertainment/1030510/paramount-skydance-david-ellison-ai",
+      "summary": "During Paramount Skydance's latest earnings call , CEO David Ellison said \"it's hard to imagine\" AI won't have a bigger impact on the film industry than CGI. In response to a question about the company's outlook for AI, Ellison said:\n\n\"I think when you zoom out and look at production, AI really has the potential to be the biggest creative unlock in modern history. The last time we saw anything close to this was really the, you know, advent of CGI and digital composites in the early 90s. That technology gave birth to amazing stories like Jurassic Park and Terminator 2 , and it's hard to imagine that AI is not going to have a more significant i …\nRead the full story at The Verge.",
+      "hot_score": 39.0,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-10T00:28:49+00:00",
+      "last_seen_at": "2026-11-10T05:52:01.655092+00:00",
+      "metrics": {
+        "rank_score": 1.0
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_ac841c16ab1a0f7b": {
+      "id": "it_ac841c16ab1a0f7b",
+      "source": "rss",
+      "title": "llm-anthropic 0.31",
+      "url": "https://simonwillison.net/2026/Nov/9/llm-anthropic",
+      "summary": "Release: llm-anthropic 0.31\nAnthropic released Fable 5.2 and Mythos 5.2 today. Fable 5.2 is currently ranked first on Artificial Analysis . Anthropic say it \"solved two open problems in the physics of black holes\", so clearly their internal benchmarks have become more ambitious!\nI've added the new models to llm-anthropic , so you can now run prompts through Fable 5.2 like this:\nuv tool install llm\nllm install llm-anthropic\nllm keys set anthropic\n# paste key here\nllm -m claude-fable-5.2 \"Generate an SVG of a pelican riding a bicycle\"\n\nI ran pelicans at all five reasoning levels - low , medium , high , xhigh , and max . You can see them all here - here's the best result I got, from xhigh :\n\nmax failed to return an image at all, running out of tokens after spending 128,000 thinking about them . That's the same bug that I saw with Opus 5.5 - but it's new for the Fable series, both Fable 5 and Fable 5.1 returned max effort pelicans just fine.\nIt's priced at $8/million input and $40/million output, which is a 20% discount on the previous Fable 5.1 ($10/$50).\n\n\nTags: llm , anthropic , claude , generative-ai , pelican-riding-a-bicycle , ai , llms , claude-mythos-fable",
+      "hot_score": 39.0,
+      "topic_id": "tp_c99d8a4a6a16",
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-09T23:58:46+00:00",
+      "last_seen_at": "2026-11-10T05:52:01.646556+00:00",
+      "metrics": {
+        "rank_score": 0.6667
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_baaf713b11e387f5": {
+      "id": "it_baaf713b11e387f5",
+      "source": "rss",
+      "title": "Locating the source of a mysterious beep with Claude",
+      "url": "https://simonwillison.net/2026/Nov/9/mysterious-beeps",
+      "summary": "Our house has a box room, full of boxes that we still haven't unpacked from our last move. A couple of weeks ago something in that room started intermittently beeping . The beeps were far enough apart that standing in the room and trying to determine the source of the noise was frustrating, and I really didn't want to dig through every one of those boxes. So I had Claude Code build Beep Locator , a software system for triangulating the source of a mysterious beep using multiple devices scattered around the room.\nHere's what Beep Locator looks like after it has been running for a while:\n\nYou run Python web server to show the primary UI, and then use the QR code or URL to connect as many devices as you can spare to act as listeners - I was using two iPads, a phone, a MacBook Pro and a Surface Ultra.\nThe devices then play noises to each other to help estimate their locations. This didn't work particularly well, so I added a \"Rough mode\" where you can drag their icons around in the space to provide rough locations which are then adjusted based on those sounds.\nOnce that's set up, the devices all listen for the beep!\nI added a clapping mode too so I could test it by clapping my hands in different locations around the room - displayed as diamonds on the map. This helped me gain confidence that it was capable of locating a sound.\nBeeps show up on the map as an X, plus a line in the \"Sounds located\" log. You can replay these sounds (from each device in turn) to confirm they are the mysterious beep you are looking for, then click \"This is the mystery beep\" to mark them as such.\nOnce you've confirmed the mysterious beep frequency the system will listen out for it, measure the interval between beeps, and use the triangulated locations to lock down the most likely location on the map.\nThe system worked as intended. It gave me the position of the beep to within about 40cm, then I dug through that specific pile of boxes and found an ancient carbon monoxide detector that desperately wanted its batteries replaced.\nHow it works\nWhen I started working through this problem with Claude it quickly dug up BeepBeep: A High-Accuracy Acoustic-Based System for Ranging and Localization Using COTS Devices , a 2007 paper by Chunyi Peng, Guobin Shen, Yongguang Zhang, Yanlin Li, and Kun Tan. Here's that paper's abstract:\n\nWe present the design, implementation, and evaluation of BeepBeep, a high-accuracy acoustic-based ranging system. It operates in a spontaneous, ad-hoc, and device-to-device context without leveraging any pre-planned infrastructure. It is a pure software-based solution and uses only the most basic set of commodity hardware – a speaker, a microphone, and some form of device-to-device communication – so that it is readily applicable to many low-cost sensor platforms and to most commercial-off-the-shelf mobile devices like cell phones and PDAs. It achieves high accuracy through a combination of three techniques: two-way sensing, self-recording, and sample counting.\n\nThat sounded exactly like what we needed to build!\nBeep Locator runs a Python web application server that does most of the work. The listening devices then connect to that server via WebSockets and present a UI which requests browser microphone access. The listeners mainly work by recording a 60 second buffer of recent audio. They also run a simple beep detection algorithm (see detector.js ), which uses Fast Fourier Transform and a high-pass filter to identify potential beeps. It sends these events to the main server.\nWhen a beep is reported, the server has a device play a short chirp (the device with the lowest round-trip time to the server), then asks every listener upload a clip from about 0.6s before the beep to 0.8s after that chirp. This chirp allows the clips to be aligned with each other, a crucial step in locating the beep.\nHow I built it\nI started this project using Claude Code Cloud via my iPhone, with Opus 5.5 running in Extra thinking effort mode. Here's that shared starter session , which began with this prompt against a newly created empty GitHub repository:\n\nWrite out a problem.md file describing the problem we want to solve\nThere is a device beeping in a room and I cannot find it\nI want to set up several devices - laptops, phones, iPads - around the room all listening at the same time and have them help triangulate where the beep comes from\nThere needs to be a Python web app which coordinates it all - one device shows a web page for the app, other devices join a URL which turns them into listeners - all via browser WebAudio and WebSockets back to the Python server app\nIdeally I wouldn't need to manually input the relative locations of the devices - it would be amazing if they could play sounds to each other in order to locate each other in 2D space - is that even possible though?\n\nThat got me this problem.md file . As part of writing that up Claude found and read the BeepBeep paper, which is described in that file.\nThe research looked good, so I told it:\n\nOk try and build it, add a mechanism so you can send new code to the listeners which they will then run automatically - that way I can set everything up in the room and then leave you alone to continue hacking and experiment while I do something else\n\nThat got me to this point - most of the system was built, but nothing had actually tried running it yet.\nI cloned the new repository to my laptop and fired up Claude Code... and then Fable 5.2 was released , and this project seemed like an excellent opportunity to put that through its paces.\nI had Claude Code on my laptop start the server running, then made sure it could both see what was happening and make live changes to the software as it ran.\nThis was already baked into the software: Opus 5.5 had built an installModule() method on the listeners that could be triggered over the WebSocket connection, meaning the admin server could execute arbitrary new code on any of its clients.\nOn some devices, web pages that listen on the microphone request user permission any time the page reloads. The hot-swap module mechanism meant that we could deploy new code without having to manually interact with each of the listening devices in turn.\nFrom that point on my involvement was mainly to sit by the laptop chatting with Fable 5.2 about what was going on, and occasionally requesting new features. Here are some of the feature prompts I ran:\n\nI think we need to make it so I can drag things around on the map in “rough mode”, where my job is just to put them roughly where they are, then switch out of rough mode and it attempts to get them accurate\n\nThis gave me the ability to drag listeners around the map.\n\nwhat’s a good way for me to test this I wonder? Can we have it listen for claps, then I could clap and it could identify the location of the clap? [...]\nClaps should use a different symbol on the map than beeps\n\nThat added the thing where any time I clapped it would show on the map as a different symbol from the beeps.\n\neach symbol on the map should include a HH:MM:SS timestamp\n\nThat made it easier to spot which symbol likely reflected which real-world sound.\n\nThe log should show beeps and claps with their timestamps AND have a little play button which, when clicked, replays the recorded noise from each of the listeners in sequence (with clear text on screen showing which listener recorded which snippet) while temporarily turning off microphone recording while that replay plays\n\nNow I could replay sounds, making it much easier to identify which recorded clip was the mysterious beep I was looking for.\n\nThere should be a button next to a recording for “This is the mystery beep” - then I can hit replay to see and then confirm it was the mystery beep if that’s the one I am looking for\nThen the system can categorize noises in the future to see if they are likely that same mysterious beep and use that information to build a more accurate idea of where it is\n\nAt this point I was getting close - I had a solid idea of where the beep was coming from, but wouldn't it be neat if I could reposition the listeners around that point to get an even finer location?\n\nI want a feature for this, I don’t want to have to restart each listening device etc, I want to be able to click a “Reposition the devices” button which lets me switch into repositioning, then I click “Repositioned” and it puts me into Rough mode and asks me to roughly locate them, then I do that and click, then it starts up again. The previous session can be read-only viewed through the app.\n\nAnd since I had one spare device, I then said:\n\nadd a feature where the map includes a spot that is a suggestion for a location that it would be useful to add a listener at - based on data collected so far\n\nGiving Claude Code ears\nI think the most interesting part of this project is that I demonstrated it's possible to give Claude Code ears .\nClaude doesn't have native audio input (yet), but it can run JavaScript and Python code that can analyze audio captured by a microphone.\nI told it to run a web server with WebSocket connections to multiple listening devices, then had it both run a WebAudio microphone on those devices and hook them up so they could be sent fresh JavaScript code to execute via that WebSocket.\nThen I could pretty much leave Claude alone, hacking away at the problem, querying the audio logs, and reconfiguring its ears to help it solve the problem.\nI'm reminded of a similar hack I heard about at GitHub Universe a few weeks ago, where Martin Woodward told me he had been debugging the GitHub Universe Badge computers by plugging them into a computer via USB-C and then pointing a webcam at their screen, so his coding agent could tell if updates were working correctly or not.\nFiguring out ways to let coding agents perceive the world around them is a whole lot of fun.\n\nTags: projects , ai , generative-ai , llms , claude , coding-agents , claude-code , claude-mythos-fable",
+      "hot_score": 39.0,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-09T23:57:21+00:00",
+      "last_seen_at": "2026-11-10T05:52:01.647743+00:00",
+      "metrics": {
+        "rank_score": 0.3333
+      },
+      "streak_days": 0,
+      "language": "en"
+    }
+  },
+  "meta": {
+    "mode": "hybrid",
+    "day": "2026-11-10",
+    "generated_at": "2026-11-10T05:53:23.621703+00:00",
+    "window": {
+      "since": "2026-11-09T05:51:28.517988+00:00",
+      "until": "2026-11-10T05:52:01.727246+00:00",
+      "hours": 24.0,
+      "since_local": "2026-11-09T13:51+08:00",
+      "until_local": "2026-11-10T13:52+08:00",
+      "tz": "Asia/Shanghai"
+    },
+    "analysis": {
+      "items": 95,
+      "scored": 95,
+      "topics": 2,
+      "new_entity_mention_rows": 102,
+      "state_items": 11
+    },
+    "llm": {
+      "degraded": false,
+      "degraded_reason": "",
+      "calls": 1
+    },
+    "collect": {
+      "ok_sources": 6,
+      "failed_sources": 1,
+      "skipped": 0,
+      "total_items": 96
+    },
+    "verify": {
+      "verified": 0,
+      "unverifiable": 0,
+      "deferred": 0,
+      "failed": 0,
+      "llm_calls": 0
+    },
+    "predictions": {
+      "total": 150,
+      "verified": 1,
+      "pending": 148,
+      "unverifiable": 1,
+      "hit_rate": 0.0,
+      "weighted_score": 0.0,
+      "brier": 0.36
+    },
+    "prediction_generation": {
+      "mode": "hybrid",
+      "generated": 5,
+      "inserted": 5,
+      "dropped": [],
+      "llm_calls": 1,
+      "candidate_pool": 20,
+      "degraded": false,
+      "degraded_reason": ""
+    },
+    "brief": {
+      "max_items_per_section": 10,
+      "velocity_board_enabled": true,
+      "velocity_board_top_n": 5
+    },
+    "signals": {
+      "entities": 695,
+      "points": 1465,
+      "with_velocity": 92,
+      "insufficient": 112,
+      "cold_start": 491,
+      "min_window_hours": 6.0
+    },
+    "enhance_total": 28,
+    "enhanced": 28,
+    "enhance_skipped_count": 0,
+    "enhance_cache_hit": 6,
+    "enhance_cost_cny": 0.010965
+  }
+}
