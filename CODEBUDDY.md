@@ -32,7 +32,7 @@ tag `m5`）、T9（trend/debate 自动触发 + `aipulse watchlist`，tag `t9`）
 
 **★ 触发配置（T9，两套开关别混）**：`pipeline.{trend,debate}.trigger_mode` 管**准入门**（auto/manual/disabled，不是 LLM 三档 off/hybrid/full）；`budget.degrade_order` 管**退出序**（钱不够先砍谁）。前者是计划，后者是预算。`interval` 既是触发间隔也是分析范围（`1m`=上一个完整自然月）。
 
-**★ 退出码分级（T9，改 monthly.yml 或 trend/debate 前必读）**：`0` = 正常产出；`1` = **跳过**（数据不足 / 争议度不够 / 窗口无日报——是预期内的"今天不产出"，不是故障）；`≥2` = 真失败。**Actions 必须显式捕获把 `1` 转成 warning**，否则正常跳过会被标红；反过来也不能把 `1` 当成成功静默吞掉。degrade（降级）只对"本期确实要跑"的阶段生效——`trigger_mode != auto` 的阶段不得被假降级。
+**★ 退出码分级（T9，改 monthly.yml 或 trend/debate 前必读）**：`0` = 正常产出**或预期内跳过**（数据不足 / 争议度不够 / 窗口无日报 / trend 产物过期——是"今天不产出"，不是故障）；`1` = **质量失败**（产物已生成但不达标：trend 全段为空、selfcheck 某层 FAIL、debate 关键结论缺失），Actions 必须显式捕获转成 `::warning::` 并继续；`≥2` = 用法/数据错误 → `::error::` 标红。反过来也不能把 `1` 当成成功静默吞掉。degrade（降级）只对"本期确实要跑"的阶段生效——`trigger_mode != auto` 的阶段不得被假降级。（`watchlist` 无日报目录返回 `2` 属于用法/数据错误，不在此分级内。）
 
 **★ 方向阈值随窗口缩放（C5）**：`direction_eps(N) = 0.5 * sqrt(5/N)`（5 天为锚点）。**不要写死 0.5**——固定阈值会让 30 天窗口对慢漂移过度迟钝。
 
@@ -54,6 +54,8 @@ tag `m5`）、T9（trend/debate 自动触发 + `aipulse watchlist`，tag `t9`）
 > **off 档跑得再久也覆盖不了 hybrid/full 路径。** 涉及 LLM 的改动，本地桩测试全绿不等于真实可用——必须配 key 实跑一次才算验证过。
 >
 > 依据：M4 的 `data/` 目录缺失、以及首跑 hybrid 连炸 5 个 bug（缺 `base_url` 崩溃、`AIPULSE_MODE` 被 yaml 字面量压掉、`llm.timeout_s` 是死配置、证据 id 幻觉、窗口只覆盖 7 小时），**全部只有真实运行才暴露**，桩测试一条都没抓到。
+>
+> **判断能不能本地跑**：只有「从网上抓新东西」（`collect` / `daily` / `trend` / `debate`）才需要外网 + API key；只处理已 commit 在 `data/reports/` 里的东西（`knowledge` / `serve` / `selfcheck` / `watchlist`）零网络零密钥即可跑。别把「本地采不到源」推广成「所有功能都不可用」。
 
 ## 项目身份
 
@@ -79,15 +81,15 @@ tag `m5`）、T9（trend/debate 自动触发 + `aipulse watchlist`，tag `t9`）
 
 ### 当前 HEAD 与 tag 的关系
 
-HEAD **就是 tag `t9`**（`96e9d02`）本身，不是「在某个 tag 之后 N 个提交」。
-判断当前代码对应哪个 tag 用 `git tag --points-at HEAD` 或 `git describe --tags`，
-**不要凭印象数提交数**（这类描述会随后续提交立刻失真）。
+判断当前代码对应哪个 tag 一律用 `git tag --points-at HEAD` 或 `git describe --tags` 现场取，
+**不要把「HEAD 就是某个 tag」写死、也不要凭印象数提交数**——这类描述会随下一次提交立刻失真。
 
-tag 全集（12 个）：`m0` `m1` `m2` `m3a` `m3b` `m4` `m5` `m6a` `m6b` `m6c` `star-tracking` `t9`。
+tag 全集以 `git tag` 现场输出为准（当前 12 个）：
+`m0` `m1` `m2` `m3a` `m3b` `m4` `m5` `m6a` `m6b` `m6c` `star-tracking` `t9`。
 
 ### 文档版本基线
 
-SSOT 两份文档当前 **v1.24**（`docs/文档维护日志.md`「维护记录」表首行 v1.24 = tag `t9` / 2026-10-24；v1.23 = `m5`，v1.22 = `m6c`）。文件名固定为 `docs/AI_Pulse_设计方案.md` 与 `docs/AI_Pulse_Agent开发执行手册.md`，**版本由 git 管理，不再写进文件名**。`docs/文档维护日志.md` 的「维护记录」表按**倒序**维护（新的在上），**该表顶部第一行**的 tag 才是「文档对应哪次提交」的唯一锚点（注意不要读上半部分的格式示例，那里的 v1.20 只是样例）。新会话先读它确认基线。**SSOT 两份文档与 `docs/文档维护日志.md` 是 Agent 只读，不得修改**；文档维护必须「先提交代码 + 打 tag，再刷新文档」。
+SSOT 两份文档当前 **v1.24**（`docs/文档维护日志.md`「维护记录」表首行 v1.24 = tag `t9` / 2026-10-24；v1.23 = `m5`，v1.22 = `m6c`）。文件名固定为 `docs/AI_Pulse_设计方案.md` 与 `docs/AI_Pulse_Agent开发执行手册.md`，**版本由 git 管理，不再写进文件名**。`docs/文档维护日志.md` 的「维护记录」表按**倒序**维护（新的在上），**该表顶部第一行**的 tag 才是「文档对应哪次提交」的唯一锚点（注意不要读上半部分的格式示例，那里的 v1.20 只是样例）。新会话先读它确认基线。**Agent 只读、不得修改**：`docs/AI_Pulse_设计方案.md` / `docs/AI_Pulse_Agent开发执行手册.md` / `docs/文档维护日志.md`，以及项目负责人下发的「新会话状态简报」（不在仓库内）。`docs/开发日志.md` 按「SSOT 四份」计，完整清单以项目负责人口径为准；`CONTRIBUTING.md` 只写了前两份，不要据此以为其余可改。文档维护必须「先提交代码 + 打 tag，再刷新文档」。
 
 ### 新会话开场顺序
 
@@ -97,11 +99,11 @@ SSOT 两份文档当前 **v1.24**（`docs/文档维护日志.md`「维护记录�
 
 已实现的 CLI：`init` / `doctor` / `collect` / `analyze` / `brief` / `daily` / `predict`（`add` / `list` / `verify` / `review`）/ `stats`（`stats --predictions`）/ **`serve`（M4 只读看板）** / **`inbox`（`add` / `add-file` / `list`，v1.1 手动投喂通道）** / **`knowledge`（`mark` / `note` / `items` / `list` / `export`，M6c）** / **`trend`（`--range 7d` / `--json` / `--out` / `--segments`，M5）** / **`selfcheck`（L1–L4，M5）** / **`debate`（`--topic` / `--range` / `--json` / `--out` / `--max-tokens` / `--reports-dir`，M5 S4；省略 `--topic` 走自动选题）** / **`watchlist`（T9 每日轻量核对，`--json` / `--write-state/--no-write-state` / `--reports-dir`）**。
 
-`src/aipulse/cli/commands/` 下其余子应用（`normalize`/`debate`/`trend`/`topics`/`search`/`sources`）仍是 `placeholder_app()` 生成的占位，调用时抛 `NotImplementedError`。它们出现在 `--help` 里是刻意的，不是漏实现。其中 `sources` 占位**不影响加源**：增删 RSS/Atom 源改 `configs/sources.yaml` 即可（见「采集器六条约定」末段）。
+`src/aipulse/cli/commands/` 下其余子应用（`normalize`/`topics`/`search`/`sources` 共 4 个）仍是 `placeholder_app()` 生成的占位，调用时抛 `NotImplementedError`；`debate` / `trend` 是 M5 真实现，不在占位之列。它们出现在 `--help` 里是刻意的，不是漏实现。其中 `sources` 占位**不影响加源**：增删 RSS/Atom 源改 `configs/sources.yaml` 即可（见「采集器六条约定」末段）。
 
 ### M4 已落地的东西（改之前先看这里，别重复造）
 
-`src/aipulse/web/` 是完整的只读看板（FastAPI + Jinja2 + HTMX，见模块表）；`cli/commands/serve.py` 是真实现；`.github/workflows/` 三个工作流——`ci.yml`（push/PR：ruff + format + mypy + pytest）、`probe.yml`（手动数据源探测）、**`daily.yml`（每天 00:00 UTC = 北京 08:00 跑 `aipulse daily` 并 commit `data/reports`；提交前先 `fetch` + `soft reset`，同日重跑不会因历史分叉冲突）**。`scripts/cron_daily.sh` 是 WSL 本地 cron 备份入口。
+`src/aipulse/web/` 是完整的只读看板（FastAPI + Jinja2 + HTMX，见模块表）；`cli/commands/serve.py` 是真实现；`.github/workflows/` 四个工作流——`ci.yml`（push/PR：ruff + format + mypy + pytest）、`probe.yml`（手动数据源探测）、**`monthly.yml`（每月 1 日 UTC 01:00：trend → selfcheck → debate，见「T9 月度链」）**、**`daily.yml`（每天 00:00 UTC = 北京 08:00 跑 `aipulse daily` 并 commit `data/reports`；提交前先 `fetch` + `soft reset`，同日重跑不会因历史分叉冲突）**。`scripts/cron_daily.sh` 是 WSL 本地 cron 备份入口。
 
 ### Actions 没有持久化（改 daily.yml 前必读）
 
@@ -171,15 +173,22 @@ uv run aipulse knowledge list                         # 按 updated_at 倒序
 uv run aipulse knowledge export                       # → data/knowledge/{index.md,my-notes.md,topics/*.md}
 
 uv run aipulse trend --range 7d                       # M5：7 节分段生成周报 → data/reports/trend/weekly.md（需 key，7 次调用）
+uv run aipulse trend                                  # 省略 --range → 按 pipeline.trend.interval（默认 1m）取上一个完整自然月；trigger_mode=disabled 时需显式给 --range
 uv run aipulse trend --segments rising_topics,watchlist  # 只跑指定段（调试；段名见 reasoning/trend.py::SEGMENTS）
 uv run aipulse trend --json --out /tmp/weekly.md      # 分段指标 JSON / 指定落盘；--max-tokens 覆盖每段输出上限
 uv run aipulse selfcheck                              # L1–L4 离线自验证 → data/reports/trend/selfcheck.{md,json}（零 LLM）
 uv run aipulse selfcheck --file <weekly.md> --no-write-state  # 只读检查，不更新 watchlist/calibration
+uv run aipulse debate --topic "…"                      # M5 S4：手动指定议题；省略 --topic 走自动选题（争议度 + 时效守卫）
+uv run aipulse debate --json                           # 只吐指标 JSON（monthly.yml 月度链用法）
+uv run aipulse watchlist                               # T9：每日轻量核对（离线、零 LLM、只核对不新建）
 ```
 ```bash
-# 自动化（需要 gh 已登录；daily.yml 也可在 Actions 页面手动触发）
+# 自动化（需要 gh 已登录；daily.yml / monthly.yml 也可在 Actions 页面手动触发）
 gh workflow run daily.yml && gh run list --workflow=daily.yml
+gh workflow run monthly.yml && gh run list --workflow=monthly.yml  # 月度：trend → selfcheck → debate（见「T9 月度链」）
+gh workflow run probe.yml                          # 手动数据源探测（inputs.only: all|api|rss）
 scripts/cron_daily.sh                                 # 本地 cron 备份（日志 → data/logs/cron.log）
+scripts/cron_knowledge.sh                             # 知识库独立导出（不跑本地 daily）
 ```
 
 `analyze` / `brief` / `daily` 都支持 `--date YYYY-MM-DD`（默认 `today`，按 `app.timezone` 取本地日）、`--db <path>`、`--json`；`brief` / `daily` 的 `--skip-llm` 与 `--no-llm` 等价，强制本次按 `off` 档跑。`predict` 同样支持 `--date` / `--db` / `--json` / `--skip-llm`：既可单独跑，`daily` 在 hybrid/full 档也会经 `_generate_daily_predictions()` 调它生成当日预言（off 档空转）；`prediction_id` 是稳定的，同一天重复跑不会重复入库。
@@ -210,7 +219,7 @@ scripts/cron_daily.sh                                 # 本地 cron 备份（日
 CI（`.github/workflows/ci.yml`，无 secrets）实际只跑 4 步：`ruff check .` → `ruff format --check .` → `mypy src/aipulse` → `pytest`（**没有覆盖率门禁**，覆盖率是本地基线，不达标不会挂 CI）。`.github/workflows/probe.yml` 是手动触发的探测，不在 CI 链上。
 
 ```bash
-uv run pytest                             # 全量（当前 598 条，约 65s，无需网络、无需密钥）
+uv run pytest                             # 全量（598 条，v1.24 基线 2026-10-24 实测；约 65s，无需网络、无需密钥；改测试数后重新计数）
 uv run pytest tests/unit/test_dedup.py                      # 单文件
 uv run pytest "tests/unit/test_dedup.py::test_l2_merges_arxiv_and_hf_same_paper" -q  # 单用例
 uv run pytest -k "dedup or cluster" -q                      # 按关键字筛（跨文件，最常用）
@@ -289,7 +298,7 @@ uv run alembic upgrade head                            # 正式建表/演进走 
 configs/*.yaml ──> collectors/ ──> RawItem ──> normalize/dedup ──> store/repo_items ──> SQLite
       │                  │                          │                     │          │
    core/config      utils/http              pipeline/collect        store/models    │（读回）
-  （YAML+${ENV}）  （限速/重试/缓存）        （编排 + 故障隔离）      （SQLModel 9 表）  ▼
+  （YAML+${ENV}）  （限速/重试/缓存）        （编排 + 故障隔离）      （SQLModel 10 表） ▼
                                                               analysis/（打分·聚类·实体，纯算法）
                                                                         │
                                               reasoning/brief.py（简报）· reasoning/predictor.py（预言）
@@ -307,6 +316,18 @@ configs/*.yaml ──> collectors/ ──> RawItem ──> normalize/dedup ─�
 - M3b：`reasoning/verifier.py::verify_due_predictions()`（`predict verify` + `daily` 的 `auto_verify` 钩子）→ 量化判据查表 / 语义证据门槛+LLM → 写回 `predictions.status/verdict*`；`analysis/stats.py` + `render/scoreboard.py` 出记分板。
 
 采集器之间不互相调用，只通过 `RawItem` 与编排层通信；`reasoning/` 只依赖 `llm.LLMClient` Protocol，不 import 具体 SDK。
+
+### T9 月度链（monthly.yml，顺序不可换）
+
+```
+cron `0 1 1 * *`（UTC 01:00，每月 1 日）→ trend（省略 `--range`，按 `pipeline.trend.interval` 取上一个完整自然月）
+→ selfcheck（写 `watchlist.json` / `calibration.json` / `admission.json`）→ debate（自动选题读**本期** trend 产物）
+→ commit `data/reports`
+```
+
+- 三步顺序固定：`admission.json` 是 trend→trend 的反馈闭环（上期 L4 判过度声称，本期收紧结构判断准入）；debate 的自动选题带**时效守卫**，串行才不会读到上期产物。
+- 三步都显式捕获 `1` 转 `::warning::` 并继续，只有 `≥2` 才 `::error::` 标红（见文首「退出码分级」）。
+- `daily.yml` 另有独立一步 `aipulse watchlist`：趋势层是月尺度，条目层必须日尺度。
 
 ### 模块职责
 
@@ -570,7 +591,7 @@ selfcheck.{md,json} + watchlist.json / calibration.json（下期 L3/L4 回读）
 - M6c 单测：`test_knowledge_store.py`（用户库建表/CRUD/主库 checksum 三不变/只读守卫）、`test_knowledge_cli.py`（mark/note/items/list/export、URL/query 定位、候选不自动选、`--allow-unknown`）、`test_daily_index.py`（四种历史结构/why 优先合并/URL 查询）、`test_export.py`（协议/回退/501 条与 200KB 分片/幂等）。
 - inbox CLI 单测（`test_inbox_cli.py`）：`add` 正常入库 / **抓不到标题也保留条目**（标题退化为 URL，断网契约）/ 重复投喂幂等 / `add-file` 批量导入 / `list` 空态与展示。
 - M5 单测：`test_cross_period.py`（50 例：9 结构 / 轨迹 / 坏日与源集合变更归因 / `homogeneous_segments` 同构切分；改结构口径必须补例）、`test_trend.py`（证据包裁剪 / 分段字数与套话校验 / 单段失败只跳该段）、`test_selfcheck.py`（L1–L4 各层 pass/fail、状态文件用 `tmp_path`）。三者都是**纯离线**，用 `tmp_path` 造日报目录，不读仓库里的 `data/reports`
-- 覆盖率基线（M6c 实测）：`web/app` 95% / `web/data` 92% / `web/charts` 100% / `render/verdicts`·`render/predictions` 100% / `render/markdown` 93% / `pipeline/daily` 92% / `reasoning/brief` 88% / `cli/commands/inbox` 98% / `cli/commands/knowledge` 93% / `knowledge/export` 99% / `knowledge/daily_index` 92% / `knowledge/store` 94% / `collectors/` 88% / **TOTAL 91%**。
+- 覆盖率基线（v1.24 / 2026-10-24 实测，重跑请重新取值）：`web/app` 95% / `web/data` 92% / `web/charts` 100% / `render/verdicts`·`render/predictions` 100% / `render/markdown` 93% / `pipeline/daily` 92% / `reasoning/brief` 88% / `cli/commands/inbox` 98% / `cli/commands/knowledge` 93% / `knowledge/export` 99% / `knowledge/daily_index` 92% / `knowledge/store` 94% / `collectors/` 88% / **TOTAL 91%**。
 - T9 单测：`test_debate.py`（自动选题打分 / 时效守卫 / 门槛跳过 / 四方并行 / 证伪条件校验 / 收敛块字段）、`test_cli_trend.py`（`trend` CLI 参数与落盘）、`test_watchlist.py`（只核对不新建 / 无日报退出码 2 / 状态合并）、`test_render_weekly.py` + `test_render_debate.py`（人类层渲染与双层分离）。全部纯离线，用 `tmp_path` 造日报目录。
 
 ---
