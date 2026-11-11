@@ -85,7 +85,7 @@ uv run aipulse daily                    # hybrid/full 档：自动生成预言 +
 | 形态 | 适合谁 | 怎么用 | 需要什么 |
 |---|---|---|---|
 | **① 纯本地** | 只想在自己机器上跑，手动或定时都行 | `uv sync` → 在 `.env` 填 `AIPULSE_LLM__API_KEY` → `uv run aipulse daily` | 本机能访问外网（采集 + LLM） |
-| **② Actions 托管** | 想让它每天自动跑、自己不用开机 | fork 仓库 → 配 `AIPULSE_LLM__API_KEY` secret → 开启 workflow | 什么都不用，云端每天 08:00（北京）自动跑，并把日报 commit 回仓库 |
+| **② Actions 托管** | 想让它每天自动跑、自己不用开机 | fork 仓库 → 配 `AIPULSE_LLM__API_KEY` secret → 开启 workflow | 什么都不用，云端每天自动跑（实际约北京 05:30–08:30 落地，避开 DeepSeek 峰时），并把日报 commit 回仓库 |
 | **③ 只读 · 知识库** | 只想**读**已有日报、写笔记、导出给 AI 用 | `uv sync` → `aipulse knowledge list` / `knowledge export` / `aipulse serve` | **不需要网络、不需要 API key** |
 
 <details>
@@ -122,7 +122,7 @@ uv run aipulse daily                    # hybrid/full 档：自动生成预言 +
 | **★ 多角色辩论** | `aipulse debate`：乐观 / 怀疑 / 工程 / 投资四方并行陈述 → 交叉质证 → 主持人收敛为"共识 / 关键分歧 / 可执行结论 / 置信度 / 什么证据会让我改变判断"。证据包 ≤15 条、每条 ≤60 字、绝不回显摘要原文。省略 `--topic` 时按争议度自动选题，依据逐条打印 |
 | **★ 知识库** | 给日报条目写本地笔记与阅读状态；`knowledge export` 生成 `index.md` / `my-notes.md` / `topics/*.md`，可直接喂给任意 AI 工具 |
 | Web 看板 | `aipulse serve`：今日简报 / 归档 / 记分板 + 校准曲线 / 主题演化 / 检索（**全站只读**） |
-| 自动化 | Actions 每日 08:00（北京时间）跑一次并 commit 报告；本地 cron 作为备份；知识库导出由 `scripts/cron_knowledge.sh` 独立执行 |
+| 自动化 | Actions 每日自动跑一次并 commit 报告（cron `18:30 UTC`，抵消调度延迟后实际约北京 05:30–08:30，落在 DeepSeek 错峰）；本地 cron 作为备份；知识库导出由 `scripts/cron_knowledge.sh` 独立执行 |
 | 零 API 也能用 | 三档模式，未配置 key 自动降级，采集 / 打分 / 聚类 / 手写预言 / 自动验证 / 统计全链路可用 |
 
 ## 命令速查
@@ -226,7 +226,7 @@ flowchart LR
     R -.->|"到期后"| V["verifier：量化判据查表（零 LLM）<br/>或证据门槛 → LLM 三值判定"] -.-> DB
     DB --> ST["stats → 命中率 / Brier / 校准度 / 记分板"]
 
-    GH["GitHub Actions<br/>每天 08:00 CST"] -.->|"aipulse daily"| N
+    GH["GitHub Actions<br/>每天 18:30 UTC（错峰）"] -.->|"aipulse daily"| N
     GH -.->|"commit data/reports"| OUT
 ```
 
@@ -240,7 +240,7 @@ flowchart LR
 
 ## 每天自动跑
 
-`.github/workflows/daily.yml`：`cron: 0 0 * * *`（UTC 00:00 = 北京 08:00）+ 手动触发。选这个点是因为 AI 新闻高度美国中心——滚动 24h 窗口换算到美西是「前一日 17:00 → 当日 17:00」，刚好完整覆盖当日美国工作日；改到北京 07:00 只覆盖约 7 小时，改到 23:30 又会错过当日美西发布。
+`.github/workflows/daily.yml`：`cron: 30 18 * * *`（UTC 18:30）+ 手动触发。**为什么不放在 00:00 UTC**：DeepSeek 峰时为 UTC 周一至周五 01:00–04:00 / 06:00–10:00（北京 09:00–12:00 / 14:00–18:00），其余半价；而 GitHub 的 `schedule` 实测会被调度器推迟约 3–6 小时，原 00:00 UTC 的 cron 实际落在 03:00–06:00 UTC，部分跑进 01:00–04:00 峰时。前移到 18:30 UTC 后，实际落在 21:30–00:30 UTC（北京 05:30–08:30），始终早于峰时。代价是滚动 24h 窗口右界随实际启动时刻浮动到美西 14:30–17:30，仍覆盖美国工作日绝大部分；若更看重晚报覆盖，可改回 00:00 UTC 并接受约三成运行落入峰时。
 
 日报按**滚动 24h** 取数（不是自然日），所以会跨两个自然日——`meta.json` 的 `window` 与 `brief.md` 顶部都标了窗口起止。
 

@@ -2,10 +2,10 @@
 # M6c 知识库导出 cron（方案 E：不跑本地 daily，只 pull + export）。
 #
 # 前提：本地 daily 不安装/不运行，因此工作区不会因 data/reports 变脏。
-# 安装（示例时间，按需调整；Actions 是 UTC 00:00）：
+# 安装（示例时间，按需调整；Actions daily 实际约 21:30-00:30 UTC）：
 #   crontab -e
-#   # UTC 00:30 = 北京 08:30，排在 Actions 之后
-#   30 0 * * * /home/<you>/projects/aipulse/scripts/cron_knowledge.sh
+#   # UTC 01:30 = 北京 09:30，排在 Actions daily 之后
+#   30 1 * * * /home/<you>/projects/aipulse/scripts/cron_knowledge.sh
 #
 # 手动验证：
 #   scripts/cron_knowledge.sh; tail -n 40 data/logs/cron_knowledge.log

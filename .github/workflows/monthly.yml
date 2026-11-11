@@ -1,7 +1,8 @@
 name: monthly
 
 # ★ T9：trend / debate 的自动触发（月度）。
-#   cron 每月 1 日 01:00 UTC = 北京 09:00 → 分析**上一个完整自然月**
+#   cron 每月 1 日 11:00 UTC = 北京 19:00 → 分析**上一个完整自然月**
+#   （11:00 UTC 属 DeepSeek 错峰；GitHub 调度延迟 3-6h 后落在 14:00-17:00 UTC，仍错峰）。
 #   （interval 既是触发间隔也是分析范围，见 core/schedule.py）。
 #   顺序固定 trend → selfcheck → debate：
 #     trend    产出本期机器层与人类层
@@ -16,7 +17,7 @@ name: monthly
 
 on:
   schedule:
-    - cron: "0 1 1 * *"
+    - cron: "0 11 1 * *"
   workflow_dispatch:
 
 permissions:

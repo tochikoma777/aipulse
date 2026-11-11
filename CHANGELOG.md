@@ -8,6 +8,24 @@
 
 ---
 
+## [cost-opt] — 模型名显式化 + DeepSeek 错峰调度（2026-11-11）
+
+> 配置与 workflow 改动；SSOT 两份文档与 tag 未动。
+
+### Changed
+
+- **`configs/default.yaml`**：`fast_model` / `strong_model` 默认值显式改为 `deepseek-flash`。旧别名 `deepseek-chat` / `deepseek-reasoner` 仍被服务端接受，但响应 `model` 均为 `deepseek-flash`——strong 档此前并未真正升级。需要旗舰推理时设 `AIPULSE_LLM__STRONG_MODEL=deepseek-v4-pro`（约 3–4 倍价）。
+- **`.github/workflows/daily.yml`**：cron `0 0 * * *` → `30 18 * * *`。DeepSeek 峰时为 UTC 周一至周五 01:00–04:00 / 06:00–10:00，其余半价；GitHub `schedule` 实测延迟 3–6h，原 00:00 UTC 有 8/25 次落入峰时。18:30 UTC 触发后实际落在 21:30–00:30 UTC（北京 05:30–08:30），始终错峰。
+- **`.github/workflows/monthly.yml`**：cron `0 1 1 * *` → `0 11 1 * *`（北京 19:00），调度延迟后仍处错峰。
+- **README / CODEBUDDY / docs/踩坑实录**：同步新时间与模型名；CODEBUDDY 新增「DeepSeek 错峰计费」一节，记录官方窗口与「cron ≠ 实际启动时刻」的实测结论。
+
+### Verified
+
+- `GET /models` 仅返回 `deepseek-flash` / `deepseek-v4-pro`；最小探针确认 `deepseek-chat` / `deepseek-reasoner` 返回 200 但服务端 `model=deepseek-flash`。
+- 近 25 次 `daily.yml` 的 `run_started_at`：03:03–05:51 UTC，8 次命中 01:00–04:00 峰时；`created_at == run_started_at`，证实是调度器延迟而非 runner 排队。
+
+---
+
 ## [docs-refresh] — README 重写 + CODEBUDDY 事实校准（2026-10-25）
 
 > 纯文档改动，**无代码变更**。SSOT 基线仍是 **v1.24（tag `t9`）**，本次未动 SSOT 两份文档与 tag。

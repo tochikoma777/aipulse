@@ -16,8 +16,11 @@ llm:
   base_url: ${AIPULSE_LLM__BASE_URL}
   api_key: ${AIPULSE_LLM__API_KEY}
   # 厂商/模型名随 base_url 一起变，光换 base_url 换不动模型（换厂商的真实操作）
-  fast_model: ${AIPULSE_LLM__FAST_MODEL:-deepseek-chat}
-  strong_model: ${AIPULSE_LLM__STRONG_MODEL:-deepseek-reasoner}
+  # 2026-11 起官方模型名为 deepseek-flash / deepseek-v4-pro；旧别名 deepseek-chat /
+  # deepseek-reasoner 仍被服务端接受，但响应 model 均为 deepseek-flash（strong 档不会变强）。
+  # 当前两档统一走 flash（成本优先）；要旗舰推理可设 AIPULSE_LLM__STRONG_MODEL=deepseek-v4-pro。
+  fast_model: ${AIPULSE_LLM__FAST_MODEL:-deepseek-flash}
+  strong_model: ${AIPULSE_LLM__STRONG_MODEL:-deepseek-flash}
   temperature: 0.4
   # 读超时：strong 档走思维链，比 fast 慢得多，故分开设（见 config.py 的注释）
   timeout_s: ${AIPULSE_LLM__TIMEOUT_S:-120}

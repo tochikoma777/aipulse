@@ -11,7 +11,7 @@
 #
 # 安装（WSL 内）：
 #   crontab -e
-#   # 每天北京时间 07:35（避开 Actions 的 07:00，减少并发写同一份 codes 的概率）
+#   # 每天北京时间 07:35（补位；Actions daily 实际约 05:30-08:30 落地，若 Actions 正常可停用本地 cron）
 #   35 7 * * * /home/<you>/projects/aipulse/scripts/cron_daily.sh
 #
 # 手动验证：

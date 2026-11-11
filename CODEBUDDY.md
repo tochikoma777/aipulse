@@ -103,7 +103,7 @@ SSOT 两份文档当前 **v1.24**（`docs/文档维护日志.md`「维护记录�
 
 ### M4 已落地的东西（改之前先看这里，别重复造）
 
-`src/aipulse/web/` 是完整的只读看板（FastAPI + Jinja2 + HTMX，见模块表）；`cli/commands/serve.py` 是真实现；`.github/workflows/` 四个工作流——`ci.yml`（push/PR：ruff + format + mypy + pytest）、`probe.yml`（手动数据源探测）、**`monthly.yml`（每月 1 日 UTC 01:00：trend → selfcheck → debate，见「T9 月度链」）**、**`daily.yml`（每天 00:00 UTC = 北京 08:00 跑 `aipulse daily` 并 commit `data/reports`；提交前先 `fetch` + `soft reset`，同日重跑不会因历史分叉冲突）**。`scripts/cron_daily.sh` 是 WSL 本地 cron 备份入口。
+`src/aipulse/web/` 是完整的只读看板（FastAPI + Jinja2 + HTMX，见模块表）；`cli/commands/serve.py` 是真实现；`.github/workflows/` 四个工作流——`ci.yml`（push/PR：ruff + format + mypy + pytest）、`probe.yml`（手动数据源探测）、**`monthly.yml`（每月 1 日 11:00 UTC：trend → selfcheck → debate，见「T9 月度链」；调度延迟后仍错峰）**、**`daily.yml`（cron 18:30 UTC，实际约 21:30–00:30 UTC 落地 = 北京 05:30–08:30，避开 DeepSeek 峰时；跑 `aipulse daily` 并 commit `data/reports`；提交前先 `fetch` + `soft reset`，同日重跑不会因历史分叉冲突）**。`scripts/cron_daily.sh` 是 WSL 本地 cron 备份入口。
 
 ### Actions 没有持久化（改 daily.yml 前必读）
 
@@ -320,7 +320,7 @@ configs/*.yaml ──> collectors/ ──> RawItem ──> normalize/dedup ─�
 ### T9 月度链（monthly.yml，顺序不可换）
 
 ```
-cron `0 1 1 * *`（UTC 01:00，每月 1 日）→ trend（省略 `--range`，按 `pipeline.trend.interval` 取上一个完整自然月）
+cron `0 11 1 * *`（UTC 11:00，每月 1 日；错峰，调度延迟 3–6h 后仍错峰）→ trend（省略 `--range`，按 `pipeline.trend.interval` 取上一个完整自然月）
 → selfcheck（写 `watchlist.json` / `calibration.json` / `admission.json`）→ debate（自动选题读**本期** trend 产物）
 → commit `data/reports`
 ```
@@ -513,11 +513,22 @@ selfcheck.{md,json} + watchlist.json / calibration.json（下期 L3/L4 回读）
 
 `pipeline/daily.py` 里**只算一次** `window = window_since(since)`（滚动 24h，截至运行时刻），显式传给 `run_collect(window=...)` 与 `analyze_day(window=...)`，简报与预言取条目也用它。
 
-**为什么**：曾经 collect 按 `--since 24h` 往前滚、analyze 按 `day_window(本地今天)` 切，两处独立计算。定时在 UTC 23:00（北京 07:00）跑，两个窗口只重叠约 7 小时——实测当天 `analysis.items = 1`，日报自称"过去 24 小时"却只覆盖 7 小时。cron 也据此改到 **UTC 00:00（北京 08:00 = 美西前一日 17:00）**：滚动 24h 刚好完整覆盖当日美国工作日，重要发布读到时不会滞后一天。
+**为什么**：曾经 collect 按 `--since 24h` 往前滚、analyze 按 `day_window(本地今天)` 切，两处独立计算。定时在 UTC 23:00（北京 07:00）跑，两个窗口只重叠约 7 小时——实测当天 `analysis.items = 1`，日报自称"过去 24 小时"却只覆盖 7 小时。cron 先改到 **UTC 00:00（北京 08:00 = 美西前一日 17:00）**：滚动 24h 刚好完整覆盖当日美国工作日。2026-11 DeepSeek 改为峰时计费后，cron 再前移到 **18:30 UTC**：抵消 GitHub 实测 3–6h 调度延迟，实际落在 21:30–00:30 UTC（北京 05:30–08:30）错峰；窗口右界相应提前到美西约 14:30–17:30，仍覆盖美国工作日绝大部分。
 
 **代价（接受）**：日报跨两个自然日，所以 `meta.json` 有 `window`（含 `since_local` / `until_local` / `hours`），`brief.md` 顶部也标了"覆盖窗口"。改窗口逻辑前先看 `tests/unit/test_daily.py::test_daily_passes_one_window_to_both_collect_and_analyze`。
 
 注意：窗口按 `collected_at` 过滤（不是 `published_at`）——语义是"本次运行采集到的条目"，窗口外的历史条目不会混进当天。
+
+### DeepSeek 错峰计费（2026-11，改 cron 前必读）
+
+官方价目表（`api-docs.deepseek.com/quick_start/pricing`）已按峰时/错峰两档计价：
+
+- **峰时**：UTC 周一至周五 `01:00–04:00` 与 `06:00–10:00`（北京 `09:00–12:00` / `14:00–18:00`），中国法定节假日除外。
+- **错峰**：其余全部时段 + 周末 + 法定节假日，价格为峰时的 **50%**。
+- 当前模型名只有 `deepseek-flash`（V4.1-Flash）与 `deepseek-v4-pro`；`/models` 也只返回这两个。旧别名 `deepseek-chat` / `deepseek-reasoner` 仍返回 200，但响应 `model` 都是 `deepseek-flash`——**strong 档不会因此变强**。
+- 若 strong 要真正用旗舰推理，显式设 `AIPULSE_LLM__STRONG_MODEL=deepseek-v4-pro`（约 3–4 倍价）；否则两档统一 `deepseek-flash`。
+
+**调度必须抵消 GitHub 延迟**：实测 `schedule` 事件的 `created_at` 比 cron 晚约 3–6 小时（近 25 次 daily 落在 03:03–05:51 UTC，其中 8 次踩中 01:00–04:00 峰时）。因此 `daily.yml` 用 `18:30 UTC`（实际 21:30–00:30 UTC），`monthly.yml` 用 `11:00 UTC`（实际 14:00–17:00 UTC），两者都落在错峰。改 cron 前先用 `gh run list --workflow=daily.yml --json createdAt,startedAt` 复核当前延迟，不要假设 cron 就是实际启动时刻。
 
 ---
 
