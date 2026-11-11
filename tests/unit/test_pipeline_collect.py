@@ -5,6 +5,8 @@
 
 from __future__ import annotations
 
+from datetime import UTC, datetime
+
 import httpx
 import pytest
 import respx
@@ -30,6 +32,15 @@ ARXIV_URL = "https://export.arxiv.org/api/query"
 
 SIMON_URL = "https://simonwillison.net/atom/everything/"
 QBIT_URL = "https://www.qbitai.com/feed"
+
+# fixture 的时间戳集中在 2026-10-07 ~ 2026-10-13；把 now 钉在 10-14，避免 `since=30d`
+# 随真实时间推移把 fixture 过滤掉（会导致测试在某个日期后集体变红）。
+_FIXTURE_NOW = datetime(2026, 10, 14, tzinfo=UTC)
+
+
+@pytest.fixture(autouse=True)
+def _freeze_fixture_window(monkeypatch):
+    monkeypatch.setattr("aipulse.core.timeutil.utcnow", lambda: _FIXTURE_NOW)
 
 
 def _test_sources_yaml(tmp_path) -> None:

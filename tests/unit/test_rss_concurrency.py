@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 import asyncio
+from datetime import UTC, datetime
 
 import httpx
+import pytest
 
 from aipulse.collectors.rss import RSSCollector
 from aipulse.core.config import FeedConfig, SourceConfig
@@ -12,6 +14,14 @@ from aipulse.core.timeutil import window_since
 from tests.conftest import fixture_text
 
 _FEED_XML = fixture_text("rss_feed.xml")
+
+# 同 test_pipeline_collect.py：fixture 时间戳在 2026-10-07 ~ 10-13，窗口钉在 10-14 避免 30d 过期。
+_FIXTURE_NOW = datetime(2026, 10, 14, tzinfo=UTC)
+
+
+@pytest.fixture(autouse=True)
+def _freeze_fixture_window(monkeypatch):
+    monkeypatch.setattr("aipulse.core.timeutil.utcnow", lambda: _FIXTURE_NOW)
 
 
 class _TrackingHttp:

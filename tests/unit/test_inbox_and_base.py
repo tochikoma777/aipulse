@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
+from datetime import UTC, datetime
+
 import httpx
+import pytest
 import respx
 
 from aipulse.collectors.base import BaseCollector
@@ -12,6 +15,14 @@ from aipulse.core.config import SourceConfig
 from aipulse.schema.items import RawItem, SourceEnum
 from aipulse.utils.http import HttpClient
 from tests.conftest import fixture_bytes, fixture_text
+
+# fixture 时间戳集中在 2026-10-07 ~ 2026-10-13；把 now 钉在 10-14，避免 30d 窗口随真实时间过期。
+_FIXTURE_NOW = datetime(2026, 10, 14, tzinfo=UTC)
+
+
+@pytest.fixture(autouse=True)
+def _freeze_fixture_window(monkeypatch):
+    monkeypatch.setattr("aipulse.core.timeutil.utcnow", lambda: _FIXTURE_NOW)
 
 
 def _http() -> HttpClient:

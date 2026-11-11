@@ -7,6 +7,7 @@ optional 源失败降级、Reddit 三重补偿、availability 分级。
 from __future__ import annotations
 
 import json
+from datetime import UTC, datetime
 
 import httpx
 import pytest
@@ -25,6 +26,14 @@ TRENDING_URL = "https://github.com/trending?since=daily"
 SEARCH_URL = "https://api.github.com/search/repositories"
 HF_URL = "https://huggingface.co/api/daily_papers"
 REDDIT_URL = "https://www.reddit.com/r/LocalLLaMA/top/.rss?t=day"
+
+# fixture 时间戳集中在 2026-10-07 ~ 2026-10-13；把 now 钉在 10-14，避免 30d 窗口随真实时间过期。
+_FIXTURE_NOW = datetime(2026, 10, 14, tzinfo=UTC)
+
+
+@pytest.fixture(autouse=True)
+def _freeze_fixture_window(monkeypatch):
+    monkeypatch.setattr("aipulse.core.timeutil.utcnow", lambda: _FIXTURE_NOW)
 
 
 def _http() -> HttpClient:
