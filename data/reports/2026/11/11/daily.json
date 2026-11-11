@@ -1,0 +1,973 @@
+{
+  "date": "2026-11-11",
+  "headline": "智能体生态正从「模型能力」转向「技能资产化」：Claude 与开源社区同日押注可复用的 Agent Skills",
+  "headline_item_id": "it_85641ad38767c9cc",
+  "overview_bullets": [
+    {
+      "icon": "🤖",
+      "topic": "技能资产化",
+      "text": "anthropics/skills、addyosmani/agent-skills、mattpocock/skills 三个仓库同日上榜，说明「把工程经验写成智能体可加载的技能包」正在成为独立赛道，而非模型附庸。"
+    },
+    {
+      "icon": "🛠️",
+      "topic": "智能体基建",
+      "text": "vercel-labs/agent-browser、ha-mcp、OpenMausBot 与 meta/astryx 集中出现，智能体的浏览器、家居、虚拟机与设计系统接口正在被开源补齐。"
+    },
+    {
+      "icon": "📄",
+      "topic": "世界模型",
+      "text": "WorldFoundry 直言「视觉逼真不等于世界建模」，与 dNaViT、PhysOPSD 一起把评测焦点从画质推向状态持久性与物理因果一致性。"
+    },
+    {
+      "icon": "🏢",
+      "topic": "端侧入口",
+      "text": "Apple 据称将推 Mac 本地模型运行应用，与「一键 3 倍压缩、50MB 内存内近无损」的压缩方案形成端侧部署的双向推力。"
+    },
+    {
+      "icon": "🔐",
+      "topic": "隐私张力",
+      "text": "Amazon 把 Ring 摄像头扩展为 AI 安防无人机与机器人，能力升级的同时把家庭空间监控的隐私争议推到新高度。"
+    }
+  ],
+  "executive_summary": "今天的信号不在模型参数，而在「谁掌握智能体的可复用能力与运行入口」——技能包、浏览器与本地推理正在成为新的兵家必争之地。",
+  "editor_note": {
+    "core": "今天最该记住的是「技能」被当成一等资产：Anthropic 官方仓库与多位知名工程师同日发布 Agent Skills，意味着智能体的竞争力正从模型权重迁移到可复用、可审计的工程知识包，谁定义技能格式谁就掌握分发权。",
+    "cross_signal": "开源侧的 agent-browser、ha-mcp 与论文侧的 Flide（面向决策模型的推理引擎）指向同一件事——智能体的瓶颈已从「会不会想」变成「能不能可靠地执行与调度」，基础设施层正在被系统性补齐。",
+    "counterintuitive": "热度最高的仍是 Claude 相关产品与 HN 话题，但真正稀缺的是 WorldFoundry 这类「指出视觉逼真不等于世界建模」的纠偏工作；热度与长期价值在这里明显错位。",
+    "risk": "技能包与 MCP 类接口快速扩散，却缺少统一的权限与来源校验标准，一个被投毒的「技能」可能比模型幻觉更难排查；同时 Ring 无人机式的物理智能体把隐私风险从数据层推到现实空间。"
+  },
+  "contradictions": [
+    "一边是 Apple 力推本地运行模型、压缩方案宣称 50MB 内存内近无损，一边是论文与产品持续堆叠更大规模的世界模型与视频生成，端侧轻量化与云端重算力的路线叙事同时被强化。",
+    "WorldFoundry 等论文批评「视觉逼真≠世界建模」，但社区热度仍集中在生成效果与产品发布上，评价标准与注意力流向不一致。"
+  ],
+  "underrated": [
+    "WorldFoundry: Towards Unified Infrastructure for World Intelligence",
+    "Flide: Accelerating Decision Inference with Exact State Forking",
+    "DepthGraft: Structural Regularization through Hierarchical Cross-Layer KV Reconstruction",
+    "Compress any LLM 3x in one click,near-lossless,in under 50 MB RAM",
+    "ruvnet/RuView：用 WiFi 信号做空间与生命体征感知"
+  ],
+  "sections": [
+    {
+      "name": "开源项目",
+      "summary": "智能体技能库与运行工具密集上榜，开源社区正把智能体从演示品做成可装配的工程件。",
+      "item_ids": [
+        "it_85641ad38767c9cc",
+        "it_5322fa73dc282dcd",
+        "it_81446f2462dee9e2",
+        "it_8689a4b04d08f36d",
+        "it_8292947de71d6092",
+        "it_93e99bdd1f801572",
+        "it_ec8c7e5f32546a34",
+        "it_980619fecdfac93c",
+        "it_c98d9678d269d780",
+        "it_4deeb26b9250f7c2",
+        "it_6e8b653de9112f69",
+        "it_e07ae0cfd157b113",
+        "it_37cb70e5bf4c7c16"
+      ]
+    },
+    {
+      "name": "论文与研究",
+      "summary": "世界模型与视频生成开始自我纠偏：从「看起来真」转向「状态与物理是否成立」，机器人策略则聚焦样本效率。",
+      "item_ids": [
+        "it_43430aa80d84228d",
+        "it_985e8391d05fe957",
+        "it_04dc57421a57cfcf",
+        "it_773a5466ce19145f",
+        "it_52811214f1f40b00",
+        "it_9d9f1c0885be79ef",
+        "it_55b6ac66aa714b2f",
+        "it_dc5f077b93d90441",
+        "it_c5eba880b9232aa1"
+      ]
+    },
+    {
+      "name": "社区舆论",
+      "summary": "HN 讨论集中在「让编码智能体摆脱 2019 年的前端写法」与 Claude 产品化的想象，工程品味话题压过模型榜单。",
+      "item_ids": [
+        "it_f58332e28bbdf770",
+        "it_7737e173e31a5988",
+        "it_dfad3e6674c2521c",
+        "it_eec6217882176ba1",
+        "it_a5749ddac12322df",
+        "it_8443aece1f924ab0",
+        "it_77d255b4e9ac58d2"
+      ]
+    },
+    {
+      "name": "产业与新闻",
+      "summary": "Apple 与 Amazon 分别从端侧运行和家庭安防两端推进 AI 落地，一个抢入口，一个抢场景。",
+      "item_ids": [
+        "it_9531c706dbfc8caf"
+      ]
+    }
+  ],
+  "comments": [
+    {
+      "item_id": "it_85641ad38767c9cc",
+      "one_liner": "Anthropic 官方维护的 Agent Skills 公开仓库。",
+      "why": "厂商亲自维护公开技能仓库，技能格式从社区约定升级为官方标准，第三方技能包将围绕它分层并接受兼容性审查。",
+      "stance": "官方入场是技能生态的分水岭，但标准由单一厂商把持，长期看是锁定风险。"
+    },
+    {
+      "item_id": "it_5322fa73dc282dcd",
+      "one_liner": "面向 AI 编程 agent 的生产级工程技能集合仓库",
+      "why": "把编码代理的工程实践沉淀成可复用技能包，等于给代理行为定标准，下游代理框架的差异化空间被压缩到技能库质量上。",
+      "stance": "技能包会变成代理生态的入口层，先占住标准的一方赢者通吃。"
+    },
+    {
+      "item_id": "it_81446f2462dee9e2",
+      "one_liner": "mattpocock 公开自己 .agents 目录下的 Agent Skills 集合，面向实际工程场景。",
+      "why": "知名开发者把个人 .agents 目录直接开源，等于把「怎么调教编码代理」的私有经验变成可复制的公共资产，个人工作流开始成为可分发产品。",
+      "stance": "这类个人技能包的价值在实战沉淀而非框架，抄配置不如抄判断逻辑。"
+    },
+    {
+      "item_id": "it_8689a4b04d08f36d",
+      "one_liner": "一个完全可定制、面向 agent 的开源设计系统",
+      "why": "设计系统开始把「agent 可直接消费」写进核心定位，意味着组件库的交付对象从人类设计师扩展到自动生成 UI 的模型，前端团队选型标准会被迫加入机器可读性一项。",
+      "stance": "方向对，但「agent ready」目前多是营销词，谁先给出可验证的 schema 与 token 契约谁才算数。"
+    },
+    {
+      "item_id": "it_8292947de71d6092",
+      "one_liner": "vercel-labs 推出的浏览器自动化 CLI，供 AI agent 调用",
+      "why": "把浏览器操作封装成 CLI，等于给 AI agent 一个不依赖图形界面的确定性执行层，网页抓取与流程自动化的接入成本被压到一条命令。",
+      "stance": "方向正确，但浏览器自动化是权限与反爬的高危地带，谁掌握执行层谁就掌握 agent 的落地边界。"
+    },
+    {
+      "item_id": "it_93e99bdd1f801572",
+      "one_liner": "让 Claude、ChatGPT 等 AI 助手配置和自动化 Home Assistant 的 MCP 服务",
+      "why": "把智能家居配置权交给通用对话助手，家庭自动化从写 YAML 变成自然语言指令，门槛下降的同时把设备控制面暴露给第三方模型。",
+      "stance": "便利性真实，但把家庭控制权交给云端助手是笔不划算的信任交易。"
+    },
+    {
+      "item_id": "it_ec8c7e5f32546a34",
+      "one_liner": "一个开源的 Grok Bot 替代方案，内置可供 bot 使用的虚拟机",
+      "why": "把虚拟机交给机器人操作，等于给自动化代理一个可执行代码、可持久化的落脚点，开源复刻让这类能力从厂商封闭产品扩散到任意开发者手中。",
+      "stance": "能力扩散快于安全护栏，先跑起来再补边界是这一波代理项目的通病。"
+    },
+    {
+      "item_id": "it_980619fecdfac93c",
+      "one_liner": "Garry Tan 开源的 OpenClaw/Hermes Agent 大脑配置",
+      "why": "知名投资人公开自己的 agent 大脑配置，会把「提示词+工具编排」从私有经验变成可 fork 的模板，个人 agent 的差异化随之从配置转向数据与执行环境。",
+      "stance": "个人观点仓库被当成基础设施传播，是当前 agent 生态最典型的虚火。"
+    },
+    {
+      "item_id": "it_c98d9678d269d780",
+      "one_liner": "按用户名跨社交网络追踪账号的开源工具",
+      "why": "按用户名跨平台聚合账号，让公开信息拼出完整身份画像，反查成本从人工搜索降到一条命令。",
+      "stance": "这是给跟踪者和骚扰者的现成工具，公开可用本身就是问题。"
+    },
+    {
+      "item_id": "it_4deeb26b9250f7c2",
+      "one_liner": "tokio-rs 出品的开箱即用 Web 应用框架",
+      "why": "Rust 生态补上开箱即用的 Web 框架，异步运行时作者亲自下场，会把一批厌倦手工拼装中间件的团队从 Axum 生态拉走。",
+      "stance": "框架层竞争终于从性能转向开发体验，这是 Rust 后端真正起量的前提。"
+    },
+    {
+      "item_id": "it_43430aa80d84228d",
+      "one_liner": "提出 WorldFoundry，一套面向世界智能的统一基础设施框架",
+      "why": "把「视觉逼真」与「世界模型成立」明确切开，等于给一批只会生成好看视频的项目判了不合格，评价标准转向状态持久性与因果一致性。",
+      "stance": "该泼的冷水，视觉拟真度被当成世界理解力的日子该结束了。"
+    },
+    {
+      "item_id": "it_985e8391d05fe957",
+      "one_liner": "dNaViT：用离散码作为通用视觉表征的视觉建模方法",
+      "why": "把视觉也压成离散 token，视觉与语言共用同一套自回归建模和训练基础设施，多模态从拼接架构转向统一架构。",
+      "stance": "统一 token 空间是正确方向，但离散化带来的视觉细节损失还没被认真回答。"
+    },
+    {
+      "item_id": "it_04dc57421a57cfcf",
+      "one_liner": "通过条件偏移实现少步流式视频生成的方法",
+      "why": "去掉独立假评分网络后，少步流式视频生成的训练显存与算力门槛下降，实时视频生成从演示走向可部署。",
+      "stance": "训练成本才是流式视频的真瓶颈，这类减法比刷指标更有价值。"
+    },
+    {
+      "item_id": "it_773a5466ce19145f",
+      "one_liner": "PhysOPSD：以代码作为特权信息提升视频生成物理合理性的方案",
+      "why": "用代码作为物理约束的中间表示，绕开离线状态错配与强化学习的不稳定，视频模型的物理合理性从靠数据堆转向靠可执行规则校验。",
+      "stance": "把物理交给代码而非更多数据，是当前视频生成最务实的一条路。"
+    },
+    {
+      "item_id": "it_52811214f1f40b00",
+      "one_liner": "面向机器人操作的 World In-Context Learning 方法",
+      "why": "让机器人在上下文中从演示学习而非重训权重，技能不再绑定训练分布，换场景不必重新采集数据。",
+      "stance": "上下文学习替代权重写入，是机器人泛化的关键分水岭，值得押注。"
+    },
+    {
+      "item_id": "it_9d9f1c0885be79ef",
+      "one_liner": "ExRL：通过执行长度控制实现长动作块策略高效在线自适应",
+      "why": "长动作块策略的在线微调样本效率被执行长度控制拉高，机器人从演示到适配新环境的迭代周期从数天压到小时级。",
+      "stance": "在线适应能力比单次任务成功率更能决定机器人能否出实验室。"
+    },
+    {
+      "item_id": "it_55b6ac66aa714b2f",
+      "one_liner": "DepthGraft：用分层跨层 KV 重建做结构正则化的方法",
+      "why": "用跨层 KV 重建缓解 Pre-LN 深层信息稀释，等于在不改注意力机制的前提下把深度换来的参数真正用起来。",
+      "stance": "结构性修补比继续堆层数更划算，但这类改动的收益要在大规模上才见分晓。"
+    },
+    {
+      "item_id": "it_dc5f077b93d90441",
+      "one_liner": "Flide 是一种面向决策模型推理的引擎，通过精确的状态分叉来加速分类决策推理。",
+      "why": "现有推理引擎为生成式解码设计，状态分叉要重算整条前缀；精确状态分叉把决策类模型的重复前缀计算省掉，直接压低 agent 单步延迟，受益方是跑高频分类决策的智能体系统。",
+      "stance": "方向对：agent 的瓶颈在调度层而非模型层，这类底层引擎改造比再训一个模型更划算。"
+    },
+    {
+      "item_id": "it_c5eba880b9232aa1",
+      "one_liner": "JoVox 是一种联合分层 flow matching 方法，用于生成轻量化的高保真 voxel。",
+      "why": "体素生成长期卡在保真度与算力二选一，联合分层流匹配试图在保持轻量的前提下补上细节，影响的是端侧 3D 内容管线的可行性边界。",
+      "stance": "分层路线是对的，但轻量与高保真同时宣称时，先看它在真实资产上的重建误差再谈落地。"
+    },
+    {
+      "item_id": "it_f58332e28bbdf770",
+      "one_liner": "一篇 Show HN 帖子，介绍如何让 coding agent 摆脱 2019 年前后的 JavaScript 写法，改用 CSS.highlights、<dialog>、field-sizing 等现代 Web 原生能力。",
+      "why": "编码代理的训练语料停留在旧范式，产出大量本可由 CSS.highlights、dialog、field-sizing 原生完成的冗余代码，把维护成本转嫁给下游团队。",
+      "stance": "该被纠正的是模型的知识截止，不是让开发者继续为过时写法付技术债。"
+    },
+    {
+      "item_id": "it_7737e173e31a5988",
+      "one_liner": "Anthropic 推出 Claude Whiteboards、Claude Sheets 和 Claude Data 三项新功能。",
+      "why": "白板、表格、数据三件套补齐后，协作与结构化数据入口被收进同一对话界面，原本靠文档与 BI 工具分食的工作流向单一供应商集中。",
+      "stance": "这是把聊天框变成办公套件外壳的又一步，锁定效应比功能本身更值得警惕。"
+    },
+    {
+      "item_id": "it_dfad3e6674c2521c",
+      "one_liner": "一篇题为 Life on Claude Nine 的 Hacker News 讨论帖。",
+      "why": "以模型命名虚构生活场景的写法，反映开发者社区正把模型人格当作文化素材消费，这类叙事会反过来塑造用户对模型能力边界的预期。",
+      "stance": "有趣但别当信号读：把模型拟人化的叙事越流行，越容易掩盖它只是概率拟合这件事。"
+    },
+    {
+      "item_id": "it_eec6217882176ba1",
+      "one_liner": "Saltline 是一款由 Fable 5.2 生成的第一人称射击游戏。",
+      "why": "由生成模型端到端产出一个可玩的第一人称射击游戏，把评测标准从代码片段正确率推到完整可运行产物，直接冲击小团队的原型成本结构。",
+      "stance": "演示价值大于工程质量，但门槛确实被拉低了：以后拼的是品味与关卡设计，不是能不能写出来。"
+    },
+    {
+      "item_id": "it_a5749ddac12322df",
+      "one_liner": "一份关于推理工程（inference engineering）的开放领域指南。",
+      "why": "推理工程从零散经验沉淀为公开方法论，意味着吞吐、延迟、显存这些调优知识开始标准化，团队间的性能差距会从秘密技巧转向执行纪律。",
+      "stance": "支持这类公开整理：推理优化的知识垄断没有护城河价值，只有工程落地价值。"
+    },
+    {
+      "item_id": "it_8443aece1f924ab0",
+      "one_liner": "一个一键将任意 LLM 压缩约 3 倍、接近无损且内存占用低于 50 MB 的工具。",
+      "why": "把压缩门槛压到 50MB 内存以内，等于让量化在笔记本和边缘设备上随手可做，模型分发的体积约束被进一步松开。",
+      "stance": "宣称近无损就要接受近无损的检验，先看长上下文与低比特下的退化曲线，别拿 perplexity 糊弄。"
+    },
+    {
+      "item_id": "it_77d255b4e9ac58d2",
+      "one_liner": "Apple 将推出新的 Mac 应用，让本地 AI 模型的运行更简单。",
+      "why": "系统厂商亲自提供本地模型运行入口，会把驱动、内存调度与模型格式的适配收进平台层，第三方本地推理工具的存在空间被压缩到专业用户。",
+      "stance": "平台收编本地推理是必然，但默认闭源栈会把可替换性一起收走，用户该要求模型格式的开放性。"
+    },
+    {
+      "item_id": "it_9531c706dbfc8caf",
+      "one_liner": "Amazon 为 Ring 推出 AI 驱动的安防无人机和机器人，将 Ring 摄像头扩展到移动巡逻场景。",
+      "why": "摄像头从固定点位扩展到移动巡逻的无人机与机器人，采集范围从门口扩散到全屋，隐私争议的物理边界随之消失，监管与邻里关系都会被牵动。",
+      "stance": "把飞行摄像头卖进家庭，等于把监控常态化外包给消费电子，隐私代价远高于它解决的安全问题。"
+    }
+  ],
+  "stats": {},
+  "items": {
+    "it_f58332e28bbdf770": {
+      "id": "it_f58332e28bbdf770",
+      "source": "hackernews",
+      "title": "Show HN: Get your coding agent off ~2019 JavaScript, onto modern web primitives",
+      "url": "https://github.com/GoogleChrome/modern-web-guidance",
+      "summary": "Browsers natively handle a lot of what used to take 50 lines of JS (or a dependency): `CSS.highlights` for text range highlighting without <span>s everywhere, `<dialog>` and showModal() give you backdrops and ideal focus management, `field-sizing` to auto-grow textareas as the user types.. (Something yesterday's ftrain post touched on [0]) Models know about some of these by name, but consistently won't default to using the platform-native solution and instead prefer the incumbent <div>+JS based ",
+      "hot_score": 85.367,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-10T18:01:15+00:00",
+      "last_seen_at": "2026-11-11T04:35:17.322217+00:00",
+      "metrics": {
+        "points": 306,
+        "num_comments": 94
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_c98d9678d269d780": {
+      "id": "it_c98d9678d269d780",
+      "source": "github_trending",
+      "title": "sherlock-project/sherlock",
+      "url": "https://github.com/sherlock-project/sherlock",
+      "summary": "Hunt down social media accounts by username across social networks",
+      "hot_score": 81.1697,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-08T04:16:20.914333+00:00",
+      "last_seen_at": "2026-11-11T04:35:17.312365+00:00",
+      "metrics": {
+        "stars_total": 109252,
+        "stars_in_window": 4267,
+        "forks": 12681,
+        "streak_days": 4
+      },
+      "streak_days": 4,
+      "language": "Python"
+    },
+    "it_7737e173e31a5988": {
+      "id": "it_7737e173e31a5988",
+      "source": "hackernews",
+      "title": "Claude Whiteboards, Claude Sheets, and Claude Data",
+      "url": "https://claude.com/resources/articles/sheets-whiteboards-data",
+      "summary": "",
+      "hot_score": 77.817,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-10T17:55:07+00:00",
+      "last_seen_at": "2026-11-11T04:35:17.239581+00:00",
+      "metrics": {
+        "points": 165,
+        "num_comments": 137
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_8689a4b04d08f36d": {
+      "id": "it_8689a4b04d08f36d",
+      "source": "github_trending",
+      "title": "meta/astryx",
+      "url": "https://github.com/meta/astryx",
+      "summary": "An open source design system that's fully customizable and agent ready",
+      "hot_score": 77.1697,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-08T04:16:20.914319+00:00",
+      "last_seen_at": "2026-11-11T04:35:17.307854+00:00",
+      "metrics": {
+        "stars_total": 23331,
+        "stars_in_window": 3278,
+        "forks": 1840,
+        "streak_days": 4
+      },
+      "streak_days": 4,
+      "language": "TypeScript"
+    },
+    "it_81446f2462dee9e2": {
+      "id": "it_81446f2462dee9e2",
+      "source": "github_trending",
+      "title": "mattpocock/skills",
+      "url": "https://github.com/mattpocock/skills",
+      "summary": "Skills for Real Engineers. Straight from my .agents directory.",
+      "hot_score": 73.0152,
+      "topic_id": "tp_b9c0ae8f7b80",
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-31T03:55:58.260523+00:00",
+      "last_seen_at": "2026-11-11T04:35:17.314188+00:00",
+      "metrics": {
+        "stars_total": 321113,
+        "stars_in_window": 2071,
+        "forks": 26922,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Shell"
+    },
+    "it_77d255b4e9ac58d2": {
+      "id": "it_77d255b4e9ac58d2",
+      "source": "hackernews",
+      "title": "Apple has new Mac app coming to make running local AI models easy",
+      "url": "https://9to5mac.com/2026/11/10/apple-has-new-mac-app-coming-to-make-running-local-ai-models-easy",
+      "summary": "",
+      "hot_score": 72.1101,
+      "topic_id": "tp_406da47f74e3",
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-10T21:25:03+00:00",
+      "last_seen_at": "2026-11-11T04:35:17.241908+00:00",
+      "metrics": {
+        "points": 119,
+        "num_comments": 96
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_43430aa80d84228d": {
+      "id": "it_43430aa80d84228d",
+      "source": "hf_papers",
+      "title": "WorldFoundry: Towards Unified Infrastructure for World Intelligence",
+      "url": "arxiv:2611.10771",
+      "summary": "Visual generative models increasingly blur the line between synthesizing observations and simulating environments. Yet visual plausibility alone does not constitute successful world modeling: compelling outputs may lack persistent state, physical dynamics, or causally consistent responses to interactions. We define a generative world model as a predictive dynamical system that maintains a persistent, history-conditioned representation of an environment, updates that representation in response to actions or interventions, and generates temporally coherent trajectories that reflect outcomes under observed and counterfactual interventions. From this definition, we derive an intelligence-oriented framework spanning perceptual grounding, persistent state modeling, controllable transformation, dynamics-aware prediction, and closed-loop interaction. We present WorldFoundry, open-source infrastructure for reproducible inference and evaluation across video, 3D and 4D, embodied action, and interactive world systems. WorldFoundry unifies model and benchmark discovery, runtime and asset preparation, execution orchestration, artifact management, and interactive visualization, while modality-specific adapters preserve native inputs, execution semantics, output representations, and evaluation protocols. Explicit manifests, durable artifact contracts, and evidence-aware scorecards separate execution readiness from evaluative claims, making each claim traceable to its supporting artifacts. The catalog contains 270 model entries, 74 benchmarks, and 62 registered metric entries, with readiness and execution evidence recorded separately. WorldFoundry enables reproducible comparison of persistent, controllable dynamics across heterogeneous systems, advancing the field from perceptual synthesis toward measurable world intelligence.",
+      "hot_score": 70.4075,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-11-07T09:59:22+00:00",
+      "last_seen_at": "2026-11-10T05:52:01.694642+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 21
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_985e8391d05fe957": {
+      "id": "it_985e8391d05fe957",
+      "source": "hf_papers",
+      "title": "dNaViT: Discrete Codes are General-Purpose Visual Representations",
+      "url": "arxiv:2611.12426",
+      "summary": "Discrete autoregressive modeling, notably through next-token prediction, has become a cornerstone of modern language models. Extending this paradigm to vision allows visual and language models to converge on a unified framework, thereby fostering shared methodology and infrastructure. This work investigates a central question: how far can a finite discrete vocabulary go in representing the richness of the visual world? We present dNaViT, a Discrete Native-resolution Vision Transformer that produces discrete visual primitives analogous to language tokens. Built upon a frozen pretrained encoder, dNaViT applies lightweight residual modulation with a dual-branch objective to inject reconstruction-aware cues into semantic features. By leveraging grouped product quantization, it scales discrete capacity without inflating spatial sequence lengths, while a balanced training recipe maintains both semantic and pixel-level information. Consequently, dNaViT functions as a versatile discrete visual tokenizer, enabling unified encoding across downstream tasks alongside high-fidelity image decoding. Extensive evaluations show that dNaViT matches or exceeds task-specific baselines across 12 visual understanding benchmarks, 4 generation benchmarks, and an image editing benchmark. These findings demonstrate that a compact discrete vocabulary can serve as a universal visual currency and unlock the full potential of fully unified, native multimodal methodology.",
+      "hot_score": 69.5218,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-11-08T19:00:00+00:00",
+      "last_seen_at": "2026-11-11T04:35:17.314681+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 18
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_5322fa73dc282dcd": {
+      "id": "it_5322fa73dc282dcd",
+      "source": "github_trending",
+      "title": "addyosmani/agent-skills",
+      "url": "https://github.com/addyosmani/agent-skills",
+      "summary": "Production-grade engineering skills for AI coding agents.",
+      "hot_score": 69.0,
+      "topic_id": "tp_b9c0ae8f7b80",
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-11T04:34:35.571809+00:00",
+      "last_seen_at": "2026-11-11T04:35:17.309169+00:00",
+      "metrics": {
+        "stars_total": 115293,
+        "stars_in_window": 465,
+        "forks": 12107,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "JavaScript"
+    },
+    "it_04dc57421a57cfcf": {
+      "id": "it_04dc57421a57cfcf",
+      "source": "hf_papers",
+      "title": "Few-Step Streaming Video Generation via Condition Shifting",
+      "url": "arxiv:2611.14033",
+      "summary": "Few-step sampling reduces the cost of streaming video generation. Distribution Matching Distillation (DMD) supervises few-step generators with a separate fake-score network, which adds training memory and computation and must track the evolving generator. We extend APEX to streaming video by using condition shifting to estimate the velocity field of the generated distribution within the generator. The original text condition selects generation, while a shifted condition selects fake estimation using the same parameters. This removes the independent fake network while retaining S2-Avatar's frozen reference teacher, Self-Replay Forcing, and perceptual regularization. We evaluate APEX on 180-second videos using three backbone evaluations per block and a one-step spatial Refiner, with a 70-case human study and a 320-case StreamAV-Bench comparison. Compared with S2-Avatar, APEX achieves higher video instruction fulfillment on the Progressive track (3.856 versus 3.831) and higher visual aesthetics across both tracks (0.641898 versus 0.632606). Human raters favor APEX most strongly on instruction following, with +30.0% net preference, followed by consistency and video quality at +4.3% each. Motion quality favors S2-Avatar, audiovisual synchronization is predominantly tied, and usability is unchanged. Separate measurements under matched training settings show 4.4% lower peak allocated GPU memory per GPU and 9.2% shorter mean iteration time than DMD.",
+      "hot_score": 66.5442,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-11-09T19:00:00+00:00",
+      "last_seen_at": "2026-11-11T04:35:17.316553+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 8
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_52811214f1f40b00": {
+      "id": "it_52811214f1f40b00",
+      "source": "hf_papers",
+      "title": "World In-Context Learning for Agentic Robot Manipulation",
+      "url": "arxiv:2611.12885",
+      "summary": "Trained action policies write manipulation skill into network weights, tying what is learned to the distribution it is learned from. In-context learning (ICL) avoids this coupling but has not matched trained policies, because a demonstration recorded in another scene carries no feedback from the world the robot currently faces. We observe that what an agent learns in context is semantic, recording task steps and object roles rather than visual appearance, so experience gathered in one world transfers to another. Based on this insight, we propose World In-Context Learning (WICL), a paradigm in which a frozen model starts from a demonstration, rehearses the task in a world such as a simulator, and writes the feedback into its context rather than its weights. We build RoboScript, a modular infrastructure that implements WICL for agentic manipulation. From a single demonstration, RoboScript learns each task through rehearsal in simulation, freezes the learned knowledge as a Task Memory, and deploys the frozen memory on new scenes with data isolation that ensures every deployment input is available on a real robot. On all 50 tasks of RoboTwin 2.0, RoboScript reaches 83.4% mean success across clean and randomized settings with one demonstration per task and no gradient updates, exceeding the strongest trained action policy by over 20 points. The method generalizes across visual distributions, improves through reflection, scales with the foundation model, and transfers to a physical dual-arm robot through cross-embodiment memory adaptation. With a world in the loop, a robot can learn a manipulation task in its context as well as it learns one in its weights. All code is available at https://github.com/ArcheOne-AI/RoboScript",
+      "hot_score": 65.7718,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-11-08T19:00:00+00:00",
+      "last_seen_at": "2026-11-11T04:35:17.315532+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 12
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_dfad3e6674c2521c": {
+      "id": "it_dfad3e6674c2521c",
+      "source": "hackernews",
+      "title": "Life on Claude Nine",
+      "url": "https://babuschk.in/posts/2026-01-25-life-on-claude-nine.html",
+      "summary": "",
+      "hot_score": 62.7328,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-10T17:44:44+00:00",
+      "last_seen_at": "2026-11-11T04:35:17.243351+00:00",
+      "metrics": {
+        "points": 92,
+        "num_comments": 57
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_ec8c7e5f32546a34": {
+      "id": "it_ec8c7e5f32546a34",
+      "source": "github_trending",
+      "title": "milind-soni/OpenMausBot",
+      "url": "https://github.com/milind-soni/OpenMausBot",
+      "summary": "Open-source Grok Bot alternative with a virtual machine that bots can use",
+      "hot_score": 62.0079,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-30T04:14:36.710887+00:00",
+      "last_seen_at": "2026-11-10T05:52:01.693853+00:00",
+      "metrics": {
+        "stars_total": 20012,
+        "stars_in_window": 1955,
+        "forks": 2735,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "TypeScript"
+    },
+    "it_85641ad38767c9cc": {
+      "id": "it_85641ad38767c9cc",
+      "source": "github_trending",
+      "title": "anthropics/skills",
+      "url": "https://github.com/anthropics/skills",
+      "summary": "Public repository for Agent Skills",
+      "hot_score": 59.0152,
+      "topic_id": "tp_b9c0ae8f7b80",
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-31T03:55:58.260542+00:00",
+      "last_seen_at": "2026-11-11T04:35:17.308393+00:00",
+      "metrics": {
+        "stars_total": 192508,
+        "stars_in_window": 1679,
+        "forks": 22664,
+        "streak_days": 4
+      },
+      "streak_days": 4,
+      "language": "Python"
+    },
+    "it_e07ae0cfd157b113": {
+      "id": "it_e07ae0cfd157b113",
+      "source": "github_trending",
+      "title": "ZhuLinsen/daily_stock_analysis",
+      "url": "https://github.com/ZhuLinsen/daily_stock_analysis",
+      "summary": "LLM 驱动的多市场股票智能分析系统：多源行情、实时新闻、决策看板与自动推送，支持零成本定时运行。 LLM-powered multi-market stock analysis system with multi-source market data, real-time news, decision dashboard, automated notifications, and cost-free scheduled runs.",
+      "hot_score": 58.5662,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-10T05:51:29.067536+00:00",
+      "last_seen_at": "2026-11-10T05:52:01.692194+00:00",
+      "metrics": {
+        "stars_total": 69162,
+        "stars_in_window": 506,
+        "forks": 56455,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_773a5466ce19145f": {
+      "id": "it_773a5466ce19145f",
+      "source": "hf_papers",
+      "title": "PhysOPSD: Code as Privilege for Physically Plausible Video Generation",
+      "url": "arxiv:2611.12411",
+      "summary": "While modern video generative models achieve remarkable visual fidelity, they remain noticeably brittle when generating physically plausible dynamics and complex interactions. Targeted post-training is crucial, yet supervised fine-tuning suffers from offline state mismatch, and reinforcement learning is hindered by sparse, ill-defined physical reward functions. On-Policy (Self-)Distillation (OPSD) reconciles on-policy rollouts with dense corrective feedback, shifting the core challenge to designing effective privileged context. However, conventional modalities fall short: text prompts are inherently declarative, whereas real reference videos heavily entangle physical laws with visual appearance without parametric control. To this end, we propose PhysOPSD, introducing executable code as privileged physical context for video generation. Unlike static visual observations, executable code instantiates an editable physical world with intrinsic abstraction and controllability. Powered by PhysOPSD-Engine, we translate real-world physical scenarios into verifiable simulation programs. PhysOPSD then incorporates (i) dual-level physical privilege to bridge the information gap via an intermediate bottleneck, alongside (ii) controlled physical variations under shared rollout noise to expose causal dynamic shifts. Extensive experiments demonstrate that PhysOPSD substantially improves physical plausibility across diverse backbones, outperforming SFT and RL baselines with only 3K samples, while preserving general video generation quality.",
+      "hot_score": 58.2718,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-11-08T19:00:00+00:00",
+      "last_seen_at": "2026-11-11T04:35:17.317484+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 6
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_93e99bdd1f801572": {
+      "id": "it_93e99bdd1f801572",
+      "source": "github_trending",
+      "title": "homeassistant-ai/ha-mcp",
+      "url": "https://github.com/homeassistant-ai/ha-mcp",
+      "summary": "Configure and automate Home Assistant with Claude, ChatGPT, and other AI assistants.",
+      "hot_score": 57.5662,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-10T05:51:29.067545+00:00",
+      "last_seen_at": "2026-11-11T04:35:17.311269+00:00",
+      "metrics": {
+        "stars_total": 6774,
+        "stars_in_window": 790,
+        "forks": 436,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "Python"
+    },
+    "it_eec6217882176ba1": {
+      "id": "it_eec6217882176ba1",
+      "source": "hackernews",
+      "title": "Saltline: First-person shooter built by Fable 5.2",
+      "url": "https://claude.ai/artifact/BGY1SztrAYcJQHSsnHHGmp",
+      "summary": "",
+      "hot_score": 55.9758,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-10T19:14:38+00:00",
+      "last_seen_at": "2026-11-11T04:35:17.244456+00:00",
+      "metrics": {
+        "points": 56,
+        "num_comments": 63
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_8292947de71d6092": {
+      "id": "it_8292947de71d6092",
+      "source": "github_trending",
+      "title": "vercel-labs/agent-browser",
+      "url": "https://github.com/vercel-labs/agent-browser",
+      "summary": "Browser automation CLI for AI agents",
+      "hot_score": 55.8516,
+      "topic_id": "tp_0796cffecf3a",
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-06T04:57:37.763100+00:00",
+      "last_seen_at": "2026-11-11T04:35:17.311859+00:00",
+      "metrics": {
+        "stars_total": 49363,
+        "stars_in_window": 916,
+        "forks": 3455,
+        "streak_days": 4
+      },
+      "streak_days": 4,
+      "language": "Rust"
+    },
+    "it_9d9f1c0885be79ef": {
+      "id": "it_9d9f1c0885be79ef",
+      "source": "hf_papers",
+      "title": "ExRL: Sample-Efficient Online Adaptation of Long-Chunk Policies via Execution Length Control",
+      "url": "arxiv:2611.13482",
+      "summary": "Predicting long action chunks, often spanning dozens of timesteps, has become a key ingredient in increasingly capable robot policies. In this paper, we find that adapting these long-chunk policies with existing reinforcement learning (RL) methods can require many online samples due to the high dimensionality of the action chunks being optimized, making such adaptation impractical in real-world scenarios where interaction data are costly to collect. Our key insight is to shift adaptation from optimizing actions to optimizing how long to execute each predicted action chunk. This keeps the adaptation space low-dimensional while its expressivity grows with the chunk size. We thus introduce Execution at the Right Length (ExRL), a simple approach which augments the base policy with a lightweight adapter that predicts the execution length of each chunk and is trained using off-policy RL algorithms. Across simulation benchmarks and real-world robotic tasks, ExRL enables sample-efficient adaptation of a diverse range of long-chunk policies with minimal task-specific hyperparameter tuning.",
+      "hot_score": 55.2942,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-11-09T19:00:00+00:00",
+      "last_seen_at": "2026-11-11T04:35:17.318351+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 4
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_4deeb26b9250f7c2": {
+      "id": "it_4deeb26b9250f7c2",
+      "source": "github_trending",
+      "title": "tokio-rs/topcoat",
+      "url": "https://github.com/tokio-rs/topcoat",
+      "summary": "A batteries-included framework for building web apps",
+      "hot_score": 48.0,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-11T04:34:35.571847+00:00",
+      "last_seen_at": "2026-11-11T04:35:17.312888+00:00",
+      "metrics": {
+        "stars_total": 6911,
+        "stars_in_window": 192,
+        "forks": 304,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Rust"
+    },
+    "it_a5749ddac12322df": {
+      "id": "it_a5749ddac12322df",
+      "source": "hackernews",
+      "title": "An Open Field Guide to Inference Engineering",
+      "url": "https://docs.modelplane.ai/guides/inference-guide",
+      "summary": "",
+      "hot_score": 47.817,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-10T17:55:07+00:00",
+      "last_seen_at": "2026-11-11T04:35:17.243910+00:00",
+      "metrics": {
+        "points": 79,
+        "num_comments": 8
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_55b6ac66aa714b2f": {
+      "id": "it_55b6ac66aa714b2f",
+      "source": "hf_papers",
+      "title": "DepthGraft: Structural Regularization through Hierarchical Cross-Layer KV Reconstruction",
+      "url": "arxiv:2611.03142",
+      "summary": "Scaling depth is a key route to stronger large language models, but Pre-LN architectures often suffer from depth-wise information dilution, limiting the effective use of deep layers. While cross-layer connectivity has proven effective at mitigating this problem, existing designs usually introduce additional computation or memory access. We revisit cross-layer KV sharing as an efficient form of such connectivity. Beyond cache compression, each KV reuse edge creates a direct gradient path from deep layers to source KV projections, turning KV sharing into an implicit structural regularizer for KV representation geometry. We provide a systematic analysis of this mechanism, showing that proper sharing topologies sharpen key retrieval directions while enriching the value content subspace, whereas existing adjacent or global-anchor designs do not fully exploit this effect. Motivated by this, we propose DepthGraft, a hierarchical KV-sharing architecture that reconstructs deep-layer KV from stride-aligned shallow-middle source pairs. DepthGraft distributes non-local gradient flow across source layers, while preserving prefill early completion and reducing KV cache by roughly one third. Experiments on dense and MoE models from 0.5B to 16B parameters show consistent downstream improvements under both GQA and MLA. Notably, on the 16B MoE model, DepthGraft achieves a 7.0% absolute improvement on MMLU-Pro, along with gains of 6.6% on CMMLU and 6.4% on C3. These results validate the potential of DepthGraft as a scalable design for large-scale pretraining. The project page is available at https://github.com/jianke0604/DepthGraft.",
+      "hot_score": 46.0449,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-11-01T19:00:00+00:00",
+      "last_seen_at": "2026-11-11T04:35:17.319281+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 4
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_dc5f077b93d90441": {
+      "id": "it_dc5f077b93d90441",
+      "source": "hf_papers",
+      "title": "Flide: Accelerating Decision Inference with Exact State Forking",
+      "url": "arxiv:2610.42148",
+      "summary": "Decision models such as Jev have emerged as a highly promising paradigm for LLM agent systems, providing lightweight and reliable categorical reasoning for rapid System One execution. However, existing generation-oriented inference engines fail to support these workloads effectively, suffering from severe prefix recomputation overheads or distorted output probabilities. To address this challenge, we propose Flide, an efficient and exact inference engine that decouples the logical tree structure of a decision request from its physical execution within a single flattened token stream. Through ForkAttention, Flide navigates request dependencies using GPU-resident indices across both standard attention and recurrent Gated DeltaNet layers, guaranteeing in exact arithmetic that every query branch evaluates identically to an isolated forward pass. By expressing branch topologies directly in GPU-resident metadata, Flide accommodates diverse request mixtures with a compact set of pre-recorded execution graphs while enabling expanding agent histories to resume from checkpoints saved in earlier passes. Extensive evaluations on public hybrid and decision models demonstrate that Flide answers queries up to 9.5 times faster than vLLM and SGLang while staying closest to a float32 reference in total variation distance. By unifying physical execution throughput with mathematical exactness, Flide establishes a principled foundation for scalable, latency-critical decision intelligence in agent systems.",
+      "hot_score": 46.0103,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-30T13:59:38+00:00",
+      "last_seen_at": "2026-11-10T05:52:01.696736+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 4
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_6e8b653de9112f69": {
+      "id": "it_6e8b653de9112f69",
+      "source": "github_trending",
+      "title": "we-promise/sure",
+      "url": "https://github.com/we-promise/sure",
+      "summary": "The personal finance app for everyone (by everyone)",
+      "hot_score": 45.0,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-11T04:34:35.571825+00:00",
+      "last_seen_at": "2026-11-11T04:35:17.310824+00:00",
+      "metrics": {
+        "stars_total": 12143,
+        "stars_in_window": 159,
+        "forks": 898,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Ruby"
+    },
+    "it_980619fecdfac93c": {
+      "id": "it_980619fecdfac93c",
+      "source": "github_trending",
+      "title": "garrytan/gbrain",
+      "url": "https://github.com/garrytan/gbrain",
+      "summary": "Garry's Opinionated OpenClaw/Hermes Agent Brain",
+      "hot_score": 43.5662,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-10T05:51:29.067497+00:00",
+      "last_seen_at": "2026-11-10T05:52:01.689982+00:00",
+      "metrics": {
+        "stars_total": 32281,
+        "stars_in_window": 216,
+        "forks": 4778,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "TypeScript"
+    },
+    "it_37cb70e5bf4c7c16": {
+      "id": "it_37cb70e5bf4c7c16",
+      "source": "github_trending",
+      "title": "ruvnet/RuView",
+      "url": "https://github.com/ruvnet/RuView",
+      "summary": "π RuView turns commodity WiFi signals into real-time spatial intelligence, vital sign monitoring, and presence detection — all without a single pixel of video.",
+      "hot_score": 42.004,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-29T04:14:48.538159+00:00",
+      "last_seen_at": "2026-11-10T05:52:01.691381+00:00",
+      "metrics": {
+        "stars_total": 103625,
+        "stars_in_window": 557,
+        "forks": 13422,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Rust"
+    },
+    "it_9531c706dbfc8caf": {
+      "id": "it_9531c706dbfc8caf",
+      "source": "rss",
+      "title": "Ring cameras go mobile as Amazon debuts AI-powered security drone and robot",
+      "url": "https://arstechnica.com/ai/2026/11/ring-cameras-go-mobile-as-amazon-debuts-ai-powered-security-drone-and-robot",
+      "summary": "Amazon is betting that many Ring customers will also want an AI-powered security drone and robot patrolling their homes or offices. But the company’s upcoming Ring Robotic products are also certain to intensify privacy concerns previously raised around a prior Amazon attempt to popularize a flying security camera.\nThe Ring Rover Cam and Ring Drone Cam are expected to reach customers starting at the end of 2026 and in early 2027, respectively, according to an Amazon announcement posted on November 10. Amazon describes the devices as relying on an AI Pilot system that uses each device’s cameras along with “specialized vision models, on-device sensors and cloud processing” to plan patrol routes while autonomously navigating around obstacles such as furniture.\nBoth devices also use that AI Pilot system to digitally map the floor plan of the customer’s home or business. This setup process occurs after the customer carries the Ring drone through their indoor spaces or allows the Ring Rover to do some autonomous exploration. Read full article\nComments",
+      "hot_score": 38.9975,
+      "topic_id": "tp_2180d9e79cf8",
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-10T22:35:01+00:00",
+      "last_seen_at": "2026-11-11T04:35:17.298683+00:00",
+      "metrics": {
+        "rank_score": 1.0
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_8443aece1f924ab0": {
+      "id": "it_8443aece1f924ab0",
+      "source": "hackernews",
+      "title": "Compress any LLM 3x in one click,near-lossless,in under 50 MB RAM",
+      "url": "https://neuracryption.com/research",
+      "summary": "",
+      "hot_score": 38.4459,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-10T13:51:51+00:00",
+      "last_seen_at": "2026-11-11T04:35:17.245010+00:00",
+      "metrics": {
+        "points": 34,
+        "num_comments": 33
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_c5eba880b9232aa1": {
+      "id": "it_c5eba880b9232aa1",
+      "source": "hf_papers",
+      "title": "JoVox: Joint Hierarchical Flow Matching for Lightweight Voxel Generation",
+      "url": "arxiv:2611.10690",
+      "summary": "Generating high-fidelity voxels while keeping their lightweight nature remains an open problem in computer vision. Current generators are either high-fidelity but computationally heavy, or lightweight but of lower fidelity. Hierarchical methods keep the lightweight nature of voxels. However, their coarse levels, which decide where all finer cells can appear, are generated with the least information about the shape and are never revisited, so they are often plausible but wrong. Our key insight is to let finer cells take part in deciding coarse cells. To this end, we propose JoVox, a discrete flow matching framework that learns the joint distribution of all levels of the voxel hierarchy, instead of a separate distribution for each level, so that coarse cells can be predicted with finer cells already generated nearby. Within this framework, we further introduce a two-level prediction, which outputs the cells two levels finer at once instead of one level finer, halving the number of levels that the network processes and yielding voxels of higher fidelity. We also introduce an unmasking strategy that revisits early decisions once finer cells are generated and corrects inconsistencies in masked diffusion models. Our framework outperforms the baselines on both unconditional and image-conditioned voxel generation. Compared with the current state-of-the-art TRELLIS.2, we achieve 8x higher training throughput, 1/15 of the FLOPs in a forward pass, train on 4 vs. 32 GPUs, and obtain higher quality with an 11% lower Chamfer distance.",
+      "hot_score": 38.3979,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-11-07T07:21:25+00:00",
+      "last_seen_at": "2026-11-10T05:52:01.698131+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 2
+      },
+      "streak_days": 0,
+      "language": "en"
+    }
+  },
+  "meta": {
+    "mode": "hybrid",
+    "day": "2026-11-11",
+    "generated_at": "2026-11-11T04:36:16.115512+00:00",
+    "window": {
+      "since": "2026-11-10T04:34:33.951642+00:00",
+      "until": "2026-11-11T04:35:17.341954+00:00",
+      "hours": 24.0,
+      "since_local": "2026-11-10T12:34+08:00",
+      "until_local": "2026-11-11T12:35+08:00",
+      "tz": "Asia/Shanghai"
+    },
+    "analysis": {
+      "items": 111,
+      "scored": 111,
+      "topics": 8,
+      "new_entity_mention_rows": 151,
+      "state_items": 12
+    },
+    "llm": {
+      "degraded": false,
+      "degraded_reason": "",
+      "calls": 1
+    },
+    "collect": {
+      "ok_sources": 6,
+      "failed_sources": 1,
+      "skipped": 0,
+      "total_items": 101
+    },
+    "verify": {
+      "verified": 0,
+      "unverifiable": 0,
+      "deferred": 0,
+      "failed": 0,
+      "llm_calls": 0
+    },
+    "predictions": {
+      "total": 155,
+      "verified": 1,
+      "pending": 153,
+      "unverifiable": 1,
+      "hit_rate": 0.0,
+      "weighted_score": 0.0,
+      "brier": 0.36
+    },
+    "prediction_generation": {
+      "mode": "hybrid",
+      "generated": 5,
+      "inserted": 5,
+      "dropped": [],
+      "llm_calls": 1,
+      "candidate_pool": 20,
+      "degraded": false,
+      "degraded_reason": ""
+    },
+    "brief": {
+      "max_items_per_section": 10,
+      "velocity_board_enabled": true,
+      "velocity_board_top_n": 5
+    },
+    "signals": {
+      "entities": 713,
+      "points": 1492,
+      "with_velocity": 93,
+      "insufficient": 112,
+      "cold_start": 508,
+      "min_window_hours": 6.0
+    },
+    "enhance_total": 27,
+    "enhanced": 27,
+    "enhance_skipped_count": 0,
+    "enhance_cache_hit": 7,
+    "enhance_cost_cny": 0.008533
+  }
+}
