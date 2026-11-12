@@ -1,0 +1,1011 @@
+{
+  "date": "2026-11-13",
+  "headline": "Jensen Huang resigns",
+  "headline_item_id": "it_8e60012da5d1451a",
+  "overview_bullets": [
+    {
+      "icon": "🛠️",
+      "topic": "开源项目",
+      "text": "13 条；热度最高：meta/astryx"
+    },
+    {
+      "icon": "📄",
+      "topic": "论文与研究",
+      "text": "9 条；热度最高：Bits or permutations? Spending a fixed inference budget on weight precision or on option-order averaging in small local language models"
+    },
+    {
+      "icon": "💬",
+      "topic": "社区舆论",
+      "text": "8 条；热度最高：Jensen Huang resigns"
+    }
+  ],
+  "executive_summary": "今日共采集 30 条，覆盖 4 个主题、4 个来源；热度最高：Jensen Huang resigns。",
+  "editor_note": {
+    "core": "off 档：未启用 LLM，本简报为数据版（无点评）。",
+    "cross_signal": "",
+    "counterintuitive": "",
+    "risk": ""
+  },
+  "contradictions": [],
+  "underrated": [],
+  "sections": [
+    {
+      "name": "开源项目",
+      "summary": "",
+      "item_ids": [
+        "it_8689a4b04d08f36d",
+        "it_5322fa73dc282dcd",
+        "it_6e8b653de9112f69",
+        "it_215ffc4b6269dede",
+        "it_4d59fc34e49a8be8",
+        "it_2c66b6377a76a1c2",
+        "it_fe14510eb10a098e",
+        "it_8292947de71d6092",
+        "it_93e99bdd1f801572",
+        "it_e07ae0cfd157b113",
+        "it_9c41118af4c8ec7d",
+        "it_56ce8f92f3a29ff4",
+        "it_f6782c20d546108b"
+      ]
+    },
+    {
+      "name": "论文与研究",
+      "summary": "",
+      "item_ids": [
+        "it_d498b0c527d891c9",
+        "it_0073617c1eb1094f",
+        "it_cb11945349f721b4",
+        "it_3b0e213828bf5fe2",
+        "it_9cd350af031744be",
+        "it_8d3091d2d34fa126",
+        "it_847ce648e19dd9e0",
+        "it_bdfe4788674586cd",
+        "it_b779c3da1bb68533"
+      ]
+    },
+    {
+      "name": "社区舆论",
+      "summary": "",
+      "item_ids": [
+        "it_8e60012da5d1451a",
+        "it_d1094d6b89bd9ee5",
+        "it_d096a8a420fb437e",
+        "it_10ab378046426eab",
+        "it_98be2f67e679f7ff",
+        "it_73e3c04caad03931",
+        "it_85fb0dda3eed9bfb",
+        "it_217499e0c25837fd"
+      ]
+    }
+  ],
+  "comments": [
+    {
+      "item_id": "it_8689a4b04d08f36d",
+      "one_liner": "一个完全可定制、面向 agent 的开源设计系统",
+      "why": "设计系统开始把「agent 可直接消费」写进核心定位，意味着组件库的交付对象从人类设计师扩展到自动生成 UI 的模型，前端团队选型标准会被迫加入机器可读性一项。",
+      "stance": "方向对，但「agent ready」目前多是营销词，谁先给出可验证的 schema 与 token 契约谁才算数。"
+    },
+    {
+      "item_id": "it_5322fa73dc282dcd",
+      "one_liner": "面向 AI 编程 agent 的生产级工程技能集合仓库",
+      "why": "把编码代理的工程实践沉淀成可复用技能包，等于给代理行为定标准，下游代理框架的差异化空间被压缩到技能库质量上。",
+      "stance": "技能包会变成代理生态的入口层，先占住标准的一方赢者通吃。"
+    },
+    {
+      "item_id": "it_6e8b653de9112f69",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_215ffc4b6269dede",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_4d59fc34e49a8be8",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_2c66b6377a76a1c2",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_fe14510eb10a098e",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_8292947de71d6092",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_93e99bdd1f801572",
+      "one_liner": "让 Claude、ChatGPT 等 AI 助手配置和自动化 Home Assistant 的 MCP 服务",
+      "why": "把智能家居配置权交给通用对话助手，家庭自动化从写 YAML 变成自然语言指令，门槛下降的同时把设备控制面暴露给第三方模型。",
+      "stance": "便利性真实，但把家庭控制权交给云端助手是笔不划算的信任交易。"
+    },
+    {
+      "item_id": "it_e07ae0cfd157b113",
+      "one_liner": "LLM 驱动的多市场股票智能分析系统，整合多源行情、实时新闻、决策看板与自动推送，支持零成本定时运行",
+      "why": "把行情、新闻、决策看板与推送串成零成本定时流水线，等于把原本需要付费终端的散户工作流压到一台机器上跑，门槛下降直接放大 LLM 荐股内容的传播面。",
+      "stance": "工程上讨巧，风险上危险：把 LLM 输出包装成「决策看板」，亏钱时没人负责。"
+    },
+    {
+      "item_id": "it_d498b0c527d891c9",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_0073617c1eb1094f",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_cb11945349f721b4",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_3b0e213828bf5fe2",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_9cd350af031744be",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_8d3091d2d34fa126",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_847ce648e19dd9e0",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_bdfe4788674586cd",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_b779c3da1bb68533",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_8e60012da5d1451a",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_d1094d6b89bd9ee5",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_d096a8a420fb437e",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_10ab378046426eab",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_98be2f67e679f7ff",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_73e3c04caad03931",
+      "one_liner": "GREP.AI（YC F26）开源 AgentRun：一套可自我改进、支持 web grounding 的 managed agents 平台",
+      "why": "YC 团队把内部 agent harness（含自改进循环与网页接地）整体开源并转成托管平台，等于把「自改进 agent」从各家私藏的工程细节变成公共运行时，竞争焦点随之从模型能力挪到工具链与调度层，自建 agent 的团队可直接省掉一层脚手架。",
+      "stance": "开源是获客手段、托管才是收钱的地方；「self-improving」在没有公开评测闭环前先当作营销词，验的是它能否在真实任务上收敛而不是自嗨式迭代。"
+    },
+    {
+      "item_id": "it_85fb0dda3eed9bfb",
+      "one_liner": "一篇讨论为何值得预期 AI 泡沫破裂的 Hacker News 文章",
+      "why": "泡沫论从投行研报下沉到 HN 的日常讨论，意味着资本叙事与落地收入之间的缺口已被公开定价，直接压制的是下一轮融资节奏和企业采购的预算审批速度。",
+      "stance": "崩的会是估值倍数而不是技术曲线——推理账单和算力订单是真实的，把基础设施需求和股价叙事混为一谈的悲观论调同样懒惰。"
+    },
+    {
+      "item_id": "it_217499e0c25837fd",
+      "one_liner": "Leeroo 团队开源 Kapso：面向企业数据的迭代式学习 AI 系统",
+      "why": "前 LinkedIn、Meta 背景团队把「从企业私有数据迭代学习」的框架开源，等于把过去只有大厂数据平台才做得起的持续训练流程下放到中型团队，压力落在卖封闭企业 AI 平台的厂商身上。",
+      "stance": "企业数据场景的胜负手在内网闭环与合规审计，不在开源仓库的 star 数；先看它能否在客户防火墙内跑出可复现的迭代收益，再谈替代。"
+    }
+  ],
+  "stats": {
+    "total_items": 30,
+    "topics": 4,
+    "sources": {
+      "hackernews": 8,
+      "github_trending": 13,
+      "arxiv": 1,
+      "hf_papers": 8
+    },
+    "top_entities": [
+      {
+        "name": "智能体",
+        "type": "concept",
+        "count": 27
+      },
+      {
+        "name": "NVIDIA",
+        "type": "company",
+        "count": 19
+      },
+      {
+        "name": "Qwen",
+        "type": "model",
+        "count": 16
+      },
+      {
+        "name": "推理",
+        "type": "concept",
+        "count": 15
+      },
+      {
+        "name": "GPT",
+        "type": "model",
+        "count": 9
+      },
+      {
+        "name": "Claude",
+        "type": "model",
+        "count": 8
+      },
+      {
+        "name": "Google",
+        "type": "company",
+        "count": 8
+      },
+      {
+        "name": "强化学习",
+        "type": "concept",
+        "count": 8
+      },
+      {
+        "name": "Gemini",
+        "type": "model",
+        "count": 7
+      },
+      {
+        "name": "多模态",
+        "type": "concept",
+        "count": 7
+      }
+    ]
+  },
+  "items": {
+    "it_8e60012da5d1451a": {
+      "id": "it_8e60012da5d1451a",
+      "source": "hackernews",
+      "title": "Jensen Huang resigns",
+      "url": "https://apnews.com/article/nvidia-megaspeed-china-singapore-huang-5403f152a601cf82ce939f1d24fffa0f",
+      "summary": "https://nvidianews.nvidia.com/news/nvidia-announces-ceo-tran... https://www.reuters.com/business/retail-consumer/nvidia-ceo-... , https://www.reuters.com/live/nvidia-live-board-meets-fate-ce... https://www.nytimes.com/live/2026/11/12/business/nvidia-jens...",
+      "hot_score": 85.7026,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-12T13:52:29+00:00",
+      "last_seen_at": "2026-11-12T23:45:45.110732+00:00",
+      "metrics": {
+        "points": 2734,
+        "num_comments": 2609
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_d1094d6b89bd9ee5": {
+      "id": "it_d1094d6b89bd9ee5",
+      "source": "hackernews",
+      "title": "I'm making LLMs work on small and old devices",
+      "url": "https://github.com/hyperionaidev/smolmaxxing",
+      "summary": "",
+      "hot_score": 81.9724,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-12T15:23:10+00:00",
+      "last_seen_at": "2026-11-12T23:45:45.318460+00:00",
+      "metrics": {
+        "points": 264,
+        "num_comments": 88
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_8689a4b04d08f36d": {
+      "id": "it_8689a4b04d08f36d",
+      "source": "github_trending",
+      "title": "meta/astryx",
+      "url": "https://github.com/meta/astryx",
+      "summary": "An open source design system that's fully customizable and agent ready",
+      "hot_score": 80.9554,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-08T04:16:20.914319+00:00",
+      "last_seen_at": "2026-11-12T23:45:45.213220+00:00",
+      "metrics": {
+        "stars_total": 26477,
+        "stars_in_window": 3278,
+        "forks": 2055,
+        "streak_days": 6
+      },
+      "streak_days": 6,
+      "language": "TypeScript"
+    },
+    "it_d096a8a420fb437e": {
+      "id": "it_d096a8a420fb437e",
+      "source": "hackernews",
+      "title": "Chinese frontier AI models carry the fingerprint of export-controlled GPUs",
+      "url": "https://unemploymentlabs.com/checkpoint-forensics",
+      "summary": "",
+      "hot_score": 78.75,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-12T21:56:11+00:00",
+      "last_seen_at": "2026-11-12T23:45:45.114717+00:00",
+      "metrics": {
+        "points": 89,
+        "num_comments": 19
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_5322fa73dc282dcd": {
+      "id": "it_5322fa73dc282dcd",
+      "source": "github_trending",
+      "title": "addyosmani/agent-skills",
+      "url": "https://github.com/addyosmani/agent-skills",
+      "summary": "Production-grade engineering skills for AI coding agents.",
+      "hot_score": 77.8054,
+      "topic_id": "tp_dca65b1cbda3",
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-11T04:34:35.571809+00:00",
+      "last_seen_at": "2026-11-12T23:45:45.212467+00:00",
+      "metrics": {
+        "stars_total": 116649,
+        "stars_in_window": 812,
+        "forks": 12209,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "JavaScript"
+    },
+    "it_d498b0c527d891c9": {
+      "id": "it_d498b0c527d891c9",
+      "source": "arxiv",
+      "title": "Bits or permutations? Spending a fixed inference budget on weight precision or on option-order averaging in small local language models",
+      "url": "arxiv:2611.14413",
+      "summary": "Local language models can save memory by storing weights in fewer bits, and they can reduce sensitivity to the order of answer options by averaging a few reorderings. We ask whether the first makes the second worse, and which is the cheaper way to spend a fixed budget. On Qwen3-0.6B and Qwen3-1.7B with simulated round-to-nearest weight quantization (8, 6, 4 and 3 bits, fp16 reference), read from the logits of the letters A to D on ARC-Easy, ARC-Challenge, MMLU and HellaSwag (300 items each), 6 bits lose no accuracy against fp16 (they score +1.8 (+1.0 to +2.5) and +0.9 (+0.3 to +1.5) points higher, which we do not explain), and 8 bits change it by -0.7 (-1.1 to -0.3) and -0.4 (-0.7 to -0.2) points. At 4 bits the answer-slot skew rises from 0.15 to 0.53 (0.6B) and from 0.07 to 0.12 (1.7B); Gaussian noise at the same weight SNR gives 0.15 and 0.37 (two draws) and 0.19 (one draw), so the control is inconclusive on whether rounding adds slot skew beyond equal-power noise. Flip rates rise but stay below an accuracy-matched baseline of independent uniform errors. Averaging four cyclic orders recovers +12.6 points at 4 bits for 0.6B (+5.3 at fp16). We price bits and passes in one machine-independent unit, weight bytes read times passes. In cost-matched pairs, extra orders beat extra bits only when the weights have 6 or more bits, and the decision table reduces to: use 6-bit weights and spend the rest of the budget on up to four orders, one pass each. Everything is simulated on two small models with the simplest quantizer; a title-level search found no earlier study of quantization together with option order.",
+      "hot_score": 77.2914,
+      "topic_id": null,
+      "seen_in": [
+        "arxiv",
+        "hf_papers"
+      ],
+      "published_at": "2026-11-10T17:53:44+00:00",
+      "last_seen_at": "2026-11-12T23:45:45.249167+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 2
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_6e8b653de9112f69": {
+      "id": "it_6e8b653de9112f69",
+      "source": "github_trending",
+      "title": "we-promise/sure",
+      "url": "https://github.com/we-promise/sure",
+      "summary": "The personal finance app for everyone (by everyone)",
+      "hot_score": 74.7335,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-11T04:34:35.571825+00:00",
+      "last_seen_at": "2026-11-12T23:45:45.209582+00:00",
+      "metrics": {
+        "stars_total": 13883,
+        "stars_in_window": 1078,
+        "forks": 1037,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "Ruby"
+    },
+    "it_10ab378046426eab": {
+      "id": "it_10ab378046426eab",
+      "source": "hackernews",
+      "title": "AI is turning Apple's app review process into a nightmare for synth developers",
+      "url": "https://synthanatomy.com/2026/11/ai-is-turning-apples-app-review-process-into-a-nightmare-for-developers.html",
+      "summary": "",
+      "hot_score": 74.25,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-12T21:09:49+00:00",
+      "last_seen_at": "2026-11-12T23:45:45.117974+00:00",
+      "metrics": {
+        "points": 53,
+        "num_comments": 45
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_98be2f67e679f7ff": {
+      "id": "it_98be2f67e679f7ff",
+      "source": "hackernews",
+      "title": "AWS Lambda Web Functions keep billing memory ~7 minutes after the last request",
+      "url": "https://www.easel.sh/blog/lambda-web-functions-idle-memory",
+      "summary": "",
+      "hot_score": 69.3256,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-12T16:59:26+00:00",
+      "last_seen_at": "2026-11-12T23:45:45.117046+00:00",
+      "metrics": {
+        "points": 64,
+        "num_comments": 28
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_215ffc4b6269dede": {
+      "id": "it_215ffc4b6269dede",
+      "source": "github_trending",
+      "title": "Alishahryar1/free-claude-code",
+      "url": "https://github.com/Alishahryar1/free-claude-code",
+      "summary": "Use Claude Code, Codex, Antigravity, VSCode, Pi, and OpenCode (and 6 other harnesses) for free (1.3B+ free tokens) from your terminal, app, IDE, or phone, and now from the browser with native browser sessions (multi-harness + multi-model) like OpenClaw (voice supported + ToS friendly)",
+      "hot_score": 68.8235,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-12T23:45:30.751762+00:00",
+      "last_seen_at": "2026-11-12T23:45:45.214874+00:00",
+      "metrics": {
+        "stars_total": 69262,
+        "stars_in_window": 461,
+        "forks": 10755,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_0073617c1eb1094f": {
+      "id": "it_0073617c1eb1094f",
+      "source": "hf_papers",
+      "title": "SteerDistill: Quantizing LLM Agents via Closed-Loop Teacher Steering",
+      "url": "arxiv:2611.13410",
+      "summary": "Low-bit quantization reduces the inference cost of LLM agents but can compromise task success. Examining failed rollouts, we find that quantized agents overlook task requirements or environmental conditions, producing environment transitions that diverge from successful full-precision references. Correcting these behavioral divergences remains difficult: offline data may miss the student's failure contexts, while its own rollouts may provide few correct responses in those contexts. We introduce SteerDistill, a quantization-aware distillation method in which a full-precision teacher guides the student to revise failed responses and iteratively refines its guidance using feedback from student execution. This closed-loop teacher steering produces locally verified behavioral corrections. We internalize these corrections by training the student without guidance to match the steered student's predictions at corrected turns and the full-precision teacher's at other turns, enabling unassisted inference. Across five agentic benchmarks and three models, SteerDistill exceeds the strongest quantized baseline by 1.67--2.18 points in average score under W4A16 and stays within one point of BF16. On τ^2-Bench, it outperforms QeRL by 1.84 percentage points in success rate using 67% fewer training GPU hours and produces shorter successful trajectories than the quantized baselines.",
+      "hot_score": 68.6543,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-11-09T19:00:00+00:00",
+      "last_seen_at": "2026-11-12T23:45:45.295290+00:00",
+      "metrics": {
+        "num_comments": 2,
+        "upvotes": 31
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_cb11945349f721b4": {
+      "id": "it_cb11945349f721b4",
+      "source": "hf_papers",
+      "title": "Scaling Mathematical Proof Supervision from Structured Textbooks",
+      "url": "arxiv:2610.40394",
+      "summary": "Mathematical supervision for language models is typically flattened into isolated problem-solution pairs, discarding the curricular organization and evidential structure of the original sources. We introduce TOME-Math (Textbook-Oriented Mathematical Evidence), a large-scale corpus that converts 2,118 textbooks spanning the core areas of university-level mathematics subjects into approximately 380K structured proof-supervision records while preserving chapter order, proposition-proof links, dependency references, and source provenance. Leveraging these structural signals, we explore curriculum learning across multiple mathematical subjects and characterize scaling patterns with supervision volume and source breadth. At full scale, fine-tuning on TOME-Math raises the unweighted mean score across our held-out evaluations and established public benchmarks by 16.7 percentage points over the base model, while exceeding all three public instruction-data baselines evaluated in aggregate. Our findings highlight structured textbooks as both a scalable source of mathematical supervision and an empirical framework for studying the impact of data organization on mathematical reasoning. We will release the corpus to facilitate further research on structured mathematical supervision.",
+      "hot_score": 68.501,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-28T20:00:00+00:00",
+      "last_seen_at": "2026-11-12T23:45:45.294181+00:00",
+      "metrics": {
+        "num_comments": 2,
+        "upvotes": 39
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_4d59fc34e49a8be8": {
+      "id": "it_4d59fc34e49a8be8",
+      "source": "github_trending",
+      "title": "GoogleChrome/modern-web-guidance-src",
+      "url": "https://github.com/GoogleChrome/modern-web-guidance-src",
+      "summary": "Keep your coding agent up to date with the latest web best practices",
+      "hot_score": 66.4825,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-12T00:55:25.163478+00:00",
+      "last_seen_at": "2026-11-12T23:45:45.205315+00:00",
+      "metrics": {
+        "stars_total": 2852,
+        "stars_in_window": 799,
+        "forks": 194,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "TypeScript"
+    },
+    "it_73e3c04caad03931": {
+      "id": "it_73e3c04caad03931",
+      "source": "hackernews",
+      "title": "Show HN: AgentRun – open-source, Self-improving Managed Agents",
+      "url": "https://github.com/Parcha-ai/agentrun/blob/main/README.md",
+      "summary": "We (GREP.AI, YC F26) are open-sourcing AgentRun and turning it into a full managed agents platform. Read more about it in this post: https://agentrun.ai/blog/introducing-agentrun-run-smarter-ag... . It includes what we originally built for our own agent harness: - Self-improving agents\n- Web-grounded workflows\n- A range of sandboxes and computer environments\n- Thousands of tools and integrations\n- Detailed analytics on how your agents behave You can bring your own agent. AgentRun works with Pi, ",
+      "hot_score": 65.25,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-12T18:15:48+00:00",
+      "last_seen_at": "2026-11-12T23:45:45.319161+00:00",
+      "metrics": {
+        "points": 71,
+        "num_comments": 12
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_2c66b6377a76a1c2": {
+      "id": "it_2c66b6377a76a1c2",
+      "source": "github_trending",
+      "title": "openai/codex-security",
+      "url": "https://github.com/openai/codex-security",
+      "summary": "OpenAI's Codex Security CLI and TypeScript SDK for finding, validating, and fixing security vulnerabilities. npm: https://www.npmjs.com/package/@openai/codex-security",
+      "hot_score": 65.1099,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-12T00:55:25.163513+00:00",
+      "last_seen_at": "2026-11-12T23:45:45.206293+00:00",
+      "metrics": {
+        "stars_total": 12388,
+        "stars_in_window": 663,
+        "forks": 976,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "TypeScript"
+    },
+    "it_fe14510eb10a098e": {
+      "id": "it_fe14510eb10a098e",
+      "source": "github_trending",
+      "title": "ggml-org/llama.cpp",
+      "url": "https://github.com/ggml-org/llama.cpp",
+      "summary": "LLM inference in C/C++",
+      "hot_score": 63.5294,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-12T23:45:30.751768+00:00",
+      "last_seen_at": "2026-11-12T23:45:45.215866+00:00",
+      "metrics": {
+        "stars_total": 134533,
+        "stars_in_window": 287,
+        "forks": 25507,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "C++"
+    },
+    "it_3b0e213828bf5fe2": {
+      "id": "it_3b0e213828bf5fe2",
+      "source": "hf_papers",
+      "title": "Incentivizing Self-Learning in Large Language Models via Reinforcement Learning",
+      "url": "arxiv:2610.39671",
+      "summary": "Large language models (LLMs) draw on parametric knowledge and retrieval-augmented generation (RAG) to solve knowledge-intensive tasks. Yet problem solving in unfamiliar domains calls for tightly coupled knowledge acquisition and reasoning, beyond factual retrieval and aggregation or learning solely from a preassembled context. We study self-learning -- autonomously retrieving, studying, and applying knowledge from long-form reference materials on the fly. To investigate this capability, we formulate a textbook-based mathematical problem-solving task. LLMs must navigate textbook exposition, learn and apply relevant principles, and construct proofs for exercises, with reference solutions withheld. We introduce a BookNavigator interface to support this human-inspired study process and incentivize self-learning through reinforcement learning (RL) with fine-grained rewards. Experiments show that our method improves performance across in-domain and out-of-domain textbooks and subjects, raising Intern-S2-Preview-35B's overall proof accuracy from 51.5% to 79.5% and outperforming RL-trained textbook-free and fixed-retrieval baselines. These gains extend to complex long-context benchmarks involving different task types, with improvements over the base model of 1.7 and 2.3 percentage points on BrowseComp-Plus and CL-bench, respectively. Together, these findings suggest that RL can foster a domain-agnostic self-learning strategy, highlighting the potential of self-learning from long-form corpora to strengthen broader problem-solving capabilities on complex, long-context tasks.",
+      "hot_score": 63.2068,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-10-28T20:00:00+00:00",
+      "last_seen_at": "2026-11-12T23:45:45.296669+00:00",
+      "metrics": {
+        "num_comments": 7,
+        "upvotes": 27
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_8292947de71d6092": {
+      "id": "it_8292947de71d6092",
+      "source": "github_trending",
+      "title": "vercel-labs/agent-browser",
+      "url": "https://github.com/vercel-labs/agent-browser",
+      "summary": "Browser automation CLI for AI agents",
+      "hot_score": 61.6292,
+      "topic_id": "tp_6ad17425933e",
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-06T04:57:37.763100+00:00",
+      "last_seen_at": "2026-11-12T00:55:31.418135+00:00",
+      "metrics": {
+        "stars_total": 49872,
+        "stars_in_window": 916,
+        "forks": 3489,
+        "streak_days": 5
+      },
+      "streak_days": 5,
+      "language": "Rust"
+    },
+    "it_9cd350af031744be": {
+      "id": "it_9cd350af031744be",
+      "source": "hf_papers",
+      "title": "Read Less, Solve More: Token-Efficient Sparse Reading of External Content for AI Agents",
+      "url": "arxiv:2608.22237",
+      "summary": "Web-facing AI agents repeatedly access webpages, documents, repositories, and tool responses, yet reading interfaces often expose entire objects when only sparse evidence is needed. This over-reading increases token and latency costs and can dilute relevant evidence. We present SparseRead, a reusable reading control layer that governs content admission without modifying the agent model. Its Read Intent Protocol tracks evolving needs and source coverage; Adaptive Reader Backends select how evidence is located and exposed; and the Budgeted Read Gate bounds cumulative raw exposure per episode with faithful full-view fallback. A unified Reader interface supports interchangeable evidence acquisition across heterogeneous resources. Across six models, including Claude Opus 5, and five scenarios, SparseRead reduces total tokens by up to 92.9% and wall time by up to 89.0%, preserving or improving task quality in 97% settings. On Web deep-search tasks, it reduces tokens by 31.0--43.0% and task completion time by 23.0--37.0%. Ablations validate the three designs, while integration with three agent frameworks demonstrates portability.",
+      "hot_score": 60.9379,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-11-06T19:00:00+00:00",
+      "last_seen_at": "2026-11-12T23:45:45.298014+00:00",
+      "metrics": {
+        "num_comments": 4,
+        "upvotes": 18
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_85fb0dda3eed9bfb": {
+      "id": "it_85fb0dda3eed9bfb",
+      "source": "hackernews",
+      "title": "Why You Should Expect an AI Crash",
+      "url": "https://www.economist.com/leaders/2026/11/12/why-you-should-expect-an-ai-crash",
+      "summary": "",
+      "hot_score": 60.75,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-12T23:08:31+00:00",
+      "last_seen_at": "2026-11-12T23:45:45.118783+00:00",
+      "metrics": {
+        "points": 40,
+        "num_comments": 17
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_93e99bdd1f801572": {
+      "id": "it_93e99bdd1f801572",
+      "source": "github_trending",
+      "title": "homeassistant-ai/ha-mcp",
+      "url": "https://github.com/homeassistant-ai/ha-mcp",
+      "summary": "Configure and automate Home Assistant with Claude, ChatGPT, and other AI assistants.",
+      "hot_score": 59.4411,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-10T05:51:29.067545+00:00",
+      "last_seen_at": "2026-11-12T00:55:31.419534+00:00",
+      "metrics": {
+        "stars_total": 7369,
+        "stars_in_window": 790,
+        "forks": 455,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "Python"
+    },
+    "it_8d3091d2d34fa126": {
+      "id": "it_8d3091d2d34fa126",
+      "source": "hf_papers",
+      "title": "Ensemble Routing for Prompt-Adaptive Cost-Aware LLM Inference",
+      "url": "arxiv:2611.10193",
+      "summary": "Large language models (LLMs) increasingly support Web-based services that must balance response quality and inference cost across heterogeneous requests. Conventional routing selects one model per prompt, while fixed ensembles cannot adapt their composition and cost to individual requests. We introduce PISA, a prompt-adaptive, cost-aware single-model router, and PISA-E, its extension to ensemble routing. At the core of both methods, PISA combines soft cluster memberships with model-specific predictors to estimate individual model capabilities. Building on these estimates, PISA-E jointly selects ensemble composition and cardinality under an explicit cost--quality preference that can be adjusted at inference time without retraining. A tractable ensemble-success surrogate and efficient candidate selection enable this extension without ensemble-specific training. Across four LLM routing benchmarks under in-distribution (ID) and out-of-distribution (OOD) conditions, PISA achieves the highest macro-average cost--performance hypervolume among the evaluated single-model routers in both settings. Meanwhile, PISA-E achieves the highest macro-average task performance among the evaluated ensemble approaches when prioritizing response quality, surpassing the strongest competitors by 2.09 and 2.87 percentage points under ID and OOD conditions, respectively. At selected lower-cost operating points, it also exceeds the strongest ensemble competitors' macro-average task performance while reducing average inference cost by approximately 36% and 25%, respectively. These results demonstrate the effectiveness of prompt-adaptive capability estimation for both single-model routing and selective ensembling.",
+      "hot_score": 58.1064,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-11-05T19:00:00+00:00",
+      "last_seen_at": "2026-11-12T23:45:45.299304+00:00",
+      "metrics": {
+        "num_comments": 2,
+        "upvotes": 14
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_e07ae0cfd157b113": {
+      "id": "it_e07ae0cfd157b113",
+      "source": "github_trending",
+      "title": "ZhuLinsen/daily_stock_analysis",
+      "url": "https://github.com/ZhuLinsen/daily_stock_analysis",
+      "summary": "LLM 驱动的多市场股票智能分析系统：多源行情、实时新闻、决策看板与自动推送，支持零成本定时运行。 LLM-powered multi-market stock analysis system with multi-source market data, real-time news, decision dashboard, automated notifications, and cost-free scheduled runs.",
+      "hot_score": 57.6438,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-10T05:51:29.067536+00:00",
+      "last_seen_at": "2026-11-12T00:55:31.414318+00:00",
+      "metrics": {
+        "stars_total": 70245,
+        "stars_in_window": 506,
+        "forks": 56840,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_847ce648e19dd9e0": {
+      "id": "it_847ce648e19dd9e0",
+      "source": "hf_papers",
+      "title": "GTAGym: Real AAA Game Tasks Environment for Evaluation and Reinforcement Learning",
+      "url": "arxiv:2611.13028",
+      "summary": "AAA games offer a rich testbed for evaluating agent perception, reasoning, and control. However, evaluating whether agents can complete tasks in AAA games is challenging and often human-annotated because task outcomes are often difficult to verify automatically, let alone applying it for Reinforcement Learning (RL). We introduce GTAGym, an environment and framework for evaluation and RL on GTA V tasks. Its evaluation benchmark, GTAVBench, derived from GTA V main-story missions, contains 103 online tasks reconstructed across nine task families, alongside 47 image-based shooting and sniping tasks using GTA V imagery. A web server provides access to the online environment and evaluation interface, supporting parallel testing through screenshots and keyboard-mouse actions with automatic engine-state outcome checks. We evaluate six frontier LLMs on GTAVBench with textual task instructions and on its GTAVBench-AGI branch, where instructions appear only in the first screenshot and a harness automatically compresses interaction history. The best configuration achieves 70.9% overall accuracy in GTAVBench-AGI, yet aerial navigation, evasion and interception remain difficult. GTAGym also provides a scalable generator that samples task parameters within user-specified ranges and option sets under fixed templates, creating batches of 3D and image-based shooting environments for RL with automatic reward and termination signals. LoRA RL of Qwen3.8-27B on generated on-foot navigation tasks improves the in-domain performance and transfers to out-of-domain task categories, and native GTA V tasks from 15% to 23%.",
+      "hot_score": 56.703,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-11-08T19:00:00+00:00",
+      "last_seen_at": "2026-11-12T23:45:45.301938+00:00",
+      "metrics": {
+        "num_comments": 4,
+        "upvotes": 12
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_9c41118af4c8ec7d": {
+      "id": "it_9c41118af4c8ec7d",
+      "source": "github_trending",
+      "title": "pookjw/HermesEnabler",
+      "url": "https://github.com/pookjw/HermesEnabler",
+      "summary": "Enable Hermès Watch Faces on any Apple Watch devices",
+      "hot_score": 55.5882,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-12T23:45:30.751705+00:00",
+      "last_seen_at": "2026-11-12T23:45:45.208813+00:00",
+      "metrics": {
+        "stars_total": 1518,
+        "stars_in_window": 300,
+        "forks": 139,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Objective-C"
+    },
+    "it_bdfe4788674586cd": {
+      "id": "it_bdfe4788674586cd",
+      "source": "hf_papers",
+      "title": "Evolving Infra: Agent-Adaptive LLM Serving at Scale",
+      "url": "arxiv:2611.12304",
+      "summary": "Agentic workloads are a major source of LLM inference demand. Existing prefill--decode (PD) disaggregated serving systems offer limited flexibility for runtime adaptation of compute allocation and KV cache management, and rely on coarse signals that only partly capture the diverse and dynamic agent workload. These limitations lead to load imbalance between prefill and decode nodes and eviction of KV caches that agents will reuse. We present Evolving Infra, an agent-adaptive serving framework that adapts compute allocation to agent workloads and KV cache management to agent context management at runtime. We decouple compute allocation from key--value (KV) cache management, allowing nodes to switch efficiently between prefill and decode. Building on this design, an online planner matches the PD split to workload composition, while an agent-aware distributed KV manager guides cache eviction and transfer with signals from agent context management. Across coding, math, and computer-use tasks with GLM-5.2 and Kimi K2.6 on up to 256 GB300 GPUs, Evolving Infra reduces mean end-to-end request latency and P95 TTFT by up to 4.1x and 14x over Dynamo, NVIDIA's production framework.",
+      "hot_score": 54.0559,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-11-08T19:00:00+00:00",
+      "last_seen_at": "2026-11-12T23:45:45.303201+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 10
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_56ce8f92f3a29ff4": {
+      "id": "it_56ce8f92f3a29ff4",
+      "source": "github_trending",
+      "title": "shadcn/improve",
+      "url": "https://github.com/shadcn/improve",
+      "summary": "Use your most capable model to audit your codebase and write plans for cheaper models to execute.",
+      "hot_score": 53.4106,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-12T00:55:25.163483+00:00",
+      "last_seen_at": "2026-11-12T00:55:31.416533+00:00",
+      "metrics": {
+        "stars_total": 10880,
+        "stars_in_window": 361,
+        "forks": 443,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": null
+    },
+    "it_f6782c20d546108b": {
+      "id": "it_f6782c20d546108b",
+      "source": "github_trending",
+      "title": "QwenLM/qwen-code",
+      "url": "https://github.com/QwenLM/qwen-code",
+      "summary": "An open-source AI coding agent that lives in your terminal.",
+      "hot_score": 52.9412,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-12T23:45:30.751718+00:00",
+      "last_seen_at": "2026-11-12T23:45:45.210345+00:00",
+      "metrics": {
+        "stars_total": 29783,
+        "stars_in_window": 151,
+        "forks": 3392,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "TypeScript"
+    },
+    "it_b779c3da1bb68533": {
+      "id": "it_b779c3da1bb68533",
+      "source": "hf_papers",
+      "title": "Where Does Alignment Emerge and What Does It Mean? A Closer Look at the Platonic Representation Hypothesis",
+      "url": "arxiv:2611.12869",
+      "summary": "The Platonic Representation Hypothesis (PRH) suggests that neural networks are converging toward similar representation spaces. As language models become more capable, their representations are aligning with those of vision models. However, recent work has questioned whether this trend continues to hold for newer language models. Moreover, it has been shown that representation similarity metrics can be confounded by model depth and width, requiring appropriate baselines for interpretation. In this work, we first investigate where alignment emerges between unimodal models across model layers and representation dimensions. Next, we find that the PRH capability-alignment trend persists for newer models as long as the captions are sufficiently clean and informative. Finally, we contextualize cross-modal alignment, introducing unimodal and multimodal baselines on various datasets. Our results show that the cross-modal representational alignment of unimodal models can surpass that of explicitly aligned vision-language models, but remains substantially behind the alignment observed for models of the same modality. Code is available at https://github.com/ExplainableML/prh-closer-look.",
+      "hot_score": 52.4019,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-11-09T13:53:57+00:00",
+      "last_seen_at": "2026-11-12T23:45:45.304437+00:00",
+      "metrics": {
+        "num_comments": 2,
+        "upvotes": 6
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_217499e0c25837fd": {
+      "id": "it_217499e0c25837fd",
+      "source": "hackernews",
+      "title": "Show HN: Kapso – Iterative learning from enterprise data",
+      "url": "https://news.ycombinator.com/item?id=50471281",
+      "summary": "Hey HN! We're Alireza and Majid building Leeroo ( https://leeroo.com/ ). Previously we’ve built AI systems for products with millions of users, including at LinkedIn and Meta. We’re now focusing on building AI systems for enterprise data. Today, we're open-sourcing Kapso ( https://github.com/Leeroo-AI/kapso ), an engine that runs experiments, deploys the best solution, and learns from every run. The nature of data work is iterative: investigate, form hypotheses, experiment, and improve based on ",
+      "hot_score": 51.75,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-12T17:51:23+00:00",
+      "last_seen_at": "2026-11-12T23:45:45.120273+00:00",
+      "metrics": {
+        "points": 36,
+        "num_comments": 9
+      },
+      "streak_days": 0,
+      "language": "en"
+    }
+  },
+  "meta": {
+    "mode": "hybrid",
+    "day": "2026-11-13",
+    "generated_at": "2026-11-12T23:47:14.040856+00:00",
+    "window": {
+      "since": "2026-11-11T23:45:29.428668+00:00",
+      "until": "2026-11-12T23:45:45.354149+00:00",
+      "hours": 24.0,
+      "since_local": "2026-11-12T07:45+08:00",
+      "until_local": "2026-11-13T07:45+08:00",
+      "tz": "Asia/Shanghai"
+    },
+    "analysis": {
+      "items": 183,
+      "scored": 183,
+      "topics": 4,
+      "new_entity_mention_rows": 190,
+      "state_items": 13
+    },
+    "llm": {
+      "degraded": true,
+      "degraded_reason": "LLM 调用失败：LLMTruncationError",
+      "calls": 0
+    },
+    "collect": {
+      "ok_sources": 7,
+      "failed_sources": 0,
+      "skipped": 0,
+      "total_items": 179
+    },
+    "verify": {
+      "verified": 0,
+      "unverifiable": 0,
+      "deferred": 0,
+      "failed": 0,
+      "llm_calls": 0
+    },
+    "predictions": {
+      "total": 165,
+      "verified": 1,
+      "pending": 163,
+      "unverifiable": 1,
+      "hit_rate": 0.0,
+      "weighted_score": 0.0,
+      "brier": 0.36
+    },
+    "prediction_generation": {
+      "mode": "hybrid",
+      "generated": 5,
+      "inserted": 5,
+      "dropped": [],
+      "llm_calls": 1,
+      "candidate_pool": 20,
+      "degraded": false,
+      "degraded_reason": ""
+    },
+    "brief": {
+      "max_items_per_section": 10,
+      "velocity_board_enabled": true,
+      "velocity_board_top_n": 5
+    },
+    "signals": {
+      "entities": 768,
+      "points": 1560,
+      "with_velocity": 99,
+      "insufficient": 112,
+      "cold_start": 557,
+      "min_window_hours": 6.0
+    },
+    "enhance_total": 27,
+    "enhanced": 7,
+    "enhance_skipped_count": 20,
+    "enhance_cache_hit": 4,
+    "enhance_cost_cny": 0.002941
+  }
+}
