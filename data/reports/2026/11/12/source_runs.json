@@ -1,0 +1,63 @@
+{
+  "date": "2026-11-12",
+  "generated_at": "2026-11-12T00:56:40.813381+00:00",
+  "collected": true,
+  "sources": [
+    {
+      "source": "github_trending",
+      "status": "ok",
+      "item_count": 10,
+      "started_at": "2026-11-12T00:55:24.040387+00:00",
+      "finished_at": "2026-11-12T00:55:25.163558+00:00",
+      "error": null
+    },
+    {
+      "source": "arxiv",
+      "status": "ok",
+      "item_count": 60,
+      "started_at": "2026-11-12T00:55:24.075239+00:00",
+      "finished_at": "2026-11-12T00:55:25.647658+00:00",
+      "error": null
+    },
+    {
+      "source": "hf_papers",
+      "status": "failed",
+      "item_count": 0,
+      "started_at": "2026-11-12T00:55:24.076054+00:00",
+      "finished_at": "2026-11-12T00:55:24.218127+00:00",
+      "error": "CollectorError: [hf_papers] 全部端点不可用（最后错误：HTTP 400）"
+    },
+    {
+      "source": "hackernews",
+      "status": "ok",
+      "item_count": 14,
+      "started_at": "2026-11-12T00:55:24.076742+00:00",
+      "finished_at": "2026-11-12T00:55:28.890655+00:00",
+      "error": null
+    },
+    {
+      "source": "reddit",
+      "status": "degraded",
+      "item_count": 25,
+      "started_at": "2026-11-12T00:55:24.077474+00:00",
+      "finished_at": "2026-11-12T00:55:28.510747+00:00",
+      "error": null
+    },
+    {
+      "source": "rss",
+      "status": "degraded",
+      "item_count": 35,
+      "started_at": "2026-11-12T00:55:24.078093+00:00",
+      "finished_at": "2026-11-12T00:55:31.234123+00:00",
+      "error": null
+    },
+    {
+      "source": "inbox",
+      "status": "degraded",
+      "item_count": 0,
+      "started_at": "2026-11-12T00:55:24.078301+00:00",
+      "finished_at": "2026-11-12T00:55:24.218252+00:00",
+      "error": null
+    }
+  ]
+}
