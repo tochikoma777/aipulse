@@ -1,0 +1,63 @@
+{
+  "date": "2026-11-14",
+  "generated_at": "2026-11-13T23:48:11.751245+00:00",
+  "collected": true,
+  "sources": [
+    {
+      "source": "github_trending",
+      "status": "ok",
+      "item_count": 12,
+      "started_at": "2026-11-13T23:46:24.029927+00:00",
+      "finished_at": "2026-11-13T23:46:25.197748+00:00",
+      "error": null
+    },
+    {
+      "source": "arxiv",
+      "status": "ok",
+      "item_count": 60,
+      "started_at": "2026-11-13T23:46:24.058415+00:00",
+      "finished_at": "2026-11-13T23:46:25.623346+00:00",
+      "error": null
+    },
+    {
+      "source": "hf_papers",
+      "status": "ok",
+      "item_count": 32,
+      "started_at": "2026-11-13T23:46:24.059238+00:00",
+      "finished_at": "2026-11-13T23:46:29.160134+00:00",
+      "error": null
+    },
+    {
+      "source": "hackernews",
+      "status": "ok",
+      "item_count": 10,
+      "started_at": "2026-11-13T23:46:24.059776+00:00",
+      "finished_at": "2026-11-13T23:46:27.384210+00:00",
+      "error": null
+    },
+    {
+      "source": "reddit",
+      "status": "degraded",
+      "item_count": 25,
+      "started_at": "2026-11-13T23:46:24.060264+00:00",
+      "finished_at": "2026-11-13T23:46:28.729108+00:00",
+      "error": null
+    },
+    {
+      "source": "rss",
+      "status": "degraded",
+      "item_count": 27,
+      "started_at": "2026-11-13T23:46:24.060675+00:00",
+      "finished_at": "2026-11-13T23:46:31.111599+00:00",
+      "error": null
+    },
+    {
+      "source": "inbox",
+      "status": "degraded",
+      "item_count": 0,
+      "started_at": "2026-11-13T23:46:24.060856+00:00",
+      "finished_at": "2026-11-13T23:46:25.197849+00:00",
+      "error": null
+    }
+  ]
+}
