@@ -1,0 +1,1008 @@
+{
+  "date": "2026-11-15",
+  "headline": "alibaba/open-code-review",
+  "headline_item_id": "it_5f20605667d728f2",
+  "overview_bullets": [
+    {
+      "icon": "🛠️",
+      "topic": "开源项目",
+      "text": "11 条；热度最高：alibaba/open-code-review"
+    },
+    {
+      "icon": "📄",
+      "topic": "论文与研究",
+      "text": "12 条；热度最高：SO-Arena: Benchmarking the Capability Spectrum and Reliability of System One Models"
+    },
+    {
+      "icon": "💬",
+      "topic": "社区舆论",
+      "text": "7 条；热度最高：The Claude Delusion"
+    }
+  ],
+  "executive_summary": "今日共采集 30 条，覆盖 0 个主题、3 个来源；热度最高：alibaba/open-code-review。",
+  "editor_note": {
+    "core": "off 档：未启用 LLM，本简报为数据版（无点评）。",
+    "cross_signal": "",
+    "counterintuitive": "",
+    "risk": ""
+  },
+  "contradictions": [],
+  "underrated": [],
+  "sections": [
+    {
+      "name": "开源项目",
+      "summary": "",
+      "item_ids": [
+        "it_5f20605667d728f2",
+        "it_4d59fc34e49a8be8",
+        "it_99fbe7d0e939a8a8",
+        "it_6e8b653de9112f69",
+        "it_7e3acd207369e7ad",
+        "it_2c66b6377a76a1c2",
+        "it_e671c263df5a7801",
+        "it_0bb54c37613f5784",
+        "it_b9769016e4b337b4",
+        "it_ed7dee5491aba96e",
+        "it_e07ae0cfd157b113"
+      ]
+    },
+    {
+      "name": "论文与研究",
+      "summary": "",
+      "item_ids": [
+        "it_07479e65c6d5aa6e",
+        "it_eb0a8524a4c84074",
+        "it_23fa06e2eaf60518",
+        "it_42e3c8910f530bf1",
+        "it_f6862927ae7c7c00",
+        "it_44bab6d343816615",
+        "it_59a3d999fb949b0b",
+        "it_fb20c3d982d323ce",
+        "it_0e6e1cee78d9d0b2",
+        "it_adfb2fa52392a36c",
+        "it_0c774f26b21a95ed",
+        "it_34d3f43cb54e51f0"
+      ]
+    },
+    {
+      "name": "社区舆论",
+      "summary": "",
+      "item_ids": [
+        "it_6c6d01a9078f6d44",
+        "it_61aeaa9659d6a139",
+        "it_8f2daa11c5051ada",
+        "it_5bfa2e37b7da2747",
+        "it_a9dc79e6aa5b9d32",
+        "it_2de163979017a774",
+        "it_4d0c29e8f59af820"
+      ]
+    }
+  ],
+  "comments": [
+    {
+      "item_id": "it_5f20605667d728f2",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_4d59fc34e49a8be8",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_99fbe7d0e939a8a8",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_6e8b653de9112f69",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_7e3acd207369e7ad",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_2c66b6377a76a1c2",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_e671c263df5a7801",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_0bb54c37613f5784",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_b9769016e4b337b4",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_ed7dee5491aba96e",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_07479e65c6d5aa6e",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_eb0a8524a4c84074",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_23fa06e2eaf60518",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_42e3c8910f530bf1",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_f6862927ae7c7c00",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_44bab6d343816615",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_59a3d999fb949b0b",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_fb20c3d982d323ce",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_0e6e1cee78d9d0b2",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_adfb2fa52392a36c",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_6c6d01a9078f6d44",
+      "one_liner": "一篇题为「The Claude Delusion」的讨论文章，围绕人们对 Claude 能力与定位的认知偏差展开。",
+      "why": "标题把「Claude 妄想」当作现象命名，说明一线用户开始把模型输出当人格来解读，讨论焦点从能力转向信任与依赖；对做产品的人是口碑风险，对做评测的人是幻觉与拟人化的混淆成本。",
+      "stance": "与其吵它有没有意识，不如追问为什么用户愿意相信它有——这是产品设计留下的口子，不该甩锅给用户。"
+    },
+    {
+      "item_id": "it_61aeaa9659d6a139",
+      "one_liner": "美国 IRS 免费在线报税系统的开源代码仓库（2025 年版）。",
+      "why": "美国税务申报这类强制高频流程出现开源实现，直接挤压商业报税软件的收费空间，也让其他国家讨论「政府软件是否该开源」有了可引用的先例。",
+      "stance": "公共财政流程的代码本就该公开，报税软件靠复杂度收钱的日子该被这本账拖着走。"
+    },
+    {
+      "item_id": "it_8f2daa11c5051ada",
+      "one_liner": "在两台 Nvidia DGX 工作站上用 vLLM 部署 GLM-5.3，实现 607.8 tok/s 的推理吞吐。",
+      "why": "两台 DGX 级别的机器跑出近 600 tok/s 的国产模型服务，等于把「高端推理必须靠超大规模集群」的前提削掉一层，中小团队自建高吞吐推理的成本曲线被改写。",
+      "stance": "推理侧的门槛正在被工程而非算力规模决定，押注「只有巨头能服务」的人会算错账。"
+    },
+    {
+      "item_id": "it_5bfa2e37b7da2747",
+      "one_liner": "用 Rust 和 ratatui 编写的终端原生放置类工厂游戏 terminactory，适合等待长任务时挂机游玩。",
+      "why": "作者把游戏定位成等 agent 跑任务时的消遣，说明终端已从开发工具变成等待界面，开发者时间被切碎成「盯进度」的间隙，需求从效率工具外溢到解压内容。",
+      "stance": "这是 agent 时代最诚实的一类产品：承认人类大部分时间在等，然后给等待一个交代。"
+    },
+    {
+      "item_id": "it_a9dc79e6aa5b9d32",
+      "one_liner": "Anthropic 升级 Claude Code Projects，支持并行运行多个 AI worker。",
+      "why": "把并行 worker 收进官方项目结构，意味着多 agent 协作从脚本拼接变成平台能力，调度、权限与合并冲突的责任被厂商接走，第三方编排工具的差异化空间被压缩。",
+      "stance": "官方一旦接管并行调度，卖工作流的人就得往垂直场景退，留在通用层的会先被吃掉。"
+    },
+    {
+      "item_id": "it_2de163979017a774",
+      "one_liner": "调查发现全球多国安全机构在使用基于广告投放的监控系统。",
+      "why": "广告技术栈被安全机构当监控基础设施复用，曝光了商业追踪与政府监视之间没有隔离墙；对普通用户是隐私风险，对广告业是合规连带责任。",
+      "stance": "广告投放系统天生就是追踪系统，说「只是精准营销」的辩解该到此为止。"
+    },
+    {
+      "item_id": "it_4d0c29e8f59af820",
+      "one_liner": "Ask HN 讨论：个人可独立自学哪些最实用、最具体的 AI 技能，以获取 LLM 与 agent 的经济红利。",
+      "why": "人们开始问「个人学什么才能分到红利」，说明焦虑已经从「会不会被取代」转向「怎么套现」，答案会决定一批自学者的时间投向和工具市场的需求结构。",
+      "stance": "最值钱的技能是把模糊需求拆成可验证的评测和流程，而不是再学一个提示词模板。"
+    }
+  ],
+  "stats": {
+    "total_items": 30,
+    "topics": 0,
+    "sources": {
+      "github_trending": 11,
+      "hackernews": 7,
+      "hf_papers": 12
+    },
+    "top_entities": [
+      {
+        "name": "智能体",
+        "type": "concept",
+        "count": 25
+      },
+      {
+        "name": "Qwen",
+        "type": "model",
+        "count": 20
+      },
+      {
+        "name": "推理",
+        "type": "concept",
+        "count": 18
+      },
+      {
+        "name": "NVIDIA",
+        "type": "company",
+        "count": 13
+      },
+      {
+        "name": "Claude",
+        "type": "model",
+        "count": 11
+      },
+      {
+        "name": "强化学习",
+        "type": "concept",
+        "count": 10
+      },
+      {
+        "name": "多模态",
+        "type": "concept",
+        "count": 7
+      },
+      {
+        "name": "开源模型",
+        "type": "concept",
+        "count": 6
+      },
+      {
+        "name": "OpenAI",
+        "type": "company",
+        "count": 6
+      },
+      {
+        "name": "GPT",
+        "type": "model",
+        "count": 6
+      }
+    ]
+  },
+  "items": {
+    "it_5f20605667d728f2": {
+      "id": "it_5f20605667d728f2",
+      "source": "github_trending",
+      "title": "alibaba/open-code-review",
+      "url": "https://github.com/alibaba/open-code-review",
+      "summary": "Secure, fast, efficient, battle-tested at Alibaba's scale. Hybrid architecture code review tool: deterministic pipelines + LLM Agent, precise line-level comments, built-in multi-language ruleset (NPE, thread-safety, XSS, SQL injection), OpenAI & Anthropic compatible.",
+      "hot_score": 86.6772,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-13T23:46:25.197584+00:00",
+      "last_seen_at": "2026-11-14T22:39:48.001455+00:00",
+      "metrics": {
+        "stars_total": 51383,
+        "stars_in_window": 897,
+        "forks": 3904,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "Go"
+    },
+    "it_6c6d01a9078f6d44": {
+      "id": "it_6c6d01a9078f6d44",
+      "source": "hackernews",
+      "title": "The Claude Delusion",
+      "url": "https://www.netmeister.org/blog/claude-delusion.html",
+      "summary": "",
+      "hot_score": 86.1209,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-14T13:36:17+00:00",
+      "last_seen_at": "2026-11-14T22:39:47.945486+00:00",
+      "metrics": {
+        "points": 141,
+        "num_comments": 180
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_4d59fc34e49a8be8": {
+      "id": "it_4d59fc34e49a8be8",
+      "source": "github_trending",
+      "title": "GoogleChrome/modern-web-guidance-src",
+      "url": "https://github.com/GoogleChrome/modern-web-guidance-src",
+      "summary": "Keep your coding agent up to date with the latest web best practices",
+      "hot_score": 83.4048,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-12T00:55:25.163478+00:00",
+      "last_seen_at": "2026-11-14T22:39:47.999006+00:00",
+      "metrics": {
+        "stars_total": 5942,
+        "stars_in_window": 1875,
+        "forks": 397,
+        "streak_days": 4
+      },
+      "streak_days": 4,
+      "language": "TypeScript"
+    },
+    "it_99fbe7d0e939a8a8": {
+      "id": "it_99fbe7d0e939a8a8",
+      "source": "github_trending",
+      "title": "ChromeDevTools/chrome-devtools-mcp",
+      "url": "https://github.com/ChromeDevTools/chrome-devtools-mcp",
+      "summary": "Chrome DevTools for coding agents",
+      "hot_score": 83.3439,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-13T23:46:25.197655+00:00",
+      "last_seen_at": "2026-11-14T22:39:48.000832+00:00",
+      "metrics": {
+        "stars_total": 56253,
+        "stars_in_window": 673,
+        "forks": 4757,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "TypeScript"
+    },
+    "it_61aeaa9659d6a139": {
+      "id": "it_61aeaa9659d6a139",
+      "source": "hackernews",
+      "title": "US IRS free online tax filing open source repo (2025)",
+      "url": "https://github.com/IRS-Public/direct-file",
+      "summary": "",
+      "hot_score": 83.25,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-14T17:48:20+00:00",
+      "last_seen_at": "2026-11-14T22:39:48.072048+00:00",
+      "metrics": {
+        "points": 127,
+        "num_comments": 72
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_8f2daa11c5051ada": {
+      "id": "it_8f2daa11c5051ada",
+      "source": "hackernews",
+      "title": "Serving GLM-5.3 at 607.8 tok/s across two Nvidia DGX stations with vLLM",
+      "url": "https://developer.nvidia.com/blog/when-one-gpu-isnt-enough-serving-glm-5-3-across-two-nvidia-dgx-stations-with-vllm",
+      "summary": "",
+      "hot_score": 77.4049,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-14T14:09:25+00:00",
+      "last_seen_at": "2026-11-14T22:39:47.950897+00:00",
+      "metrics": {
+        "points": 125,
+        "num_comments": 64
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_6e8b653de9112f69": {
+      "id": "it_6e8b653de9112f69",
+      "source": "github_trending",
+      "title": "we-promise/sure",
+      "url": "https://github.com/we-promise/sure",
+      "summary": "The personal finance app for everyone (by everyone)",
+      "hot_score": 71.9348,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-11T04:34:35.571825+00:00",
+      "last_seen_at": "2026-11-14T22:39:48.006399+00:00",
+      "metrics": {
+        "stars_total": 15262,
+        "stars_in_window": 1078,
+        "forks": 1264,
+        "streak_days": 5
+      },
+      "streak_days": 5,
+      "language": "Ruby"
+    },
+    "it_7e3acd207369e7ad": {
+      "id": "it_7e3acd207369e7ad",
+      "source": "github_trending",
+      "title": "dream-num/univer",
+      "url": "https://github.com/dream-num/univer",
+      "summary": "Build your own AI office with Univer Office SDK. Bring editing, calculation, collaboration, and file processing into your product for people and AI agents. Built on an extensible open-source core.",
+      "hot_score": 70.0,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-14T22:39:41.119008+00:00",
+      "last_seen_at": "2026-11-14T22:39:48.002930+00:00",
+      "metrics": {
+        "stars_total": 24443,
+        "stars_in_window": 495,
+        "forks": 2224,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "TypeScript"
+    },
+    "it_07479e65c6d5aa6e": {
+      "id": "it_07479e65c6d5aa6e",
+      "source": "hf_papers",
+      "title": "SO-Arena: Benchmarking the Capability Spectrum and Reliability of System One Models",
+      "url": "arxiv:2611.15777",
+      "summary": "System One models promise fast, general-purpose decision-making without lengthy token generation. However, understanding their capability spectrum and decision reliability requires more than aggregate performance on current benchmarks. Existing evaluations often provide limited insight into the breadth of model capabilities and the reliability of their decisions. We introduce SO-Arena, a benchmark characterizing the capability spectrum and decision reliability of System One models across 11 domains and five capability families. For the capability spectrum, SO-Arena offers evidence-grounded evaluation through reliable sources and manual verification of reference labels against model-visible inputs; fine-grained capability assessment through domain-specific difficulty criteria; and realistic interactive evaluation, where models iteratively execute actions in sandboxes. Reasoning-intensive tasks further enable system one-two comparison. Beyond accuracy, SO-Arena assesses decision reliability through two complementary measures: decision stability under controlled option-set changes and missing-answer recognition when no valid option is available. Evaluations across 21 models reveal that the benefits of scaling and additional reasoning vary substantially across domains. More importantly, strong overall performance does not necessarily imply reliable decision-making: the best-performing System One model ranks only seventh in reliability. Together, these findings highlight the need to characterize capability spectrum and decision reliability as complementary dimensions, providing a systematic view of the strengths and limitations of System One models.",
+      "hot_score": 69.9829,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-11-10T19:00:00+00:00",
+      "last_seen_at": "2026-11-13T23:46:31.300156+00:00",
+      "metrics": {
+        "num_comments": 2,
+        "upvotes": 73
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_5bfa2e37b7da2747": {
+      "id": "it_5bfa2e37b7da2747",
+      "source": "hackernews",
+      "title": "Show HN: A terminal-native idle factory game, written in Rust with ratatui",
+      "url": "https://gitlab.com/snipedbywifi/terminactory",
+      "summary": "Hey HN readers! I'm snipedbywifi ( https://gitlab.com/snipedbywifi ), and i've been working on terminactory. Please try it out if you'd like to play a cozy factory game while waiting for long agent tasks to finish! The game is a factory game (overused niche, i know xD), but runs in your terminal. Reason i built it? glad you asked: So basically, it started off with me wanting a terminal-native factory game. Me and the modern 5.5 claude models made a base for the game that I liked, and then i went",
+      "hot_score": 68.3746,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-14T14:05:54+00:00",
+      "last_seen_at": "2026-11-14T22:39:47.951763+00:00",
+      "metrics": {
+        "points": 122,
+        "num_comments": 24
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_eb0a8524a4c84074": {
+      "id": "it_eb0a8524a4c84074",
+      "source": "hf_papers",
+      "title": "PhysLoop: Harnessing LLMs' Physics Awareness for Self-Improving Video Generation Models",
+      "url": "arxiv:2611.16748",
+      "summary": "Video generation models produce visually realistic videos but still struggle with physical dynamics and causal consistency. Learning from generated videos requires fine-grained physical supervision, yet reliable quality judgments, correction pairs, and controlled variations are difficult to obtain. Large language models (LLMs) possess physical knowledge, but struggle to reliably guide video generation models in producing their training videos. We present PhysLoop, a unified harness designed to support physically grounded self-improvement in video generation models. The harness guides and constrains LLMs throughout video generation, selection, and correction, distilling their physical knowledge into physically consistent videos. The framework supports controllable training-data construction and inference-time video repair. By identifying and correcting failures, PhysLoop marks a key milestone toward recursive self-improvement (RSI) in video generation models with limited human intervention. We release 100K videos spanning diverse, realistic indoor and outdoor scenes, along with generation tools and two evaluation datasets: PhysLoop-Gen and PhysLoop-Repair. We evaluate controllable generation and localized repair on these datasets, respectively, and assess physical behavior on the external Physics-IQ Verified benchmark.",
+      "hot_score": 68.2848,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-11-11T19:00:00+00:00",
+      "last_seen_at": "2026-11-13T23:46:31.301856+00:00",
+      "metrics": {
+        "num_comments": 3,
+        "upvotes": 42
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_23fa06e2eaf60518": {
+      "id": "it_23fa06e2eaf60518",
+      "source": "hf_papers",
+      "title": "Actor, Judge, or Teacher? Understanding Decision Models in Long-Horizon Agents",
+      "url": "arxiv:2611.17167",
+      "summary": "Decision models answer a question with a typed output, such as a choice among options with a probability for each, so one model can choose an agent's actions, evaluate actions already taken, or score every action to teach a policy with reinforcement learning. Prior work has studied them mainly as actors, judging their usefulness by how well they act. We ask whether a decision model that acts poorly can still teach well. We compare three decision models and three general LLMs as actors and judges on ALFWorld, and use JEV as a teacher on ALFWorld and WebShop. As actors, all six models are pulled away from a subgoal that must come first by an easier one. As judges that see the whole trajectory, the same models credit the steps toward that subgoal, and asking whether each action helped, rather than whether the task will succeed, separates useful from useless actions. As a teacher, JEV raises a Qwen2.5-1.5B policy over GRPO from 72.8% to 82.9% success on ALFWorld and from 56.8% to 71.4% on WebShop. These results suggest that a poor actor can still teach well, because judging an action after the episode ends reveals the consequences that acting must anticipate. Code is available at https://github.com/ZJU-REAL/decision-agents.",
+      "hot_score": 67.8537,
+      "topic_id": null,
+      "seen_in": [
+        "arxiv",
+        "hf_papers"
+      ],
+      "published_at": "2026-11-11T19:00:00+00:00",
+      "last_seen_at": "2026-11-14T22:39:48.040341+00:00",
+      "metrics": {
+        "num_comments": 2,
+        "upvotes": 29
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_42e3c8910f530bf1": {
+      "id": "it_42e3c8910f530bf1",
+      "source": "hf_papers",
+      "title": "BirdDreams: Joint Perspective and BEV Video Generation for a Plausible, Reactive Driving World Model",
+      "url": "arxiv:2611.14815",
+      "summary": "Driving world models aim to simulate how a scene unfolds under different ego actions. This requires plausible motion of surrounding vehicles as well as precise ego-trajectory control. Learning vehicle motion from perspective video alone is challenging because motion is entangled with appearance and vehicles can be occluded. Prior work therefore conditions video generation on layouts that specify vehicle motion, providing control over surrounding vehicles but requiring their future trajectories as inputs. We introduce BirdDreams, an autoregressive driving world model that jointly generates perspective video and a schematic bird's-eye-view (BEV) video, making scene layout part of the predicted future. The BEV, rendered from scene annotations for training, depicts roads and vehicles as simple shapes at a fixed metric scale, providing a top-down view of their positions and motion with reduced occlusion between vehicles. Perspective video, by contrast, retains scene details that the BEV omits, such as traffic signals and object appearance. Joint attention between two video diffusion transformers, one per stream, lets each stream inform the other during generation. The predicted BEV also provides a geometric interface for ego control: we translate and rotate its latest frame along an input ego trajectory and use the resulting frames as a soft condition that shows how the scene would appear to move if only the ego vehicle moved. At inference, BirdDreams generates both videos from a single camera image without requiring an HD map or vehicle-state inputs. On PhysicalAI-AV and nuScenes, BirdDreams follows input ego trajectories more faithfully than prior driving world models and generates more plausible ego motion without ego-action conditioning. Human evaluation shows that BirdDreams outperforms a perspective-only baseline in generating realistic surrounding-vehicle behavior.",
+      "hot_score": 67.7096,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-11-09T19:00:00+00:00",
+      "last_seen_at": "2026-11-13T23:46:31.300951+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 46
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_a9dc79e6aa5b9d32": {
+      "id": "it_a9dc79e6aa5b9d32",
+      "source": "hackernews",
+      "title": "Anthropic upgrades Claude Code Projects to run parallel AI workers",
+      "url": "https://claude.com/resources/articles/projects-redesigned",
+      "summary": "",
+      "hot_score": 67.0048,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-14T00:28:11+00:00",
+      "last_seen_at": "2026-11-14T22:39:47.953154+00:00",
+      "metrics": {
+        "points": 98,
+        "num_comments": 91
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_2c66b6377a76a1c2": {
+      "id": "it_2c66b6377a76a1c2",
+      "source": "github_trending",
+      "title": "openai/codex-security",
+      "url": "https://github.com/openai/codex-security",
+      "summary": "OpenAI's Codex Security CLI and TypeScript SDK for finding, validating, and fixing security vulnerabilities. npm: https://www.npmjs.com/package/@openai/codex-security",
+      "hot_score": 66.7381,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-12T00:55:25.163513+00:00",
+      "last_seen_at": "2026-11-13T23:46:31.245051+00:00",
+      "metrics": {
+        "stars_total": 13117,
+        "stars_in_window": 754,
+        "forks": 1022,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "TypeScript"
+    },
+    "it_f6862927ae7c7c00": {
+      "id": "it_f6862927ae7c7c00",
+      "source": "hf_papers",
+      "title": "G-STAR: Group-Scaled Token Capacity for Deeply Compressed Autoregressive Generation",
+      "url": "arxiv:2611.13004",
+      "summary": "Discrete autoregressive models offer a scalable framework for image generation. However, they face a fundamental trade-off: long token sequences preserve representation quality but slow generation, while aggressive spatial compression reduces representation capacity. Based on product quantization, we show that, under a fixed nominal information budget, group size should scale quadratically with the per-axis spatial compression factor. Building on this principle, we propose GSTAR, a spatial--group co-scaling framework that enables \\(32\\times\\) and even effective \\(64\\times\\) compression while preserving strong reconstruction, understanding, and generation performance. Since larger groups introduce intra-group dependencies that must be modeled efficiently, we analyze their impact on inference latency and generation quality and introduce a semi-autoregressive decoder that combines parallel feature computation with lightweight causal modeling. With these designs, our highly compressed models perform competitively with leading models across five representative text-to-image benchmarks (GenEval, DPG-Bench, PRISM, LongText-Bench, and Qwen-Image-Bench). At \\(1024\\times1024\\) resolution, our model delivers a \\(20\\times\\) speedup over prior discrete autoregressive models, generating each image in 2.5 seconds on a single NVIDIA H200. Together, these results show that highly compressed discrete representations can enable high-quality autoregressive generation at low latency.",
+      "hot_score": 64.0455,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-11-07T19:00:00+00:00",
+      "last_seen_at": "2026-11-13T23:46:31.302692+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 40
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_44bab6d343816615": {
+      "id": "it_44bab6d343816615",
+      "source": "hf_papers",
+      "title": "Ropedia Xperience 2: A Gold Standard for Scaling Physical AI Environments and Behaviors",
+      "url": "arxiv:2611.17060",
+      "summary": "Large foundation models such as GPT-6 Astra and Claude Fable 5.1 have recently been shown to control robots directly from visual observations. They nevertheless remain brittle on long-horizon, contact-rich tasks in real-world environments. Further progress depends on two complementary resources: demonstrations of human behavior that supervise how tasks are performed, and interactive environments in which policies can be rolled out, evaluated, and improved in closed loop. Language models have advanced along well-characterized scaling laws; the corresponding question for physical AI is how capability scales with environments and behaviors, which first requires identifying which data to scale and how to produce and reuse such data continuously. To address this question, we introduce Ropedia Xperience 2, comprising 1,589 released metric-scale 3D scans and a collection of 4,230 egocentric recordings of 74 tasks (131 hours). We further show that each capture can be repurposed for robot learning: scenes are converted into physically interactive simulation environments, human motion is retargeted to whole-body robot trajectories, and additional robot behaviors are obtained through virtual teleoperation and automated long-horizon trajectory generation. We propose this joint capture of environments and behaviors as a gold standard for physical AI data collection, laying a data foundation for establishing scaling laws over environments and behaviors.",
+      "hot_score": 63.9744,
+      "topic_id": null,
+      "seen_in": [
+        "arxiv",
+        "hf_papers"
+      ],
+      "published_at": "2026-11-11T19:00:00+00:00",
+      "last_seen_at": "2026-11-14T22:39:48.058263+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 25
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_59a3d999fb949b0b": {
+      "id": "it_59a3d999fb949b0b",
+      "source": "hf_papers",
+      "title": "Duo: A Reciprocal World Model for Full-Duplex Interaction",
+      "url": "arxiv:2611.15131",
+      "summary": "In this report, we introduce the Reciprocal World Model (RWM) and present Duo v1, a full-duplex world model that continuously perceives audiovisual inputs while responding to users in real time. The RWM treats intelligence and physical reality as equally fundamental to what constitutes a world. Existing world models largely focus on simulating the latter, leaving reasoning and decision-making as external controls rather than intrinsic parts of the world itself. In RWM, we identify two equally fundamental capabilities: Intent, which provides the cognition underlying world interactions, and Realization, which generates coherent audio-visual behavior. To realize this formulation, Duo v1 introduces three key technical designs: (1) Leveraging autoregressive modeling for continuous interaction reasoning and participation decisions, rather than restricting it to instruction understanding for diffusion models. (2) Constructing chunk-specific conditions and synchronize tokens across Intent and Realization on a unified timeline. Module-specific attention masks enforce causal dependencies both within and across chunks, preventing access to future inputs. (3) Mitigating distribution shift in both modules through dual rollout distillation, training on autoregressively generated Intent tokens and synthesized audiovisual histories from Realization. Both modules continuously perceive real-time audio, video, and text, enabling full-duplex interaction with spontaneous conversations and interruptions. Beyond conversation, users can share real objects, reshape virtual scenes, guide assistants, or play audiovisual games without mouse or keyboard controls. The release of Duo v1 makes our first step, with the next version coming soon. We look forward to broader exploration of this emerging field.",
+      "hot_score": 63.776,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-11-10T19:00:00+00:00",
+      "last_seen_at": "2026-11-13T23:46:31.303574+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 35
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_fb20c3d982d323ce": {
+      "id": "it_fb20c3d982d323ce",
+      "source": "hf_papers",
+      "title": "Open Vision Banana: A Fully Open Recipe for Generative Visual Perception",
+      "url": "arxiv:2611.15844",
+      "summary": "Recent work suggests that pretrained image generators encode real-world understanding beyond image synthesis. Vision Banana exploits this by framing vision tasks as conditional image editing. However, its data, weights, code, and implementation details are not public. We present Open Vision Banana (OVB), a fully open and reproducible recipe for converting pretrained generators into unified multi-task perception systems. Our analyses identify the design choices that matter most for generalization, including color encoding, prompt design, parameter adaptation, and task balancing. These choices interact, so individually helpful choices can hurt when combined with others. Starting from 4B and 9B parameter open-weight base models and using 2.1M-3.8M training pairs from public datasets, OVB surpasses Vision Banana's reported Cityscapes zero-shot performance (73.9 vs. 69.9 mIoU) and rivals state-of-the-art affine-invariant depth estimators. Its non-zero-shot variants come within five points of Vision Banana on referring and reasoning segmentation but remain further behind on instance segmentation. All models largely retain the base model's image-editing abilities. With legend ensembling, we introduce a test-time scaling method for generator-based perception. It segments an image under several class-color legends and fuses the results by majority vote, correcting unstable color-class bindings and improving mIoU by up to 8.7 points on Cityscapes and 15.0 points on COCO-Object without retraining. We release the dataset construction and processing pipeline, the training and evaluation code, as well as the final, intermediate, and ablation checkpoints. Project website: https://openvisionbanana.github.io",
+      "hot_score": 61.4484,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-11-10T19:00:00+00:00",
+      "last_seen_at": "2026-11-13T23:46:31.304405+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 29
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_e671c263df5a7801": {
+      "id": "it_e671c263df5a7801",
+      "source": "github_trending",
+      "title": "tradermonty/claude-trading-skills",
+      "url": "https://github.com/tradermonty/claude-trading-skills",
+      "summary": "Claude Code skills for equity investors and traders — market analysis, technical charting, economic calendars, screeners, and trading strategy development.",
+      "hot_score": 60.0106,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-13T23:46:25.197641+00:00",
+      "last_seen_at": "2026-11-14T22:39:48.000060+00:00",
+      "metrics": {
+        "stars_total": 4759,
+        "stars_in_window": 556,
+        "forks": 987,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "Python"
+    },
+    "it_0bb54c37613f5784": {
+      "id": "it_0bb54c37613f5784",
+      "source": "github_trending",
+      "title": "louislam/uptime-kuma",
+      "url": "https://github.com/louislam/uptime-kuma",
+      "summary": "A fancy self-hosted monitoring tool",
+      "hot_score": 60.0106,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-13T23:46:25.197627+00:00",
+      "last_seen_at": "2026-11-14T22:39:48.005768+00:00",
+      "metrics": {
+        "stars_total": 94212,
+        "stars_in_window": 432,
+        "forks": 8817,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "JavaScript"
+    },
+    "it_b9769016e4b337b4": {
+      "id": "it_b9769016e4b337b4",
+      "source": "github_trending",
+      "title": "backnotprop/plannotator",
+      "url": "https://github.com/backnotprop/plannotator",
+      "summary": "The workspace to stay in the loop and on top of agents - shape, decide, plan, annotate, review code, share with team, and send all feedback to agents with one click.",
+      "hot_score": 59.1772,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-13T23:46:25.197621+00:00",
+      "last_seen_at": "2026-11-14T22:39:47.998204+00:00",
+      "metrics": {
+        "stars_total": 11071,
+        "stars_in_window": 412,
+        "forks": 921,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "TypeScript"
+    },
+    "it_2de163979017a774": {
+      "id": "it_2de163979017a774",
+      "source": "hackernews",
+      "title": "Security Agencies Worldwide Found to Use Ad-Based Surveillance System",
+      "url": "https://citizenlab.ca/security-agencies-worldwide-found-to-use-ad-based-surveillance-system",
+      "summary": "",
+      "hot_score": 58.6557,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-14T02:15:41+00:00",
+      "last_seen_at": "2026-11-14T22:39:47.948856+00:00",
+      "metrics": {
+        "points": 140,
+        "num_comments": 14
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_0e6e1cee78d9d0b2": {
+      "id": "it_0e6e1cee78d9d0b2",
+      "source": "hf_papers",
+      "title": "On the Design of Hyper-Connections: Simplification, Stability, and Scalability",
+      "url": "arxiv:2611.05984",
+      "summary": "Hyper-Connections (HC) architectures are increasingly adopted in frontier language models, yet their components remain insufficiently understood and introduce non-negligible training overhead. In this work, we systematically study the HC architecture to understand its components and identify simpler, more efficient designs. We find that learned read/write gating without mixing and unconstrained mixing with fixed gates form two effective interaction groups: either alone achieves performance comparable to mHC. We also identify repeated access to the expanded residual state as a major source of training overhead, even without mixing. These findings lead to SimpleHC, which simplifies the architecture by removing residual mixing and simplifies execution through shared memory access, using the resulting additive structure and shared gate inputs. Layer-specific gates share a group-entry state, enabling batched reads and deferred writes; scalar corrections exactly preserve preceding sublayer output contributions. Our analyses support both the retained residual structure and the design of shared memory access. SimpleHC incurs only 2.4% extra end-to-end training time over a vanilla residual baseline at the largest tested scale. It maintains performance comparable to mHC when scaling from 15B to 30B MoE models, exhibits smoother gradient dynamics during standard training, and remains stable under stress. We hope SimpleHC will encourage a broader pursuit of simplicity in foundation model design, making performance gains more accessible and practical at scale.",
+      "hot_score": 57.6519,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-11-03T19:00:00+00:00",
+      "last_seen_at": "2026-11-13T23:46:31.305212+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 26
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_ed7dee5491aba96e": {
+      "id": "it_ed7dee5491aba96e",
+      "source": "github_trending",
+      "title": "martin-olivier/airgorah",
+      "url": "https://github.com/martin-olivier/airgorah",
+      "summary": "A WiFi security auditing software",
+      "hot_score": 57.5,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-14T22:39:41.119061+00:00",
+      "last_seen_at": "2026-11-14T22:39:48.008595+00:00",
+      "metrics": {
+        "stars_total": 5812,
+        "stars_in_window": 269,
+        "forks": 1021,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Rust"
+    },
+    "it_adfb2fa52392a36c": {
+      "id": "it_adfb2fa52392a36c",
+      "source": "hf_papers",
+      "title": "TTB: Test-time Baking for Efficient Rendering of Decoder-only View Synthesis Models",
+      "url": "arxiv:2611.17331",
+      "summary": "Decoder-only Large View Synthesis Models (LVSMs) with KV-cache have recently achieved state-of-the-art quality by regressing novel views from neural networks without reconstructing 3D geometry, while Test-Time Training (TTT) layers save computation but sacrifice quality. We propose Test-Time Baking (TTB), a strategy that learns to bake global scene information from cross-view attention into a lightweight MLP, enabling fast and high-fidelity novel-view decoding. The first key is to repurpose the fast-weight MLP of TTT to learn the cross-view attention mapping explicitly from its input-output pairs, rather than replacing attention entirely, achieving the same rendering efficiency as TTT while delivering substantially higher quality. The second key addresses a modality misalignment between context prefilling and novel-view rendering: we disentangle context tokens into camera-only context rendering tokens to serve as TTB input, and context ground-truth tokens with image content to serve as the TTB mapping target, ensuring the baked MLPs are relieved of the modality generalization challenge between context and novel-view processing. Our method achieves up to **23x** rendering speedup with quality on par with the state-of-the-art across several benchmarks. Project page: https://test-time-baking.github.io",
+      "hot_score": 57.4227,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-11-11T19:00:00+00:00",
+      "last_seen_at": "2026-11-13T23:46:31.305987+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 19
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_e07ae0cfd157b113": {
+      "id": "it_e07ae0cfd157b113",
+      "source": "github_trending",
+      "title": "ZhuLinsen/daily_stock_analysis",
+      "url": "https://github.com/ZhuLinsen/daily_stock_analysis",
+      "summary": "LLM 驱动的多市场股票智能分析系统：多源行情、实时新闻、决策看板与自动推送，支持零成本定时运行。 LLM-powered multi-market stock analysis system with multi-source market data, real-time news, decision dashboard, automated notifications, and cost-free scheduled runs.",
+      "hot_score": 56.8627,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-10T05:51:29.067536+00:00",
+      "last_seen_at": "2026-11-13T23:46:31.246072+00:00",
+      "metrics": {
+        "stars_total": 71566,
+        "stars_in_window": 506,
+        "forks": 57274,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_0c774f26b21a95ed": {
+      "id": "it_0c774f26b21a95ed",
+      "source": "hf_papers",
+      "title": "Unbundling Multimodal Vision Encoding",
+      "url": "arxiv:2611.17334",
+      "summary": "How multimodal language models should encode visual input remains up for debate. Most models use a pretrained vision encoder, while some recent recipes train the encoder from scratch with the language model or remove it entirely. Vision encoders bundle together three design choices: a visual prior from upstream pretraining, dedicated vision capacity, and pre-fusion placement of that capacity (i.e., before the multimodal backbone). Because published models also differ in data, architecture, and compute, comparing them cannot isolate the effect of each choice. We disentangle these choices via a controlled framework where we pretrain all models from scratch on common data and compare them on visual question answering and language benchmarks at matched lifetime compute. We find that the visual prior is not necessary; an encoder trained jointly from scratch is on par with a pretrained one, without a separate training stage. What matters instead is dedicated vision capacity: an encoder-free model trails on visual understanding even when its backbone is enlarged by the encoder's parameter count. Yet that capacity need not precede multimodal fusion, as vision-only modules added in-fusion to early backbone layers perform comparably to a pre-fusion encoder and can lower time to first token. These results also hold across backbone sizes, when encoder pretraining is treated as free, and when starting from a pretrained language model. Overall, our findings favor dedicated vision capacity trained jointly with the backbone and placed early within it.",
+      "hot_score": 56.2158,
+      "topic_id": null,
+      "seen_in": [
+        "arxiv",
+        "hf_papers"
+      ],
+      "published_at": "2026-11-11T19:00:00+00:00",
+      "last_seen_at": "2026-11-14T22:39:48.010292+00:00",
+      "metrics": {
+        "num_comments": 4,
+        "upvotes": 8
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_4d0c29e8f59af820": {
+      "id": "it_4d0c29e8f59af820",
+      "source": "hackernews",
+      "title": "Ask HN: What are the most useful, concrete AI skills to independently learn?",
+      "url": "https://news.ycombinator.com/item?id=50494696",
+      "summary": "Specifically, what are the most useful, concrete skills to learn as an individual to take economic advantage of the advances in LLMs, agents and associated new technological capabilities? What is accessible to learn just from the internet and experimentation, without a degree program, assuming a preexisting moderately technical background? The clearer and more specific (eg. “Learn how-to x with y”) the better. Thank you!",
+      "hot_score": 56.0183,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-14T06:56:42+00:00",
+      "last_seen_at": "2026-11-14T22:39:47.953844+00:00",
+      "metrics": {
+        "points": 75,
+        "num_comments": 49
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_34d3f43cb54e51f0": {
+      "id": "it_34d3f43cb54e51f0",
+      "source": "hf_papers",
+      "title": "WorldDraft: If Code Builds the World, Can Video Models Just Render It?",
+      "url": "arxiv:2611.16217",
+      "summary": "Multimodal coding agents decouple 4D world construction from visual generation, repurposing video models from world generators toward generative renderers. This division of labor raises a fundamental question: if code builds the world, can video models just render it? A reliable generative renderer hinges on two complementary criteria: (i) world preservation, retaining prescribed 4D kinematics and camera paths; and (ii) visual realization, persistently binding text-specified target attributes over time. To evaluate this capability, we introduce WorldDraft, a benchmark of 432 strictly paired test cases across 48 executable 4D world families spanning six dynamic challenge categories. Under a 3 times 3 factorial design, WorldDraft orthogonally crosses draft granularity (abstract proxy to previs) and appearance alignment (neutral to conflicting) under identical dynamics. Extensive evaluations across 12 representative models reveal that: (I) world preservation and visual realization remain in stark operational tension; (II) richer draft scaffolding anchors structure but paradoxically impairs appearance fidelity; and (III) conflicting source cues trigger severe source leakage (up to 64%), exposing fragile cross-modal disentanglement. To mitigate these bottlenecks, we propose WorldDraft-Primer, a plug-and-play visual prompting strategy that consistently improves both objectives across frozen video renderers. Together, WorldDraft and WorldDraft-Primer lay a foundation for bridging programmatic 4D simulation with video generation, advancing physically grounded generative rendering.",
+      "hot_score": 55.871,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-11-11T19:00:00+00:00",
+      "last_seen_at": "2026-11-13T23:46:31.306863+00:00",
+      "metrics": {
+        "num_comments": 2,
+        "upvotes": 14
+      },
+      "streak_days": 0,
+      "language": "en"
+    }
+  },
+  "meta": {
+    "mode": "hybrid",
+    "day": "2026-11-15",
+    "generated_at": "2026-11-14T22:41:17.029589+00:00",
+    "window": {
+      "since": "2026-11-13T22:39:39.802477+00:00",
+      "until": "2026-11-14T22:39:48.096727+00:00",
+      "hours": 24.0,
+      "since_local": "2026-11-14T06:39+08:00",
+      "until_local": "2026-11-15T06:39+08:00",
+      "tz": "Asia/Shanghai"
+    },
+    "analysis": {
+      "items": 156,
+      "scored": 156,
+      "topics": 0,
+      "new_entity_mention_rows": 184,
+      "state_items": 15
+    },
+    "llm": {
+      "degraded": true,
+      "degraded_reason": "LLM 调用失败：LLMTruncationError",
+      "calls": 0
+    },
+    "collect": {
+      "ok_sources": 7,
+      "failed_sources": 0,
+      "skipped": 0,
+      "total_items": 126
+    },
+    "verify": {
+      "verified": 0,
+      "unverifiable": 0,
+      "deferred": 0,
+      "failed": 0,
+      "llm_calls": 0
+    },
+    "predictions": {
+      "total": 174,
+      "verified": 1,
+      "pending": 172,
+      "unverifiable": 1,
+      "hit_rate": 0.0,
+      "weighted_score": 0.0,
+      "brier": 0.36
+    },
+    "prediction_generation": {
+      "mode": "hybrid",
+      "generated": 4,
+      "inserted": 4,
+      "dropped": [],
+      "llm_calls": 1,
+      "candidate_pool": 20,
+      "degraded": false,
+      "degraded_reason": ""
+    },
+    "brief": {
+      "max_items_per_section": 10,
+      "velocity_board_enabled": true,
+      "velocity_board_top_n": 5
+    },
+    "signals": {
+      "entities": 833,
+      "points": 1640,
+      "with_velocity": 107,
+      "insufficient": 112,
+      "cold_start": 614,
+      "min_window_hours": 6.0
+    },
+    "enhance_total": 27,
+    "enhanced": 7,
+    "enhance_skipped_count": 20,
+    "enhance_cache_hit": 0,
+    "enhance_cost_cny": 0.003597
+  }
+}
