@@ -1,0 +1,996 @@
+{
+  "date": "2026-11-16",
+  "headline": "Understanding Positional Embeddings in Modern LLMs",
+  "headline_item_id": "it_950ac38f23f2d5a7",
+  "overview_bullets": [
+    {
+      "icon": "🛠️",
+      "topic": "开源项目",
+      "text": "12 条；热度最高：dream-num/univer"
+    },
+    {
+      "icon": "💬",
+      "topic": "社区舆论",
+      "text": "12 条；热度最高：Understanding Positional Embeddings in Modern LLMs"
+    },
+    {
+      "icon": "🏢",
+      "topic": "产业与新闻",
+      "text": "6 条；热度最高：A step toward defining the Standard Model on a lattice"
+    }
+  ],
+  "executive_summary": "今日共采集 30 条，覆盖 1 个主题、4 个来源；热度最高：Understanding Positional Embeddings in Modern LLMs。",
+  "editor_note": {
+    "core": "off 档：未启用 LLM，本简报为数据版（无点评）。",
+    "cross_signal": "",
+    "counterintuitive": "",
+    "risk": ""
+  },
+  "contradictions": [],
+  "underrated": [],
+  "sections": [
+    {
+      "name": "开源项目",
+      "summary": "",
+      "item_ids": [
+        "it_7e3acd207369e7ad",
+        "it_4d59fc34e49a8be8",
+        "it_5f20605667d728f2",
+        "it_99fbe7d0e939a8a8",
+        "it_b9769016e4b337b4",
+        "it_e317aa5d77744524",
+        "it_27d1d8a4f04e089d",
+        "it_e671c263df5a7801",
+        "it_1eaa642abc1d6c5d",
+        "it_55e52705c413dcb8",
+        "it_13d705a3ee93d28e",
+        "it_b4f35bc5519aa6c6"
+      ]
+    },
+    {
+      "name": "社区舆论",
+      "summary": "",
+      "item_ids": [
+        "it_950ac38f23f2d5a7",
+        "it_64e86b44ffa878ec",
+        "it_da5a45ac447a209a",
+        "it_966523945edb28bb",
+        "it_294a13221fad339b",
+        "it_cf0cee01789e9022",
+        "it_47b57b00d8353101",
+        "it_bc405c888d8b7459",
+        "it_b07fbab9fa76615b",
+        "it_87a5a97be08f6712",
+        "it_567da61bb0db3a3e",
+        "it_ce022ea0978f83a9"
+      ]
+    },
+    {
+      "name": "产业与新闻",
+      "summary": "",
+      "item_ids": [
+        "it_87d7014c15ee68a3",
+        "it_4b0fc5b701ffd77d",
+        "it_2cb612de9116082a",
+        "it_2f1f5cbf7ce833ab",
+        "it_1a811a22b701406e",
+        "it_1207b5c1c70bbc64"
+      ]
+    }
+  ],
+  "comments": [
+    {
+      "item_id": "it_7e3acd207369e7ad",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_4d59fc34e49a8be8",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_5f20605667d728f2",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_99fbe7d0e939a8a8",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_b9769016e4b337b4",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_e317aa5d77744524",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_27d1d8a4f04e089d",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_e671c263df5a7801",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_1eaa642abc1d6c5d",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_55e52705c413dcb8",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_950ac38f23f2d5a7",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_64e86b44ffa878ec",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_da5a45ac447a209a",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_966523945edb28bb",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_294a13221fad339b",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_cf0cee01789e9022",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_47b57b00d8353101",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_bc405c888d8b7459",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_b07fbab9fa76615b",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_87a5a97be08f6712",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_87d7014c15ee68a3",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_4b0fc5b701ffd77d",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_2cb612de9116082a",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_2f1f5cbf7ce833ab",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_1a811a22b701406e",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    },
+    {
+      "item_id": "it_1207b5c1c70bbc64",
+      "one_liner": "",
+      "why": "",
+      "stance": ""
+    }
+  ],
+  "stats": {
+    "total_items": 30,
+    "topics": 1,
+    "sources": {
+      "hackernews": 7,
+      "github_trending": 12,
+      "rss": 6,
+      "reddit": 5
+    },
+    "top_entities": [
+      {
+        "name": "智能体",
+        "type": "concept",
+        "count": 10
+      },
+      {
+        "name": "NVIDIA",
+        "type": "company",
+        "count": 8
+      },
+      {
+        "name": "Qwen",
+        "type": "model",
+        "count": 7
+      },
+      {
+        "name": "Llama",
+        "type": "model",
+        "count": 6
+      },
+      {
+        "name": "Claude",
+        "type": "model",
+        "count": 4
+      },
+      {
+        "name": "GPT",
+        "type": "model",
+        "count": 3
+      },
+      {
+        "name": "OpenAI",
+        "type": "company",
+        "count": 3
+      },
+      {
+        "name": "开源模型",
+        "type": "concept",
+        "count": 3
+      },
+      {
+        "name": "AMD",
+        "type": "company",
+        "count": 3
+      },
+      {
+        "name": "MCP",
+        "type": "framework",
+        "count": 2
+      }
+    ]
+  },
+  "items": {
+    "it_950ac38f23f2d5a7": {
+      "id": "it_950ac38f23f2d5a7",
+      "source": "hackernews",
+      "title": "Understanding Positional Embeddings in Modern LLMs",
+      "url": "https://magazine.sebastianraschka.com/p/understanding-positional-embeddings",
+      "summary": "",
+      "hot_score": 85.2424,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-15T12:14:06+00:00",
+      "last_seen_at": "2026-11-15T23:03:28.082857+00:00",
+      "metrics": {
+        "points": 186,
+        "num_comments": 24
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_7e3acd207369e7ad": {
+      "id": "it_7e3acd207369e7ad",
+      "source": "github_trending",
+      "title": "dream-num/univer",
+      "url": "https://github.com/dream-num/univer",
+      "summary": "Build your own AI office with Univer Office SDK. Bring editing, calculation, collaboration, and file processing into your product for people and AI agents. Built on an extensible open-source core.",
+      "hot_score": 85.0497,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-14T22:39:41.119008+00:00",
+      "last_seen_at": "2026-11-15T23:03:28.131675+00:00",
+      "metrics": {
+        "stars_total": 25567,
+        "stars_in_window": 1041,
+        "forks": 2333,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "TypeScript"
+    },
+    "it_4d59fc34e49a8be8": {
+      "id": "it_4d59fc34e49a8be8",
+      "source": "github_trending",
+      "title": "GoogleChrome/modern-web-guidance-src",
+      "url": "https://github.com/GoogleChrome/modern-web-guidance-src",
+      "summary": "Keep your coding agent up to date with the latest web best practices",
+      "hot_score": 81.729,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-12T00:55:25.163478+00:00",
+      "last_seen_at": "2026-11-15T23:03:28.139126+00:00",
+      "metrics": {
+        "stars_total": 7100,
+        "stars_in_window": 1875,
+        "forks": 596,
+        "streak_days": 5
+      },
+      "streak_days": 5,
+      "language": "TypeScript"
+    },
+    "it_64e86b44ffa878ec": {
+      "id": "it_64e86b44ffa878ec",
+      "source": "hackernews",
+      "title": "The Single Router in Southern Arkansas That Ground Air Travel to a Halt",
+      "url": "https://www.wsj.com/business/airlines/the-single-router-in-southern-arkansas-that-ground-air-travel-to-a-halt-eedc326c",
+      "summary": "",
+      "hot_score": 73.8214,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-15T03:05:54+00:00",
+      "last_seen_at": "2026-11-15T23:03:28.086625+00:00",
+      "metrics": {
+        "points": 83,
+        "num_comments": 55
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_da5a45ac447a209a": {
+      "id": "it_da5a45ac447a209a",
+      "source": "hackernews",
+      "title": "Parents pay $75k for Alpha's AI school. Half of its students missed math target",
+      "url": "https://fortune.com/2026/11/14/alpha-school-ai-students-tuition-learning-goals",
+      "summary": "",
+      "hot_score": 72.75,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-15T19:39:46+00:00",
+      "last_seen_at": "2026-11-15T23:03:28.089858+00:00",
+      "metrics": {
+        "points": 57,
+        "num_comments": 59
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_5f20605667d728f2": {
+      "id": "it_5f20605667d728f2",
+      "source": "github_trending",
+      "title": "alibaba/open-code-review",
+      "url": "https://github.com/alibaba/open-code-review",
+      "summary": "Secure, fast, efficient, battle-tested at Alibaba's scale. Hybrid architecture code review tool: deterministic pipelines + LLM Agent, precise line-level comments, built-in multi-language ruleset (NPE, thread-safety, XSS, SQL injection), OpenAI & Anthropic compatible.",
+      "hot_score": 69.5999,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-13T23:46:25.197584+00:00",
+      "last_seen_at": "2026-11-15T23:03:28.136192+00:00",
+      "metrics": {
+        "stars_total": 52013,
+        "stars_in_window": 897,
+        "forks": 4105,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "Go"
+    },
+    "it_99fbe7d0e939a8a8": {
+      "id": "it_99fbe7d0e939a8a8",
+      "source": "github_trending",
+      "title": "ChromeDevTools/chrome-devtools-mcp",
+      "url": "https://github.com/ChromeDevTools/chrome-devtools-mcp",
+      "summary": "Chrome DevTools for coding agents",
+      "hot_score": 68.3661,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-13T23:46:25.197655+00:00",
+      "last_seen_at": "2026-11-15T23:03:28.135515+00:00",
+      "metrics": {
+        "stars_total": 56880,
+        "stars_in_window": 718,
+        "forks": 4810,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "TypeScript"
+    },
+    "it_966523945edb28bb": {
+      "id": "it_966523945edb28bb",
+      "source": "hackernews",
+      "title": "Protomaps: Self-hosting map tiles has gotten cheap and easy",
+      "url": "https://bruceroettgers.eu/blog/protomaps",
+      "summary": "",
+      "hot_score": 65.25,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-15T19:26:22+00:00",
+      "last_seen_at": "2026-11-15T23:03:28.088945+00:00",
+      "metrics": {
+        "points": 77,
+        "num_comments": 16
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_b9769016e4b337b4": {
+      "id": "it_b9769016e4b337b4",
+      "source": "github_trending",
+      "title": "backnotprop/plannotator",
+      "url": "https://github.com/backnotprop/plannotator",
+      "summary": "The workspace to stay in the loop and on top of agents - shape, decide, plan, annotate, review code, share with team, and send all feedback to agents with one click.",
+      "hot_score": 58.5609,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-13T23:46:25.197621+00:00",
+      "last_seen_at": "2026-11-15T23:03:28.134642+00:00",
+      "metrics": {
+        "stars_total": 11799,
+        "stars_in_window": 860,
+        "forks": 1082,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "TypeScript"
+    },
+    "it_294a13221fad339b": {
+      "id": "it_294a13221fad339b",
+      "source": "hackernews",
+      "title": "Your Agent Will Pick the Hackable One",
+      "url": "https://geoffstearns.com/blog/your-agent-will-pick-the-hackable-one",
+      "summary": "",
+      "hot_score": 57.75,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-15T21:10:39+00:00",
+      "last_seen_at": "2026-11-15T23:03:28.090626+00:00",
+      "metrics": {
+        "points": 51,
+        "num_comments": 33
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_e317aa5d77744524": {
+      "id": "it_e317aa5d77744524",
+      "source": "github_trending",
+      "title": "google-labs-code/stitch-skills",
+      "url": "https://github.com/google-labs-code/stitch-skills",
+      "summary": "A library of Agent Skills designed to work with the Stitch MCP server. Each skill follows the Agent Skills open standard, for compatibility with coding agents such as Antigravity, Gemini CLI, Claude Code, Cursor.",
+      "hot_score": 57.2727,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-15T23:03:21.804465+00:00",
+      "last_seen_at": "2026-11-15T23:03:28.133822+00:00",
+      "metrics": {
+        "stars_total": 9262,
+        "stars_in_window": 248,
+        "forks": 1125,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "TypeScript"
+    },
+    "it_27d1d8a4f04e089d": {
+      "id": "it_27d1d8a4f04e089d",
+      "source": "github_trending",
+      "title": "elementalsouls/Claude-BugHunter",
+      "url": "https://github.com/elementalsouls/Claude-BugHunter",
+      "summary": "A Claude Code skill bundle for bug hunting and external red-team work - 82 skills, 15 slash commands, 681 disclosed-report patterns curated across 24 core vulnerability classes, plus enterprise identity + infrastructure attack matrices.",
+      "hot_score": 53.1818,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-15T23:03:21.804510+00:00",
+      "last_seen_at": "2026-11-15T23:03:28.138366+00:00",
+      "metrics": {
+        "stars_total": 6369,
+        "stars_in_window": 221,
+        "forks": 966,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_e671c263df5a7801": {
+      "id": "it_e671c263df5a7801",
+      "source": "github_trending",
+      "title": "tradermonty/claude-trading-skills",
+      "url": "https://github.com/tradermonty/claude-trading-skills",
+      "summary": "Claude Code skills for equity investors and traders — market analysis, technical charting, economic calendars, screeners, and trading strategy development.",
+      "hot_score": 51.6129,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-13T23:46:25.197641+00:00",
+      "last_seen_at": "2026-11-15T23:03:28.139859+00:00",
+      "metrics": {
+        "stars_total": 5488,
+        "stars_in_window": 707,
+        "forks": 1170,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "Python"
+    },
+    "it_cf0cee01789e9022": {
+      "id": "it_cf0cee01789e9022",
+      "source": "hackernews",
+      "title": "Eclipse Mosquitto – An open source MQTT broker",
+      "url": "https://github.com/eclipse-mosquitto/mosquitto",
+      "summary": "",
+      "hot_score": 50.25,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-15T18:36:40+00:00",
+      "last_seen_at": "2026-11-15T23:03:28.205882+00:00",
+      "metrics": {
+        "points": 52,
+        "num_comments": 19
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_1eaa642abc1d6c5d": {
+      "id": "it_1eaa642abc1d6c5d",
+      "source": "github_trending",
+      "title": "NVIDIA/SkillEvaluator",
+      "url": "https://github.com/NVIDIA/SkillEvaluator",
+      "summary": "Multi-tier framework for evaluating AI agent skills with quality gates, semantic overlap detection, synthetic evaluation dataset generation, and live agent evaluation that measures how skills affect agent behavior.",
+      "hot_score": 49.0909,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-15T23:03:21.804530+00:00",
+      "last_seen_at": "2026-11-15T23:03:28.140600+00:00",
+      "metrics": {
+        "stars_total": 1625,
+        "stars_in_window": 205,
+        "forks": 227,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_55e52705c413dcb8": {
+      "id": "it_55e52705c413dcb8",
+      "source": "github_trending",
+      "title": "ag-ui-protocol/ag-ui",
+      "url": "https://github.com/ag-ui-protocol/ag-ui",
+      "summary": "AG-UI: the Agent-User Interaction Protocol. Bring Agents into Frontend Applications.",
+      "hot_score": 47.4523,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-14T22:39:41.119018+00:00",
+      "last_seen_at": "2026-11-15T23:03:28.132553+00:00",
+      "metrics": {
+        "stars_total": 17810,
+        "stars_in_window": 393,
+        "forks": 1818,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "TypeScript"
+    },
+    "it_13d705a3ee93d28e": {
+      "id": "it_13d705a3ee93d28e",
+      "source": "github_trending",
+      "title": "Tencent/LoopForge",
+      "url": "https://github.com/Tencent/LoopForge",
+      "summary": "Self-hosted workflows for coding-agent delivery. Orchestrate CodeBuddy, Codex and Claude Code with scripts and human approval gates. Includes Local workflows for coding assistants.",
+      "hot_score": 46.2185,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-14T22:39:41.119050+00:00",
+      "last_seen_at": "2026-11-15T23:03:28.137049+00:00",
+      "metrics": {
+        "stars_total": 1437,
+        "stars_in_window": 484,
+        "forks": 263,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "Go"
+    },
+    "it_b4f35bc5519aa6c6": {
+      "id": "it_b4f35bc5519aa6c6",
+      "source": "github_trending",
+      "title": "ggml-org/ggml",
+      "url": "https://github.com/ggml-org/ggml",
+      "summary": "Tensor library for machine learning",
+      "hot_score": 45.0,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-15T23:03:21.804503+00:00",
+      "last_seen_at": "2026-11-15T23:03:28.137792+00:00",
+      "metrics": {
+        "stars_total": 15892,
+        "stars_in_window": 53,
+        "forks": 2018,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "C++"
+    },
+    "it_47b57b00d8353101": {
+      "id": "it_47b57b00d8353101",
+      "source": "hackernews",
+      "title": "Ask HN: Stripe closed us after one $1,500 invoice and never asked for evidence",
+      "url": "https://news.ycombinator.com/item?id=50510042",
+      "summary": "We're a small business that sells pre-booked appointments with homeowners to local contractors, billed per appointment that actually happens. Our first client agreed to this on a recorded call and saved his card through a $1 Stripe payment link, which we planned to use for billing later. That $1 payment went through. A few weeks later we invoiced him $1,500 for 3 completed appointments and charged the saved card. Stripe blocked the payment. Two days after that the account was closed with this wo",
+      "hot_score": 42.75,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-15T19:49:28+00:00",
+      "last_seen_at": "2026-11-15T23:03:28.091317+00:00",
+      "metrics": {
+        "points": 45,
+        "num_comments": 10
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_87d7014c15ee68a3": {
+      "id": "it_87d7014c15ee68a3",
+      "source": "rss",
+      "title": "A step toward defining the Standard Model on a lattice",
+      "url": "https://openai.com/index/step-toward-defining-the-standard-model",
+      "summary": "Explore a candidate nonperturbative lattice definition of the Standard Model and how GPT-6 Astra helped turn the idea into a detailed proof.",
+      "hot_score": 39.0,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-15T22:00:01+00:00",
+      "last_seen_at": "2026-11-15T23:03:28.123726+00:00",
+      "metrics": {
+        "rank_score": 1.0
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_4b0fc5b701ffd77d": {
+      "id": "it_4b0fc5b701ffd77d",
+      "source": "rss",
+      "title": "Our new blog for science",
+      "url": "https://openai.com/index/our-new-blog-for-science",
+      "summary": "The OpenAI science blog shares new findings, practical methods, and firsthand accounts from researchers using AI to advance scientific discovery.",
+      "hot_score": 39.0,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-15T22:00:00+00:00",
+      "last_seen_at": "2026-11-15T23:03:28.124531+00:00",
+      "metrics": {
+        "rank_score": 0.5
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_2cb612de9116082a": {
+      "id": "it_2cb612de9116082a",
+      "source": "rss",
+      "title": "Is bad news for Jensen Huang also bad news for the AI industry?",
+      "url": "https://techcrunch.com/2026/11/15/is-bad-news-for-jensen-huang-also-bad-news-for-the-ai-industry",
+      "summary": "\"Jensen is Nvidia, right? And so much of this economy is riding on Nvidia.\"",
+      "hot_score": 39.0,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-15T21:56:35+00:00",
+      "last_seen_at": "2026-11-15T23:03:28.128730+00:00",
+      "metrics": {
+        "rank_score": 1.0
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_2f1f5cbf7ce833ab": {
+      "id": "it_2f1f5cbf7ce833ab",
+      "source": "rss",
+      "title": "Jensen Huang might be plotting a return and more of the latest Nvidia drama",
+      "url": "https://www.theverge.com/tech/1033999/jensen-huang-return-nvidia-megaspeed",
+      "summary": "The drama around Nvidia co-founder and former CEO Jensen Huang is evolving quickly. The latest edition of our Stepback newsletter should get you up to speed, but there have already been a number of new developments since this morning. That includes rumors that Jensen Huang might be trying to find a path back to CEO, and a statement from Megaspeed claiming that Alice Huang hasn't worked for the company since August of 2025, which raises more questions than it answers.\n\nSome big names, including Elon Musk and Epic Games CEO Tim Sweeney, have publicly thrown their support behind a public letter demanding Nvidia \" bring Jensen back .\"\nThe pub …\nRead the full story at The Verge.",
+      "hot_score": 39.0,
+      "topic_id": "tp_7dd409f7eede",
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-15T20:43:49+00:00",
+      "last_seen_at": "2026-11-15T23:03:28.125281+00:00",
+      "metrics": {
+        "rank_score": 1.0
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_1a811a22b701406e": {
+      "id": "it_1a811a22b701406e",
+      "source": "rss",
+      "title": "SNL gathers all the tech tycoons for a lesson in dating and spycraft",
+      "url": "https://techcrunch.com/2026/11/15/snl-gathers-all-the-tech-tycoons-for-a-lesson-in-dating-and-spycraft",
+      "summary": "While awkward, creepy tech executives have become a recurring theme on Saturday Night Live, this week’s episode gave the cast a chance to show off all their impressions at once.",
+      "hot_score": 39.0,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-15T20:20:57+00:00",
+      "last_seen_at": "2026-11-15T23:03:28.129679+00:00",
+      "metrics": {
+        "rank_score": 0.6667
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_1207b5c1c70bbc64": {
+      "id": "it_1207b5c1c70bbc64",
+      "source": "rss",
+      "title": "Congress wants to tighten export rules on AI chips after Nvidia spy scandal",
+      "url": "https://www.theverge.com/ai-artificial-intelligence/1033984/congress-export-rules-ai-chips-china",
+      "summary": "Unsurprisingly, following the scandal involving now-former Nvidia CEO Jensen Huang and a suspected Chinese spy, Congress is looking to further restrict exports of AI chips. Both Democrats and Republicans have voiced support for various measures and bills that would tighten rules and have demanded that Huang and other Nvidia leaders testify before Congress.\nSenate Minority Leader Chuck Schumer has already said that Huang and the Trump administration need to answer to Congress . Senate Banking Committee Chairman Tim Scott has also sent letters to both Huang and Commerce Secretary Howard Lutnick calling on them to publicly testify to the commit …\nRead the full story at The Verge.",
+      "hot_score": 39.0,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-15T19:15:43+00:00",
+      "last_seen_at": "2026-11-15T23:03:28.126473+00:00",
+      "metrics": {
+        "rank_score": 0.6667
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_bc405c888d8b7459": {
+      "id": "it_bc405c888d8b7459",
+      "source": "reddit",
+      "title": "Someone should do an analysis on the rate of Self-promo here.",
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1xx85mw/someone_should_do_an_analysis_on_the_rate_of",
+      "summary": "I think the last 3 posts from here that showed up on my feed were barely veiled self-promos. I was here when huggingface first started getting popular, and the level of support for running local models here was incredible. Now I am debating whether or not to leave the sub. Why isn’t there more attention to moderation to this? Take a user’s post, and type their username with quotes into google and then type whatever obscure tool they’re asking a question or talking about and you’ll see the absurd rate or Astro-turfing and shilling. They will post here and 6 other LLM places, but this place used to be awesome, so I only care about this sub. submitted by /u/scr116 [link] [comments]",
+      "hot_score": 38.25,
+      "topic_id": null,
+      "seen_in": [
+        "reddit"
+      ],
+      "published_at": "2026-11-15T22:05:21+00:00",
+      "last_seen_at": "2026-11-15T23:03:28.111344+00:00",
+      "metrics": {
+        "score": 0,
+        "rank_score": 0.36
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_b07fbab9fa76615b": {
+      "id": "it_b07fbab9fa76615b",
+      "source": "reddit",
+      "title": "I have created a tool to observe what happens inside an LLM. Also allows for the comparison of two quantizations of the same model to see at what point they diverge, token by token",
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1xx7qbf/i_have_created_a_tool_to_observe_what_happens",
+      "summary": "What changes between different quantizations of the same model? And what if you could SEE what actually sets them apart? To help answer that question, I’ve created a small project called inside-llm—an open-source tool that loads one or two GGUF models using llama.cpp and displays, right in your browser, what the model is doing as it generates text. What it shows Stream: the text, one column per model, brightness = probability of each token. A magenta mark wherever A and B would pick differently. Two modes: lockstep (both models read the same text, so you get a clean per-position comparison) and free (each follows its own picks until they split). Candidates: the full distribution behind each pick, mirrored bars for A and B, entropy, effective number of options, Jensen-Shannon divergence and KL in both directions. Gates: the sampler chain (penalties, top-k, top-p, min-p, temperature, GBNF grammar) traced stage by stage and very visual: how many candidates survive each one, and the distri",
+      "hot_score": 38.25,
+      "topic_id": null,
+      "seen_in": [
+        "reddit"
+      ],
+      "published_at": "2026-11-15T21:46:56+00:00",
+      "last_seen_at": "2026-11-15T23:03:28.112610+00:00",
+      "metrics": {
+        "score": 0,
+        "rank_score": 0.32
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_87a5a97be08f6712": {
+      "id": "it_87a5a97be08f6712",
+      "source": "reddit",
+      "title": "Llama.cpp performance improvement over time (Gemma4 models)",
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1xx607x/llamacpp_performance_improvement_over_time_gemma4",
+      "summary": "Few months ago - after Ninfer came out - I started a little hobby project to vibe-code my own engine for my hardware (RTX 5080 16GB Laptop) and check if it could beat llama.cpp - since at the time llama.cpp was kinda slow in comparison to something like vLLM, but vLLM is using VRAM very wastefully. Back then it was quite easy to actually get something up and running faster than llama.cpp. Today I just benchmarked llama.cpp again, and it caught up / surpassed my vibe-coded engine. I prefer using a stable engine with proper features than all the vibe-coded ones, including my own. So it is really nice to see that the project - while a bit slower - lands significant performance improvements over time. I put together a little chart of benchmarks I had laying around which visualizes this quite nicely. It is by no means scientific - it's always a fixed 16k prefill 1k output over Wikipedia text with the optimal settings for each engine. The 12B model is the same checkpoint, for the 26B model t",
+      "hot_score": 38.25,
+      "topic_id": null,
+      "seen_in": [
+        "reddit"
+      ],
+      "published_at": "2026-11-15T20:34:44+00:00",
+      "last_seen_at": "2026-11-15T23:03:28.104891+00:00",
+      "metrics": {
+        "score": 0,
+        "rank_score": 0.6
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_567da61bb0db3a3e": {
+      "id": "it_567da61bb0db3a3e",
+      "source": "reddit",
+      "title": "BigMoeOnEdge outperforms Strata and colibri on 8-16 GB cards and Mac and you can run any model",
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1xx5fng/bigmoeonedge_outperforms_strata_and_colibri_on",
+      "summary": "Hi! for those who might not know the solution: it takes any MoE GGUF llama.cpp can load, whatever the quant. No repacking, no special format it runs on whatever you have: NVIDIA, AMD, Intel, Mac, a phone, or just the CPU Windows, Linux, macOS, Android, iOS output is the same as llama.cpp, don't cut corners on quality you start it with --auto and it works out the settings for your machine Below is a brief overview of the benchmark: 8 GB card, Qwen3.6-35B: I get about 35 tok/s. colibri around 23. Strata wouldn't start at 16k context 12 GB card, same model: about 45 for bmoe, about 30 for Strata long prompt on the 8 GB card: bmoe 5 s to the first token. Strata 14 s, colibri close to 2 minutes Basalt needs an RTX 50, so I couldn't run it on these 16 GB MacBook, Qwen3.6-35B: about 20 tok/s for bmoe, colibri's release 3.5 same Mac, Qwen3.8-Flash-Next 125B: 10 tok/s, Strata about 7 On the cards Strata is tuned for it's still ahead but only by a little. On two 5060 Ti with Qwen3.8-Flash-Next i",
+      "hot_score": 38.25,
+      "topic_id": null,
+      "seen_in": [
+        "reddit"
+      ],
+      "published_at": "2026-11-15T20:11:18+00:00",
+      "last_seen_at": "2026-11-15T23:03:28.113961+00:00",
+      "metrics": {
+        "score": 0,
+        "rank_score": 0.28
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_ce022ea0978f83a9": {
+      "id": "it_ce022ea0978f83a9",
+      "source": "reddit",
+      "title": "[audio.cpp] SoulX-FlashHead + LFM3-Audio + OWSM v4 = Real-Time Local Avatar Chat",
+      "url": "https://www.reddit.com/r/LocalLLaMA/comments/1xx2vi0/audiocpp_soulxflashhead_lfm3audio_owsm_v4",
+      "summary": "In audio.cpp 0.9.5 you can try this new avatar voice chat \"app\" in the WebUI. The pipeline combines 3 models: SoulX-FlashHead for real-time talking head generation, OWSM v4 for transcribing speech input to text, and LFM3-Audio for conversational responses and TTS. LFM3-Audio is actually called twice. The speech-to-speech path only provides one voice. We use the LFM3-Audio TTS to synthesize the S2S response in a different voice. One caveat: the video generation stage is still GPU-intensive. For SoulX, using RTX 4090 or better GPUs. cuDNN is a must for real-time performance. Without it inference is 2× slower and VRAM usage doubles. ~850ms between submission a question and avatar speaks on an RTX 5090. ASR runs in parallel. As mentioned LFM3-Audio is called twice, which can be optimized. There’s also some overhead from the prototype UI. A native app with a more optimized implementation could further reduce latency. submitted by /u/Acceptable-Cycle4645 [link] [comments]",
+      "hot_score": 38.25,
+      "topic_id": null,
+      "seen_in": [
+        "reddit"
+      ],
+      "published_at": "2026-11-15T18:29:39+00:00",
+      "last_seen_at": "2026-11-15T23:03:28.106987+00:00",
+      "metrics": {
+        "score": 0,
+        "rank_score": 0.52
+      },
+      "streak_days": 0,
+      "language": "en"
+    }
+  },
+  "meta": {
+    "mode": "hybrid",
+    "day": "2026-11-16",
+    "generated_at": "2026-11-15T23:05:48.301268+00:00",
+    "window": {
+      "since": "2026-11-14T23:03:20.525527+00:00",
+      "until": "2026-11-15T23:03:28.232825+00:00",
+      "hours": 24.0,
+      "since_local": "2026-11-15T07:03+08:00",
+      "until_local": "2026-11-16T07:03+08:00",
+      "tz": "Asia/Shanghai"
+    },
+    "analysis": {
+      "items": 53,
+      "scored": 53,
+      "topics": 1,
+      "new_entity_mention_rows": 59,
+      "state_items": 12
+    },
+    "llm": {
+      "degraded": true,
+      "degraded_reason": "LLM 调用失败：LLMTruncationError",
+      "calls": 0
+    },
+    "collect": {
+      "ok_sources": 7,
+      "failed_sources": 0,
+      "skipped": 0,
+      "total_items": 113
+    },
+    "verify": {
+      "verified": 8,
+      "unverifiable": 0,
+      "deferred": 15,
+      "failed": 0,
+      "llm_calls": 8
+    },
+    "predictions": {
+      "total": 179,
+      "verified": 9,
+      "pending": 169,
+      "unverifiable": 1,
+      "hit_rate": 0.2222222222222222,
+      "weighted_score": 0.2222222222222222,
+      "brier": 0.2644444444444445
+    },
+    "prediction_generation": {
+      "mode": "hybrid",
+      "generated": 5,
+      "inserted": 5,
+      "dropped": [],
+      "llm_calls": 1,
+      "candidate_pool": 20,
+      "degraded": false,
+      "degraded_reason": ""
+    },
+    "brief": {
+      "max_items_per_section": 10,
+      "velocity_board_enabled": true,
+      "velocity_board_top_n": 5
+    },
+    "signals": {
+      "entities": 844,
+      "points": 1659,
+      "with_velocity": 110,
+      "insufficient": 112,
+      "cold_start": 622,
+      "min_window_hours": 6.0
+    },
+    "enhance_total": 26,
+    "enhanced": 0,
+    "enhance_skipped_count": 26,
+    "enhance_cache_hit": 0,
+    "enhance_cost_cny": 0.0
+  }
+}
