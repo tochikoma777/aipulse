@@ -1,6 +1,6 @@
 # AI Pulse 设计方案
 
-> ★ **当前版本：v1.24** · 对应基线 `m5` / `4244cae` · 详见 `docs/文档维护日志.md`
+> ★ **当前版本：v1.25** · 对应基线 `m5-web` / `e4afffd` · 详见 `docs/文档维护日志.md`
 > 文件名**固定不带版本号**——版本由文档头与维护日志标识，历史由 git 管理。
 
 > 一句话定位：**每日自动采集 AI 领域热点，不只整理，还给出可回测的推演与预言。**
@@ -9,7 +9,7 @@
 > 本文档是给开发 Agent（CodeBuddy / Claude Code / Cursor 等）执行的**唯一事实来源（SSOT）**。
 > Agent 必须严格按本方案实现，任何与文档冲突的"更好想法"必须先向项目负责人提出确认，不得擅自更改架构。
 
-**变更摘要（2026-10-11，已与项目负责人确认）**
+**变更摘要（v1.1–v1.25，持续更新，已与项目负责人确认）**
 
 v1.1：
 
@@ -24,6 +24,29 @@ v1.2（第二轮确认）：
 6. **Reddit 先用免认证 RSS**，M1 验收后再评估是否升级 OAuth（§5.6 / §19.1-6）
 7. **M0 即建公开仓库**，README 顶部标注 `WIP / 开发中`（§19.1-14、§14.2）
 8. **日报触达 = 文件 + Web 看板为主**，但**架构上必须预留统一 Notifier 抽象**，后续可加邮件/TG/飞书（§11.2）
+
+v1.25（★ Web 看板启用趋势/辩论 + 模型行为与错峰）：
+
+124. **★ 看板新增 `/trend` 与 `/debate`**：列表按期次目录名（窗口末日）倒序；详情页把现有 `.md`
+     经 `web/mdhtml.py` 安全转 HTML（全量转义、链接 scheme 白名单、`details/summary` 白名单、
+     512KB 截断），不改生成端；辩论同目录多议题用 `?slug=` 切换，非法期次/越界路径 404。
+
+125. **★ `llm.thinking_mode` 默认 `disabled`**：`deepseek-flash` 默认 `thinking=high`，
+     思考 token 吃满 `max_tokens`，短输出（主编点评 / 条目增强）会 `finish_reason=length`、
+     正文为空、`LLMTruncationError`；请求体只对 `deepseek-*` 发送 `thinking`，
+     `auto` 则不发送（兼容其他 OpenAI 兼容厂商）。
+
+126. **模型名显式化**：fast / strong 默认均为 `deepseek-flash`；旧别名
+     `deepseek-chat` / `deepseek-reasoner` 仍被服务端接受，但实际都返回 `deepseek-flash`。
+     要旗舰推理时显式设 `AIPULSE_LLM__STRONG_MODEL=deepseek-v4-pro`。
+
+127. **★ DeepSeek 峰时 / 错峰调度**：峰时为 UTC 周一至周五 `01:00–04:00` /
+     `06:00–10:00`（北京 09–12 / 14–18），其余半价。GitHub `schedule` 实测延迟 3–6h：
+     `daily.yml` 用 `18:30 UTC`（实际 21:30–00:30 UTC），`monthly.yml` 用 `11:00 UTC`
+     （实际 14:00–17:00 UTC），两者都落在错峰。
+
+128. **踩坑归档**：`docs/踩坑实录.md` §9 记录 thinking 截断、固定日期 fixture + 相对窗口、
+     产物期次命名三类坑；根因、逐日证据与复盘清单以该文件为准。
 
 v1.24（★ T9：trend / debate 自动触发）：
 

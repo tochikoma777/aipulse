@@ -89,7 +89,7 @@ tag 全集以 `git tag` 现场输出为准（当前 12 个）：
 
 ### 文档版本基线
 
-SSOT 两份文档当前 **v1.24**（`docs/文档维护日志.md`「维护记录」表首行 v1.24 = tag `t9` / 2026-10-24；v1.23 = `m5`，v1.22 = `m6c`）。文件名固定为 `docs/AI_Pulse_设计方案.md` 与 `docs/AI_Pulse_Agent开发执行手册.md`，**版本由 git 管理，不再写进文件名**。`docs/文档维护日志.md` 的「维护记录」表按**倒序**维护（新的在上），**该表顶部第一行**的 tag 才是「文档对应哪次提交」的唯一锚点（注意不要读上半部分的格式示例，那里的 v1.20 只是样例）。新会话先读它确认基线。**Agent 只读、不得修改**：`docs/AI_Pulse_设计方案.md` / `docs/AI_Pulse_Agent开发执行手册.md` / `docs/文档维护日志.md`，以及项目负责人下发的「新会话状态简报」（不在仓库内）。`docs/开发日志.md` 按「SSOT 四份」计，完整清单以项目负责人口径为准；`CONTRIBUTING.md` 只写了前两份，不要据此以为其余可改。文档维护必须「先提交代码 + 打 tag，再刷新文档」。
+SSOT 两份文档当前 **v1.25**（`docs/文档维护日志.md`「维护记录」表首行 v1.25 = tag `m5-web` / 2026-11-16；v1.24 = `t9`，v1.23 = `m5`）。文件名固定为 `docs/AI_Pulse_设计方案.md` 与 `docs/AI_Pulse_Agent开发执行手册.md`，**版本由 git 管理，不再写进文件名**。`docs/文档维护日志.md` 的「维护记录」表按**倒序**维护（新的在上），**该表顶部第一行**的 tag 才是「文档对应哪次提交」的唯一锚点（注意不要读上半部分的格式示例，那里的 v1.20 只是样例）。新会话先读它确认基线。**2026-11-16 起项目进入运行维护阶段，用户授权 Agent 全权限（含 SSOT 写入与 tag 执行）；但仍按「先提交代码 + 打 tag，再刷新文档」的顺序执行。**
 
 ### 新会话开场顺序
 
@@ -219,7 +219,7 @@ scripts/cron_knowledge.sh                             # 知识库独立导出（
 CI（`.github/workflows/ci.yml`，无 secrets）实际只跑 4 步：`ruff check .` → `ruff format --check .` → `mypy src/aipulse` → `pytest`（**没有覆盖率门禁**，覆盖率是本地基线，不达标不会挂 CI）。`.github/workflows/probe.yml` 是手动触发的探测，不在 CI 链上。
 
 ```bash
-uv run pytest                             # 全量（598 条，v1.24 基线 2026-10-24 实测；约 65s，无需网络、无需密钥；改测试数后重新计数）
+uv run pytest                             # 全量（609 条，v1.25 基线 2026-11-16 实测；约 65s，无需网络、无需密钥；改测试数后重新计数）
 uv run pytest tests/unit/test_dedup.py                      # 单文件
 uv run pytest "tests/unit/test_dedup.py::test_l2_merges_arxiv_and_hf_same_paper" -q  # 单用例
 uv run pytest -k "dedup or cluster" -q                      # 按关键字筛（跨文件，最常用）
@@ -535,14 +535,14 @@ selfcheck.{md,json} + watchlist.json / calibration.json（下期 L3/L4 回读）
 
 ## 硬性约定（CI 与人工验收都会查）
 
-### 必须停下来问项目负责人的四类事（v1.24）
+### 必须停下来问项目负责人的四类事（v1.25）
 
 1. **任何涉及“数据在哪里”的判断** —— `*.db` 不进仓库；公开数据只有 `data/reports/<date>/` 下已 commit 的文件。不要把本地库、缓存或未 commit 的报告当成公开数据源。
 2. **任何“本地能不能跑”的结论** —— WSL 无外网 → 不能本地采集；导出/渲染不需要网络，可以本地跑。不要把“采集不可用”推广成“所有功能都不可用”。
 3. **任何字段复用/新增** —— 先问是否已有字段能承担；不要直接加列、加表或造新字段。
 4. **优先级排序** —— 用户点名的需求自动 P0；不要按自己的 roadmap 或“顺手优化”降级。
 
-### 红线（v1.24；M6c 增 44–47、M5 增 48–52、T9 增 55–63，实际条目到 63，标题暂仍写“四十三条”）
+### 红线（v1.25；M6c 增 44–47、M5 增 48–52、T9 增 55–63，实际条目到 63，标题暂仍写“四十三条”）
 
 下面只列最常踩的 14 条；M6b 另有 5 条高频红线：**增强结果必须持久化**（`item_enhance`，不重复付费）、**只对 `brief.enhance_top_n` 的渲染集增强**、**中文条目不生成中文概述**、**why/stance 只由 `item_enhance.j2` 产出**（不得回显标题摘要、不得与 `item_comment.j2` 双写）、**增强失败只降级为 `—`，不拖垮日报**。另有时间语义三态、Actions 固定 `ubuntu-24.04`、star 只显示绝对增量等，见手册。
 
@@ -603,7 +603,7 @@ selfcheck.{md,json} + watchlist.json / calibration.json（下期 L3/L4 回读）
 - M6c 单测：`test_knowledge_store.py`（用户库建表/CRUD/主库 checksum 三不变/只读守卫）、`test_knowledge_cli.py`（mark/note/items/list/export、URL/query 定位、候选不自动选、`--allow-unknown`）、`test_daily_index.py`（四种历史结构/why 优先合并/URL 查询）、`test_export.py`（协议/回退/501 条与 200KB 分片/幂等）。
 - inbox CLI 单测（`test_inbox_cli.py`）：`add` 正常入库 / **抓不到标题也保留条目**（标题退化为 URL，断网契约）/ 重复投喂幂等 / `add-file` 批量导入 / `list` 空态与展示。
 - M5 单测：`test_cross_period.py`（50 例：9 结构 / 轨迹 / 坏日与源集合变更归因 / `homogeneous_segments` 同构切分；改结构口径必须补例）、`test_trend.py`（证据包裁剪 / 分段字数与套话校验 / 单段失败只跳该段）、`test_selfcheck.py`（L1–L4 各层 pass/fail、状态文件用 `tmp_path`）。三者都是**纯离线**，用 `tmp_path` 造日报目录，不读仓库里的 `data/reports`
-- 覆盖率基线（v1.24 / 2026-10-24 实测，重跑请重新取值）：`web/app` 95% / `web/data` 92% / `web/charts` 100% / `render/verdicts`·`render/predictions` 100% / `render/markdown` 93% / `pipeline/daily` 92% / `reasoning/brief` 88% / `cli/commands/inbox` 98% / `cli/commands/knowledge` 93% / `knowledge/export` 99% / `knowledge/daily_index` 92% / `knowledge/store` 94% / `collectors/` 88% / **TOTAL 91%**。
+- 覆盖率基线（v1.24 / 2026-10-24 实测；v1.25 新增 web/mdhtml 与趋势/辩论页面后尚未重测，重跑请重新取值）：`web/app` 95% / `web/data` 92% / `web/charts` 100% / `render/verdicts`·`render/predictions` 100% / `render/markdown` 93% / `pipeline/daily` 92% / `reasoning/brief` 88% / `cli/commands/inbox` 98% / `cli/commands/knowledge` 93% / `knowledge/export` 99% / `knowledge/daily_index` 92% / `knowledge/store` 94% / `collectors/` 88% / **TOTAL 91%**。
 - T9 单测：`test_debate.py`（自动选题打分 / 时效守卫 / 门槛跳过 / 四方并行 / 证伪条件校验 / 收敛块字段）、`test_cli_trend.py`（`trend` CLI 参数与落盘）、`test_watchlist.py`（只核对不新建 / 无日报退出码 2 / 状态合并）、`test_render_weekly.py` + `test_render_debate.py`（人类层渲染与双层分离）。全部纯离线，用 `tmp_path` 造日报目录。
 
 ---
@@ -615,8 +615,8 @@ selfcheck.{md,json} + watchlist.json / calibration.json（下期 L3/L4 回读）
 | `README.md` | 对外门面：定位 / 能力清单 / 三档模式 / **三种部署形态与三句纠偏** / 快速开始 / ★ 预言记分板 / mermaid 架构图 / 数据源与合规 / Roadmap。**记分板区块是生成物（"请勿手改数字"）**；改 README 前先确认它没有偏离「对外交付件」定位（不是过程日志） |
 | `CONTRIBUTING.md` | 贡献流程 + 10 条硬规矩（可证伪口径、只读看板、SSOT 只读…）|
 | `.github/ISSUE_TEMPLATE/` | bug / feature 表单（bug 表单要求先跑 `doctor`；feature 表单列明 V1 边界）|
-| `docs/AI_Pulse_Agent开发执行手册.md` | **SSOT 级执行手册**（v1.24）：全局约定、**红线（M6c 44–47 / M5 48–52 / T9 55–63）**、M0–M6 任务卡与 DoD、常见坑、Agent 工作方式要求。开工前必读，**只读** |
-| `docs/AI_Pulse_设计方案.md` | 设计 SSOT（v1.24），代码注释里的 `§5.x` / `§6.2` / `§7` 都指向它；**只读**。M6c 设计见 §11.6（知识库），M6b 增强见 §11.1，T9 自动触发见 §11.8 |
+| `docs/AI_Pulse_Agent开发执行手册.md` | **SSOT 级执行手册**（v1.25）：全局约定、**红线（M6c 44–47 / M5 48–52 / T9 55–63）**、M0–M6 任务卡与 DoD、常见坑、Agent 工作方式要求。开工前必读，**可写（2026-11-16 授权，仍按 commit→tag→SSOT 顺序）** |
+| `docs/AI_Pulse_设计方案.md` | 设计 SSOT（v1.25），代码注释里的 `§5.x` / `§6.2` / `§7` 都指向它；**可写（2026-11-16 授权，仍按顺序）**。M6c 设计见 §11.6（知识库），M6b 增强见 §11.1，T9 自动触发见 §11.8 |
 | `docs/文档维护日志.md` | 每行 = 一次文档维护对应的 tag/commit；**「维护记录」表倒序排列，新会话先读该表顶部第一行确认基线**（别读格式示例）；Agent 只读 |
 | `docs/简报格式规范.md` | 已实现的简报格式规范（头条来源块 / 总览分条 / 四节点评 / 表格列固定与空值占位；M6b 起含「要点 / 为什么重要 / 立场」三列全覆盖约定）|
 | `docs/M5_可读化改造方案.md` | M5 S5 人类层渲染的方案与判据（三句话 / 表格 / 交锋矩阵 / 折叠免责 / 文末溯源；双层分离落地细节）|

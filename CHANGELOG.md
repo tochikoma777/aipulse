@@ -8,6 +8,20 @@
 
 ---
 
+## [m5-web] — SSOT v1.25（2026-11-16）
+
+### Tagged
+
+- `m5-web` @ `e4afffd`：Web 看板趋势/辩论页面 + deepseek-flash thinking 修复 + 错峰调度 + 踩坑归档。
+
+### Docs
+
+- SSOT 两份文档版本头更新到 **v1.25**（baseline `m5-web` / `e4afffd`），修正设计方案原 baseline（`m5` / `4244cae`）与执行手册配套文档版本（v1.23）的不一致。
+- `docs/文档维护日志.md` 新增 v1.25 行。
+- `CODEBUDDY.md` 的 SSOT 基线、测试数与「只读」口径同步更新（2026-11-16 起授权可写）。
+
+---
+
 ## [feat] — 看板启用趋势 / 辩论页面（2026-11-16）
 
 ### Added

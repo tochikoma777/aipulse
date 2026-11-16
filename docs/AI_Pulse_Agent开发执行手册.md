@@ -1,10 +1,17 @@
 # AI Pulse · Agent 开发执行手册
 
-> ★ **当前版本：v1.24** · 对应基线 `m5` / `4244cae` · 详见 `docs/文档维护日志.md`
+> ★ **当前版本：v1.25** · 对应基线 `m5-web` / `e4afffd` · 详见 `docs/文档维护日志.md`
 > 文件名**固定不带版本号**。文内 `v1.x` 标注为该决策产生的版本，用于追溯。
 
-> 配套文档：`AI_Pulse_设计方案.md`（设计 SSOT，v1.23）
+> 配套文档：`AI_Pulse_设计方案.md`（设计 SSOT，v1.25）
 > **已确认决策清单（Agent 直接执行，无需再问）**
+>
+> **v1.25（2026-11-16，运行维护阶段）**：
+> - 看板新增 `/trend` / `/debate`（只读；期次 = 窗口末日；md 经 `web/mdhtml.py` 安全渲染）；
+> - `llm.thinking_mode=disabled`（`deepseek-flash` 默认 thinking 会吃满 `max_tokens`）；
+> - fast / strong 显式 `deepseek-flash`，需要旗舰推理设 `deepseek-v4-pro`；
+> - 错峰调度：`daily` 18:30 UTC、`monthly` 11:00 UTC（抵消 GitHub 3–6h 延迟）；
+> - `docs/踩坑实录.md` §9 归档 thinking / 时间炸弹 / 期次命名。
 >
 > v1.1：① 微信/X 彻底移除（改用 inbox 手动投喂）；② LLM 默认 DeepSeek；③ 命名 `aipulse`（AI 脉搏）+ 许可证 **MIT**；④ **里程碑重排：M4 = 发布与自动化，M5 = 周期长文与辩论**（任务卡顺序已对调）
 >
