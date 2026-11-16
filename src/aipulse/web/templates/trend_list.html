@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}趋势 · AI 脉搏{% endblock %}
+{% block content %}
+<h1>周期趋势</h1>
+<p class="lede">每月对上一个完整自然月做一次跨期结构分析；期次按分析窗口末日命名。</p>
+
+{% if periods %}
+  {% for p in periods %}
+  <section class="card">
+    <h2><a href="/trend/{{ p.period }}">{{ p.period }}</a></h2>
+    <p class="lede">{{ p.headline or "（本期未生成三句话）" }}</p>
+    <p class="meta">成本 ¥{{ p.cost }}{% if not p.has_json %} · 旧产物（无机器层）{% endif %}</p>
+  </section>
+  {% endfor %}
+{% else %}
+<section class="card empty">
+  还没有趋势周报。每月 1 日运行 <code>aipulse trend</code> 后出现在这里。
+</section>
+{% endif %}
+{% endblock %}

@@ -123,3 +123,22 @@ footer {
   border-top: 1px solid var(--line); color: var(--muted); font-size: 12.5px;
 }
 footer p { margin: 4px 0; }
+
+/* ── 报告 Markdown（趋势 / 辩论详情）────────────────────────────── */
+.md-body h1, .md-body h2, .md-body h3 { margin: 18px 0 8px; line-height: 1.4; }
+.md-body h1 { font-size: 22px; }
+.md-body h2 { font-size: 18px; }
+.md-body h3 { font-size: 15px; }
+.md-body p { margin: 8px 0; line-height: 1.7; }
+.md-body ul, .md-body ol { margin: 8px 0 8px 22px; padding: 0; }
+.md-body li { margin: 4px 0; line-height: 1.65; }
+.md-body blockquote {
+  margin: 12px 0; padding: 10px 14px;
+  border-left: 3px solid var(--line); background: var(--wash);
+}
+.md-body blockquote h3 { margin-top: 0; }
+.md-body hr { border: 0; border-top: 1px solid var(--line); margin: 18px 0; }
+.md-body details { margin: 12px 0; }
+.md-body summary { cursor: pointer; color: var(--muted); }
+.md-body code { background: var(--wash); padding: 1px 4px; border-radius: 3px; }
+.md-body .md-sub { color: var(--muted); font-size: 12px; }

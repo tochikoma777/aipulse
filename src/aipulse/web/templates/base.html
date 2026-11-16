@@ -18,9 +18,8 @@
     <a href="/predictions" class="{% if active == 'predictions' %}on{% endif %}">预言记分板</a>
     <a href="/topics" class="{% if active == 'topics' %}on{% endif %}">主题</a>
     <a href="/search" class="{% if active == 'search' %}on{% endif %}">检索</a>
-    {% for entry in m5_entries %}
-    <span class="nav-disabled" title="M5 完成后点亮">{{ entry.label }}</span>
-    {% endfor %}
+    <a href="/trend" class="{% if active == 'trend' %}on{% endif %}">趋势</a>
+    <a href="/debate" class="{% if active == 'debate' %}on{% endif %}">辩论</a>
   </nav>
 </header>
 <main>

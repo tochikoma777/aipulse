@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}辩论 · AI 脉搏{% endblock %}
+{% block content %}
+<h1>多角色辩论</h1>
+<p class="lede">乐观 / 怀疑 / 工程 / 投资四方陈述、交叉质证，再由主持人收敛。</p>
+
+{% if debates %}
+  {% for d in debates %}
+  <section class="card">
+    <h2><a href="/debate/{{ d.period }}?slug={{ d.slug }}">{{ d.topic }}</a></h2>
+    <p class="meta">{{ d.period }} · 置信度 {{ d.confidence }}</p>
+  </section>
+  {% endfor %}
+{% else %}
+<section class="card empty">
+  还没有辩论记录。每月 1 日运行 <code>aipulse debate</code> 后出现在这里。
+</section>
+{% endif %}
+{% endblock %}

@@ -13,6 +13,7 @@
 from __future__ import annotations
 
 import json
+import re
 from datetime import date, timedelta
 from pathlib import Path
 from typing import Any
@@ -282,6 +283,28 @@ def _days_ago(offset: int, tz_name: str = DEFAULT_TZ) -> str:
     return (today_local(tz_name) - timedelta(days=offset)).isoformat()
 
 
+_PERIOD_RE = re.compile(r"\d{4}-\d{2}-\d{2}")
+
+
+def is_valid_period(value: str) -> bool:
+    """M5 期次 = 目录名 = 窗口末日，必须是合法 ISO 日期。"""
+    if not _PERIOD_RE.fullmatch(value):
+        return False
+    try:
+        date.fromisoformat(value)
+    except ValueError:
+        return False
+    return True
+
+
+def _topic_from_markdown(md: str) -> str:
+    """从辩论 md 的 H1 取议题：`# AI 脉搏 · 多角色辩论：<topic>`。"""
+    first = next((line.strip() for line in md.splitlines() if line.strip()), "")
+    if "：" in first:
+        return first.split("：", 1)[1].strip()
+    return first.lstrip("# ").strip()
+
+
 class ReportIndex:
     """`data/reports/YYYY/MM/DD/` 的只读索引（报告即数据库，§14.1）。"""
 
@@ -308,7 +331,9 @@ class ReportIndex:
         return self.reports_dir / year / month / day_part
 
     def load_json(self, day: str, filename: str) -> dict[str, Any] | None:
-        path = self.dir_for(day) / filename
+        return self._read_json_path(self.dir_for(day) / filename)
+
+    def _read_json_path(self, path: Path) -> dict[str, Any] | None:
         if not path.exists():
             return None
         try:
@@ -317,6 +342,100 @@ class ReportIndex:
             log.warning("web.report.unreadable", path=str(path), error=repr(exc))
             return None
         return data if isinstance(data, dict) else None
+
+    def _read_text_path(self, path: Path) -> str:
+        if not path.exists():
+            return ""
+        try:
+            return path.read_text(encoding="utf-8")
+        except OSError as exc:  # pragma: no cover - 权限/编码异常
+            log.warning("web.report.unreadable", path=str(path), error=repr(exc))
+            return ""
+
+    def _m5_dir(self, category: str, period: str) -> Path | None:
+        """`reports/<category>/<period>/`；非法期次或越界路径一律返回 None。"""
+        if not is_valid_period(period):
+            return None
+        base = (self.reports_dir / category).resolve()
+        target = (base / period).resolve()
+        if not target.is_relative_to(base):
+            return None
+        return target if target.is_dir() else None
+
+    # ── M5：趋势 / 辩论产物（目录名 = 窗口末日）────────────────────
+
+    def trend_periods(self) -> list[str]:
+        base = self.reports_dir / "trend"
+        if not base.exists():
+            return []
+        periods = [
+            path.name
+            for path in base.iterdir()
+            if path.is_dir()
+            and is_valid_period(path.name)
+            and ((path / "weekly.md").exists() or (path / "weekly.json").exists())
+        ]
+        return sorted(periods, reverse=True)
+
+    def debate_periods(self) -> list[str]:
+        base = self.reports_dir / "debate"
+        if not base.exists():
+            return []
+        periods = [
+            path.name
+            for path in base.iterdir()
+            if path.is_dir() and is_valid_period(path.name) and any(path.glob("debate-*.md"))
+        ]
+        return sorted(periods, reverse=True)
+
+    def load_trend(self, period: str) -> dict[str, Any] | None:
+        directory = self._m5_dir("trend", period)
+        if directory is None:
+            return None
+        json_path = directory / "weekly.json"
+        return {
+            "period": period,
+            "md": self._read_text_path(directory / "weekly.md"),
+            "json": self._read_json_path(json_path),
+            "selfcheck": self._read_json_path(directory / "selfcheck.json"),
+            "has_json": json_path.exists(),
+        }
+
+    def debate_candidates(self, period: str) -> list[dict[str, str]]:
+        directory = self._m5_dir("debate", period)
+        if directory is None:
+            return []
+        out: list[dict[str, str]] = []
+        for md_path in sorted(directory.glob("debate-*.md")):
+            slug = md_path.stem.removeprefix("debate-")
+            data = self._read_json_path(md_path.with_suffix(".json")) or {}
+            md = self._read_text_path(md_path)
+            topic = str(data.get("topic") or _topic_from_markdown(md) or slug)
+            out.append({"slug": slug, "topic": topic})
+        return out
+
+    def load_debate(self, period: str, slug: str | None = None) -> dict[str, Any] | None:
+        candidates = self.debate_candidates(period)
+        if not candidates:
+            return None
+        if slug:
+            chosen = next((item for item in candidates if item["slug"] == slug), None)
+            if chosen is None:
+                return None
+        else:
+            chosen = candidates[0]
+        directory = self._m5_dir("debate", period)
+        if directory is None:  # pragma: no cover - 上面已校验
+            return None
+        md_path = directory / f"debate-{chosen['slug']}.md"
+        return {
+            "period": period,
+            "slug": chosen["slug"],
+            "topic": chosen["topic"],
+            "md": self._read_text_path(md_path),
+            "json": self._read_json_path(md_path.with_suffix(".json")),
+            "candidates": candidates,
+        }
 
     def load_daily(self, day: str) -> dict[str, Any] | None:
         return self.load_json(day, "daily.json")

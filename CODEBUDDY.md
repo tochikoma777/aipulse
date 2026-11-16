@@ -21,7 +21,7 @@ tag `m5`）、T9（trend/debate 自动触发 + `aipulse watchlist`，tag `t9`）
 | `cli/commands/watchlist.py` | ✅ 每日轻量核对 watchlist（只核对不新建、零 LLM），daily.yml 每步都跑 |
 | `data/reports/debate/` | ✅ `debate-<slug>.{md,json}`（不入库，只落盘） |
 | `pipeline/weekly.py` | ⬜ 不存在（周报靠 `aipulse trend` 手动/cron 触发） |
-| `web/app.py` 的「趋势」「辩论」入口 | **两者都仍置灰**：`web/app.py::M5_ENTRIES` 是纯占位，`base.html` 对它一律渲染 `nav-disabled`（title「M5 完成后点亮」）。M5 产物只在文件系统与 CLI 里消费，看板**没有 trend/debate 页面**——别照旧注释以为「趋势」已点亮 |
+| `web/app.py` 的「趋势」「辩论」页面 | ✅ 已启用：`/trend` 与 `/debate` 各有一级列表 + 期次详情；详情页把 `data/reports/{trend,debate}/<期次>/*.md` 经 `web/mdhtml.py` 安全转 HTML 展示，JSON 只补摘要/自检。期次 = 目录名 = 窗口末日（11-01 运行落在 `2026-10-31/`）|
 | debate 的 auto 模式（从 trend 挑本期最大争议话题） | ✅ 已落地：`reasoning/auto_topic.py::select_debate_topic()`——4 信号争议度打分（板块份额 \|Δ\|≥3pp / 上期下过判断 / 有条目刚 dropped / 有条目未到期）+ **时效守卫**（trend 产物必须属于本期）+ **`min_controversy` 门槛**（默认 6，低于则跳过并说明）。省略 `--topic` 即走它，依据逐条打印 |
 
 **debate 验收要点（手册 §6 DoD，别做偏）**：四个 persona **必须 `asyncio.gather` 并行**（串行视为不合格）；证据包每条 ≤60 字、合计 ≤15 条、**绝不回显摘要原文**；收敛块必须含「什么证据会让我改变判断」。
@@ -387,7 +387,7 @@ cron `0 11 1 * *`（UTC 11:00，每月 1 日；错峰，调度延迟 3–6h 后�
 | `pipeline/daily.py` | `run_daily()` / `analyze_day()` / `report_dir_for()`：每日一条龙编排。`_generate_daily_predictions()` 在 hybrid/full 档生成当日预言并入库（异常只记 meta，不拖垮日报）；随后产出 `predictions.md` / `scoreboard.md` / `verdicts.md` / `signals.json`，并把 `predictions`（`_stats_digest`）/ `prediction_generation` / `signals` 写进 `meta.json` |
 | `notify/base.py` | `Notifier` Protocol + `RenderedReport`；`notify/file.py::FileNotifier`（唯一实现）。其余渠道明确 `NotImplementedError` |
 | `utils/text.py` | `estimate_tokens`（中文 1 字 1 token / 英文 3.5 字符）+ `truncate_summary(≤300)` |
-| `web/app.py` | M4 只读看板：`create_app()`，5 个页面（`/` `/archive` `/predictions` `/topics` `/search`）+ HTMX 局部刷新 `/search/partial`；「趋势」「辩论」入口置灰占位（M5 点亮）。测试可注入 `db_path` / `reports_dir` |
+| `web/app.py` | 只读看板：`create_app()`，7 个页面（`/` `/archive` `/predictions` `/topics` `/search` `/trend` `/debate`）+ HTMX 局部刷新 `/search/partial`；趋势/辩论详情经 `web/mdhtml.py` 安全渲染 md。测试可注入 `db_path` / `reports_dir` |
 | `web/data.py` | `ReadOnlyStore`（SQLite **`mode=ro`** 只读 + `available` 判存在）/ `ReportIndex`（扫 `data/reports/*/*/*/daily.json`）。库不存在时不创建、查询返回空，页面走空态 |
 | `web/charts.py` | `build_calibration_chart()`：校准分桶 → SVG 坐标（纯函数）。对角虚线 = 完美校准 |
 | `web/templates/` · `web/static/` | Jinja2 模板（base/index/archive/predictions/topics/search/_results）+ 极简黑白样式（无前端构建链）。**htmx 1.9.12 已收进 `static/htmx.min.js`（不走 CDN）**，且只做渐进增强——脚本没加载时搜索表单退化为普通 GET |

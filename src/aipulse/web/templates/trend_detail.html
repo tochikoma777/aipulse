@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}{{ period }} 趋势 · AI 脉搏{% endblock %}
+{% block content %}
+<p class="meta"><a href="/trend">← 返回趋势列表</a></p>
+<h1>{{ period }} 周期趋势</h1>
+<p class="meta">
+  {% if window %}窗口 {{ window.get('start', '—') }} → {{ window.get('end', '—') }}（{{ window.get('days', '—') }} 天） · {% endif %}
+  成本 ¥{{ cost }}{% if not has_json %} · 旧产物（无机器层）{% endif %}
+</p>
+
+{% if layers %}
+<section class="card">
+  <h2>自验证</h2>
+  <table>
+    <thead><tr><th>层</th><th>名称</th><th>结论</th></tr></thead>
+    <tbody>
+      {% for layer in layers %}
+      <tr>
+        <td>{{ layer.get('layer', '') }}</td>
+        <td>{{ layer.get('name', '') }}</td>
+        <td>{{ layer.get('verdict', '') }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endif %}
+
+{% if body_html %}
+<article class="card md-body">{{ body_html|safe }}</article>
+{% else %}
+<section class="card empty">该期正文缺失（旧产物）。</section>
+{% endif %}
+{% endblock %}

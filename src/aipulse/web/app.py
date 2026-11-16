@@ -6,10 +6,11 @@
 - `/predictions` ★ 预言记分板 + 校准曲线
 - `/topics`      主题演化
 - `/search`      关键词检索
+- `/trend`       周期趋势列表（`/trend/{期次}` 详情）
+- `/debate`      多角色辩论列表（`/debate/{期次}?slug=` 详情）
 
 **红线 22**：全站只读。数据访问统一走 `web/data.py`（SQLite 以 `mode=ro` 打开），
-页面里不存在任何提交表单或写接口；「趋势」「辩论」入口按 M4 要求置灰占位，
-M5 完成后才点亮。
+页面里不存在任何提交表单或写接口；趋势/辩论只读 `data/reports/` 下的 md/json。
 """
 
 from __future__ import annotations
@@ -18,7 +19,7 @@ from datetime import date
 from pathlib import Path
 from typing import Any
 
-from fastapi import FastAPI, Query, Request
+from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -30,6 +31,7 @@ from aipulse.core.timeutil import today_local
 from aipulse.render.scoreboard import render_scoreboard_markdown
 from aipulse.web.charts import build_calibration_chart
 from aipulse.web.data import ReadOnlyStore, ReportIndex
+from aipulse.web.mdhtml import render_md
 
 log = get_logger(__name__)
 
@@ -37,10 +39,10 @@ _HERE = Path(__file__).resolve().parent
 _TEMPLATES_DIR = _HERE / "templates"
 _STATIC_DIR = _HERE / "static"
 
-# 「趋势」「辩论」是 M5 能力，M4 只登记入口（置灰）——不要在 M4 实现它们
+# 保留常量以兼容既有导入；导航已在 base.html 中直接链接到 /trend 与 /debate
 M5_ENTRIES = (
-    {"label": "趋势", "note": "周期长文（M5）"},
-    {"label": "辩论", "note": "多角色辩论（M5）"},
+    {"label": "趋势", "href": "/trend"},
+    {"label": "辩论", "href": "/debate"},
 )
 
 
@@ -231,6 +233,102 @@ def create_app(
             request,
             "_results.html",
             {"request": request, "q": q, "results": results, "searched": bool(q.strip())},
+        )
+
+    @app.get("/trend", response_class=HTMLResponse)
+    def trend_list(request: Request) -> HTMLResponse:
+        periods: list[dict[str, Any]] = []
+        for period in reports.trend_periods():
+            item = reports.load_trend(period)
+            if item is None:
+                continue
+            data = item["json"] or {}
+            headlines = data.get("headlines") or []
+            periods.append(
+                {
+                    "period": period,
+                    "headline": str(headlines[0]) if headlines else "",
+                    "has_json": item["has_json"],
+                    "cost": _num((data.get("llm") or {}).get("cost_cny"), 4),
+                }
+            )
+        return templates.TemplateResponse(
+            request,
+            "trend_list.html",
+            _base(request, "trend", periods=periods),
+        )
+
+    @app.get("/trend/{period}", response_class=HTMLResponse)
+    def trend_detail(request: Request, period: str) -> HTMLResponse:
+        item = reports.load_trend(period)
+        if item is None:
+            raise HTTPException(status_code=404, detail="趋势期次不存在")
+        data = item["json"] or {}
+        return templates.TemplateResponse(
+            request,
+            "trend_detail.html",
+            _base(
+                request,
+                "trend",
+                period=period,
+                window=data.get("window") or {},
+                body_html=render_md(item["md"]),
+                layers=(item["selfcheck"] or {}).get("layers") or [],
+                cost=_num((data.get("llm") or {}).get("cost_cny"), 4),
+                has_json=item["has_json"],
+            ),
+        )
+
+    @app.get("/debate", response_class=HTMLResponse)
+    def debate_list(request: Request) -> HTMLResponse:
+        debates: list[dict[str, Any]] = []
+        for period in reports.debate_periods():
+            for candidate in reports.debate_candidates(period):
+                item = reports.load_debate(period, candidate["slug"])
+                if item is None:
+                    continue
+                data = item["json"] or {}
+                moderator = data.get("moderator") or {}
+                debates.append(
+                    {
+                        "period": period,
+                        "slug": item["slug"],
+                        "topic": item["topic"],
+                        "confidence": _num(moderator.get("overall_confidence")),
+                    }
+                )
+        return templates.TemplateResponse(
+            request,
+            "debate_list.html",
+            _base(request, "debate", debates=debates),
+        )
+
+    @app.get("/debate/{period}", response_class=HTMLResponse)
+    def debate_detail(
+        request: Request, period: str, slug: str | None = Query(None)
+    ) -> HTMLResponse:
+        item = reports.load_debate(period, slug)
+        if item is None:
+            raise HTTPException(status_code=404, detail="辩论期次或议题不存在")
+        data = item["json"] or {}
+        moderator = data.get("moderator") or {}
+        return templates.TemplateResponse(
+            request,
+            "debate_detail.html",
+            _base(
+                request,
+                "debate",
+                period=period,
+                slug=item["slug"],
+                topic=item["topic"],
+                body_html=render_md(item["md"]),
+                candidates=item["candidates"],
+                confidence=_num(moderator.get("overall_confidence")),
+                evidence=data.get("evidence_count"),
+                falsification_usable=data.get("falsification_usable"),
+                falsification_total=data.get("falsification_total"),
+                cost=_num(data.get("cost_cny"), 4),
+            ),
         )
 
     return app

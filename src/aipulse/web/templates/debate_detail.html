@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}{{ topic }} · 辩论 · AI 脉搏{% endblock %}
+{% block content %}
+<p class="meta"><a href="/debate">← 返回辩论列表</a></p>
+<h1>{{ topic }}</h1>
+<p class="meta">
+  {{ period }} · 置信度 {{ confidence }}
+  {% if evidence is not none %} · 证据 {{ evidence }} 条{% endif %}
+  {% if falsification_total %} · 可用证伪 {{ falsification_usable }}/{{ falsification_total }}{% endif %}
+   · 成本 ¥{{ cost }}
+</p>
+
+{% if candidates|length > 1 %}
+<section class="card">
+  <h2>本期其他议题</h2>
+  <ul>
+    {% for c in candidates %}
+    <li>
+      {% if c.slug == slug %}
+        <strong>{{ c.topic }}</strong>
+      {% else %}
+        <a href="/debate/{{ period }}?slug={{ c.slug }}">{{ c.topic }}</a>
+      {% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+</section>
+{% endif %}
+
+{% if body_html %}
+<article class="card md-body">{{ body_html|safe }}</article>
+{% else %}
+<section class="card empty">该期辩论正文缺失。</section>
+{% endif %}
+{% endblock %}

@@ -136,6 +136,58 @@ def _write_report(reports_dir, day: str, *, headline: str) -> None:
     )
 
 
+def _write_trend(reports_dir, period: str = "2026-10-31", *, with_json: bool = True):
+    target = reports_dir / "trend" / period
+    target.mkdir(parents=True, exist_ok=True)
+    (target / "weekly.md").write_text(
+        "# AI 脉搏 · 周度趋势\n\n"
+        "> ### 📌 本周三句话\n>\n> 1. **开源份额上升**\n\n"
+        "## 本周判断\n\n- **上升主题**：见 [示例](https://example.com/a)\n\n"
+        "| 板块 | 本周 |\n|---|---|\n| 开源 | 52.6% |\n",
+        encoding="utf-8",
+    )
+    if with_json:
+        (target / "weekly.json").write_text(
+            json.dumps(
+                {
+                    "window": {"start": "2026-10-15", "end": "2026-10-31", "days": 17},
+                    "headlines": ["开源份额上升"],
+                    "judgements": [{"title": "上升主题"}],
+                    "llm": {"cost_cny": 0.1},
+                },
+                ensure_ascii=False,
+            ),
+            encoding="utf-8",
+        )
+    return target
+
+
+def _write_debate(
+    reports_dir, period: str = "2026-10-31", *, slug: str = "topic-a", topic: str = "议题 A"
+):
+    target = reports_dir / "debate" / period
+    target.mkdir(parents=True, exist_ok=True)
+    (target / f"debate-{slug}.md").write_text(
+        f"# AI 脉搏 · 多角色辩论：{topic}\n\n## 结论卡片\n\n- **共识**：正反双方一致\n",
+        encoding="utf-8",
+    )
+    (target / f"debate-{slug}.json").write_text(
+        json.dumps(
+            {
+                "topic": topic,
+                "evidence_count": 15,
+                "falsification_usable": 9,
+                "falsification_total": 9,
+                "cost_cny": 0.1659,
+                "moderator": {"overall_confidence": 0.44},
+            },
+            ensure_ascii=False,
+        ),
+        encoding="utf-8",
+    )
+    return target
+
+
 def _client(tmp_path, *, db=None, reports=None) -> TestClient:
     app = create_app(
         db_path=db or (tmp_path / "aipulse.db"),
@@ -193,15 +245,85 @@ def test_htmx_is_served_locally_not_from_cdn(tmp_path):
 def test_all_pages_render_without_any_data(tmp_path):
     client = _client(tmp_path)
 
-    for path in ("/", "/archive", "/predictions", "/topics", "/search", "/search?q=vllm"):
+    for path in (
+        "/",
+        "/archive",
+        "/predictions",
+        "/topics",
+        "/search",
+        "/search?q=vllm",
+        "/trend",
+        "/debate",
+    ):
         response = client.get(path)
         assert response.status_code == 200, path
 
     home = client.get("/").text
     assert "还没有任何报告" in home
-    assert "nav-disabled" in home  # 趋势 / 辩论 置灰占位
+    assert "nav-disabled" not in home
+    assert 'href="/trend"' in home and 'href="/debate"' in home
     assert "趋势" in home and "辩论" in home
+    assert "还没有趋势周报" in client.get("/trend").text
+    assert "还没有辩论记录" in client.get("/debate").text
     assert "只读" in client.get("/predictions").text
+
+
+def test_trend_list_and_detail_render_markdown(tmp_path):
+    reports = tmp_path / "reports"
+    _write_trend(reports)
+    client = _client(tmp_path, reports=reports)
+
+    listing = client.get("/trend")
+    assert listing.status_code == 200
+    assert "2026-10-31" in listing.text
+    assert "开源份额上升" in listing.text
+
+    detail = client.get("/trend/2026-10-31")
+    assert detail.status_code == 200
+    body = detail.text
+    assert "<h2>本周判断</h2>" in body
+    assert "<strong>上升主题</strong>" in body
+    assert "<table>" in body and "52.6%" in body
+    assert 'href="https://example.com/a"' in body
+    assert "自验证" not in body
+
+
+def test_trend_detail_tolerates_missing_json(tmp_path):
+    reports = tmp_path / "reports"
+    _write_trend(reports, with_json=False)
+
+    detail = _client(tmp_path, reports=reports).get("/trend/2026-10-31")
+    assert detail.status_code == 200
+    assert "旧产物" in detail.text
+    assert "<h2>本周判断</h2>" in detail.text
+
+
+def test_debate_list_and_detail_with_slug(tmp_path):
+    reports = tmp_path / "reports"
+    _write_debate(reports, slug="topic-a", topic="议题 A")
+    _write_debate(reports, slug="topic-b", topic="议题 B")
+    client = _client(tmp_path, reports=reports)
+
+    listing = client.get("/debate")
+    assert "议题 A" in listing.text and "议题 B" in listing.text
+
+    default = client.get("/debate/2026-10-31")
+    assert default.status_code == 200
+    assert "议题 A" in default.text
+    assert "本期其他议题" in default.text
+
+    switched = client.get("/debate/2026-10-31?slug=topic-b")
+    assert switched.status_code == 200
+    assert "议题 B" in switched.text
+    assert "<strong>共识</strong>" in switched.text
+
+
+def test_m5_invalid_period_returns_404(tmp_path):
+    client = _client(tmp_path)
+    assert client.get("/trend/not-a-date").status_code == 404
+    assert client.get("/trend/2026-13-99").status_code == 404
+    assert client.get("/debate/not-a-date").status_code == 404
+    assert client.get("/debate/2026-10-31?slug=../../etc/passwd").status_code == 404
 
 
 def test_predictions_empty_state_reports_runtime_days(tmp_path):

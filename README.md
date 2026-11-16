@@ -121,7 +121,7 @@ uv run aipulse daily                    # hybrid/full 档：自动生成预言 +
 | **★ 自验证** | `aipulse selfcheck`：L1 硬判据 / L2 信息增量 / L3 跨期回检 / L4 校准追踪，默认读 `weekly.json` 机器层，纯离线零成本，结论写 `admission.json` 供下期收紧门槛 |
 | **★ 多角色辩论** | `aipulse debate`：乐观 / 怀疑 / 工程 / 投资四方并行陈述 → 交叉质证 → 主持人收敛为"共识 / 关键分歧 / 可执行结论 / 置信度 / 什么证据会让我改变判断"。证据包 ≤15 条、每条 ≤60 字、绝不回显摘要原文。省略 `--topic` 时按争议度自动选题，依据逐条打印 |
 | **★ 知识库** | 给日报条目写本地笔记与阅读状态；`knowledge export` 生成 `index.md` / `my-notes.md` / `topics/*.md`，可直接喂给任意 AI 工具 |
-| Web 看板 | `aipulse serve`：今日简报 / 归档 / 记分板 + 校准曲线 / 主题演化 / 检索（**全站只读**） |
+| Web 看板 | `aipulse serve`：今日简报 / 归档 / 记分板 + 校准曲线 / 主题演化 / 检索 / **周期趋势 / 多角色辩论**（**全站只读**） |
 | 自动化 | Actions 每日自动跑一次并 commit 报告（cron `18:30 UTC`，抵消调度延迟后实际约北京 05:30–08:30，落在 DeepSeek 错峰）；本地 cron 作为备份；知识库导出由 `scripts/cron_knowledge.sh` 独立执行 |
 | 零 API 也能用 | 三档模式，未配置 key 自动降级，采集 / 打分 / 聚类 / 手写预言 / 自动验证 / 统计全链路可用 |
 

@@ -8,6 +8,22 @@
 
 ---
 
+## [feat] — 看板启用趋势 / 辩论页面（2026-11-16）
+
+### Added
+
+- **`/trend` 与 `/debate`**：列表 + 期次详情；`base.html` 导航点亮，支持 `.on` 高亮。
+- **`web/mdhtml.py`**：无新依赖的安全 Markdown 渲染（全量 HTML 转义、链接 scheme 白名单、`details/summary` 白名单、512KB 截断）。
+- **`ReportIndex` 增加 M5 索引**：期次 = 目录名 = 窗口末日；非法期次 / 越界路径返回 404；辩论多候选按 `?slug=` 切换。
+- 测试：新增 `test_web_mdhtml.py`（4 例）与 `test_web.py` 的趋势/辩论/404 用例；旧 `nav-disabled` 断言同步更新。
+
+### Notes
+
+- 详情页展示现有 `.md` 全文（三句话 / 份额表 / 交锋矩阵 / 证伪）；辩论 JSON 只存计数，正文以 md 为准。
+- 11-01 运行产物按窗口末日落在 `trend/2026-10-31/` 与 `debate/2026-10-31/`，不是 `2026-11-01/`。
+
+---
+
 ## [fix] — 修复 deepseek-flash thinking 截断回归（2026-11-16）
 
 > 代码 + 配置 + 测试改动；SSOT 两份文档与 tag 未动。
