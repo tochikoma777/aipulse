@@ -92,6 +92,10 @@ class LLMSettings(BaseModel):
     # json_schema/response_format/unsupported 等关键词时自动降级 json_object 并记住；
     # true/false 供用户强制指定（§8.3）
     json_schema: Literal["auto", "true", "false"] = "auto"
+    # DeepSeek-V4 的 deepseek-flash 默认thinking=high，思考 token 会吃满 max_tokens：
+    # 短输出（主编点评 / 条目增强）实测 finish_reason=length 且正文为空 → 每日降级。
+    # 默认 disabled；enabled 按需开启；auto 则完全不发送该字段（兼容其他 OpenAI 兼容厂商）。
+    thinking_mode: Literal["disabled", "enabled", "auto"] = "disabled"
 
     @field_validator("base_url", "api_key", mode="before")
     @classmethod

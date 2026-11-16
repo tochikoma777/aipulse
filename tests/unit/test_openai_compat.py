@@ -86,6 +86,32 @@ async def test_success_parses_content_and_usage():
 
 
 @respx.mock
+async def test_thinking_disabled_by_default_for_deepseek():
+    """★ 回归防线：deepseek-flash 默认 thinking=high 会把 max_tokens 全花在推理上。"""
+    route = respx.post(ENDPOINT).mock(return_value=_ok_json("hi"))
+    client = _client(_settings(fast_model="deepseek-flash"))
+    await client.chat(_messages(), model_tier="fast")
+    body = json.loads(route.calls[0].request.content)
+    assert body["thinking"] == {"type": "disabled"}
+
+
+@respx.mock
+async def test_thinking_mode_auto_omits_field():
+    route = respx.post(ENDPOINT).mock(return_value=_ok_json("hi"))
+    client = _client(_settings(fast_model="deepseek-flash", thinking_mode="auto"))
+    await client.chat(_messages(), model_tier="fast")
+    assert "thinking" not in json.loads(route.calls[0].request.content)
+
+
+@respx.mock
+async def test_thinking_not_sent_to_non_deepseek_model():
+    route = respx.post(ENDPOINT).mock(return_value=_ok_json("hi"))
+    client = _client(_settings(fast_model="gpt-4o-mini"))
+    await client.chat(_messages(), model_tier="fast")
+    assert "thinking" not in json.loads(route.calls[0].request.content)
+
+
+@respx.mock
 async def test_read_timeout_comes_from_llm_settings_not_http_default():
     """★ 回归防线：不显式传 timeout，就会吃 HttpClient 的默认 20s——那是对采集请求定的。
 

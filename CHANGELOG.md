@@ -8,6 +8,21 @@
 
 ---
 
+## [fix] — 修复 deepseek-flash thinking 截断回归（2026-11-16）
+
+> 代码 + 配置 + 测试改动；SSOT 两份文档与 tag 未动。
+
+### Fixed
+
+- **每日 `LLMTruncationError` 降级**：11-12 起 `daily` 连续 5 天 `llm.degraded=true`，主编点评变成「off 档：未启用 LLM」。根因是模型名统一为 `deepseek-flash` 后，官方默认 `thinking=high`，思考 token 吃满 `max_tokens`——实测 `max_tokens=64` 时 64 个 completion token **全是 `reasoning_tokens`**、正文为空、`finish_reason=length`。
+- 新增 `llm.thinking_mode`（默认 `disabled`）并在 DeepSeek 模型名的请求体里发送 `{"thinking": {"type": "disabled"}}`；`auto` 则完全不发送，兼容其他 OpenAI 兼容厂商。真实调用项目客户端（`max_tokens=64`）已返回正常中文点评。
+
+### Verified
+
+- `tests/unit/test_openai_compat.py` 新增 3 条回归防线（默认 disabled / auto 省略 / 非 DeepSeek 模型不发送），全量 601 passed；ruff / format / mypy 全绿。
+
+---
+
 ## [cost-opt] — 模型名显式化 + DeepSeek 错峰调度（2026-11-11）
 
 > 配置与 workflow 改动；SSOT 两份文档与 tag 未动。

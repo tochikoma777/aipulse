@@ -187,6 +187,11 @@ class OpenAICompatClient:
             "temperature": temperature,
             "max_tokens": max_tokens,
         }
+        # DeepSeek-V4 的 deepseek-flash 默认 thinking=high：思考 token 吃满 max_tokens，
+        # 短输出场景 finish_reason=length、正文为空（实测 64 token 全是 reasoning_tokens）。
+        # 只对 DeepSeek 模型名发送，其他 OpenAI 兼容厂商不受影响；auto=完全不发送。
+        if model.startswith("deepseek-") and self.settings.thinking_mode != "auto":
+            body["thinking"] = {"type": self.settings.thinking_mode}
         if json_schema is None:
             return body
 

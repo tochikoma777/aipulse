@@ -31,6 +31,9 @@ llm:
   max_retries: 3
   cache_enabled: true
   json_schema: auto                # auto=运行时自动降级；true/false=强制指定（§8.3）
+  # deepseek-flash 默认 thinking=high 会吃满 max_tokens 导致短输出截断；默认关闭。
+  # enabled=开启思考；auto=不发送该字段（适用于非 DeepSeek 的 OpenAI 兼容厂商）。
+  thinking_mode: ${AIPULSE_LLM__THINKING_MODE:-disabled}
 
 budget:
   daily_limit_cny: ${AIPULSE_BUDGET__DAILY_LIMIT_CNY:-2.0}

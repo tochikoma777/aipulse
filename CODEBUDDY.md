@@ -527,6 +527,7 @@ selfcheck.{md,json} + watchlist.json / calibration.json（下期 L3/L4 回读）
 - **错峰**：其余全部时段 + 周末 + 法定节假日，价格为峰时的 **50%**。
 - 当前模型名只有 `deepseek-flash`（V4.1-Flash）与 `deepseek-v4-pro`；`/models` 也只返回这两个。旧别名 `deepseek-chat` / `deepseek-reasoner` 仍返回 200，但响应 `model` 都是 `deepseek-flash`——**strong 档不会因此变强**。
 - 若 strong 要真正用旗舰推理，显式设 `AIPULSE_LLM__STRONG_MODEL=deepseek-v4-pro`（约 3–4 倍价）；否则两档统一 `deepseek-flash`。
+- **必须关闭 thinking**：`deepseek-flash` 默认 `thinking=high`，思考 token 会吃满 `max_tokens`——短输出（主编点评 / 条目增强）实测 `finish_reason=length`、正文为空，连续 5 天 `LLMTruncationError` 降级。`configs/default.yaml` 的 `llm.thinking_mode: disabled` 默认发送 `{"thinking":{"type":"disabled"}}` 已修；换非 DeepSeek 厂商可设 `thinking_mode: auto` 不发送该字段。回归防线：`tests/unit/test_openai_compat.py::test_thinking_disabled_by_default_for_deepseek`。
 
 **调度必须抵消 GitHub 延迟**：实测 `schedule` 事件的 `created_at` 比 cron 晚约 3–6 小时（近 25 次 daily 落在 03:03–05:51 UTC，其中 8 次踩中 01:00–04:00 峰时）。因此 `daily.yml` 用 `18:30 UTC`（实际 21:30–00:30 UTC），`monthly.yml` 用 `11:00 UTC`（实际 14:00–17:00 UTC），两者都落在错峰。改 cron 前先用 `gh run list --workflow=daily.yml --json createdAt,startedAt` 复核当前延迟，不要假设 cron 就是实际启动时刻。
 
