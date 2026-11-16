@@ -37,6 +37,10 @@
 
 - `tests/unit/test_openai_compat.py` 新增 3 条回归防线（默认 disabled / auto 省略 / 非 DeepSeek 模型不发送），全量 601 passed；ruff / format / mypy 全绿。
 
+### Archived
+
+- 完整现象、逐日证据、根因链与复盘清单见 `docs/踩坑实录.md` **9.1**；同批归档 **9.2**（固定日期 fixture + 相对窗口的时间炸弹）与 **9.3**（产物期次按窗口末日命名）。
+
 ---
 
 ## [cost-opt] — 模型名显式化 + DeepSeek 错峰调度（2026-11-11）
