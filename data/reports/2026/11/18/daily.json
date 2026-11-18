@@ -1,0 +1,953 @@
+{
+  "date": "2026-11-18",
+  "headline": "AI 编程智能体的瓶颈已从写代码转移到验证与评审，今天的开源生态几乎全部在补这一课",
+  "headline_item_id": "it_6e090bb95c89cabb",
+  "overview_bullets": [
+    {
+      "icon": "📄",
+      "topic": "瓶颈转移",
+      "text": "哈佛研究指出 AI 编程智能体把工程瓶颈推到了代码评审，而 Claude Code 团队谈验证、阿里开源混合式评审工具，正好从理论和工具两端印证同一判断。"
+    },
+    {
+      "icon": "🛠️",
+      "topic": "技能军备",
+      "text": "从 ECC、superpowers 到 BugHunter、ffmpeg-skill、trading-skills，GitHub 趋势榜被 Claude Code 技能包刷屏，说明智能体竞争已从模型能力转向可复用的技能与工作流资产。"
+    },
+    {
+      "icon": "🤖",
+      "topic": "协议卡位",
+      "text": "AG-UI 定义智能体与前端交互协议、chrome-devtools-mcp 把浏览器调试接入智能体、NVIDIA 推出技能评测框架，围绕智能体的接口与质量门正在被标准化。"
+    },
+    {
+      "icon": "🏢",
+      "topic": "入口之争",
+      "text": "微软把 Office 搬进 Copilot 并自称\"工作新操作系统\"，Nadella 宣称自己\"AGI-pilled\"，办公入口与 AGI 叙事被同一家公司同时押注。"
+    },
+    {
+      "icon": "📉",
+      "topic": "冷静声音",
+      "text": "\"Not Everything Needs an LLM\" 与 ONNX Runtime 从 GitHub 消失同日上榜，一边是反 LLM 万能论，一边是基础设施供应链的脆弱性，给狂热泼了两盆冷水。"
+    }
+  ],
+  "executive_summary": "今天的信号高度一致：智能体的价值正在从\"能写\"转向\"能验、能管、能接\"，谁掌握验证与接口，谁就掌握下一阶段的定价权。",
+  "editor_note": {
+    "core": "今天最该记住的是哈佛那条\"瓶颈转移到代码评审\"：它解释了为什么 GitHub 趋势榜一夜之间冒出十几个评审、规划、评测类技能包——写代码变便宜之后，稀缺的是判断代码对不对的人与流程。",
+    "cross_signal": "Claude Code 团队谈验证、阿里开源确定性流水线加 LLM 的评审工具、plannotator 做人工在环评审、NVIDIA 做技能质量门，四个来源指向同一件事：智能体的可信度要靠工程化的验证层来兜底。",
+    "counterintuitive": "\"Not Everything Needs an LLM\" 拿到 78 分热度，说明开发者社区对 LLM 万能论的反弹已经形成规模；而真正被低估的是 ONNX Runtime 从 GitHub 消失——基础设施的存续风险比模型迭代更值得警惕。",
+    "risk": "技能包生态正在无序膨胀：82 个技能的 BugHunter、数十个 FFmpeg 工具、各种 slash command 缺乏统一评测标准，NVIDIA 的 SkillEvaluator 出现得正是时候，否则用户将在\"技能通胀\"中付出隐性成本与安全代价。"
+  },
+  "contradictions": [
+    "Nadella 宣称\"AGI-pilled\"、把 Copilot 定位为工作新操作系统，与同日 HN 高热的\"Not Everything Needs an LLM\"形成叙事对撞：产业层在加码 AGI，开发者层在给 LLM 降温。",
+    "NVIDIA 一边被报道创始人兼 CEO 黄仁勋离职引发动荡，一边又承诺营收继续创纪录，人事与业绩指引之间存在明显张力。",
+    "智能体被宣传为提升效率，但哈佛研究与 Token 花费工具同时指出成本与评审负担被转移给了人类。"
+  ],
+  "underrated": [
+    "Microsoft's ONNX Runtime has disappeared from GitHub：推理基础设施的供应链风险被娱乐化讨论掩盖",
+    "NVIDIA/SkillEvaluator：智能体技能缺乏质量门的问题，只有它正面回应",
+    "Tokendoctor – See what your Claude Code use overpays：智能体成本透明度工具，热度远低于其实际价值",
+    "TrnRT – 面向 AWS Trainium 的开源推理引擎：非 NVIDIA 推理路线的重要尝试",
+    "Human.md：在智能体技能泛滥中讨论人的位置，热度不低但讨论深度被低估"
+  ],
+  "sections": [
+    {
+      "name": "开源项目",
+      "summary": "GitHub 趋势榜几乎被智能体技能包、交互协议与评测工具占满，开源社区正围绕 Claude Code 生态快速堆积可复用资产。",
+      "item_ids": [
+        "it_7e3acd207369e7ad",
+        "it_f09a3afb4ff397a9",
+        "it_443ceb2cd1aec17b",
+        "it_55e52705c413dcb8",
+        "it_b02b6b38ee45f34c",
+        "it_27d1d8a4f04e089d",
+        "it_5f20605667d728f2",
+        "it_f859b2d15e1457f4",
+        "it_99fbe7d0e939a8a8",
+        "it_1eaa642abc1d6c5d",
+        "it_9d57ea5212cd4a2a",
+        "it_b9769016e4b337b4",
+        "it_ed75bf498e47451e",
+        "it_e671c263df5a7801",
+        "it_c38acc86923e1421",
+        "it_ecdcef686d76feed"
+      ]
+    },
+    {
+      "name": "论文与研究",
+      "summary": "哈佛关于评审瓶颈的研究与 Google 的多智能体论文写作框架，共同把研究焦点放在智能体协作与验证环节。",
+      "item_ids": []
+    },
+    {
+      "name": "社区舆论",
+      "summary": "HN 上既有对验证方法与反 LLM 万能论的讨论，也有对 ONNX Runtime 消失、Token 过度花费等基础设施与成本问题的警觉。",
+      "item_ids": [
+        "it_8713cc020b83957c",
+        "it_6e090bb95c89cabb",
+        "it_069078b2b4e3b49a",
+        "it_b8930a9a56df63fc",
+        "it_585f23afe2d9f502",
+        "it_4283eb165a90e8c1",
+        "it_b3444f5226a56189",
+        "it_851a72a5bbe14594",
+        "it_23791fed6fa0ce2c",
+        "it_ad7d3ed495e3c46f",
+        "it_43861bf73cbf6162"
+      ]
+    },
+    {
+      "name": "产业与新闻",
+      "summary": "微软把 Office 嵌入 Copilot 并强化 AGI 叙事，NVIDIA 在人事动荡中仍给出乐观营收指引，新模型与 CI 创业公司继续涌入。",
+      "item_ids": [
+        "it_bccee91cf8115d86",
+        "it_9f7286d0bf416b1a",
+        "it_19bce111d0ee6096"
+      ]
+    }
+  ],
+  "comments": [
+    {
+      "item_id": "it_7e3acd207369e7ad",
+      "one_liner": "Univer 开源 Office SDK，可将编辑、计算、协作与文件处理能力嵌入产品，同时面向人和 AI agent",
+      "why": "把表格、文档、协作与文件处理打包成可嵌入的 SDK，让 AI agent 直接操作办公文档，而不只是生成文本；这会把办公套件从终端产品变成别人产品里的基础设施。",
+      "stance": "开源办公内核加 agent 接口是正确方向，但真正的门槛在协作一致性与格式兼容，不在 API 数量。"
+    },
+    {
+      "item_id": "it_f09a3afb4ff397a9",
+      "one_liner": "一个 AI agent skill，可跨 Reddit、X、YouTube、HN、Polymarket 和网页检索任意话题并汇总成有据可依的摘要",
+      "why": "把跨平台检索与摘要合成打包成一个可复用技能，意味着 agent 的信息搜集从单站抓取转向多源交叉验证，直接压缩人工调研的时间成本。",
+      "stance": "多源聚合是 agent 技能里最实用的一类，但摘要的可靠性取决于源质量，别把它当事实核查工具。"
+    },
+    {
+      "item_id": "it_443ceb2cd1aec17b",
+      "one_liner": "Google Research 开源的 PaperOrchestra，用多 agent 框架自动撰写 AI 研究论文",
+      "why": "多智能体流水线覆盖论文写作全流程，会先冲击以量产为导向的学术产出，把评审压力从写作端推到审稿端。",
+      "stance": "自动写论文的框架越多，学术评价体系越需要转向过程与可复现性，而不是成品文本。"
+    },
+    {
+      "item_id": "it_55e52705c413dcb8",
+      "one_liner": "AG-UI 协议，用于把 agent 接入前端应用的 Agent-User 交互规范",
+      "why": "前端与 agent 之间缺少统一交互契约，导致每个产品自造流式事件与状态协议；标准化后 agent 界面组件可以跨框架复用。",
+      "stance": "协议层的机会窗口已经打开，但能否胜出取决于主流前端框架是否原生接入，而非规范写得多漂亮。"
+    },
+    {
+      "item_id": "it_b02b6b38ee45f34c",
+      "one_liner": "面向 Claude Code、Codex、Opencode、Cursor 等 agent 工具的 harness 性能优化系统，涵盖 skills、memory、安全与研究流程",
+      "why": "把技能、记忆、安全与性能调优统一成一层 harness，等于在多个编码 agent 之上插入公共中间层，降低跨工具迁移成本。",
+      "stance": "harness 层正在成为真正的竞争焦点，模型本身反而在商品化。"
+    },
+    {
+      "item_id": "it_27d1d8a4f04e089d",
+      "one_liner": "一个 Claude Code 漏洞挖掘技能包，含 82 个 skills、15 个 slash 命令和 681 条已披露报告模式",
+      "why": "把 681 条已披露报告模式固化成技能包，让外部红队工作从个人经验变成可复制的检索库，攻击面知识扩散速度加快。",
+      "stance": "攻防知识的技能化不可避免，防守方必须假设对手已拥有同等清单。"
+    },
+    {
+      "item_id": "it_5f20605667d728f2",
+      "one_liner": "阿里巴巴开源的代码审查工具，采用确定性流水线加 LLM Agent 的混合架构，支持行级评论与多语言规则集",
+      "why": "把确定性规则流水线与 LLM 审阅分层组合，并用阿里内部规模验证过，意味着代码审查的准确率与成本可以分开调优，而不是全押大模型。",
+      "stance": "混合架构才是企业级代码审查的务实解，纯 LLM 审阅的噪声问题在这里被正面承认。"
+    },
+    {
+      "item_id": "it_f859b2d15e1457f4",
+      "one_liner": "obra 的 agentic skills 框架与软件开发方法论",
+      "why": "把技能框架与开发方法论绑定，试图解决 agent 输出不稳定问题，影响的是团队如何组织人机协作流程而非单点工具选择。",
+      "stance": "方法论包装容易过度承诺，能否落地取决于它是否约束了失败路径。"
+    },
+    {
+      "item_id": "it_99fbe7d0e939a8a8",
+      "one_liner": "把 Chrome DevTools 能力提供给编码 agent 使用的 MCP 工具",
+      "why": "让编码 agent 直接读取浏览器调试协议，等于把运行时性能、网络与 DOM 证据交给 agent，前端排障从猜测变成可验证的闭环。",
+      "stance": "这是 agent 从写代码走向验证代码的关键一步，官方出手做 MCP 比第三方封装更有说服力。"
+    },
+    {
+      "item_id": "it_1eaa642abc1d6c5d",
+      "one_liner": "NVIDIA 的多层框架，用于评估 AI agent skills 与插件，含质量门禁、语义重叠检测和合成评测集生成",
+      "why": "给技能本身建立质量门与语义重叠检测，意味着技能生态开始出现评测基础设施，劣质与重复技能会被挤出。",
+      "stance": "评测层由芯片厂商推出，说明技能市场的瓶颈已从生成转向筛选。"
+    },
+    {
+      "item_id": "it_8713cc020b83957c",
+      "one_liner": "RunAnywhere 开源的 AWS Trainium 推理引擎 TrnRT，已可在 trn2.48xlarge 上运行 GLM 5.3 flash（FP8）",
+      "why": "在非 NVIDIA 加速器上跑通 FP8 推理，给 AWS 自研芯片补上运行时短板，云厂商的算力议价空间随之变化。",
+      "stance": "三周做出可用运行时说明门槛在降，但模型覆盖窄，短期内只是替代选项而非主力。"
+    },
+    {
+      "item_id": "it_6e090bb95c89cabb",
+      "one_liner": "哈佛研究者发现 AI 编程 agent 把瓶颈转移到了代码审查环节",
+      "why": "瓶颈从写代码迁移到审代码，团队的人力配置与评审流程要重排，资深工程师的稀缺性上升。",
+      "stance": "这是对 agent 生产力叙事最有力的一击：产出变多不等于交付变快。"
+    },
+    {
+      "item_id": "it_069078b2b4e3b49a",
+      "one_liner": "Claude Code 团队谈他们如何设计与看待验证（verification）",
+      "why": "把验证作为 agent 设计的核心议题，决定了自动生成的代码能否进入生产，影响的是信任边界而非生成能力。",
+      "stance": "验证做不好，agent 编程就永远停在草稿阶段；这是比模型能力更硬的约束。"
+    },
+    {
+      "item_id": "it_b8930a9a56df63fc",
+      "one_liner": "一篇讨论并非所有场景都需要引入 LLM 的文章",
+      "why": "对默认套用大模型的倾向提出反向约束，推动团队在成本与延迟敏感场景重新评估规则与检索方案。",
+      "stance": "这条该被写进每个架构评审的第一页：先证明需要模型，再谈用哪个模型。"
+    },
+    {
+      "item_id": "it_585f23afe2d9f502",
+      "one_liner": "一个名为 Human.md 的项目在 Hacker News 上被讨论，具体内容未提供摘要。",
+      "why": "以 Markdown 形式定义「人」的规范，等于把身份、行为与协作约定变成可版本化、可被工具解析的文本，为代理读取人类意图提供统一接口。",
+      "stance": "方向对，但把人的复杂性压成一份文档，容易变成又一份没人维护的 README。"
+    },
+    {
+      "item_id": "it_4283eb165a90e8c1",
+      "one_liner": "微软的 ONNX Runtime 仓库已从 GitHub 上消失。",
+      "why": "推理运行时是模型落地的中间层，仓库消失会直接打断依赖它的构建流水线与私有部署，把用户推向 PyTorch 或厂商自有的推理栈。",
+      "stance": "无论原因是迁移还是下架，关键基础设施的仓库不该无声消失，这是对下游生态的不负责。"
+    },
+    {
+      "item_id": "it_b3444f5226a56189",
+      "one_liner": "Tokendoctor 是一个用于查看 Claude Code 使用中超额花费情况的工具。",
+      "why": "把编码代理的 token 消耗变成可审计的账单视图，让团队看清哪些调用在烧钱，从而倒逼提示词与上下文策略的优化。",
+      "stance": "这类计量工具比任何「省 token 技巧」都实在，成本透明才是代理大规模进生产的前提。"
+    },
+    {
+      "item_id": "it_851a72a5bbe14594",
+      "one_liner": "Claude Mythos 将 AMD GPU 的软件适配工作缩短到约三天。",
+      "why": "把 GPU 后端适配从数周的专家工作压缩到数天，意味着硬件厂商的软件护城河被削弱，新加速卡的生态入场成本大幅下降。",
+      "stance": "这是本轮代理最实在的生产力证据，但三天上手的代码能否长期维护，还得看后续。"
+    },
+    {
+      "item_id": "it_23791fed6fa0ce2c",
+      "one_liner": "MAI 发布 Code 2 与 Code 2 Flash 两款模型。",
+      "why": "又一家厂商推出双档编码模型，标准版与 Flash 版分层，说明竞争焦点已从跑分转向延迟与单任务成本的可选组合。",
+      "stance": "模型数量早已过剩，真正决定胜负的是工具链集成与价格，而不是又一个新名字。"
+    },
+    {
+      "item_id": "it_ad7d3ed495e3c46f",
+      "one_liner": "StarSling（YC P25）提供带 AI agent 的快速 GitHub Actions runner，自动提交 PR 持续改进测试与工作流。",
+      "why": "让代理直接向仓库提交测试与工作流改动，把 CI 从被动执行变成持续自我修补，同时把审查压力从写代码转移到审代理的补丁。",
+      "stance": "自动改 CI 的风险高于自动改业务代码，因为流水线是信任根，默认放行等于自毁防线。"
+    },
+    {
+      "item_id": "it_bccee91cf8115d86",
+      "one_liner": "微软在 Ignite 上宣布 Word、Excel、PowerPoint 正式进驻 Copilot，Nadella 称 Copilot 是「工作的新操作系统」。",
+      "why": "办公套件被收进助手界面，入口从文档转向对话，用户的工作数据与操作历史随之集中到单一厂商的上下文层。",
+      "stance": "把操作系统之名安在一个订阅产品上，是叙事包装；真正的代价是办公数据的锁定加深。"
+    },
+    {
+      "item_id": "it_9f7286d0bf416b1a",
+      "one_liner": "Nvidia 在创始人兼 CEO Jensen Huang 离职后的动荡中，仍预计营收将继续创下新高。",
+      "why": "在创始人兼 CEO 离职的动荡期仍给出增长指引，说明订单能见度由超大规模客户的长约锁定，而非管理层稳定。",
+      "stance": "收入曲线短期由合同决定，长期由客户自研芯片决定，这份乐观是在透支时间窗口。"
+    },
+    {
+      "item_id": "it_19bce111d0ee6096",
+      "one_liner": "微软 CEO Satya Nadella 在 Ignite 上表示自己如今是「AGI-pilled」，看好 AI 对经济结构与政治的影响。",
+      "why": "掌舵者公开押注 AGI 并把它与经济和政治结构变化挂钩，会传导为产品路线与采购决策的激进化，抬高整个生态的预期基线。",
+      "stance": "CEO 的信念会变成客户的路线图，这种表态比任何模型发布都更能扭曲行业节奏。"
+    }
+  ],
+  "stats": {},
+  "items": {
+    "it_069078b2b4e3b49a": {
+      "id": "it_069078b2b4e3b49a",
+      "source": "hackernews",
+      "title": "How the Claude Code team thinks about verification",
+      "url": "https://claude.dev/blog/how-the-claude-code-team-thinks-about-verification",
+      "summary": "",
+      "hot_score": 83.4122,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-17T10:20:40+00:00",
+      "last_seen_at": "2026-11-18T01:08:45.091461+00:00",
+      "metrics": {
+        "points": 261,
+        "num_comments": 202
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_23791fed6fa0ce2c": {
+      "id": "it_23791fed6fa0ce2c",
+      "source": "hackernews",
+      "title": "MAI Code 2 and Code 2 Flash",
+      "url": "https://microsoft.ai/news/introducing-mai-code-2-and-mai-code-2-flash",
+      "summary": "",
+      "hot_score": 82.8509,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-17T18:25:13+00:00",
+      "last_seen_at": "2026-11-18T01:08:45.088931+00:00",
+      "metrics": {
+        "points": 279,
+        "num_comments": 131
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_b8930a9a56df63fc": {
+      "id": "it_b8930a9a56df63fc",
+      "source": "hackernews",
+      "title": "Not Everything Needs an LLM",
+      "url": "https://newsletter.posthog.com/p/decision-models",
+      "summary": "",
+      "hot_score": 78.2702,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-17T18:16:18+00:00",
+      "last_seen_at": "2026-11-18T01:08:45.093151+00:00",
+      "metrics": {
+        "points": 90,
+        "num_comments": 37
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_7e3acd207369e7ad": {
+      "id": "it_7e3acd207369e7ad",
+      "source": "github_trending",
+      "title": "dream-num/univer",
+      "url": "https://github.com/dream-num/univer",
+      "summary": "Build your own AI office with Univer Office SDK. Bring editing, calculation, collaboration, and file processing into your product for people and AI agents. Built on an extensible open-source core.",
+      "hot_score": 76.9975,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-14T22:39:41.119008+00:00",
+      "last_seen_at": "2026-11-18T01:08:45.133278+00:00",
+      "metrics": {
+        "stars_total": 28906,
+        "stars_in_window": 1828,
+        "forks": 2616,
+        "streak_days": 4
+      },
+      "streak_days": 4,
+      "language": "TypeScript"
+    },
+    "it_585f23afe2d9f502": {
+      "id": "it_585f23afe2d9f502",
+      "source": "hackernews",
+      "title": "Human.md",
+      "url": "https://www.human-md.ai/",
+      "summary": "",
+      "hot_score": 74.25,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-17T20:47:36+00:00",
+      "last_seen_at": "2026-11-18T01:08:45.093809+00:00",
+      "metrics": {
+        "points": 63,
+        "num_comments": 47
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_f09a3afb4ff397a9": {
+      "id": "it_f09a3afb4ff397a9",
+      "source": "github_trending",
+      "title": "mvanhorn/last30days-skill",
+      "url": "https://github.com/mvanhorn/last30days-skill",
+      "summary": "AI agent skill that researches any topic across Reddit, X, YouTube, HN, Polymarket, and the web - then synthesizes a grounded summary",
+      "hot_score": 73.1961,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-17T01:57:21.277064+00:00",
+      "last_seen_at": "2026-11-18T01:08:45.131141+00:00",
+      "metrics": {
+        "stars_total": 69075,
+        "stars_in_window": 696,
+        "forks": 6145,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "Python"
+    },
+    "it_443ceb2cd1aec17b": {
+      "id": "it_443ceb2cd1aec17b",
+      "source": "github_trending",
+      "title": "google-research/paper-orchestra",
+      "url": "https://github.com/google-research/paper-orchestra",
+      "summary": "PaperOrchestra is a multi-agent framework for automated AI research paper writing.",
+      "hot_score": 71.0909,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-17T01:57:21.277082+00:00",
+      "last_seen_at": "2026-11-18T01:08:45.138521+00:00",
+      "metrics": {
+        "stars_total": 3013,
+        "stars_in_window": 1072,
+        "forks": 415,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "Python"
+    },
+    "it_4283eb165a90e8c1": {
+      "id": "it_4283eb165a90e8c1",
+      "source": "hackernews",
+      "title": "Microsoft's ONNX Runtime has disappeared from GitHub",
+      "url": "https://github.com/microsoft/onnxruntime",
+      "summary": "",
+      "hot_score": 69.75,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-17T23:18:49+00:00",
+      "last_seen_at": "2026-11-18T01:08:45.192023+00:00",
+      "metrics": {
+        "points": 91,
+        "num_comments": 20
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_55e52705c413dcb8": {
+      "id": "it_55e52705c413dcb8",
+      "source": "github_trending",
+      "title": "ag-ui-protocol/ag-ui",
+      "url": "https://github.com/ag-ui-protocol/ag-ui",
+      "summary": "AG-UI: the Agent-User Interaction Protocol. Bring Agents into Frontend Applications.",
+      "hot_score": 69.6291,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-14T22:39:41.119018+00:00",
+      "last_seen_at": "2026-11-18T01:08:45.135951+00:00",
+      "metrics": {
+        "stars_total": 20001,
+        "stars_in_window": 1445,
+        "forks": 2067,
+        "streak_days": 4
+      },
+      "streak_days": 4,
+      "language": "TypeScript"
+    },
+    "it_b02b6b38ee45f34c": {
+      "id": "it_b02b6b38ee45f34c",
+      "source": "github_trending",
+      "title": "affaan-m/ECC",
+      "url": "https://github.com/affaan-m/ECC",
+      "summary": "The agent harness performance optimization system. Skills, instincts, memory, security, and research-first development for Claude Code, Codex, Opencode, Cursor and beyond.",
+      "hot_score": 68.8816,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-15T14:47:23.502401+00:00",
+      "last_seen_at": "2026-11-18T01:08:45.137530+00:00",
+      "metrics": {
+        "stars_total": 305509,
+        "stars_in_window": 1165,
+        "forks": 44980,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "JavaScript"
+    },
+    "it_27d1d8a4f04e089d": {
+      "id": "it_27d1d8a4f04e089d",
+      "source": "github_trending",
+      "title": "elementalsouls/Claude-BugHunter",
+      "url": "https://github.com/elementalsouls/Claude-BugHunter",
+      "summary": "A Claude Code skill bundle for bug hunting and external red-team work - 82 skills, 15 slash commands, 681 disclosed-report patterns curated across 24 core vulnerability classes, plus enterprise identity + infrastructure attack matrices.",
+      "hot_score": 66.7979,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-15T23:03:21.804510+00:00",
+      "last_seen_at": "2026-11-18T01:08:45.130429+00:00",
+      "metrics": {
+        "stars_total": 9313,
+        "stars_in_window": 1005,
+        "forks": 1358,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_ad7d3ed495e3c46f": {
+      "id": "it_ad7d3ed495e3c46f",
+      "source": "hackernews",
+      "title": "Launch HN: StarSling (YC P25) – Self-improving CI for agent-volume repos",
+      "url": "https://starsling.dev",
+      "summary": "We’re Yonas and Daniel and we’re building StarSling ( https://starsling.dev ), fast GitHub Actions runners with AI agents that ship PRs to continuously improve your tests and workflows. Every CI job gets its own ephemeral sandbox on the fastest Zen 5 machines and NVMe Disk with unlimited concurrency so a burst of agent PRs all run at once. We’re different from other runners because ours come with agents that cut down your CI bill over time. PRs are generated through our CI harness, which runs an",
+      "hot_score": 65.1849,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-17T19:01:43+00:00",
+      "last_seen_at": "2026-11-18T01:08:45.095006+00:00",
+      "metrics": {
+        "points": 53,
+        "num_comments": 29
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_5f20605667d728f2": {
+      "id": "it_5f20605667d728f2",
+      "source": "github_trending",
+      "title": "alibaba/open-code-review",
+      "url": "https://github.com/alibaba/open-code-review",
+      "summary": "Secure, fast, efficient, battle-tested at Alibaba's scale. Hybrid architecture code review tool: deterministic pipelines + LLM Agent, precise line-level comments, built-in multi-language ruleset (NPE, thread-safety, XSS, SQL injection), OpenAI & Anthropic compatible.",
+      "hot_score": 64.6066,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-13T23:46:25.197584+00:00",
+      "last_seen_at": "2026-11-18T01:08:45.132002+00:00",
+      "metrics": {
+        "stars_total": 53733,
+        "stars_in_window": 951,
+        "forks": 4430,
+        "streak_days": 5
+      },
+      "streak_days": 5,
+      "language": "Go"
+    },
+    "it_f859b2d15e1457f4": {
+      "id": "it_f859b2d15e1457f4",
+      "source": "github_trending",
+      "title": "obra/superpowers",
+      "url": "https://github.com/obra/superpowers",
+      "summary": "An agentic skills framework & software development methodology that works.",
+      "hot_score": 63.75,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-15T14:47:23.502377+00:00",
+      "last_seen_at": "2026-11-18T01:08:45.135443+00:00",
+      "metrics": {
+        "stars_total": 319339,
+        "stars_in_window": 1917,
+        "forks": 28479,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Shell"
+    },
+    "it_6e090bb95c89cabb": {
+      "id": "it_6e090bb95c89cabb",
+      "source": "hackernews",
+      "title": "Harvard researchers find AI coding agents shifted the bottleneck to code review",
+      "url": "https://complexdiscovery.com/harvard-researchers-find-ai-coding-agents-shifted-the-bottleneck-to-code-review",
+      "summary": "",
+      "hot_score": 60.75,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-17T21:16:12+00:00",
+      "last_seen_at": "2026-11-18T01:08:45.097250+00:00",
+      "metrics": {
+        "points": 34,
+        "num_comments": 63
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_99fbe7d0e939a8a8": {
+      "id": "it_99fbe7d0e939a8a8",
+      "source": "github_trending",
+      "title": "ChromeDevTools/chrome-devtools-mcp",
+      "url": "https://github.com/ChromeDevTools/chrome-devtools-mcp",
+      "summary": "Chrome DevTools for coding agents",
+      "hot_score": 58.4882,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-13T23:46:25.197655+00:00",
+      "last_seen_at": "2026-11-17T01:57:28.750577+00:00",
+      "metrics": {
+        "stars_total": 57707,
+        "stars_in_window": 841,
+        "forks": 4852,
+        "streak_days": 4
+      },
+      "streak_days": 4,
+      "language": "TypeScript"
+    },
+    "it_1eaa642abc1d6c5d": {
+      "id": "it_1eaa642abc1d6c5d",
+      "source": "github_trending",
+      "title": "NVIDIA/SkillEvaluator",
+      "url": "https://github.com/NVIDIA/SkillEvaluator",
+      "summary": "Multi-tier framework for evaluating AI agent skills and plugins with quality gates, semantic overlap detection, synthetic evaluation dataset generation, and live agent evaluation that measures how skills affect agent behavior.",
+      "hot_score": 53.7058,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-15T23:03:21.804530+00:00",
+      "last_seen_at": "2026-11-17T01:57:28.747850+00:00",
+      "metrics": {
+        "stars_total": 2750,
+        "stars_in_window": 873,
+        "forks": 364,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "Python"
+    },
+    "it_43861bf73cbf6162": {
+      "id": "it_43861bf73cbf6162",
+      "source": "hackernews",
+      "title": "Tencent Hy4 Flash",
+      "url": "https://hy.tencent.ai/research/hy4-flash",
+      "summary": "",
+      "hot_score": 51.75,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-17T21:06:08+00:00",
+      "last_seen_at": "2026-11-18T01:08:45.096070+00:00",
+      "metrics": {
+        "points": 43,
+        "num_comments": 9
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_9d57ea5212cd4a2a": {
+      "id": "it_9d57ea5212cd4a2a",
+      "source": "github_trending",
+      "title": "sveltejs/svelte",
+      "url": "https://github.com/sveltejs/svelte",
+      "summary": "web development for the rest of us",
+      "hot_score": 51.354,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-17T01:57:21.277093+00:00",
+      "last_seen_at": "2026-11-18T01:08:45.137093+00:00",
+      "metrics": {
+        "stars_total": 89600,
+        "stars_in_window": 477,
+        "forks": 6251,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "JavaScript"
+    },
+    "it_b9769016e4b337b4": {
+      "id": "it_b9769016e4b337b4",
+      "source": "github_trending",
+      "title": "backnotprop/plannotator",
+      "url": "https://github.com/backnotprop/plannotator",
+      "summary": "The workspace to stay in the loop and on top of agents - shape, decide, plan, annotate, review code, share with team, and send all feedback to agents with one click.",
+      "hot_score": 48.8829,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-13T23:46:25.197621+00:00",
+      "last_seen_at": "2026-11-18T01:08:45.136482+00:00",
+      "metrics": {
+        "stars_total": 13070,
+        "stars_in_window": 860,
+        "forks": 1313,
+        "streak_days": 5
+      },
+      "streak_days": 5,
+      "language": "TypeScript"
+    },
+    "it_851a72a5bbe14594": {
+      "id": "it_851a72a5bbe14594",
+      "source": "hackernews",
+      "title": "Claude Mythos slashed software work to onboard AMD GPUs to around three days",
+      "url": "https://www.tomshardware.com/tech-industry/artificial-intelligence/anthropic-says-claude-mythos-slashed-software-work-to-onboard-amd-gpus-from-up-to-12-months-to-around-three-days-writing-almost-100-percent-of-kernels-autonomously-chips-away-at-nvidias-cuda-moat",
+      "summary": "",
+      "hot_score": 48.5304,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-17T01:35:16+00:00",
+      "last_seen_at": "2026-11-18T01:08:45.094377+00:00",
+      "metrics": {
+        "points": 53,
+        "num_comments": 21
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_ed75bf498e47451e": {
+      "id": "it_ed75bf498e47451e",
+      "source": "github_trending",
+      "title": "jingyaogong/minimind",
+      "url": "https://github.com/jingyaogong/minimind",
+      "summary": "🧠 Train a 64M-parameter LLM from scratch in just 2h!",
+      "hot_score": 47.3684,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-18T01:08:38.998254+00:00",
+      "last_seen_at": "2026-11-18T01:08:45.138065+00:00",
+      "metrics": {
+        "stars_total": 65980,
+        "stars_in_window": 192,
+        "forks": 8660,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_e671c263df5a7801": {
+      "id": "it_e671c263df5a7801",
+      "source": "github_trending",
+      "title": "tradermonty/claude-trading-skills",
+      "url": "https://github.com/tradermonty/claude-trading-skills",
+      "summary": "Claude Code skills for equity investors and traders — market analysis, technical charting, economic calendars, screeners, and trading strategy development.",
+      "hot_score": 45.3961,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-13T23:46:25.197641+00:00",
+      "last_seen_at": "2026-11-17T01:57:28.744110+00:00",
+      "metrics": {
+        "stars_total": 6345,
+        "stars_in_window": 837,
+        "forks": 1332,
+        "streak_days": 4
+      },
+      "streak_days": 4,
+      "language": "Python"
+    },
+    "it_c38acc86923e1421": {
+      "id": "it_c38acc86923e1421",
+      "source": "github_trending",
+      "title": "getarcaneapp/arcane",
+      "url": "https://github.com/getarcaneapp/arcane",
+      "summary": "Modern Docker Management, Designed for Everyone",
+      "hot_score": 44.1172,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-17T01:57:21.277041+00:00",
+      "last_seen_at": "2026-11-18T01:08:45.133897+00:00",
+      "metrics": {
+        "stars_total": 9335,
+        "stars_in_window": 618,
+        "forks": 513,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "Go"
+    },
+    "it_ecdcef686d76feed": {
+      "id": "it_ecdcef686d76feed",
+      "source": "github_trending",
+      "title": "kajisho5/ffmpeg-skill",
+      "url": "https://github.com/kajisho5/ffmpeg-skill",
+      "summary": "Local video editor for coding agents: 42 FFmpeg tools with a machine-readable contract and an MCP server, for Claude Code, Cursor and Codex. Cut, captions, reframe, loudness, platform exports. No cloud, no API keys.",
+      "hot_score": 42.1435,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-17T01:57:21.277098+00:00",
+      "last_seen_at": "2026-11-17T01:57:28.751854+00:00",
+      "metrics": {
+        "stars_total": 6817,
+        "stars_in_window": 367,
+        "forks": 603,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_8713cc020b83957c": {
+      "id": "it_8713cc020b83957c",
+      "source": "hackernews",
+      "title": "Show HN: TrnRT – An open-source LLM inference engine for AWS Trainium",
+      "url": "https://github.com/RunanywhereAI/trnrt",
+      "summary": "Hi HN, Sanchit here from RunAnywhere (YC W26). We just open-sourced TrnRT: Trainium RunTime, our inference engine for AWS Trainium. We started 3 weeks back, and currently we’re able to serve and run GLM 5.3 flash (FP8) on AWS trn2.48xlarge, and will bring more models support soon. It’s open to contributions :) What it does today: - Serves 2 instances of GLM-5.3 flash on a single box, 8 trn2 with a cache aware router. - Can process 3.57M TPM (tokens per minute) on SemiAnalysis's AgentX benchmarks",
+      "hot_score": 41.0855,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-17T16:01:04+00:00",
+      "last_seen_at": "2026-11-18T01:08:45.192452+00:00",
+      "metrics": {
+        "points": 43,
+        "num_comments": 5
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_b3444f5226a56189": {
+      "id": "it_b3444f5226a56189",
+      "source": "hackernews",
+      "title": "Tokendoctor – See what your Claude Code use overpays",
+      "url": "https://github.com/localixai/tokendoctor",
+      "summary": "",
+      "hot_score": 39.7864,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-17T02:19:50+00:00",
+      "last_seen_at": "2026-11-18T01:08:45.193415+00:00",
+      "metrics": {
+        "points": 31,
+        "num_comments": 16
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_bccee91cf8115d86": {
+      "id": "it_bccee91cf8115d86",
+      "source": "rss",
+      "title": "Copilot is \"the new OS for work,\" and now Office runs inside of it",
+      "url": "https://arstechnica.com/gadgets/2026/11/microsoft-calls-copilot-the-new-os-for-work-at-ignite-keynote",
+      "summary": "Opening the keynote at its Ignite event, Microsoft CEO Satya Nadella outlined the company's vision for its new \"frontier ecosystem,\" announcing Tuesday the general availability of Word, Excel, and PowerPoint inside Copilot, which he described as \"the new OS for work.\"\n\n\nThe announcement is a striking inversion of how we've traditionally used software. Rather than an app like Word being the attraction and Clippy the assistant to help you use it, Microsoft envisions the new Copilot integrations will see agents driving things, with the software packages riding shotgun. Applications will become plugin components of the agent's work, backed by an organizational knowledge layer that draws context from emails, meetings, calendars, chats, and files. Users will now be able to create documents, spreadsheets, and presentations directly in Copilot, with the resulting files remaining editable in their respective Office applications. Read full article\nComments",
+      "hot_score": 39.0,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-18T00:27:29+00:00",
+      "last_seen_at": "2026-11-18T01:08:45.122240+00:00",
+      "metrics": {
+        "rank_score": 1.0
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_9f7286d0bf416b1a": {
+      "id": "it_9f7286d0bf416b1a",
+      "source": "rss",
+      "title": "Nvidia promises that revenue will keep soaring — for now",
+      "url": "https://techcrunch.com/2026/11/17/nvidia-promises-that-revenue-will-keep-soaring-for-now",
+      "summary": "Despite the turmoil Nvidia is in after the departure of its disgraced founder and CEO Jensen Huang, the company projected that its streak of record-breaking revenue isn't about to stop.",
+      "hot_score": 39.0,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-18T00:16:50+00:00",
+      "last_seen_at": "2026-11-18T01:08:45.110342+00:00",
+      "metrics": {
+        "rank_score": 1.0
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_19bce111d0ee6096": {
+      "id": "it_19bce111d0ee6096",
+      "source": "rss",
+      "title": "Satya Nadella says he’s AGI-pilled now",
+      "url": "https://www.theverge.com/tech/1036111/satya-nadella-says-hes-agi-pilled-now",
+      "summary": "Microsoft CEO Satya Nadella on stage at Microsoft Ignite. | Image: Microsoft / YouTube\n\nMicrosoft CEO Satya Nadella says he's AGI-pilled, at least when it comes to how AI might make startling changes to the structure of the economy and how politics might change because of it. \"I am AGI pilled in the sense that at an economy level, what is the political economy's organization around AGI?\" he asked at a roundtable discussion following his Microsoft Ignite keynote at the Chase Center in San Francisco.\nBut Nadella doesn't think frontier models like Claude are conscious. \"I don't think so,\" he said, adding that he follows Microsoft AI CEO Mustafa Suleyman's view that companies should not give rights to models and treat them like th …\nRead the full story at The Verge.",
+      "hot_score": 39.0,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-17T23:41:18+00:00",
+      "last_seen_at": "2026-11-18T01:08:45.104864+00:00",
+      "metrics": {
+        "rank_score": 1.0
+      },
+      "streak_days": 0,
+      "language": "en"
+    }
+  },
+  "meta": {
+    "mode": "hybrid",
+    "day": "2026-11-18",
+    "generated_at": "2026-11-18T01:09:39.284195+00:00",
+    "window": {
+      "since": "2026-11-17T01:08:37.520187+00:00",
+      "until": "2026-11-18T01:08:45.210288+00:00",
+      "hours": 24.0,
+      "since_local": "2026-11-17T09:08+08:00",
+      "until_local": "2026-11-18T09:08+08:00",
+      "tz": "Asia/Shanghai"
+    },
+    "analysis": {
+      "items": 195,
+      "scored": 195,
+      "topics": 3,
+      "new_entity_mention_rows": 252,
+      "state_items": 15
+    },
+    "llm": {
+      "degraded": false,
+      "degraded_reason": "",
+      "calls": 1
+    },
+    "collect": {
+      "ok_sources": 5,
+      "failed_sources": 2,
+      "skipped": 0,
+      "total_items": 132
+    },
+    "verify": {
+      "verified": 3,
+      "unverifiable": 0,
+      "deferred": 18,
+      "failed": 0,
+      "llm_calls": 3
+    },
+    "predictions": {
+      "total": 189,
+      "verified": 15,
+      "pending": 173,
+      "unverifiable": 1,
+      "hit_rate": 0.2,
+      "weighted_score": 0.2,
+      "brier": 0.31100000000000005
+    },
+    "prediction_generation": {
+      "mode": "hybrid",
+      "generated": 5,
+      "inserted": 5,
+      "dropped": [],
+      "llm_calls": 1,
+      "candidate_pool": 20,
+      "degraded": false,
+      "degraded_reason": ""
+    },
+    "brief": {
+      "max_items_per_section": 10,
+      "velocity_board_enabled": true,
+      "velocity_board_top_n": 5
+    },
+    "signals": {
+      "entities": 874,
+      "points": 1711,
+      "with_velocity": 117,
+      "insufficient": 112,
+      "cold_start": 645,
+      "min_window_hours": 6.0
+    },
+    "enhance_total": 23,
+    "enhanced": 23,
+    "enhance_skipped_count": 0,
+    "enhance_cache_hit": 4,
+    "enhance_cost_cny": 0.00819
+  }
+}
