@@ -1,0 +1,932 @@
+{
+  "date": "2026-11-19",
+  "headline": "今日热榜被「智能体技能与编排」刷屏：从技能评估、Bug 猎手到软件工厂，agent 正从模型能力之争转向工程化基建之争。",
+  "headline_item_id": "it_1eaa642abc1d6c5d",
+  "overview_bullets": [
+    {
+      "icon": "🤖",
+      "topic": "技能工程化",
+      "text": "GitHub 热榜几乎被 agent 技能框架占满——superpowers、ECC、Claude-BugHunter、stitch-skills 同台，NVIDIA 更推出 SkillEvaluator 给技能上质量闸门，说明「技能」正在成为可度量、可复用的新交付物。"
+    },
+    {
+      "icon": "🛠️",
+      "topic": "Agent 基础设施",
+      "text": "AG-UI 定义 agent 与前端交互协议、Tencent LoopForge 做编码 agent 的审批编排、Maritime 卖 agent 托管云，交互协议与运行时托管两条基建线同时升温。"
+    },
+    {
+      "icon": "📄",
+      "topic": "推理效率",
+      "text": "Energy-Based Reasoners 宣称推理效率提升 385 倍、Cerebras 拆解式推理同登 HN，效率叙事正从「更大模型」转向「更省的推理架构」。"
+    },
+    {
+      "icon": "🔐",
+      "topic": "安全双面",
+      "text": "一边是 Claude-BugHunter 把 681 份披露报告固化成攻击矩阵，一边是纳德拉直言大量关键基础设施「无法打补丁」，AI 攻防的天平在同时加重。"
+    },
+    {
+      "icon": "📉",
+      "topic": "热度错位",
+      "text": "Gemini 4 Neon 以 87.8 分居首却无摘要无细节，而真正有信息量的推理效率与安全条目热度明显偏低，热榜正在奖励「名字」而非「内容」。"
+    }
+  ],
+  "executive_summary": "当技能、协议、托管云和评估标准在同一天集体出现，AI 竞争的胜负手已经从「谁的模型更强」滑向「谁的 agent 工程体系更可管、可测、可交付」。",
+  "editor_note": {
+    "core": "今天最该记住的是 NVIDIA 的 SkillEvaluator：当技能可以被质量闸门、语义重叠检测和合成数据集量化评估，agent 技能就从个人经验变成可交易的工程资产——这是 agent 生态从「堆数量」走向「建标准」的分水岭。",
+    "cross_signal": "GitHub 侧的技能框架（superpowers、ECC、BugHunter）与 HN 侧的软件工厂、agent 托管云互相印证：市场同时需要「技能怎么写」和「技能跑在哪」，中间缺的正是评估与协议层，AG-UI 与 SkillEvaluator 恰好补位。",
+    "counterintuitive": "热度最高的 Gemini 4 Neon 没有任何摘要与细节，而 385 倍推理效率、Claude 训练含蛋白质序列这类真正改变成本曲线与数据合规判断的条目热度只有前者一半——热榜在奖励神秘感而非信息量。",
+    "risk": "Claude-BugHunter 把 681 份披露报告固化为攻击矩阵，与纳德拉「无法打补丁」的表态叠加，意味着攻击侧的能力扩散速度可能快于防守侧的补丁周期，关键基础设施是最薄弱的接缝。"
+  },
+  "contradictions": [
+    "纳德拉一边淡化 Outlook 宕机影响，一边强调关键基础设施「无法打补丁」，对同一安全议题同时释放安抚与警报两种信号。",
+    "Gemini 4 Neon 以最高热度登顶却无任何摘要与细节，热度与可验证信息严重不匹配。"
+  ],
+  "underrated": [
+    "Energy-Based Reasoners: 385x more efficient inference",
+    "Claude was trained on protein sequences at scale",
+    "Cerebras Disaggregated Inference",
+    "alibaba/open-code-review",
+    "HKUDS/CLI-Anything"
+  ],
+  "sections": [
+    {
+      "name": "开源项目",
+      "summary": "agent 技能框架、交互协议与编码编排工具密集上榜，开源社区正把 agent 从 demo 推向可复用工程件。",
+      "item_ids": [
+        "it_7e3acd207369e7ad",
+        "it_f09a3afb4ff397a9",
+        "it_443ceb2cd1aec17b",
+        "it_55e52705c413dcb8",
+        "it_b02b6b38ee45f34c",
+        "it_f859b2d15e1457f4",
+        "it_27d1d8a4f04e089d",
+        "it_6d58e85a85ba4c1f",
+        "it_5f20605667d728f2",
+        "it_3d2cc6bff0d04d33",
+        "it_d9ff02aff55d6a35",
+        "it_9d57ea5212cd4a2a",
+        "it_b9769016e4b337b4",
+        "it_71f3730fa4f80069",
+        "it_1eaa642abc1d6c5d",
+        "it_c38acc86923e1421",
+        "it_c854e95b75f2cfa5",
+        "it_1afbcb3bd5f9fe27",
+        "it_13d705a3ee93d28e",
+        "it_5fde80b7574dbda9",
+        "it_ed75bf498e47451e",
+        "it_1f28a16c9fe19cbe",
+        "it_e317aa5d77744524"
+      ]
+    },
+    {
+      "name": "论文与研究",
+      "summary": "推理效率与训练数据来源成为研究侧两条暗线：能效推理架构与 Claude 训练语料中的蛋白质序列。",
+      "item_ids": []
+    },
+    {
+      "name": "社区舆论",
+      "summary": "HN 上模型发布、软件工厂与 agent 托管云轮番登场，讨论重心从「能不能做」转向「怎么运营」。",
+      "item_ids": [
+        "it_23a6e8d38fa0e0cc",
+        "it_361deb2e935cf208",
+        "it_2d0ef2ca9868ab1f",
+        "it_b2c084a412751371",
+        "it_21efcf41c872beed",
+        "it_724823e096fd2a66"
+      ]
+    },
+    {
+      "name": "产业与新闻",
+      "summary": "纳德拉承认关键基础设施「无法打补丁」，为 AI 网络攻击风险给出产业界最直白的背书。",
+      "item_ids": [
+        "it_2cf389d7c377c9cf"
+      ]
+    }
+  ],
+  "comments": [
+    {
+      "item_id": "it_7e3acd207369e7ad",
+      "one_liner": "Univer 开源 Office SDK，可将编辑、计算、协作与文件处理能力嵌入产品，同时面向人和 AI agent",
+      "why": "把表格、文档、协作与文件处理打包成可嵌入的 SDK，让 AI agent 直接操作办公文档，而不只是生成文本；这会把办公套件从终端产品变成别人产品里的基础设施。",
+      "stance": "开源办公内核加 agent 接口是正确方向，但真正的门槛在协作一致性与格式兼容，不在 API 数量。"
+    },
+    {
+      "item_id": "it_f09a3afb4ff397a9",
+      "one_liner": "一个 AI agent skill，可跨 Reddit、X、YouTube、HN、Polymarket 和网页检索任意话题并汇总成有据可依的摘要",
+      "why": "把跨平台检索与摘要合成打包成一个可复用技能，意味着 agent 的信息搜集从单站抓取转向多源交叉验证，直接压缩人工调研的时间成本。",
+      "stance": "多源聚合是 agent 技能里最实用的一类，但摘要的可靠性取决于源质量，别把它当事实核查工具。"
+    },
+    {
+      "item_id": "it_443ceb2cd1aec17b",
+      "one_liner": "Google Research 开源的 PaperOrchestra，用多 agent 框架自动撰写 AI 研究论文",
+      "why": "多智能体流水线覆盖论文写作全流程，会先冲击以量产为导向的学术产出，把评审压力从写作端推到审稿端。",
+      "stance": "自动写论文的框架越多，学术评价体系越需要转向过程与可复现性，而不是成品文本。"
+    },
+    {
+      "item_id": "it_55e52705c413dcb8",
+      "one_liner": "AG-UI 协议，用于把 agent 接入前端应用的 Agent-User 交互规范",
+      "why": "前端与 agent 之间缺少统一交互契约，导致每个产品自造流式事件与状态协议；标准化后 agent 界面组件可以跨框架复用。",
+      "stance": "协议层的机会窗口已经打开，但能否胜出取决于主流前端框架是否原生接入，而非规范写得多漂亮。"
+    },
+    {
+      "item_id": "it_b02b6b38ee45f34c",
+      "one_liner": "面向 Claude Code、Codex、Opencode、Cursor 等 agent 工具的 harness 性能优化系统，涵盖 skills、memory、安全与研究流程",
+      "why": "把技能、记忆、安全与性能调优统一成一层 harness，等于在多个编码 agent 之上插入公共中间层，降低跨工具迁移成本。",
+      "stance": "harness 层正在成为真正的竞争焦点，模型本身反而在商品化。"
+    },
+    {
+      "item_id": "it_f859b2d15e1457f4",
+      "one_liner": "obra 的 agentic skills 框架与软件开发方法论",
+      "why": "把技能框架与开发方法论绑定，试图解决 agent 输出不稳定问题，影响的是团队如何组织人机协作流程而非单点工具选择。",
+      "stance": "方法论包装容易过度承诺，能否落地取决于它是否约束了失败路径。"
+    },
+    {
+      "item_id": "it_27d1d8a4f04e089d",
+      "one_liner": "一个 Claude Code 漏洞挖掘技能包，含 82 个 skills、15 个 slash 命令和 681 条已披露报告模式",
+      "why": "把 681 条已披露报告模式固化成技能包，让外部红队工作从个人经验变成可复制的检索库，攻击面知识扩散速度加快。",
+      "stance": "攻防知识的技能化不可避免，防守方必须假设对手已拥有同等清单。"
+    },
+    {
+      "item_id": "it_6d58e85a85ba4c1f",
+      "one_liner": "n8n 是一个 fair-code 的工作流自动化平台，内置原生 AI 能力，支持可视化搭建与自定义代码，可自托管或使用云版，并提供 400 多个集成。",
+      "why": "可视化编排加自定义代码、可自托管，把工作流自动化的控制权从 SaaS 厂商手里交回企业内部，400+ 集成让它在替换 Zapier 类工具时几乎没有迁移成本。",
+      "stance": "自托管加 fair-code 是当下企业采购 AI 自动化的最优解，闭源 SaaS 的护城河正在被这类项目抽干。"
+    },
+    {
+      "item_id": "it_5f20605667d728f2",
+      "one_liner": "阿里巴巴开源的代码审查工具，采用确定性流水线加 LLM Agent 的混合架构，支持行级评论与多语言规则集",
+      "why": "把确定性规则流水线与 LLM 审阅分层组合，并用阿里内部规模验证过，意味着代码审查的准确率与成本可以分开调优，而不是全押大模型。",
+      "stance": "混合架构才是企业级代码审查的务实解，纯 LLM 审阅的噪声问题在这里被正面承认。"
+    },
+    {
+      "item_id": "it_3d2cc6bff0d04d33",
+      "one_liner": "uv 是用 Rust 编写的 Python 包与项目管理器，主打极快的执行速度。",
+      "why": "用 Rust 重写 Python 包管理，把依赖解析和安装从分钟级压到秒级，直接改变每个 Python 团队的 CI 时长与本地开发节奏。",
+      "stance": "uv 已经是 Python 工具链的事实标准候选，还在用 pip/poetry 的团队是在为历史包袱付利息。"
+    },
+    {
+      "item_id": "it_23a6e8d38fa0e0cc",
+      "one_liner": "一项关于 Energy-Based Reasoners 的研究，宣称推理效率提升 385 倍。",
+      "why": "把推理效率提升两个数量级，意味着同样的算力预算能跑更多请求，直接冲击当前靠堆 GPU 扩容的推理经济学。",
+      "stance": "能效路线比参数规模竞赛更值得押注，385x 这类数字若可复现，卖算力的叙事要重写。"
+    },
+    {
+      "item_id": "it_361deb2e935cf208",
+      "one_liner": "有说法称 Claude 在训练中大规模使用了蛋白质序列数据。",
+      "why": "通用语言模型在训练中吸收大规模蛋白序列，等于把生物序列知识免费搬进了通用模型，压缩了专用生物模型的生存空间。",
+      "stance": "这是通用模型蚕食垂直领域的又一证据，生物信息团队该重新评估自建模型的必要性。"
+    },
+    {
+      "item_id": "it_2d0ef2ca9868ab1f",
+      "one_liner": "Cerebras 推出的分离式推理（Disaggregated Inference）方案。",
+      "why": "把推理拆成可分离阶段调度，让预填充与解码各跑在最合适的硬件上，直接提高单集群吞吐并降低长上下文请求的成本。",
+      "stance": "解耦推理是今年最务实的工程方向，比任何模型榜单都更能决定服务商的毛利。"
+    },
+    {
+      "item_id": "it_b2c084a412751371",
+      "one_liner": "名为 Gemini 4 Neon 的条目，具体内容未提供。",
+      "why": "新版本命名一旦落地，会重置开发者对模型代际的预期，并迫使竞品在上下文长度与多模态上重新对标。",
+      "stance": "版本号营销已经跑在能力前面，先看基准再谈升级，别为命名买单。"
+    },
+    {
+      "item_id": "it_21efcf41c872beed",
+      "one_liner": "Mastra 团队开源了 Mastra Factory，这是他们用来构建 Mastra 的软件工厂。",
+      "why": "把构建自家框架的软件工厂开源，等于把 agent 工程的内部流水线公开，中小团队可以跳过自研脚手架阶段直接复用。",
+      "stance": "开源自家生产流水线是最狠的获客手段，也是把生态锁进自己技术栈的长期赌注。"
+    },
+    {
+      "item_id": "it_724823e096fd2a66",
+      "one_liner": "YC F26 项目 Maritime 推出面向生产环境 AI agent 的托管云服务，提供自定义环境与生命周期管理。",
+      "why": "沙箱公司扎堆之后，竞争焦点从“能跑起来”转向环境定制与生命周期管理，托管层成为 agent 落地的实际瓶颈所在。",
+      "stance": "agent 云会像容器云一样被整合，独立托管层要么被云厂商吞并，要么靠运维深度活下来。"
+    },
+    {
+      "item_id": "it_2cf389d7c377c9cf",
+      "one_liner": "Satya Nadella 表示，在 AI 网络攻击担忧之下，大量关键基础设施处于「无法打补丁」的状态。",
+      "why": "承认关键基础设施无法打补丁，等于把 AI 攻防的战场从软件更新转移到隔离与监测，安全预算的分配逻辑随之改变。",
+      "stance": "拿“不可修补”当免责说辞不可接受，厂商该为遗留系统承担迁移责任而不是转移风险。"
+    }
+  ],
+  "stats": {},
+  "items": {
+    "it_b2c084a412751371": {
+      "id": "it_b2c084a412751371",
+      "source": "hackernews",
+      "title": "Gemini 4 Neon",
+      "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-neon",
+      "summary": "",
+      "hot_score": 87.75,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-18T21:34:07+00:00",
+      "last_seen_at": "2026-11-19T00:39:35.264390+00:00",
+      "metrics": {
+        "points": 373,
+        "num_comments": 352
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_7e3acd207369e7ad": {
+      "id": "it_7e3acd207369e7ad",
+      "source": "github_trending",
+      "title": "dream-num/univer",
+      "url": "https://github.com/dream-num/univer",
+      "summary": "Build your own AI office with Univer Office SDK. Bring editing, calculation, collaboration, and file processing into your product for people and AI agents. Built on an extensible open-source core.",
+      "hot_score": 77.953,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-14T22:39:41.119008+00:00",
+      "last_seen_at": "2026-11-18T01:08:45.133278+00:00",
+      "metrics": {
+        "stars_total": 28906,
+        "stars_in_window": 1828,
+        "forks": 2616,
+        "streak_days": 4
+      },
+      "streak_days": 4,
+      "language": "TypeScript"
+    },
+    "it_f09a3afb4ff397a9": {
+      "id": "it_f09a3afb4ff397a9",
+      "source": "github_trending",
+      "title": "mvanhorn/last30days-skill",
+      "url": "https://github.com/mvanhorn/last30days-skill",
+      "summary": "AI agent skill that researches any topic across Reddit, X, YouTube, HN, Polymarket, and the web - then synthesizes a grounded summary",
+      "hot_score": 75.727,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-17T01:57:21.277064+00:00",
+      "last_seen_at": "2026-11-19T00:39:35.308359+00:00",
+      "metrics": {
+        "stars_total": 69996,
+        "stars_in_window": 1059,
+        "forks": 6241,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "Python"
+    },
+    "it_23a6e8d38fa0e0cc": {
+      "id": "it_23a6e8d38fa0e0cc",
+      "source": "hackernews",
+      "title": "Energy-Based Reasoners: 385x more efficient inference",
+      "url": "https://energy-based-reasoners.github.io/",
+      "summary": "",
+      "hot_score": 74.2537,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-18T09:29:32+00:00",
+      "last_seen_at": "2026-11-19T00:39:35.267397+00:00",
+      "metrics": {
+        "points": 298,
+        "num_comments": 52
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_443ceb2cd1aec17b": {
+      "id": "it_443ceb2cd1aec17b",
+      "source": "github_trending",
+      "title": "google-research/paper-orchestra",
+      "url": "https://github.com/google-research/paper-orchestra",
+      "summary": "PaperOrchestra is a multi-agent framework for automated AI research paper writing.",
+      "hot_score": 73.3034,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-17T01:57:21.277082+00:00",
+      "last_seen_at": "2026-11-19T00:39:35.311195+00:00",
+      "metrics": {
+        "stars_total": 4275,
+        "stars_in_window": 1524,
+        "forks": 532,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "Python"
+    },
+    "it_55e52705c413dcb8": {
+      "id": "it_55e52705c413dcb8",
+      "source": "github_trending",
+      "title": "ag-ui-protocol/ag-ui",
+      "url": "https://github.com/ag-ui-protocol/ag-ui",
+      "summary": "AG-UI: the Agent-User Interaction Protocol. Bring Agents into Frontend Applications.",
+      "hot_score": 71.4472,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-14T22:39:41.119018+00:00",
+      "last_seen_at": "2026-11-18T01:08:45.135951+00:00",
+      "metrics": {
+        "stars_total": 20001,
+        "stars_in_window": 1445,
+        "forks": 2067,
+        "streak_days": 4
+      },
+      "streak_days": 4,
+      "language": "TypeScript"
+    },
+    "it_b02b6b38ee45f34c": {
+      "id": "it_b02b6b38ee45f34c",
+      "source": "github_trending",
+      "title": "affaan-m/ECC",
+      "url": "https://github.com/affaan-m/ECC",
+      "summary": "The agent harness performance optimization system. Skills, instincts, memory, security, and research-first development for Claude Code, Codex, Opencode, Cursor and beyond.",
+      "hot_score": 71.1412,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-15T14:47:23.502401+00:00",
+      "last_seen_at": "2026-11-19T00:39:35.315036+00:00",
+      "metrics": {
+        "stars_total": 306500,
+        "stars_in_window": 1165,
+        "forks": 45121,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "JavaScript"
+    },
+    "it_f859b2d15e1457f4": {
+      "id": "it_f859b2d15e1457f4",
+      "source": "github_trending",
+      "title": "obra/superpowers",
+      "url": "https://github.com/obra/superpowers",
+      "summary": "An agentic skills framework & software development methodology that works.",
+      "hot_score": 68.2353,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-15T14:47:23.502377+00:00",
+      "last_seen_at": "2026-11-19T00:39:35.314450+00:00",
+      "metrics": {
+        "stars_total": 321313,
+        "stars_in_window": 1917,
+        "forks": 28555,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "Shell"
+    },
+    "it_27d1d8a4f04e089d": {
+      "id": "it_27d1d8a4f04e089d",
+      "source": "github_trending",
+      "title": "elementalsouls/Claude-BugHunter",
+      "url": "https://github.com/elementalsouls/Claude-BugHunter",
+      "summary": "A Claude Code skill bundle for bug hunting and external red-team work - 82 skills, 15 slash commands, 681 disclosed-report patterns curated across 24 core vulnerability classes, plus enterprise identity + infrastructure attack matrices.",
+      "hot_score": 67.4818,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-15T23:03:21.804510+00:00",
+      "last_seen_at": "2026-11-18T01:08:45.130429+00:00",
+      "metrics": {
+        "stars_total": 9313,
+        "stars_in_window": 1005,
+        "forks": 1358,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_6d58e85a85ba4c1f": {
+      "id": "it_6d58e85a85ba4c1f",
+      "source": "github_trending",
+      "title": "n8n-io/n8n",
+      "url": "https://github.com/n8n-io/n8n",
+      "summary": "Fair-code workflow automation platform with native AI capabilities. Combine visual building with custom code, self-host or cloud, 400+ integrations.",
+      "hot_score": 66.6,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-19T00:39:28.714618+00:00",
+      "last_seen_at": "2026-11-19T00:39:35.316306+00:00",
+      "metrics": {
+        "stars_total": 211074,
+        "stars_in_window": 325,
+        "forks": 61571,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "TypeScript"
+    },
+    "it_5f20605667d728f2": {
+      "id": "it_5f20605667d728f2",
+      "source": "github_trending",
+      "title": "alibaba/open-code-review",
+      "url": "https://github.com/alibaba/open-code-review",
+      "summary": "Secure, fast, efficient, battle-tested at Alibaba's scale. Hybrid architecture code review tool: deterministic pipelines + LLM Agent, precise line-level comments, built-in multi-language ruleset (NPE, thread-safety, XSS, SQL injection), OpenAI & Anthropic compatible.",
+      "hot_score": 65.94,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-13T23:46:25.197584+00:00",
+      "last_seen_at": "2026-11-18T01:08:45.132002+00:00",
+      "metrics": {
+        "stars_total": 53733,
+        "stars_in_window": 951,
+        "forks": 4430,
+        "streak_days": 5
+      },
+      "streak_days": 5,
+      "language": "Go"
+    },
+    "it_361deb2e935cf208": {
+      "id": "it_361deb2e935cf208",
+      "source": "hackernews",
+      "title": "Claude was trained on protein sequences at scale",
+      "url": "http://xinmingtu.cn/blog/2026/claude-opus-5-5-protein-sequences",
+      "summary": "",
+      "hot_score": 62.9845,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-18T03:47:43+00:00",
+      "last_seen_at": "2026-11-19T00:39:35.269101+00:00",
+      "metrics": {
+        "points": 162,
+        "num_comments": 68
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_3d2cc6bff0d04d33": {
+      "id": "it_3d2cc6bff0d04d33",
+      "source": "github_trending",
+      "title": "astral-sh/uv",
+      "url": "https://github.com/astral-sh/uv",
+      "summary": "An extremely fast Python package and project manager, written in Rust.",
+      "hot_score": 61.2,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-19T00:39:28.714564+00:00",
+      "last_seen_at": "2026-11-19T00:39:35.310694+00:00",
+      "metrics": {
+        "stars_total": 92226,
+        "stars_in_window": 258,
+        "forks": 3922,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Rust"
+    },
+    "it_d9ff02aff55d6a35": {
+      "id": "it_d9ff02aff55d6a35",
+      "source": "github_trending",
+      "title": "jquery/jquery",
+      "url": "https://github.com/jquery/jquery",
+      "summary": "jQuery JavaScript Library",
+      "hot_score": 57.6,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-19T00:39:28.714588+00:00",
+      "last_seen_at": "2026-11-19T00:39:35.312969+00:00",
+      "metrics": {
+        "stars_total": 60009,
+        "stars_in_window": 266,
+        "forks": 20713,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "JavaScript"
+    },
+    "it_9d57ea5212cd4a2a": {
+      "id": "it_9d57ea5212cd4a2a",
+      "source": "github_trending",
+      "title": "sveltejs/svelte",
+      "url": "https://github.com/sveltejs/svelte",
+      "summary": "web development for the rest of us",
+      "hot_score": 57.3858,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-17T01:57:21.277093+00:00",
+      "last_seen_at": "2026-11-19T00:39:35.312462+00:00",
+      "metrics": {
+        "stars_total": 89621,
+        "stars_in_window": 692,
+        "forks": 6251,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "JavaScript"
+    },
+    "it_b9769016e4b337b4": {
+      "id": "it_b9769016e4b337b4",
+      "source": "github_trending",
+      "title": "backnotprop/plannotator",
+      "url": "https://github.com/backnotprop/plannotator",
+      "summary": "The workspace to stay in the loop and on top of agents - shape, decide, plan, annotate, review code, share with team, and send all feedback to agents with one click.",
+      "hot_score": 54.0341,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-13T23:46:25.197621+00:00",
+      "last_seen_at": "2026-11-18T01:08:45.136482+00:00",
+      "metrics": {
+        "stars_total": 13070,
+        "stars_in_window": 860,
+        "forks": 1313,
+        "streak_days": 5
+      },
+      "streak_days": 5,
+      "language": "TypeScript"
+    },
+    "it_71f3730fa4f80069": {
+      "id": "it_71f3730fa4f80069",
+      "source": "github_trending",
+      "title": "appwrite/appwrite",
+      "url": "https://github.com/appwrite/appwrite",
+      "summary": "The open-source cloud for agents & devs. Including Auth, Databases, Storage, Functions, Messaging, Hosting, Realtime, WAF and more",
+      "hot_score": 54.0,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-19T00:39:28.714593+00:00",
+      "last_seen_at": "2026-11-19T00:39:35.313371+00:00",
+      "metrics": {
+        "stars_total": 58234,
+        "stars_in_window": 232,
+        "forks": 5888,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "TypeScript"
+    },
+    "it_1eaa642abc1d6c5d": {
+      "id": "it_1eaa642abc1d6c5d",
+      "source": "github_trending",
+      "title": "NVIDIA/SkillEvaluator",
+      "url": "https://github.com/NVIDIA/SkillEvaluator",
+      "summary": "Multi-tier framework for evaluating AI agent skills and plugins with quality gates, semantic overlap detection, synthetic evaluation dataset generation, and live agent evaluation that measures how skills affect agent behavior.",
+      "hot_score": 53.8465,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-15T23:03:21.804530+00:00",
+      "last_seen_at": "2026-11-19T00:39:35.309484+00:00",
+      "metrics": {
+        "stars_total": 3719,
+        "stars_in_window": 873,
+        "forks": 517,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_2d0ef2ca9868ab1f": {
+      "id": "it_2d0ef2ca9868ab1f",
+      "source": "hackernews",
+      "title": "Cerebras Disaggregated Inference",
+      "url": "https://www.cerebras.ai/blog/cerebras-launches-disaggregated-inference",
+      "summary": "",
+      "hot_score": 52.9753,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-18T00:56:23+00:00",
+      "last_seen_at": "2026-11-19T00:39:35.269745+00:00",
+      "metrics": {
+        "points": 105,
+        "num_comments": 25
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_21efcf41c872beed": {
+      "id": "it_21efcf41c872beed",
+      "source": "hackernews",
+      "title": "Show HN: Mastra Factory, the open-source software factory we use to build Mastra",
+      "url": "https://news.ycombinator.com/item?id=50548660",
+      "summary": "Hi HN, we're Shane, Sam, and Abhi. Almost two years ago, we shared Mastra, our open-source TypeScript agent framework, on Show HN: https://news.ycombinator.com/item?id=43103073 . It got a few hundred upvotes; a couple of weeks later our downloads had doubled, and we were off to the races. Today we're sharing Mastra Factory, the open-source software factory we built to help maintain Mastra itself. At Mastra, we now average nearly 4M downloads per week, and with Factory our team now merges hundred",
+      "hot_score": 50.7932,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-18T16:53:42+00:00",
+      "last_seen_at": "2026-11-19T00:39:35.270267+00:00",
+      "metrics": {
+        "points": 79,
+        "num_comments": 28
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_c38acc86923e1421": {
+      "id": "it_c38acc86923e1421",
+      "source": "github_trending",
+      "title": "getarcaneapp/arcane",
+      "url": "https://github.com/getarcaneapp/arcane",
+      "summary": "Modern Docker Management, Designed for Everyone",
+      "hot_score": 50.7387,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-17T01:57:21.277041+00:00",
+      "last_seen_at": "2026-11-19T00:39:35.308999+00:00",
+      "metrics": {
+        "stars_total": 9795,
+        "stars_in_window": 618,
+        "forks": 561,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "Go"
+    },
+    "it_c854e95b75f2cfa5": {
+      "id": "it_c854e95b75f2cfa5",
+      "source": "github_trending",
+      "title": "punkpeye/awesome-mcp-servers",
+      "url": "https://github.com/punkpeye/awesome-mcp-servers",
+      "summary": "A collection of MCP servers.",
+      "hot_score": 48.6,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-19T00:39:28.714628+00:00",
+      "last_seen_at": "2026-11-19T00:39:35.317338+00:00",
+      "metrics": {
+        "stars_total": 98021,
+        "stars_in_window": 53,
+        "forks": 20354,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": null
+    },
+    "it_1afbcb3bd5f9fe27": {
+      "id": "it_1afbcb3bd5f9fe27",
+      "source": "github_trending",
+      "title": "solidjs/solid",
+      "url": "https://github.com/solidjs/solid",
+      "summary": "A declarative, efficient, and flexible JavaScript library for building user interfaces.",
+      "hot_score": 46.8,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-19T00:39:28.714623+00:00",
+      "last_seen_at": "2026-11-19T00:39:35.316839+00:00",
+      "metrics": {
+        "stars_total": 36576,
+        "stars_in_window": 40,
+        "forks": 1182,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "TypeScript"
+    },
+    "it_13d705a3ee93d28e": {
+      "id": "it_13d705a3ee93d28e",
+      "source": "github_trending",
+      "title": "Tencent/LoopForge",
+      "url": "https://github.com/Tencent/LoopForge",
+      "summary": "Self-hosted workflows for coding-agent delivery. Orchestrate CodeBuddy, Codex and Claude Code with scripts and human approval gates. Includes Local workflows for coding assistants.",
+      "hot_score": 46.3178,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-14T22:39:41.119050+00:00",
+      "last_seen_at": "2026-11-18T01:08:45.132682+00:00",
+      "metrics": {
+        "stars_total": 3155,
+        "stars_in_window": 591,
+        "forks": 439,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Go"
+    },
+    "it_5fde80b7574dbda9": {
+      "id": "it_5fde80b7574dbda9",
+      "source": "github_trending",
+      "title": "openvinotoolkit/openvino",
+      "url": "https://github.com/openvinotoolkit/openvino",
+      "summary": "OpenVINO™ is an open source toolkit for optimizing and deploying AI inference",
+      "hot_score": 45.0,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-19T00:39:28.714599+00:00",
+      "last_seen_at": "2026-11-19T00:39:35.313953+00:00",
+      "metrics": {
+        "stars_total": 11322,
+        "stars_in_window": 24,
+        "forks": 3602,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "C++"
+    },
+    "it_ed75bf498e47451e": {
+      "id": "it_ed75bf498e47451e",
+      "source": "github_trending",
+      "title": "jingyaogong/minimind",
+      "url": "https://github.com/jingyaogong/minimind",
+      "summary": "🧠 Train a 64M-parameter LLM from scratch in just 2h!",
+      "hot_score": 44.4949,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-18T01:08:38.998254+00:00",
+      "last_seen_at": "2026-11-18T01:08:45.138065+00:00",
+      "metrics": {
+        "stars_total": 65980,
+        "stars_in_window": 192,
+        "forks": 8660,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_1f28a16c9fe19cbe": {
+      "id": "it_1f28a16c9fe19cbe",
+      "source": "github_trending",
+      "title": "HKUDS/CLI-Anything",
+      "url": "https://github.com/HKUDS/CLI-Anything",
+      "summary": "\"CLI-Anything: Making ALL Software Agent-Native\" -- CLI-Hub: https://clianything.cc/",
+      "hot_score": 44.3529,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-16T15:44:39.424204+00:00",
+      "last_seen_at": "2026-11-19T00:39:35.307310+00:00",
+      "metrics": {
+        "stars_total": 59730,
+        "stars_in_window": 606,
+        "forks": 5425,
+        "streak_days": 1
+      },
+      "streak_days": 1,
+      "language": "Python"
+    },
+    "it_e317aa5d77744524": {
+      "id": "it_e317aa5d77744524",
+      "source": "github_trending",
+      "title": "google-labs-code/stitch-skills",
+      "url": "https://github.com/google-labs-code/stitch-skills",
+      "summary": "A library of Agent Skills designed to work with the Stitch MCP server. Each skill follows the Agent Skills open standard, for compatibility with coding agents such as Antigravity, Gemini CLI, Claude Code, Cursor.",
+      "hot_score": 42.5642,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-15T23:03:21.804465+00:00",
+      "last_seen_at": "2026-11-19T00:39:35.311805+00:00",
+      "metrics": {
+        "stars_total": 10399,
+        "stars_in_window": 529,
+        "forks": 1367,
+        "streak_days": 4
+      },
+      "streak_days": 4,
+      "language": "TypeScript"
+    },
+    "it_724823e096fd2a66": {
+      "id": "it_724823e096fd2a66",
+      "source": "hackernews",
+      "title": "Launch HN: Maritime (YC F26) – A managed cloud for production AI agents",
+      "url": "https://news.ycombinator.com/item?id=50549188",
+      "summary": "Hi HN, we're Ary and Maria, co-founders of Maritime ( https://maritime.sh ). We're building an agent-native cloud that handles everything from custom environments to lifecycle management for AI agents. Demo: https://www.youtube.com/watch?v=lCWMdBQ96rY There’s been an explosion of sandbox companies coming out of SF, but sandboxes solve maybe 10% of the infrastructure problem for AI agents. The approach that most sandboxing companies take is: You buy Hetzner/OVH Cloud bare metal servers, use Firec",
+      "hot_score": 42.0843,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-18T17:26:28+00:00",
+      "last_seen_at": "2026-11-19T00:39:35.271429+00:00",
+      "metrics": {
+        "points": 39,
+        "num_comments": 33
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_2cf389d7c377c9cf": {
+      "id": "it_2cf389d7c377c9cf",
+      "source": "rss",
+      "title": "Amidst fears of AI cyberattacks, Satya Nadella says lots of critical infrastructure is ‘unpatchable’",
+      "url": "https://techcrunch.com/2026/11/18/amidst-fears-of-ai-cyberattacks-satya-nadella-says-lots-of-critical-infrastructure-is-unpatchable",
+      "summary": "The Microsoft CEO downplayed the recent Outlook outage while noting that AI was causing both opportunities and new challenges for securing much of the connected world.",
+      "hot_score": 39.0,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-18T23:45:00+00:00",
+      "last_seen_at": "2026-11-19T00:39:35.288803+00:00",
+      "metrics": {
+        "rank_score": 1.0
+      },
+      "streak_days": 0,
+      "language": "en"
+    }
+  },
+  "meta": {
+    "mode": "hybrid",
+    "day": "2026-11-19",
+    "generated_at": "2026-11-19T00:40:29.534213+00:00",
+    "window": {
+      "since": "2026-11-18T00:39:27.748054+00:00",
+      "until": "2026-11-19T00:39:35.396685+00:00",
+      "hours": 24.0,
+      "since_local": "2026-11-18T08:39+08:00",
+      "until_local": "2026-11-19T08:39+08:00",
+      "tz": "Asia/Shanghai"
+    },
+    "analysis": {
+      "items": 198,
+      "scored": 198,
+      "topics": 1,
+      "new_entity_mention_rows": 223,
+      "state_items": 19
+    },
+    "llm": {
+      "degraded": false,
+      "degraded_reason": "",
+      "calls": 1
+    },
+    "collect": {
+      "ok_sources": 5,
+      "failed_sources": 2,
+      "skipped": 0,
+      "total_items": 131
+    },
+    "verify": {
+      "verified": 0,
+      "unverifiable": 0,
+      "deferred": 21,
+      "failed": 0,
+      "llm_calls": 0
+    },
+    "predictions": {
+      "total": 194,
+      "verified": 15,
+      "pending": 178,
+      "unverifiable": 1,
+      "hit_rate": 0.2,
+      "weighted_score": 0.2,
+      "brier": 0.31100000000000005
+    },
+    "prediction_generation": {
+      "mode": "hybrid",
+      "generated": 5,
+      "inserted": 5,
+      "dropped": [],
+      "llm_calls": 1,
+      "candidate_pool": 20,
+      "degraded": false,
+      "degraded_reason": ""
+    },
+    "brief": {
+      "max_items_per_section": 10,
+      "velocity_board_enabled": true,
+      "velocity_board_top_n": 5
+    },
+    "signals": {
+      "entities": 887,
+      "points": 1736,
+      "with_velocity": 119,
+      "insufficient": 112,
+      "cold_start": 656,
+      "min_window_hours": 6.0
+    },
+    "enhance_total": 17,
+    "enhanced": 17,
+    "enhance_skipped_count": 0,
+    "enhance_cache_hit": 8,
+    "enhance_cost_cny": 0.003963
+  }
+}
