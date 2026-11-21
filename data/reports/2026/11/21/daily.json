@@ -1,0 +1,948 @@
+{
+  "date": "2026-11-21",
+  "headline": "黎曼猜想同日出现「AI 版」与「纯人类版」两份证明，AI 数学叙事第一次被人类同行当场对质",
+  "headline_item_id": "it_321bf9e3c390a636",
+  "overview_bullets": [
+    {
+      "icon": "📄",
+      "topic": "数学对质",
+      "text": "Anthropic 数学家 Levent Alpöge 称与 Claude 证明黎曼猜想并已形式化，同日另一条 RSS 指出 Brian Conrad 数月审阅的纯人类证明同样「看起来不错」，两条消息互为镜像，谁先被学界接受才是真信号。"
+    },
+    {
+      "icon": "🤖",
+      "topic": "技能包泛滥",
+      "text": "GitHub 热榜被 Claude Code / agent skill 包占据——BugHunter 82 个技能、superpowers 方法论、last30days 跨平台调研、diagram-design 45 种图表，智能体生态正从「模型能力」转向「技能资产化」。"
+    },
+    {
+      "icon": "🔐",
+      "topic": "供应链泄密",
+      "text": "研究者向 AI 服务链植入 200 万个数字金丝雀，发现敏感数据像筛子一样外泄，AI 中间层供应商是当前最被低估的隐私攻击面。"
+    },
+    {
+      "icon": "🏢",
+      "topic": "算力政治",
+      "text": "特朗普威胁对境外建数据中心征「重税」，Meta 因 AI 数据中心排放创纪录而重审 2030 净零目标，算力的环境与地缘成本同时开始反噬叙事。"
+    },
+    {
+      "icon": "📉",
+      "topic": "基础设施脆性",
+      "text": "Outlook 数日宕机、全国停飞、银行与 iCloud 接连失灵，「这周技术世界塌了」与 Google 搜索首页去掉搜索按钮形成对照：旧入口在退场，新入口还没证明自己可靠。"
+    }
+  ],
+  "executive_summary": "今天最响的声音是 AI 攻下黎曼猜想，但真正决定走向的是同一天出现的人类证明、被技能包填满的热榜，以及算力与基础设施同时暴露的成本与脆性。",
+  "editor_note": {
+    "core": "今天最该记住的不是「AI 证明了黎曼猜想」，而是同一天出现了纯人类证明且已被同行审阅数月——AI 数学成果第一次在发布当天就被置于人类基准的对照之下，这比任何单次突破都更能校准我们对 AI 科研能力的判断。",
+    "cross_signal": "开源热榜的 skill 包泛滥与 RSS 里「形式化验证是对抗 slop 的武器」指向同一件事：智能体产出越多，可验证性越贵；而 200 万金丝雀实验则从隐私侧印证，AI 中间层越多，可审计性越差。",
+    "counterintuitive": "热度最高的黎曼猜想恰恰是今天最不该急着下结论的条目，而热度只有 39 的「金丝雀」实验才是已经发生、可复现、影响所有使用 AI API 团队的事实——热度与确定性在今天完全错位。",
+    "risk": "最大的盲点是「形式化」被当成免检章：Alpöge 称已形式化论证，但形式化只保证推理链自洽，不保证前提与建模正确；若社区把「已形式化」等同于「已证明」，会比任何一次 AI 幻觉都更难纠错。"
+  },
+  "contradictions": [
+    "同一事件两种叙事：RSS 称 Anthropic 数学家 Levent Alpöge 与 Claude 证明黎曼猜想，另一条 RSS 引 Ravi Vakil 称 Alessandro Masullo 的证明「全是人类、没有 AI」且进展良好——两条都指向 GRH，谁是真证明、是否存在两个独立证明，数据本身无法判定。",
+    "Nvidia 条目一边说「罢免 CEO 黄仁勋后的余波」，一边说财报健康增长并停止对华销售 H200，管理层动荡与业务向好同时成立，叙事内部张力明显。",
+    "Google 搜索首页去掉搜索按钮、转向 AI 对话历史，与「这周技术世界塌了」的基础设施连环故障并列：入口在激进改造，可靠性却在倒退。"
+  ],
+  "underrated": [
+    "Researcher plants 2m canaries into the AI supply chain. A privacy disaster surfaced.",
+    "The War Against Slop and an Emerging Weapon to Fight it: Formal Verification",
+    "mjmirza/app-store-compliance：117 条拒审模式 + 95 个 EU AI Act/DSA/COPPA 截止日期",
+    "jingyaogong/minimind：两小时从零训出 64M 大模型",
+    "Chips can survive the space environment — can their financing?",
+    "HKUDS/CLI-Anything：让所有软件对智能体原生"
+  ],
+  "sections": [
+    {
+      "name": "开源项目",
+      "summary": "热榜几乎被 agent skill 包与「让软件对智能体原生」的工具占据，开源竞争从模型转向可复用的技能与工作流资产。",
+      "item_ids": [
+        "it_8d57cc2cadedeb4f",
+        "it_27d1d8a4f04e089d",
+        "it_4fa2765666515d8e",
+        "it_f859b2d15e1457f4",
+        "it_d41f86253f9f730f",
+        "it_f09a3afb4ff397a9",
+        "it_f70d6b968bbde640",
+        "it_c75fda64510b4a09",
+        "it_833333ed0f4723f5",
+        "it_ed75bf498e47451e",
+        "it_1f28a16c9fe19cbe",
+        "it_b9e3be30bd3a64af"
+      ]
+    },
+    {
+      "name": "论文与研究",
+      "summary": "黎曼猜想的 AI 证明与人类证明同日登场，加上形式化验证被提为对抗 slop 的武器，数学与代码的可验证性正成为新的分水岭。",
+      "item_ids": []
+    },
+    {
+      "name": "社区舆论",
+      "summary": "HN 上既有对推理芯片的「vibecoding」式调侃，也有 GitHub 删号求助与全周基础设施崩塌的集体焦虑。",
+      "item_ids": [
+        "it_3f60bfbe14168f52",
+        "it_11b8f424dcf97924",
+        "it_a0ebc9ee452b9f3e",
+        "it_3e30621eb1a8fdca",
+        "it_66367af4a452f5e9"
+      ]
+    },
+    {
+      "name": "产业与新闻",
+      "summary": "Google 搜索首页去掉搜索按钮、Meta 因 AI 排放重审净零、特朗普威胁数据中心出境税、Nvidia 余波未平，产业侧全是成本与权力的重新分配。",
+      "item_ids": [
+        "it_321bf9e3c390a636",
+        "it_81ce5b24dd897b42",
+        "it_859ee3ec8c206bcf",
+        "it_b8e1839046bc97c6",
+        "it_c989db0d32fd28d8",
+        "it_299291fdd5181a56",
+        "it_4d6c192ff8628768",
+        "it_8bc8fed2fbe62d07",
+        "it_6e086317ffb3ab4e",
+        "it_59fa562eab8a38b3",
+        "it_3a0cb236fd3220da",
+        "it_e43240c9ae66c70f",
+        "it_f0e77c900b9f7797"
+      ]
+    }
+  ],
+  "comments": [
+    {
+      "item_id": "it_8d57cc2cadedeb4f",
+      "one_liner": "firecrawl 是一个面向 AI agent 的知识基础设施，通过单一 API 提供搜索、抓取以及接入 550 多家数据源的能力",
+      "why": "把抓取、搜索和 550+ 数据源统一到一个 API，意味着 agent 的数据接入层从各家自建爬虫转向标准化采购，中小团队的数据工程成本被压到接近零。",
+      "stance": "数据获取正变成水电煤，护城河从『能抓到』转移到『抓得干净且合规』。"
+    },
+    {
+      "item_id": "it_27d1d8a4f04e089d",
+      "one_liner": "一个 Claude Code 漏洞挖掘技能包，含 82 个 skills、15 个 slash 命令和 681 条已披露报告模式",
+      "why": "把 681 条已披露报告模式固化成技能包，让外部红队工作从个人经验变成可复制的检索库，攻击面知识扩散速度加快。",
+      "stance": "攻防知识的技能化不可避免，防守方必须假设对手已拥有同等清单。"
+    },
+    {
+      "item_id": "it_4fa2765666515d8e",
+      "one_liner": "Ghost-Downloader-3 是一款开源的多功能下载器桌面应用",
+      "why": "下载器把多协议、多源聚合进单一客户端，用户不再为不同站点装不同工具，边缘工具类软件的整合窗口正在关闭。",
+      "stance": "集大成者往往也是最后一款——这类工具的价值在于终结选择困难，而非创新。"
+    },
+    {
+      "item_id": "it_f859b2d15e1457f4",
+      "one_liner": "obra/superpowers 是一套面向 AI agent 的技能框架与软件开发方法论",
+      "why": "把 agent 技能封装成可复用的方法论框架，等于给『提示词工程』补上工程规范，团队协作时技能可以像依赖包一样被版本化和审查。",
+      "stance": "技能框架会像当年的 lint 规则一样成为标配，不采用的一方会在多人协作中先乱。"
+    },
+    {
+      "item_id": "it_d41f86253f9f730f",
+      "one_liner": "AutoClip 是一个开源 AI 视频剪辑桌面工具，能把播客、访谈、课程等长视频一键剪成适配抖音、小红书、TikTok、Reels 与 YouTube Shorts 的短视频，并生成字幕、封面和发布文案。",
+      "why": "把长视频拆条、字幕、封面、文案打包成桌面端一键流程，直接压缩了剪辑外包与内容代运营的生存空间，创作者的分发成本被摊到接近零。",
+      "stance": "开源桌面端而非 SaaS，是对平台抽成模式的正面绕行，我站这一边。"
+    },
+    {
+      "item_id": "it_f09a3afb4ff397a9",
+      "one_liner": "一个 AI agent skill，可跨 Reddit、X、YouTube、HN、Polymarket 和网页检索任意话题并汇总成有据可依的摘要",
+      "why": "把跨平台检索与摘要合成打包成一个可复用技能，意味着 agent 的信息搜集从单站抓取转向多源交叉验证，直接压缩人工调研的时间成本。",
+      "stance": "多源聚合是 agent 技能里最实用的一类，但摘要的可靠性取决于源质量，别把它当事实核查工具。"
+    },
+    {
+      "item_id": "it_f70d6b968bbde640",
+      "one_liner": "AFFiNE 是一个开源、隐私优先的知识库工具，把文档、白板与规划功能整合在一起",
+      "why": "把文档、白板、规划合并进一个隐私优先的开源知识库，直接对 Notion+Miro 的组合收费模式施压，企业采购多了一个可自托管的替代项。",
+      "stance": "开源替代的胜负手不在功能对齐，而在迁移成本——这一步它还没证明。"
+    },
+    {
+      "item_id": "it_c75fda64510b4a09",
+      "one_liner": "一套面向 Claude Code、Codex、GitHub Copilot、Cursor 等编程助手的编辑级图表设计规范，涵盖 45 种图表类型，输出自包含的 HTML + SVG。",
+      "why": "把图表规范固化成 45 种自包含 HTML+SVG 模板喂给编码代理，等于给 AI 生成内容装上统一排版约束，输出从能看变成能发。",
+      "stance": "明确反对 Mermaid 那套默认样式，这种审美上的强硬是稀缺品。"
+    },
+    {
+      "item_id": "it_833333ed0f4723f5",
+      "one_liner": "一份开源的上架合规手册与提交前检查工具，收录 117 种 App Store 与 Google Play 拒审模式及修复方案，并提供面向 AI 编程 agent 的技能",
+      "why": "把 117 条被拒模式和 95 个监管截止日做成预提交检查，等于把应用商店审核与合规风险前移到编码阶段，AI agent 也能直接调用。",
+      "stance": "合规检查下沉到开发工具链是必然，晚做的团队会用一次下架来补课。"
+    },
+    {
+      "item_id": "it_ed75bf498e47451e",
+      "one_liner": "minimind 是一个教学项目，演示如何在两小时内从零训练出一个 64M 参数的小型大语言模型。",
+      "why": "两小时、单卡、64M 参数就能跑通从零预训练全流程，把大模型的门槛从实验室预算降到个人周末项目，教学与复现的价值远大于模型本身。",
+      "stance": "这是目前最有效的 LLM 祛魅工具，比任何科普文章都管用。"
+    },
+    {
+      "item_id": "it_3f60bfbe14168f52",
+      "one_liner": "OpenComputer 是 Devin 的开源替代品，一个可部署在自有 AWS、GCP、Azure 云账号中的云端编码 agent，agent harness 与沙箱运行在同一台持久化 VM 上。",
+      "why": "把编码代理的运行框架和沙箱塞进同一台持久 VM 并部署在客户自有云账号，解决了企业最在意的代码出域问题，采购阻力从合规部门转移到工程部门。",
+      "stance": "自托管是编码代理进入企业的唯一现实路径，闭源 SaaS 会被这条路线挤压。"
+    },
+    {
+      "item_id": "it_11b8f424dcf97924",
+      "one_liner": "Google DeepMind 数小时前新建了一个名为 math horizon 的代码仓库。",
+      "why": "DeepMind 单独开一个数学方向仓库，通常意味着内部把数学能力当作独立产品线推进，外部研究者会据此推断其评测与数据策略的下一步。",
+      "stance": "只有仓库名没有内容，信息量接近于零，先别把它当成果来解读。"
+    },
+    {
+      "item_id": "it_a0ebc9ee452b9f3e",
+      "one_liner": "Hacker News 上出现一条名为 Inkling 2 Mini 的条目。",
+      "why": "小尺寸模型迭代到 Mini 这一档，说明厂商在把推理成本往端侧和低配场景压，开发者选型时的默认基线会被再次拉低。",
+      "stance": "没有摘要就没有判断依据，这条目前只是名字，不值得占用注意力。"
+    },
+    {
+      "item_id": "it_3e30621eb1a8fdca",
+      "one_liner": "一篇讨论用 vibe coding 方式设计推理芯片的文章。",
+      "why": "用自然语言驱动的方式设计推理芯片，把硬件定义周期从数月压到对话级迭代，受影响的是中小团队能否绕开 EDA 与流片经验壁垒。",
+      "stance": "方向诱人但验证成本极高，没有流片结果之前都只能算概念演示。"
+    },
+    {
+      "item_id": "it_66367af4a452f5e9",
+      "one_liner": "Hacker News 上一条关于 GitHub 账号被删除的求助帖。",
+      "why": "账号被平台单方面删除且申诉通道失效，暴露的是开发者把代码托管、CI、身份全押在单一平台上的结构性风险，迁移成本才是真正的锁。",
+      "stance": "平台无解释封号且无有效申诉，这是治理缺陷，不是用户操作失误。"
+    },
+    {
+      "item_id": "it_321bf9e3c390a636",
+      "one_liner": "有 AI 宣称解决了 167 年历史的 Riemann hypothesis，同时也有数学家给出了人类解法。",
+      "why": "同一难题上 AI 与人类方案同时出现，真正被检验的不是模型能力而是数学界的验证流程——谁来判断、多久能判，决定了这类宣称的可信度。",
+      "stance": "在同行评议完成前，AI 解题的新闻价值高于数学价值，别急着庆祝。"
+    },
+    {
+      "item_id": "it_81ce5b24dd897b42",
+      "one_liner": "Ravi Vakil 的一段引述，提到 Alessandro Masullo 提出的 Generalized Riemann Hypothesis 证明由纯人类完成、未借助 AI，Brian Conrad 已审阅数月并给出反馈。",
+      "why": "当事人明确强调成果完全出自人类且已历经数月专家反馈，这条引述实际上是在为「AI 宣称」类新闻提供反证样本，把讨论拉回验证机制。",
+      "stance": "这条比上一条更值得读，它说明慢工评审仍然跑得赢热搜。"
+    },
+    {
+      "item_id": "it_859ee3ec8c206bcf",
+      "one_liner": "Anthropic 数学家 Levent Alpöge 声称借助 Claude 证明了黎曼猜想这一千禧年大奖难题。",
+      "why": "若黎曼猜想的证明成立，数学界最硬的公开难题之一将首次由人机协作攻下，AI 从辅助工具变成定理生产者，评审与优先权归属的规则随之被重写。",
+      "stance": "在同行评审与形式化验证通过前，这只能算一次高调宣称，但它的存在本身已把 AI 数学的可信度问题摆上台面。"
+    },
+    {
+      "item_id": "it_b8e1839046bc97c6",
+      "one_liner": "Levent Alpöge 自述与 Claude 合作找到了黎曼猜想的证明，并称方法可推广至广义黎曼猜想。",
+      "why": "当事人自述把范围从黎曼猜想扩到广义乃至扩展黎曼猜想，并称已形式化论证，这意味着争议焦点从“是否真解出”转向“形式化内核能否被独立复核”。",
+      "stance": "把形式化作为证据链的一环是正确做法，但自我宣称不构成证明，社区必须逐行验核而非围观。"
+    },
+    {
+      "item_id": "it_c989db0d32fd28d8",
+      "one_liner": "文章讨论 AI 生成低质量代码「slop」泛滥，以及形式化验证作为应对手段的兴起。",
+      "why": "当 AI 生成代码成为常态，形式验证从学术小众变成工程验收环节，团队的成本结构会从写代码转向写规格与证明，低质量产出的责任边界也随之清晰。",
+      "stance": "形式验证是当下对抗 AI 垃圾产出最实在的抓手，但它把门槛推给了规格撰写，别把它当成免费的质量保险。"
+    },
+    {
+      "item_id": "it_299291fdd5181a56",
+      "one_liner": "回顾一周内 Outlook 长时间宕机、全美航班停飞、银行与 iCloud 接连故障的集中事故。",
+      "why": "邮件、航空、银行、云存储在同一周接连失守，说明关键基础设施的故障域已经耦合，单点事故会沿依赖链放大成社会级停摆。",
+      "stance": "把这一周读成“技术世界要崩”是情绪化叙事，但集中化依赖带来的系统性脆弱是真实的，冗余投入不能再被当成成本浪费。"
+    },
+    {
+      "item_id": "it_4d6c192ff8628768",
+      "one_liner": "Google 正式上线新版搜索首页，加入 AI 对话历史并取消搜索按钮。",
+      "why": "搜索首页去掉搜索按钮、加入 AI 对话历史，等于把入口从“查询框”改成“会话”，流量分发与广告位逻辑随之重构，靠关键词排名的内容方首当其冲。",
+      "stance": "这是把搜索降级为聊天机器人的附属功能，用户体验未必更好，但谷歌对入口控制权的加固是明确的。"
+    },
+    {
+      "item_id": "it_8bc8fed2fbe62d07",
+      "one_liner": "Meta 在最新可持续报告中因 AI 数据中心排放创新高，重新考虑 2030 年净零目标。",
+      "why": "AI 数据中心推高排放，使 Meta 公开松动 2030 净零承诺，气候目标在算力竞赛面前让位，其他大厂的承诺可信度随之被重新定价。",
+      "stance": "净零承诺一旦遇到算力扩张就退让，说明它从来不是约束而是公关，监管应把披露与核算做实。"
+    },
+    {
+      "item_id": "it_6e086317ffb3ab4e",
+      "one_liner": "研究者向 AI 服务链路植入 200 万个数字诱饵，追踪发现敏感数据在整个生态中被广泛泄露。",
+      "why": "两百万个探针显示，请求在多层转售的 AI 服务链中被逐级泄露，敏感数据在用户看不见的中间商处外流，采购方对供应链的可见性几乎为零。",
+      "stance": "AI 服务转售链的隐私黑洞是行业级丑闻，只靠服务条款无法解决，需要强制披露数据流向与下游处理方。"
+    },
+    {
+      "item_id": "it_59fa562eab8a38b3",
+      "one_liner": "Spotify 创始人 Daniel Ek 投资 AI 研究者创办的聚变能源初创公司 Europa Fusion。",
+      "why": "AI 研究者创办聚变公司并拿到知名创始人投资，反映资本正把 AI 的方法论与叙事迁移到能源硬科技，融资路径从实验室拨款转向明星天使。",
+      "stance": "跨界背书能带来资金与关注，但聚变靠的是工程与物理而非模型调参，别让 AI 光环替代技术里程碑。"
+    }
+  ],
+  "stats": {},
+  "items": {
+    "it_8d57cc2cadedeb4f": {
+      "id": "it_8d57cc2cadedeb4f",
+      "source": "github_trending",
+      "title": "firecrawl/firecrawl",
+      "url": "https://github.com/firecrawl/firecrawl",
+      "summary": "Knowledge infrastructure to make your agents smarter. Search, scrape and access 550+ data providers through one API.",
+      "hot_score": 88.0229,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-20T00:47:06.445974+00:00",
+      "last_seen_at": "2026-11-21T00:07:17.907051+00:00",
+      "metrics": {
+        "stars_total": 205249,
+        "stars_in_window": 1241,
+        "forks": 10744,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "TypeScript"
+    },
+    "it_a0ebc9ee452b9f3e": {
+      "id": "it_a0ebc9ee452b9f3e",
+      "source": "hackernews",
+      "title": "Inkling 2 Mini",
+      "url": "https://thinkingmachines.ai/news/inkling-2-mini",
+      "summary": "",
+      "hot_score": 87.75,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-20T20:12:19+00:00",
+      "last_seen_at": "2026-11-21T00:07:17.879017+00:00",
+      "metrics": {
+        "points": 566,
+        "num_comments": 94
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_3e30621eb1a8fdca": {
+      "id": "it_3e30621eb1a8fdca",
+      "source": "hackernews",
+      "title": "Vibecoding an inference chip",
+      "url": "https://ankitg.me/blog/vibecoding-inference-chip",
+      "summary": "",
+      "hot_score": 76.5,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-20T18:15:16+00:00",
+      "last_seen_at": "2026-11-21T00:07:17.881523+00:00",
+      "metrics": {
+        "points": 101,
+        "num_comments": 34
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_27d1d8a4f04e089d": {
+      "id": "it_27d1d8a4f04e089d",
+      "source": "github_trending",
+      "title": "elementalsouls/Claude-BugHunter",
+      "url": "https://github.com/elementalsouls/Claude-BugHunter",
+      "summary": "A Claude Code skill bundle for bug hunting and external red-team work - 82 skills, 15 slash commands, 681 disclosed-report patterns curated across 24 core vulnerability classes, plus enterprise identity + infrastructure attack matrices.",
+      "hot_score": 74.8183,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-15T23:03:21.804510+00:00",
+      "last_seen_at": "2026-11-21T00:07:17.903970+00:00",
+      "metrics": {
+        "stars_total": 14219,
+        "stars_in_window": 1622,
+        "forks": 1697,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "Python"
+    },
+    "it_4fa2765666515d8e": {
+      "id": "it_4fa2765666515d8e",
+      "source": "github_trending",
+      "title": "XiaoYouChR/Ghost-Downloader-3",
+      "url": "https://github.com/XiaoYouChR/Ghost-Downloader-3",
+      "summary": "The only downloader you need. 下载器的集大成者。",
+      "hot_score": 71.6896,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-20T00:47:06.446027+00:00",
+      "last_seen_at": "2026-11-21T00:07:17.912466+00:00",
+      "metrics": {
+        "stars_total": 13681,
+        "stars_in_window": 1082,
+        "forks": 838,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "Python"
+    },
+    "it_f859b2d15e1457f4": {
+      "id": "it_f859b2d15e1457f4",
+      "source": "github_trending",
+      "title": "obra/superpowers",
+      "url": "https://github.com/obra/superpowers",
+      "summary": "An agentic skills framework & software development methodology that works.",
+      "hot_score": 69.3333,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-15T14:47:23.502377+00:00",
+      "last_seen_at": "2026-11-21T00:07:17.904674+00:00",
+      "metrics": {
+        "stars_total": 322825,
+        "stars_in_window": 2028,
+        "forks": 28667,
+        "streak_days": 4
+      },
+      "streak_days": 4,
+      "language": "Shell"
+    },
+    "it_d41f86253f9f730f": {
+      "id": "it_d41f86253f9f730f",
+      "source": "github_trending",
+      "title": "zhouxiaoka/autoclip",
+      "url": "https://github.com/zhouxiaoka/autoclip",
+      "summary": "AutoClip｜一个链接，一键出片。开源 AI 视频剪辑桌面工具，将播客、访谈、课程等长视频自动剪成短视频，生成字幕、封面和发布文案，适配抖音、小红书、TikTok、Reels 与 YouTube Shorts。Open-source AI video clipping & content repurposing.",
+      "hot_score": 67.3562,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-20T00:47:06.446033+00:00",
+      "last_seen_at": "2026-11-21T00:07:17.913027+00:00",
+      "metrics": {
+        "stars_total": 12167,
+        "stars_in_window": 979,
+        "forks": 2011,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "Python"
+    },
+    "it_f09a3afb4ff397a9": {
+      "id": "it_f09a3afb4ff397a9",
+      "source": "github_trending",
+      "title": "mvanhorn/last30days-skill",
+      "url": "https://github.com/mvanhorn/last30days-skill",
+      "summary": "AI agent skill that researches any topic across Reddit, X, YouTube, HN, Polymarket, and the web - then synthesizes a grounded summary",
+      "hot_score": 66.0608,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-17T01:57:21.277064+00:00",
+      "last_seen_at": "2026-11-21T00:07:17.909546+00:00",
+      "metrics": {
+        "stars_total": 71434,
+        "stars_in_window": 1059,
+        "forks": 6343,
+        "streak_days": 5
+      },
+      "streak_days": 5,
+      "language": "Python"
+    },
+    "it_11b8f424dcf97924": {
+      "id": "it_11b8f424dcf97924",
+      "source": "hackernews",
+      "title": "A few hours ago Google DeepMind created a math horizon repo",
+      "url": "https://github.com/google-deepmind/math-horizon",
+      "summary": "",
+      "hot_score": 65.25,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-20T21:42:21+00:00",
+      "last_seen_at": "2026-11-21T00:07:17.963931+00:00",
+      "metrics": {
+        "points": 43,
+        "num_comments": 27
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_f70d6b968bbde640": {
+      "id": "it_f70d6b968bbde640",
+      "source": "github_trending",
+      "title": "toeverything/AFFiNE",
+      "url": "https://github.com/toeverything/AFFiNE",
+      "summary": "There can be more than Notion and Miro. AFFiNE(pronounced [ə‘fain]) is a next-gen knowledge base that brings planning, sorting and creating all together. Privacy first, open-source, customizable and ready to use.",
+      "hot_score": 59.0229,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-20T00:47:06.446022+00:00",
+      "last_seen_at": "2026-11-21T00:07:17.911827+00:00",
+      "metrics": {
+        "stars_total": 75787,
+        "stars_in_window": 676,
+        "forks": 5581,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "TypeScript"
+    },
+    "it_c75fda64510b4a09": {
+      "id": "it_c75fda64510b4a09",
+      "source": "github_trending",
+      "title": "cathrynlavery/diagram-design",
+      "url": "https://github.com/cathrynlavery/diagram-design",
+      "summary": "Editorial diagram design for Claude Code, Codex, GitHub Copilot, Cursor, Factory Droid, Qoder, and Pi. 45 diagram types. Self-contained HTML + SVG. No shadows. No Mermaid slop.",
+      "hot_score": 57.3562,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-20T00:47:06.445994+00:00",
+      "last_seen_at": "2026-11-21T00:07:17.908935+00:00",
+      "metrics": {
+        "stars_total": 69269,
+        "stars_in_window": 636,
+        "forks": 4652,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "HTML"
+    },
+    "it_833333ed0f4723f5": {
+      "id": "it_833333ed0f4723f5",
+      "source": "github_trending",
+      "title": "mjmirza/app-store-compliance",
+      "url": "https://github.com/mjmirza/app-store-compliance",
+      "summary": "Avoid common App Store and Google Play rejections. Open playbook and pre-submission guard with 117 documented rejection patterns and fixes, privacy manifest and Data safety checks, 95 tracked deadlines (EU AI Act, DSA, COPPA, age laws), and a skill for AI coding agents.",
+      "hot_score": 57.0229,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-20T00:47:06.446011+00:00",
+      "last_seen_at": "2026-11-21T00:07:17.910702+00:00",
+      "metrics": {
+        "stars_total": 2722,
+        "stars_in_window": 869,
+        "forks": 173,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "Shell"
+    },
+    "it_ed75bf498e47451e": {
+      "id": "it_ed75bf498e47451e",
+      "source": "github_trending",
+      "title": "jingyaogong/minimind",
+      "url": "https://github.com/jingyaogong/minimind",
+      "summary": "🧠 两小时从 0 训出你的 64M 大模型。Train your own 64M LLM from scratch in 2 hours.",
+      "hot_score": 56.2897,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-18T01:08:38.998254+00:00",
+      "last_seen_at": "2026-11-21T00:07:17.906000+00:00",
+      "metrics": {
+        "stars_total": 67676,
+        "stars_in_window": 847,
+        "forks": 8858,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "Python"
+    },
+    "it_3f60bfbe14168f52": {
+      "id": "it_3f60bfbe14168f52",
+      "source": "hackernews",
+      "title": "Show HN: OpenComputer – an open source alternative to Devin",
+      "url": "https://github.com/diggerhq/opencomputer",
+      "summary": "Hi HN! Utpal here, I'm one of the founders of OpenComputer. OpenComputer is an open source cloud coding agent for teams that can run in your own cloud account (AWS, GCP, Azure). We run the agent harness and the sandbox on the same durable VM (architecture in the docs [1]). First commit lands in 24s; the alternatives we benchmarked took 53-72s (benchmarks below [2]). Two other choices: - One VM per team, scalable horizontally. Sessions are isolated in git worktrees.\n- Session files are backed up ",
+      "hot_score": 54.0,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-20T20:19:56+00:00",
+      "last_seen_at": "2026-11-21T00:07:17.962881+00:00",
+      "metrics": {
+        "points": 50,
+        "num_comments": 14
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_1f28a16c9fe19cbe": {
+      "id": "it_1f28a16c9fe19cbe",
+      "source": "github_trending",
+      "title": "HKUDS/CLI-Anything",
+      "url": "https://github.com/HKUDS/CLI-Anything",
+      "summary": "\"CLI-Anything: Making ALL Software Agent-Native\" -- CLI-Hub: https://clianything.cc/",
+      "hot_score": 49.3333,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-16T15:44:39.424204+00:00",
+      "last_seen_at": "2026-11-21T00:07:17.905467+00:00",
+      "metrics": {
+        "stars_total": 61368,
+        "stars_in_window": 898,
+        "forks": 5560,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "Python"
+    },
+    "it_b9e3be30bd3a64af": {
+      "id": "it_b9e3be30bd3a64af",
+      "source": "github_trending",
+      "title": "Tracer-Cloud/opensre",
+      "url": "https://github.com/Tracer-Cloud/opensre",
+      "summary": "The open-source agent for CI/CD reliability.",
+      "hot_score": 43.0229,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-20T00:47:06.446016+00:00",
+      "last_seen_at": "2026-11-21T00:07:17.911367+00:00",
+      "metrics": {
+        "stars_total": 13598,
+        "stars_in_window": 466,
+        "forks": 1926,
+        "streak_days": 2
+      },
+      "streak_days": 2,
+      "language": "Python"
+    },
+    "it_66367af4a452f5e9": {
+      "id": "it_66367af4a452f5e9",
+      "source": "hackernews",
+      "title": "Help github just deleted me",
+      "url": "https://nate.mecca1.net/posts/2026-11-20_help",
+      "summary": "",
+      "hot_score": 42.75,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-20T23:35:42+00:00",
+      "last_seen_at": "2026-11-21T00:07:17.883149+00:00",
+      "metrics": {
+        "points": 37,
+        "num_comments": 17
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_4d6c192ff8628768": {
+      "id": "it_4d6c192ff8628768",
+      "source": "rss",
+      "title": "Google rolls out new search homepage with AI chat history and no search button",
+      "url": "https://arstechnica.com/ai/2026/11/googles-latest-search-page-redesign-drops-the-search-button-adds-ai-sidebar",
+      "summary": "Google's flagship search experience is evolving into an AI experience with stunning speed. Even time-tested elements of search are getting AI makeovers, and the latest to get this treatment is the search homepage on Google.com. A redesign that's been in testing for the last few weeks is now official, bringing easier access to AI chats and dropping the dedicated search button entirely.\nGoogle search VP Robby Stein confirmed on X that Google is deploying the new desktop search page after a successful test. The page will now have a few more buttons under the search bar, all connected to AI features. There's an image generation button, one for analyzing files, and one for brainstorming with Gemini. The \"I'm Feeling Lucky\" button remains, but the Google Search button that used to sit next to it is gone.\nThe search button has obviously been a part of Google's search page forever. However, it wasn't in a very convenient location in the modern interface. When you begin typing a query, the autocomplete suggestions cover that button. You have to click out of the text field to access the button, which is an extra step compared to simply mashing the Enter key to run your search. Read full article\nComments",
+      "hot_score": 39.0,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-20T21:58:29+00:00",
+      "last_seen_at": "2026-11-21T00:07:17.897993+00:00",
+      "metrics": {
+        "rank_score": 1.0
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_8bc8fed2fbe62d07": {
+      "id": "it_8bc8fed2fbe62d07",
+      "source": "rss",
+      "title": "Meta reconsiders 2030 net-zero goal amid record emissions from AI data centers",
+      "url": "https://arstechnica.com/ai/2026/11/meta-reconsiders-2030-net-zero-goal-amid-record-emissions-from-ai-data-centers",
+      "summary": "Meta’s executives are rethinking the company’s original goal of achieving net-zero emissions by 2030. That revelation in Meta’s latest sustainability report comes as the company reported a record percentage increase in greenhouse gas emissions that exceeds any other Big Tech competitor racing to build new AI data centers.\nThe company’s 2026 sustainability report claims that “our long-term ambitions haven’t changed, but our operating environment has,” according to an introduction from Rachel Peterson, vice president of data centers at Meta, and Blair Swedeen, global head of net zero and sustainability at Meta. In the November 19, 2026, report, they attributed the changing conditions and the need for a rethink to how “demand for AI infrastructure has grown faster than almost anyone projected.”\n“We are re-evaluating our timelines, sequencing, and interim milestones—including the 2030 timeframe for our net zero emissions goal and our near-term intensity targets—so our approach reflects current operating realities while keeping progress transparent year over year,” Peterson and Swedeen wrote in the report. Read full article\nComments",
+      "hot_score": 39.0,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-20T21:47:10+00:00",
+      "last_seen_at": "2026-11-21T00:07:17.899278+00:00",
+      "metrics": {
+        "rank_score": 0.6667
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_c989db0d32fd28d8": {
+      "id": "it_c989db0d32fd28d8",
+      "source": "rss",
+      "title": "The War Against Slop and an Emerging Weapon to Fight it: Formal Verification",
+      "url": "https://latent.space/p/formal-verification",
+      "summary": "The word of the year in the AI industry over 2026 has been “slop” — meaning low-quality output from a large language model. And with so much code being AI-generated now, avoiding slop has become a daily concern for software engineers. So how to do that? One way is to use formal verification systems , which use mathematical proofs and logic to verify the correctness of software or hardware. With AI’s growing prowess at solving math problems , there’s now a number of AI companies offering formal verification systems. They include Harmonic , Theorem , Axiom Math , and a new entrant called &Truth (pronounced ‘and truth’). In this article we’ll look at some of the approaches these companies are taking. How formal verification is used in software and AI today In order to better understand the landscape of formal verification systems, we spoke to one of its leading proponents: Clark Barrett , &Truth’s co-founder and co-CEO. He’s also Corbel Professor (Research) of Computer Science at Stanford and was the co-creator of cvc5 , a popular automated reasoning engine used in formal verification. Without getting too in the weeds, cvc5 is what’s called a “solver” for satisfiability modulo theories (SMT) , which Barrett says is widely used in companies like Amazon. For instance, cvc5 is used for specification analysis and test generation in Kiro , Amazon’s agentic development environment. “It's been fun to see my tools go from a good idea in the lab to cvc5 is now called billions of times a day in production pipelines at Amazon,” Barrett told us. Via a 2022 paper about cvc5 co-authored by Clark Barrett. When AI coding agent companies talk about “verifying” their work, it typically means agents running tests, critiquing their own output, or having another AI model judge it. So I asked Barrett how far short of real verification does that fall? “The main difference is really just, how do you know when you're done,” he replied. “So if you're testing, patching, scanning — using all these existing tools — they're quite good. I mean, they find a ton of problems. They raise those issues. But you're never quite sure, did I find all of them [the issues] or is there one more lurking there that my tool can't find?” &Atlas, the first tool of &Truth; it’s “a map of the world’s open-source code, starting with code written in the C programming language.” Lean’s role in formal verification &Truth builds on Lean , an open-source programming language and proof assistant . The company combines AI with automated reasoning techniques to construct proofs that Lean can check. Lean is a language used by frontier models to solve all manner of supremely difficult math problems . For instance, just this week GPT-6.2 Astra produced what Vals believes is “the first Lean proof of Smoktunowicz’s Gap Theorem.” Vals added that Anthropic also used Lean to formalize Fermat’s Last Theorem, a project of 13 million lines. The latest big math news is a report that Anthropic mathematician Levent Alpöge claims he used Claude to prove the 167-year-old Riemann hypothesis — and he posted the proof in Lean . Example of Lean code; via Lean project website &Truth is building what it calls a “verification machine” on top of the Lean framework, with the ambition of reading code “in any language, proving whether it satisfies precisely stated requirements , and enabling humans to trust it without having to understand every line.” “What Lean does is it just checks that you didn't make a mistake,” explained Barrett. “So you can think of it as a very sophisticated checker for mathematics.” This has implications for model training too. Axiom Math uses formal verification to provide correctness feedback for training its mathematical reasoning systems, with proof attempts helping improve future models. In an interview with Latent Space in June , Axiom CEO Carina Hong made the point that formal verification — and what Lean enables — isn’t just a defensive measure. “Formal verification, or verified AI, to us it's not just about handling or kicking out the lousiness, the hallucinations, the mistakes. It's about scaling brilliance. It's about super-intelligence.” Axiom develops AxiomProver , an AI system that generates Lean proofs, alongside AXLE , its toolkit for exploring, validating, and manipulating those proofs. Harmonic’s Aristotle , an “ automated theorem prover ”, uses Lean heavily in its offering. “Inside Aristotle, AI writes the proofs and Lean checks every step of them, so a result never rests on the AI being right,” states the company on its website. Harmonic’s workflow Cybersecurity and LLM-scaled formal verification Given the heightened level of paranoia about cybersecurity these days — some might say in the days leading up to AGI — formal verification systems seem like they’re needed more than ever. And Barrett confirmed that cybersecurity is a key focus for &Truth. “One really powerful use case for our technology is going through all the C code in the world, whether it be open source or closed source, and trying to ensure that it's memory safe. And then if it's not memory safe, we can point to: here's a problem with this piece of code, you need to fix it so that it's safe.” Security is also a focus of Theorem , one of &Truth’s competitors. “Verification is the only defense that holds while adversaries scale,” Theorem states on its homepage. Theorem’s proof-efficiency eval : “KB of machine code verified per hour on our proof-efficiency eval, by model release date, with 95% intervals.” Theorem has also collaborated with Anthropic on this topic, resulting in a blog post entitled “ LLMs are making formal software verification feasible at a much larger scale .” One of the more encouraging notes in the post is that formal verification, although currently token-expensive, is starting to get more token-efficient. On a set of 36 small verification tasks, Anthropic reported that Opus 5.5 reached a 50% solve rate using about 40% fewer tokens than Opus 5. This trend is expected to continue as more models are “trained on long verification tasks.” Theorem and Anthropic describe “LLM-scaled formal verification” as a promising approach to providing security guarantees at a previously impractical scale. Anthropic diagram: “from code to a machine-checked guarantee”; in this case using Rocq rather than Lean. The “veri-coding” experience for developers Lastly, how does formal verification fit into a developer’s workflow? On its website, &Truth states that developers will move from vibe-coding to “veri-coding” — meaning the verification layer is part of the workflow. “If you've got your verification machine connected to your agent, you can still say, ‘hey, I want you to build this,’ said Barrett. “Maybe there's a little bit of work to really nail down with the agent what the specification is of what you want to build. But then the agent can go under the hood, collaborate with the formal [verification] tool, and essentially what you'll see is almost no difference except your code will work the first time.” The idea, then, is that more of the developer’s time will be spent on spec writing and reviewing than on coding or reviewing code. Verify all the outcomes While I was finishing up this article, I came across this tweet by Cognition dev rel Nader Dabit: Whether the term “outcome engineering” sticks or not, he’s onto something in terms of where we are with coding. When you just tell your team of agents what you want and they go ahead and build it, you (the human developer) need a way to check the correctness of what your agents deliver. If companies like &Truth, Harmonic, Theorem and Axiom Math have their way, formal verification could become an increasingly practical way to check those outcomes.",
+      "hot_score": 39.0,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-20T21:18:41+00:00",
+      "last_seen_at": "2026-11-21T00:07:17.886892+00:00",
+      "metrics": {
+        "rank_score": 1.0
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_6e086317ffb3ab4e": {
+      "id": "it_6e086317ffb3ab4e",
+      "source": "rss",
+      "title": "Researcher plants 2m canaries into the AI supply chain. A privacy disaster surfaced.",
+      "url": "https://arstechnica.com/security/2026/11/a-leaky-ai-supply-chain-is-exposing-secret-user-data-at-an-alarming-rate",
+      "summary": "Researchers planted 2 million digital tripwires in requests sent through a sprawling network of AI services to find out what happened to sensitive information entrusted to them. What they discovered was an ecosystem that leaked highly sensitive data like a sieve.\nThe exposure was found through an ingenious experiment designed to test if sensitive information can leak through the vast chain of widely used AI services and how that information is exploited when it does. Many of today’s AI apps use services such as OpenRouter or Vercel that act as brokers. These “AI routers,” sometimes also known as “AI gateways,” receive large numbers of prompts sent from AI app end users and route them to an available inference engine based on criteria such as the one charging the lowest price or being best suited for the given task. Instead of using Anthropic, OpenAI, or another big provider, the developer hires an AI router to find the most suitable model.\nSecurity breaches, prompt theft, and privacy violations\nTo test for potential leakage, researcher HD Moore assembled a collection of AWS access keys, functioning credentials tied to empty AWS accounts, passwords for services such as SSH, and unique URLs, DNS names, and private git repository references. None of the secrets had ever been used before, and he controlled the infrastructure that received any requests using the credentials. He then seeded each secret into exactly one prompt sent to a single provider. In the event any of the secrets were leaked, these “canaries”—so called because they resemble the role of that bird when taken into coal mines—would allow Moore to identify each link in the chain that was responsible. Read full article\nComments",
+      "hot_score": 39.0,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-20T20:59:08+00:00",
+      "last_seen_at": "2026-11-21T00:07:17.900228+00:00",
+      "metrics": {
+        "rank_score": 0.3333
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_59fa562eab8a38b3": {
+      "id": "it_59fa562eab8a38b3",
+      "source": "rss",
+      "title": "Daniel Ek backs AI researcher’s fusion power startup. Here’s what they’re building.",
+      "url": "https://techcrunch.com/2026/11/20/daniel-ek-backs-ai-researchers-fusion-power-startup-heres-what-theyre-building",
+      "summary": "Spotify founder Daniel Ek is backing Europa Fusion, a fusion power startup founded by an AI researcher. Here's what the startup is building.",
+      "hot_score": 39.0,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-20T19:53:41+00:00",
+      "last_seen_at": "2026-11-21T00:07:17.893487+00:00",
+      "metrics": {
+        "rank_score": 1.0
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_321bf9e3c390a636": {
+      "id": "it_321bf9e3c390a636",
+      "source": "rss",
+      "title": "AI claimed a solution to the 167-year-old Riemann hypothesis — and a human did, too",
+      "url": "https://techcrunch.com/2026/11/20/ai-claimed-a-solution-to-the-167-year-old-riemann-hypothesis-and-a-human-did-too",
+      "summary": "Mathematicians are having their minds blown by the latest AI-driven result — and there's a competing human solution, too.",
+      "hot_score": 39.0,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-20T19:32:08+00:00",
+      "last_seen_at": "2026-11-21T00:07:17.894141+00:00",
+      "metrics": {
+        "rank_score": 0.8571
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_81ce5b24dd897b42": {
+      "id": "it_81ce5b24dd897b42",
+      "source": "rss",
+      "title": "Quoting Ravi Vakil",
+      "url": "https://simonwillison.net/2026/Nov/20/ravi-vakil",
+      "summary": "Alessandro Masullo has a proposed proof of [Generalized Riemann Hypothesis], and Brian Conrad has been looking closely at it for months and gave extensive feedback which is being incorporated, and it is so far looking good. It is all human, with no AI. The hope was to bring Alessandro to Stanford for a year to polish the writing and then announce it after running it by enough people. Now it seems best to put out the current draft.\n— Ravi Vakil , Hurried Announcement: Alessandro Masullo GRH\n\nTags: mathematics",
+      "hot_score": 39.0,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-20T19:21:49+00:00",
+      "last_seen_at": "2026-11-21T00:07:17.883763+00:00",
+      "metrics": {
+        "rank_score": 1.0
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_3a0cb236fd3220da": {
+      "id": "it_3a0cb236fd3220da",
+      "source": "rss",
+      "title": "Trump threatens ‘tremendous tax’ for moving AI data centers outside the US",
+      "url": "https://www.theverge.com/policy/1038892/trump-foreign-data-centers-tax",
+      "summary": "President Donald Trump promised to put a \"tremendous tax\" on companies that build data centers outside of the US, even as states and cities around the country are placing restrictions on new applications to build them.\n\"We're not going to allow our companies to build data centers outside of our country,\" Trump said at a press conference Friday following his summit with China President Xi Jinping and Russia President Vladimir Putin. \"They allowed that to happen with chips and everything else, and it was very destructive to our country. It's where we started going behind.\" Should the US allow data centers to be built outside of the country, T …\nRead the full story at The Verge.",
+      "hot_score": 39.0,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-20T18:50:19+00:00",
+      "last_seen_at": "2026-11-21T00:07:17.889713+00:00",
+      "metrics": {
+        "rank_score": 1.0
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_e43240c9ae66c70f": {
+      "id": "it_e43240c9ae66c70f",
+      "source": "rss",
+      "title": "Chips can survive the space environment — can their financing?",
+      "url": "https://techcrunch.com/2026/11/20/chips-can-survive-the-space-environment-can-their-financing",
+      "summary": "Lenders don't want SpaceX shooting their collateral into orbit. What does that mean for space data centers writ large?",
+      "hot_score": 38.749,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-20T17:40:01+00:00",
+      "last_seen_at": "2026-11-21T00:07:17.894733+00:00",
+      "metrics": {
+        "rank_score": 0.7143
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_859ee3ec8c206bcf": {
+      "id": "it_859ee3ec8c206bcf",
+      "source": "rss",
+      "title": "Anthropic mathematician claims to have solved prestigious Millennium Prize problem with Claude",
+      "url": "https://www.theverge.com/ai-artificial-intelligence/1010051/anthropic-riemann-hypothesis-millennium-prize-problem",
+      "summary": "Anthropic went public on November 19th, 2026. | Photo: Getty Images\n\nAnthropic mathematician Levent Alpöge claims he has proved the Riemann hypothesis, one of mathematics's most notoriously difficult problems, with the help of Claude, cracking a puzzle that has eluded some of the world's best mathematicians for decades. If verified, it would mark yet another seismic achievement for AI in mathematics and add to the upheaval already unleashed by OpenAI's previous, often inelegant forays into the field.\nAlpöge's solution has yet to be verified independently. Anthropic has not commented or involved itself in Alpöge's announcement. In a document on his website , Alpöge says he texted Anthropic CEO Dario Amodei abo …\nRead the full story at The Verge.",
+      "hot_score": 38.1564,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-20T16:34:13+00:00",
+      "last_seen_at": "2026-11-21T00:07:17.890679+00:00",
+      "metrics": {
+        "rank_score": 0.75
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_b8e1839046bc97c6": {
+      "id": "it_b8e1839046bc97c6",
+      "source": "rss",
+      "title": "Quoting Levent Alpöge",
+      "url": "https://simonwillison.net/2026/Nov/20/levent-alpoge",
+      "summary": "I believe I have, working with Claude, discovered a proof of the Riemann Hypothesis. In fact, the method easily extends much further, resolving the so-called Generalized Riemann Hypothesis, and I expect, with more time, the Extended Riemann Hypothesis too. Claude and I have also formalized the arguments without assumptions. It is natural to feel that this is an end, in my case a loss of a principal guiding light, but what I saw during the course of progress so amazed me that I believe it is one dawn across science of something far greater. [...]\nClaude and I have had a great time together with such breadth in recent months, but this time Claude far outpaced me near the finish line. No, Claude flew, and danced, and sparkled near that finish line.\n— Levent Alpöge , alpo.ge/remark.pdf\n\nTags: anthropic , claude , generative-ai , mathematics , ai , llms , levent-alpoge",
+      "hot_score": 38.1261,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-20T16:30:48+00:00",
+      "last_seen_at": "2026-11-21T00:07:17.884814+00:00",
+      "metrics": {
+        "rank_score": 0.6667
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_f0e77c900b9f7797": {
+      "id": "it_f0e77c900b9f7797",
+      "source": "rss",
+      "title": "The fallout from Nvidia’s Jensen Huang scandal continues",
+      "url": "https://techcrunch.com/podcast/the-fallout-from-nvidias-jensen-huang-scandal-continues",
+      "summary": "In the midst of dealing with the fallout from its ouster of CEO Jensen Huang, Nvidia delivered its latest earnings report this week, with healthy growth and promises that the good times will continue. At the same time, the chipmaker said it will stop selling its H200 chips in China, and it dismissed calls to […]",
+      "hot_score": 37.3026,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-20T14:55:44+00:00",
+      "last_seen_at": "2026-11-21T00:07:17.895298+00:00",
+      "metrics": {
+        "rank_score": 0.5714
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_299291fdd5181a56": {
+      "id": "it_299291fdd5181a56",
+      "source": "rss",
+      "title": "The week everything fell apart",
+      "url": "https://www.theverge.com/podcast/1038419/outage-outlook-ground-stop-tech-failure-vergecast",
+      "summary": "There was a dayslong Outlook outage . A nationwide ground stop for only the second time in 25 years. Banks seemed to suddenly stop working . Even iCloud couldn't stay up and running . This week, it felt like the technological world simply collapsed. And it felt like this might be the beginning of something even bigger.\nOn this episode of The Vergecast , Nilay and David go through the week's many calamities, and try to explain both what happened in each case - which was generally much milder than the conspiracy theories would have you believe - and why all these small issues might still add up to something worth worrying about. In a world filled …\nRead the full story at The Verge.",
+      "hot_score": 36.8942,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-20T14:06:59+00:00",
+      "last_seen_at": "2026-11-21T00:07:17.891607+00:00",
+      "metrics": {
+        "rank_score": 0.5
+      },
+      "streak_days": 0,
+      "language": "en"
+    }
+  },
+  "meta": {
+    "mode": "hybrid",
+    "day": "2026-11-21",
+    "generated_at": "2026-11-21T00:08:02.418113+00:00",
+    "window": {
+      "since": "2026-11-20T00:06:48.645618+00:00",
+      "until": "2026-11-21T00:07:17.978501+00:00",
+      "hours": 24.0,
+      "since_local": "2026-11-20T08:06+08:00",
+      "until_local": "2026-11-21T08:07+08:00",
+      "tz": "Asia/Shanghai"
+    },
+    "analysis": {
+      "items": 165,
+      "scored": 165,
+      "topics": 0,
+      "new_entity_mention_rows": 215,
+      "state_items": 16
+    },
+    "llm": {
+      "degraded": false,
+      "degraded_reason": "",
+      "calls": 1
+    },
+    "collect": {
+      "ok_sources": 5,
+      "failed_sources": 2,
+      "skipped": 0,
+      "total_items": 105
+    },
+    "verify": {
+      "verified": 1,
+      "unverifiable": 0,
+      "deferred": 22,
+      "failed": 0,
+      "llm_calls": 1
+    },
+    "predictions": {
+      "total": 204,
+      "verified": 18,
+      "pending": 185,
+      "unverifiable": 1,
+      "hit_rate": 0.16666666666666666,
+      "weighted_score": 0.16666666666666666,
+      "brier": 0.3170833333333334
+    },
+    "prediction_generation": {
+      "mode": "hybrid",
+      "generated": 5,
+      "inserted": 5,
+      "dropped": [],
+      "llm_calls": 1,
+      "candidate_pool": 20,
+      "degraded": false,
+      "degraded_reason": ""
+    },
+    "brief": {
+      "max_items_per_section": 10,
+      "velocity_board_enabled": true,
+      "velocity_board_top_n": 5
+    },
+    "signals": {
+      "entities": 907,
+      "points": 1780,
+      "with_velocity": 129,
+      "insufficient": 112,
+      "cold_start": 666,
+      "min_window_hours": 6.0
+    },
+    "enhance_total": 25,
+    "enhanced": 25,
+    "enhance_skipped_count": 0,
+    "enhance_cache_hit": 7,
+    "enhance_cost_cny": 0.00873
+  }
+}

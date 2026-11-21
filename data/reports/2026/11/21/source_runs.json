@@ -1,0 +1,63 @@
+{
+  "date": "2026-11-21",
+  "generated_at": "2026-11-21T00:08:02.418113+00:00",
+  "collected": true,
+  "sources": [
+    {
+      "source": "github_trending",
+      "status": "ok",
+      "item_count": 16,
+      "started_at": "2026-11-21T00:06:48.709389+00:00",
+      "finished_at": "2026-11-21T00:06:50.528131+00:00",
+      "error": null
+    },
+    {
+      "source": "arxiv",
+      "status": "ok",
+      "item_count": 60,
+      "started_at": "2026-11-21T00:06:48.738272+00:00",
+      "finished_at": "2026-11-21T00:07:17.824878+00:00",
+      "error": null
+    },
+    {
+      "source": "hf_papers",
+      "status": "failed",
+      "item_count": 0,
+      "started_at": "2026-11-21T00:06:48.739084+00:00",
+      "finished_at": "2026-11-21T00:06:48.767196+00:00",
+      "error": "CollectorError: [hf_papers] 全部端点不可用（最后错误：HTTP 400）"
+    },
+    {
+      "source": "hackernews",
+      "status": "ok",
+      "item_count": 5,
+      "started_at": "2026-11-21T00:06:48.739620+00:00",
+      "finished_at": "2026-11-21T00:06:55.040662+00:00",
+      "error": null
+    },
+    {
+      "source": "reddit",
+      "status": "failed",
+      "item_count": 0,
+      "started_at": "2026-11-21T00:06:48.740136+00:00",
+      "finished_at": "2026-11-21T00:06:48.773996+00:00",
+      "error": "CollectorError: [reddit] 全部 subreddit 均失败（最后：HTTP 404）"
+    },
+    {
+      "source": "rss",
+      "status": "degraded",
+      "item_count": 24,
+      "started_at": "2026-11-21T00:06:48.740559+00:00",
+      "finished_at": "2026-11-21T00:06:57.173024+00:00",
+      "error": null
+    },
+    {
+      "source": "inbox",
+      "status": "degraded",
+      "item_count": 0,
+      "started_at": "2026-11-21T00:06:48.740753+00:00",
+      "finished_at": "2026-11-21T00:06:48.767279+00:00",
+      "error": null
+    }
+  ]
+}
