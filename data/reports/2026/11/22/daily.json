@@ -1,0 +1,946 @@
+{
+  "date": "2026-11-22",
+  "headline": "今日最响的不是模型能力，而是安全：Upload2Shell 漏洞与 Signal 收紧截图，说明 AI 时代的攻防已从模型层下沉到工具链与终端。",
+  "headline_item_id": "it_6d859339b158cafc",
+  "overview_bullets": [
+    {
+      "icon": "🔐",
+      "topic": "漏洞攻防",
+      "text": "Upload2Shell（CVE-2026-125396）以 87.8 热度登顶，上传即命令执行的路径型漏洞仍是最高危的工程债。"
+    },
+    {
+      "icon": "🛠️",
+      "topic": "技能框架",
+      "text": "GitHub 趋势被 Claude Code 技能包刷屏——BugHunter、superpowers、stitch-skills、last30days 都在把“提示词”产品化为可复用技能库。"
+    },
+    {
+      "icon": "🤖",
+      "topic": "智能体落地",
+      "text": "从 CLI-Anything 让所有软件“智能体原生”，到 DeepSeek V1 作者开源本地 Agent，智能体正从演示走向可部署基础设施。"
+    },
+    {
+      "icon": "📄",
+      "topic": "蒸馏与RL",
+      "text": "两篇 arXiv 论文分别从分布匹配蒸馏和“RL 后训练即激活引导”切入，指向扩散模型训练范式的统一解释。"
+    },
+    {
+      "icon": "🏢",
+      "topic": "叙事分裂",
+      "text": "英伟达财报与高管喊话呈现“两个英伟达”，而 Anthropic 上市后“安全优先能否负担”成为新的估值拷问。"
+    }
+  ],
+  "executive_summary": "今天的主线是“能力外溢后的治理补课”：模型越强，漏洞、隐私、监管与商业叙事的裂缝就越显眼，谁先把这些裂缝工程化补齐，谁才拿得下下一轮。",
+  "editor_note": {
+    "core": "今天最该记住的是 Upload2Shell 这类“上传即执行”漏洞仍在高频出现——AI 工具链越复杂，攻击面越大，安全债不会因为模型变强而自动偿还。",
+    "cross_signal": "GitHub 上 BugHunter、app-store-compliance 这类“合规/攻击矩阵技能包”与 Signal 收紧截图、UN 谈不拢杀手机器人形成互证：治理需求正在被开发者用代码先行实现。",
+    "counterintuitive": "热度最高的不是任何新模型，而是一个 CVE 和一个被删号的求助帖；真正被低估的是 TideCache 这类推理服务系统工作，它决定智能体能否规模化落地。",
+    "risk": "“技能包化”让红队能力与攻击矩阵一键可得，若缺乏审计与权限边界，开源社区可能在无意中分发攻击工具；同时 UN 谈判空转意味着自主武器的规则真空仍将延续。"
+  },
+  "contradictions": [
+    "英伟达财报给出的图景与科技高管公开喊话“请黄仁勋回归”所暗示的图景相互矛盾，市场对同一家公司的判断出现分裂。",
+    "Anthropic 以“安全优先”上市，但报道同时追问其能否负担安全成本，安全叙事与商业可持续性之间存在张力。",
+    "两篇独立声称证明黎曼猜想的消息并列出现，本身即构成对“可验证性”的挑战——在 AI 辅助证明时代，声明与验证之间的鸿沟被放大。"
+  ],
+  "underrated": [
+    "TideCache: Efficient Hybrid LLM Serving with Transparent Cache Management and Layer-Wise Streaming",
+    "RL Post-Training in Diffusion Transformers Is Activation Steering",
+    "mjmirza/app-store-compliance",
+    "HKUDS/CLI-Anything",
+    "jingyaogong/minimind"
+  ],
+  "sections": [
+    {
+      "name": "开源项目",
+      "summary": "GitHub 趋势几乎被“智能体技能包 + 本地化工具”占领，开源社区的竞争焦点从模型权重转向可复用的技能与工作流。",
+      "item_ids": [
+        "it_8d57cc2cadedeb4f",
+        "it_27d1d8a4f04e089d",
+        "it_f859b2d15e1457f4",
+        "it_4fa2765666515d8e",
+        "it_f09a3afb4ff397a9",
+        "it_d41f86253f9f730f",
+        "it_ed75bf498e47451e",
+        "it_1f28a16c9fe19cbe",
+        "it_f70d6b968bbde640",
+        "it_833333ed0f4723f5",
+        "it_c75fda64510b4a09",
+        "it_b9e3be30bd3a64af",
+        "it_e317aa5d77744524"
+      ]
+    },
+    {
+      "name": "论文与研究",
+      "summary": "扩散模型成为研究重心：蒸馏与强化学习两条路线都在试图解释“少步采样为何还能变好”。",
+      "item_ids": [
+        "it_6d3ad2f19989f9c6",
+        "it_10599b9777f0ac8c",
+        "it_9c171ad1297c6339",
+        "it_dd3d7268c770a9b1"
+      ]
+    },
+    {
+      "name": "社区舆论",
+      "summary": "HN 上漏洞与账号被删的讨论，折射出开发者对平台信任与供应链安全的双重焦虑。",
+      "item_ids": [
+        "it_6d859339b158cafc",
+        "it_66367af4a452f5e9"
+      ]
+    },
+    {
+      "name": "产业与新闻",
+      "summary": "安全、监管与商业叙事三线并行：Signal 收紧截图、UN 谈不拢杀手机器人、英伟达与 Anthropic 各有一本难念的经。",
+      "item_ids": [
+        "it_f3487ac9886e909d",
+        "it_a1abc1ba2744afcb",
+        "it_234da3fc18675af9",
+        "it_6ccebafcdf30c270",
+        "it_dffab27fe8d5022c",
+        "it_a9f34b76fcc6d54c",
+        "it_e74727ec8af70116",
+        "it_2b32d4b379bcfefb",
+        "it_12eb3c771bfeae23",
+        "it_4cb075a5562c5e7f",
+        "it_d989f106912157a4"
+      ]
+    }
+  ],
+  "comments": [
+    {
+      "item_id": "it_8d57cc2cadedeb4f",
+      "one_liner": "firecrawl 是一个面向 AI agent 的知识基础设施，通过单一 API 提供搜索、抓取以及接入 550 多家数据源的能力",
+      "why": "把抓取、搜索和 550+ 数据源统一到一个 API，意味着 agent 的数据接入层从各家自建爬虫转向标准化采购，中小团队的数据工程成本被压到接近零。",
+      "stance": "数据获取正变成水电煤，护城河从『能抓到』转移到『抓得干净且合规』。"
+    },
+    {
+      "item_id": "it_27d1d8a4f04e089d",
+      "one_liner": "一个 Claude Code 漏洞挖掘技能包，含 82 个 skills、15 个 slash 命令和 681 条已披露报告模式",
+      "why": "把 681 条已披露报告模式固化成技能包，让外部红队工作从个人经验变成可复制的检索库，攻击面知识扩散速度加快。",
+      "stance": "攻防知识的技能化不可避免，防守方必须假设对手已拥有同等清单。"
+    },
+    {
+      "item_id": "it_f859b2d15e1457f4",
+      "one_liner": "obra/superpowers 是一套面向 AI agent 的技能框架与软件开发方法论",
+      "why": "把 agent 技能封装成可复用的方法论框架，等于给『提示词工程』补上工程规范，团队协作时技能可以像依赖包一样被版本化和审查。",
+      "stance": "技能框架会像当年的 lint 规则一样成为标配，不采用的一方会在多人协作中先乱。"
+    },
+    {
+      "item_id": "it_4fa2765666515d8e",
+      "one_liner": "Ghost-Downloader-3 是一款开源的多功能下载器桌面应用",
+      "why": "下载器把多协议、多源聚合进单一客户端，用户不再为不同站点装不同工具，边缘工具类软件的整合窗口正在关闭。",
+      "stance": "集大成者往往也是最后一款——这类工具的价值在于终结选择困难，而非创新。"
+    },
+    {
+      "item_id": "it_f09a3afb4ff397a9",
+      "one_liner": "一个 AI agent skill，可跨 Reddit、X、YouTube、HN、Polymarket 和网页检索任意话题并汇总成有据可依的摘要",
+      "why": "把跨平台检索与摘要合成打包成一个可复用技能，意味着 agent 的信息搜集从单站抓取转向多源交叉验证，直接压缩人工调研的时间成本。",
+      "stance": "多源聚合是 agent 技能里最实用的一类，但摘要的可靠性取决于源质量，别把它当事实核查工具。"
+    },
+    {
+      "item_id": "it_d41f86253f9f730f",
+      "one_liner": "AutoClip 是一个开源 AI 视频剪辑桌面工具，能把播客、访谈、课程等长视频一键剪成适配抖音、小红书、TikTok、Reels 与 YouTube Shorts 的短视频，并生成字幕、封面和发布文案。",
+      "why": "把长视频拆条、字幕、封面、文案打包成桌面端一键流程，直接压缩了剪辑外包与内容代运营的生存空间，创作者的分发成本被摊到接近零。",
+      "stance": "开源桌面端而非 SaaS，是对平台抽成模式的正面绕行，我站这一边。"
+    },
+    {
+      "item_id": "it_ed75bf498e47451e",
+      "one_liner": "minimind 是一个教学项目，演示如何在两小时内从零训练出一个 64M 参数的小型大语言模型。",
+      "why": "两小时、单卡、64M 参数就能跑通从零预训练全流程，把大模型的门槛从实验室预算降到个人周末项目，教学与复现的价值远大于模型本身。",
+      "stance": "这是目前最有效的 LLM 祛魅工具，比任何科普文章都管用。"
+    },
+    {
+      "item_id": "it_1f28a16c9fe19cbe",
+      "one_liner": "HKUDS 开源项目 CLI-Anything，旨在让所有软件都具备 Agent 原生能力，并提供 CLI-Hub 入口。",
+      "why": "把任意软件包装成 agent 可直接调用的 CLI 接口，等于给智能体生态补上统一的执行层，工具厂商的接入成本从定制 SDK 降为一条命令行。",
+      "stance": "方向对，但 CLI 作为 agent 接口的稳定性与权限边界远未解决，先别急着把生产环境交出去。"
+    },
+    {
+      "item_id": "it_f70d6b968bbde640",
+      "one_liner": "AFFiNE 是一个开源、隐私优先的知识库工具，把文档、白板与规划功能整合在一起",
+      "why": "把文档、白板、规划合并进一个隐私优先的开源知识库，直接对 Notion+Miro 的组合收费模式施压，企业采购多了一个可自托管的替代项。",
+      "stance": "开源替代的胜负手不在功能对齐，而在迁移成本——这一步它还没证明。"
+    },
+    {
+      "item_id": "it_833333ed0f4723f5",
+      "one_liner": "一份开源的上架合规手册与提交前检查工具，收录 117 种 App Store 与 Google Play 拒审模式及修复方案，并提供面向 AI 编程 agent 的技能",
+      "why": "把 117 条被拒模式和 95 个监管截止日做成预提交检查，等于把应用商店审核与合规风险前移到编码阶段，AI agent 也能直接调用。",
+      "stance": "合规检查下沉到开发工具链是必然，晚做的团队会用一次下架来补课。"
+    },
+    {
+      "item_id": "it_6d3ad2f19989f9c6",
+      "one_liner": "一种扩散模型蒸馏方法，通过匹配学生模型与教师模型的输出分布，把多步采样压缩为少量网络评估。",
+      "why": "从分布匹配角度重做扩散蒸馏，直接压缩视频生成的采样步数，把推理成本从数十次网络评估降到个位数，受益的是所有做实时生成的产品方。",
+      "stance": "蒸馏路线已进入拼分布对齐精度的阶段，谁把匹配误差压下去谁就拿到低延迟生成的定价权。"
+    },
+    {
+      "item_id": "it_10599b9777f0ac8c",
+      "one_liner": "研究发现，扩散 Transformer 的强化学习后训练效果本质上等同于激活引导（activation steering）。",
+      "why": "把扩散 Transformer 的 RL 后训练归因为激活引导，意味着提升画质与文字渲染不必重训权重，只需在推理时施加方向性干预，训练成本结构被改写。",
+      "stance": "这个结论若成立，RL 后训练的门槛会大幅下移，但也说明所谓能力提升更像可控性调参而非真正的能力增长。"
+    },
+    {
+      "item_id": "it_9c171ad1297c6339",
+      "one_liner": "PlayCraft 框架让视觉 Agent 试玩游戏，并据此自动设计更具可玩性和精通感的游戏。",
+      "why": "用视觉 agent 反复试玩来反向优化关卡难度曲线，把游戏可玩性从人工调参变成可自动搜索的目标，独立开发者与小团队最先受益。",
+      "stance": "让 agent 当测试玩家是务实路径，但把精通感量化为奖励函数，容易产出难度机械递增、缺乏惊喜的游戏。"
+    },
+    {
+      "item_id": "it_dd3d7268c770a9b1",
+      "one_liner": "TideCache 是面向混合架构 LLM 的 CPU-GPU 服务系统，支持透明缓存管理与分层流式加载。",
+      "why": "混合架构模型的全局注意力层与有界状态层缓存需求差异巨大，统一缓存策略会浪费显存，分层流式管理直接决定长上下文高并发下的单卡吞吐。",
+      "stance": "服务系统层的优化正在取代模型结构成为降本主战场，这类工作比又一个榜单涨点更有产业价值。"
+    },
+    {
+      "item_id": "it_6d859339b158cafc",
+      "one_liner": "一个编号为 CVE-2026-125396、名为 Upload2Shell 的安全漏洞条目。",
+      "why": "上传功能直接通向命令执行，说明文件处理链路仍是 Web 应用最薄弱的一环，任何带附件上传的服务都暴露在同一类攻击面下。",
+      "stance": "漏洞编号年年翻新，根因二十年没变：把用户上传的文件当可信输入，这是工程纪律问题而非技术难题。"
+    },
+    {
+      "item_id": "it_66367af4a452f5e9",
+      "one_liner": "Hacker News 上一条关于 GitHub 账号被删除的求助帖。",
+      "why": "账号被平台单方面删除且申诉通道失效，暴露的是开发者把代码托管、CI、身份全押在单一平台上的结构性风险，迁移成本才是真正的锁。",
+      "stance": "平台无解释封号且无有效申诉，这是治理缺陷，不是用户操作失误。"
+    },
+    {
+      "item_id": "it_f3487ac9886e909d",
+      "one_liner": "Signal 在 Android 与 iOS 应用中限制截图功能，以应对 AI 监控带来的威胁。",
+      "why": "限制截图是在承认端侧屏幕内容已被 AI 视觉能力实质威胁，通讯应用被迫在可用性与防泄露之间重新划线，隐私产品的默认交互将随之改变。",
+      "stance": "支持这一收紧，但截图禁令只挡住最笨的泄露路径，真正的对手是系统级录屏与无障碍权限。"
+    },
+    {
+      "item_id": "it_a1abc1ba2744afcb",
+      "one_liner": "对比 Nvidia 最新财报与科技高管呼吁黄仁勋回归这两种截然不同的叙事。",
+      "why": "财报数字与业界高管的公开表态出现背离，反映市场对英伟达的定价已从业绩驱动转向叙事驱动，估值对情绪变化的敏感度上升。",
+      "stance": "两幅画像里财报那幅更可信，喊话式背书是利益相关方的自我强化，不该被当作基本面信号。"
+    },
+    {
+      "item_id": "it_234da3fc18675af9",
+      "one_liner": "联合国日内瓦会议未能就自主武器（“杀手机器人”）的监管规则达成一致，仅同意开始讨论选项。",
+      "why": "日内瓦谈判只换来“开始讨论选项”，等于把自主武器的约束继续留给各国自愿，军备竞赛的窗口期被实质性延长。",
+      "stance": "这是多边治理的失败而非进展，把致命决策权交给机器却连讨论框架都定不下来，代价将由平民承担。"
+    },
+    {
+      "item_id": "it_6ccebafcdf30c270",
+      "one_liner": "盘点可直接在短信中使用的 AI Agent，涵盖通用助手及面向家庭、旅行和工作的专用 Agent。",
+      "why": "助手迁入短信这一默认入口，绕过了应用安装与账号体系，把 AI 触达成本降到零，同时也把对话数据交给运营商与平台方。",
+      "stance": "便利性真实，但短信通道的加密与留存远弱于独立应用，把敏感对话搬进去是拿隐私换顺手。"
+    },
+    {
+      "item_id": "it_dffab27fe8d5022c",
+      "one_liner": "一名演员把自己的面部形象授权给一家微短剧初创公司，用于制作 AI 版本，这类做法在中国已颇为流行。",
+      "why": "演员把面部肖像权卖给微短剧公司，意味着表演劳动被拆解为可无限复用的数字资产，经纪合约与肖像权法条都还没有对应条款来界定分成与期限。",
+      "stance": "这是把演员的长期议价权一次性折现，短期现金换永久替代，行业工会应当先立规矩再放行。"
+    },
+    {
+      "item_id": "it_a9f34b76fcc6d54c",
+      "one_liner": "The Verge 播客对话资深 AI 记者 Hayden Field，讨论 Anthropic 在 Nasdaq 上市后能否继续把安全放在首位。",
+      "why": "Anthropic 登陆纳斯达克后，安全投入从创始人意志变成需要向公开市场股东交代的成本项，安全团队的预算与发布节奏将被季度财报反向约束。",
+      "stance": "上市即意味着「安全优先」从承诺降级为可协商项，投资者会用增长指标持续挤压它。"
+    },
+    {
+      "item_id": "it_e74727ec8af70116",
+      "one_liner": "Chess.com 推出经典游戏中心，新增麻将、数独、围棋、国际象棋等 10 款游戏。",
+      "why": "Chess.com 从单一棋类扩到十款经典游戏，把已有的对局匹配与反作弊体系复用到麻将、数独等品类，直接挤压这些垂类小站的流量与订阅收入。",
+      "stance": "这是用棋类积累的用户池做低成本品类扩张，垂类独立产品的好日子到头了。"
+    },
+    {
+      "item_id": "it_2b32d4b379bcfefb",
+      "one_liner": "两名数学家在数小时内先后宣称独立证明了黎曼猜想，其中 Anthropic 的 Levent Alpöge 使用 Claude 生成证明并附上 Lean 代码。",
+      "why": "两小时内出现两份独立证明且其中一份由 Claude 生成并附 Lean 形式化代码，意味着 AI 已进入数学最前沿问题的产出环节，同行评议流程必须面对机器产出的验证负担。",
+      "stance": "在形式化验证与人工审稿双双通过之前，任何「黎曼猜想已证」的宣告都只是待核验的声明，不是结论。"
+    },
+    {
+      "item_id": "it_12eb3c771bfeae23",
+      "one_liner": "GPT-6.2 Astra 在具身智能任务上表现提升，16 项任务成功率较 GPT-6 Astra 翻倍，并首次实现可变形物体操控。",
+      "why": "通用模型在 16 项具身任务上成功率翻倍并首次打通可变形物体操控，说明机器人能力的瓶颈正从硬件本体转向模型侧，本体厂商的差异化空间被压缩。",
+      "stance": "具身智能的竞争重心已经移到模型层，还在靠硬件参数讲故事的团队会被迅速甩开。"
+    },
+    {
+      "item_id": "it_4cb075a5562c5e7f",
+      "one_liner": "DeepSeek V1 作者创业项目曝光，推出面向本地部署的开源 Agent。",
+      "why": "DeepSeek V1 作者的开源 Agent 主打本地部署，把推理与工具调用从云端 API 挪到用户自己的机器上，数据不出域的同时也绕开了按 token 计费的商业模式。",
+      "stance": "本地优先的开源 Agent 是对云端订阅模式的正面拆台，企业侧的采购逻辑会因此改写。"
+    }
+  ],
+  "stats": {},
+  "items": {
+    "it_6d859339b158cafc": {
+      "id": "it_6d859339b158cafc",
+      "source": "hackernews",
+      "title": "Upload2Shell (CVE-2026-125396)",
+      "url": "https://pwn.ai/upload2shell",
+      "summary": "",
+      "hot_score": 87.75,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-21T18:29:29+00:00",
+      "last_seen_at": "2026-11-21T23:32:11.303883+00:00",
+      "metrics": {
+        "points": 62,
+        "num_comments": 20
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_8d57cc2cadedeb4f": {
+      "id": "it_8d57cc2cadedeb4f",
+      "source": "github_trending",
+      "title": "firecrawl/firecrawl",
+      "url": "https://github.com/firecrawl/firecrawl",
+      "summary": "Knowledge infrastructure to make your agents smarter. Search, scrape and access 550+ data providers through one API.",
+      "hot_score": 82.1145,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-20T00:47:06.445974+00:00",
+      "last_seen_at": "2026-11-21T23:32:11.320800+00:00",
+      "metrics": {
+        "stars_total": 206150,
+        "stars_in_window": 1241,
+        "forks": 10774,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "TypeScript"
+    },
+    "it_27d1d8a4f04e089d": {
+      "id": "it_27d1d8a4f04e089d",
+      "source": "github_trending",
+      "title": "elementalsouls/Claude-BugHunter",
+      "url": "https://github.com/elementalsouls/Claude-BugHunter",
+      "summary": "A Claude Code skill bundle for bug hunting and external red-team work - 82 skills, 15 slash commands, 681 disclosed-report patterns curated across 24 core vulnerability classes, plus enterprise identity + infrastructure attack matrices.",
+      "hot_score": 74.427,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-15T23:03:21.804510+00:00",
+      "last_seen_at": "2026-11-21T23:32:11.317433+00:00",
+      "metrics": {
+        "stars_total": 15986,
+        "stars_in_window": 1794,
+        "forks": 1827,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "Python"
+    },
+    "it_f859b2d15e1457f4": {
+      "id": "it_f859b2d15e1457f4",
+      "source": "github_trending",
+      "title": "obra/superpowers",
+      "url": "https://github.com/obra/superpowers",
+      "summary": "An agentic skills framework & software development methodology that works.",
+      "hot_score": 72.0,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-15T14:47:23.502377+00:00",
+      "last_seen_at": "2026-11-21T23:32:11.318190+00:00",
+      "metrics": {
+        "stars_total": 323702,
+        "stars_in_window": 2028,
+        "forks": 28712,
+        "streak_days": 5
+      },
+      "streak_days": 5,
+      "language": "Shell"
+    },
+    "it_4fa2765666515d8e": {
+      "id": "it_4fa2765666515d8e",
+      "source": "github_trending",
+      "title": "XiaoYouChR/Ghost-Downloader-3",
+      "url": "https://github.com/XiaoYouChR/Ghost-Downloader-3",
+      "summary": "The only downloader you need. 下载器的集大成者。",
+      "hot_score": 65.7812,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-20T00:47:06.446027+00:00",
+      "last_seen_at": "2026-11-21T23:32:11.326102+00:00",
+      "metrics": {
+        "stars_total": 14419,
+        "stars_in_window": 1082,
+        "forks": 875,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "Python"
+    },
+    "it_f09a3afb4ff397a9": {
+      "id": "it_f09a3afb4ff397a9",
+      "source": "github_trending",
+      "title": "mvanhorn/last30days-skill",
+      "url": "https://github.com/mvanhorn/last30days-skill",
+      "summary": "AI agent skill that researches any topic across Reddit, X, YouTube, HN, Polymarket, and the web - then synthesizes a grounded summary",
+      "hot_score": 65.2348,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-17T01:57:21.277064+00:00",
+      "last_seen_at": "2026-11-21T23:32:11.323028+00:00",
+      "metrics": {
+        "stars_total": 71971,
+        "stars_in_window": 1059,
+        "forks": 6372,
+        "streak_days": 6
+      },
+      "streak_days": 6,
+      "language": "Python"
+    },
+    "it_d41f86253f9f730f": {
+      "id": "it_d41f86253f9f730f",
+      "source": "github_trending",
+      "title": "zhouxiaoka/autoclip",
+      "url": "https://github.com/zhouxiaoka/autoclip",
+      "summary": "AutoClip｜一个链接，一键出片。开源 AI 视频剪辑桌面工具，将播客、访谈、课程等长视频自动剪成短视频，生成字幕、封面和发布文案，适配抖音、小红书、TikTok、Reels 与 YouTube Shorts。Open-source AI video clipping & content repurposing.",
+      "hot_score": 61.4479,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-20T00:47:06.446033+00:00",
+      "last_seen_at": "2026-11-21T23:32:11.326605+00:00",
+      "metrics": {
+        "stars_total": 12824,
+        "stars_in_window": 979,
+        "forks": 2071,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "Python"
+    },
+    "it_ed75bf498e47451e": {
+      "id": "it_ed75bf498e47451e",
+      "source": "github_trending",
+      "title": "jingyaogong/minimind",
+      "url": "https://github.com/jingyaogong/minimind",
+      "summary": "🧠 两小时从 0 训出你的 64M 大模型。Train your own 64M LLM from scratch in 2 hours.",
+      "hot_score": 54.7167,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-18T01:08:38.998254+00:00",
+      "last_seen_at": "2026-11-21T23:32:11.319651+00:00",
+      "metrics": {
+        "stars_total": 68133,
+        "stars_in_window": 847,
+        "forks": 8903,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "Python"
+    },
+    "it_1f28a16c9fe19cbe": {
+      "id": "it_1f28a16c9fe19cbe",
+      "source": "github_trending",
+      "title": "HKUDS/CLI-Anything",
+      "url": "https://github.com/HKUDS/CLI-Anything",
+      "summary": "\"CLI-Anything: Making ALL Software Agent-Native\" -- CLI-Hub: https://clianything.cc/",
+      "hot_score": 52.0,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-16T15:44:39.424204+00:00",
+      "last_seen_at": "2026-11-21T23:32:11.319071+00:00",
+      "metrics": {
+        "stars_total": 62052,
+        "stars_in_window": 898,
+        "forks": 5624,
+        "streak_days": 4
+      },
+      "streak_days": 4,
+      "language": "Python"
+    },
+    "it_f70d6b968bbde640": {
+      "id": "it_f70d6b968bbde640",
+      "source": "github_trending",
+      "title": "toeverything/AFFiNE",
+      "url": "https://github.com/toeverything/AFFiNE",
+      "summary": "There can be more than Notion and Miro. AFFiNE(pronounced [ə‘fain]) is a next-gen knowledge base that brings planning, sorting and creating all together. Privacy first, open-source, customizable and ready to use.",
+      "hot_score": 51.7812,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-20T00:47:06.446022+00:00",
+      "last_seen_at": "2026-11-21T23:32:11.325468+00:00",
+      "metrics": {
+        "stars_total": 76265,
+        "stars_in_window": 676,
+        "forks": 5593,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "TypeScript"
+    },
+    "it_833333ed0f4723f5": {
+      "id": "it_833333ed0f4723f5",
+      "source": "github_trending",
+      "title": "mjmirza/app-store-compliance",
+      "url": "https://github.com/mjmirza/app-store-compliance",
+      "summary": "Avoid common App Store and Google Play rejections. Open playbook and pre-submission guard with 117 documented rejection patterns and fixes, privacy manifest and Data safety checks, 95 tracked deadlines (EU AI Act, DSA, COPPA, age laws), and a skill for AI coding agents.",
+      "hot_score": 51.1145,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-20T00:47:06.446011+00:00",
+      "last_seen_at": "2026-11-21T23:32:11.324261+00:00",
+      "metrics": {
+        "stars_total": 3374,
+        "stars_in_window": 869,
+        "forks": 210,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "Shell"
+    },
+    "it_c75fda64510b4a09": {
+      "id": "it_c75fda64510b4a09",
+      "source": "github_trending",
+      "title": "cathrynlavery/diagram-design",
+      "url": "https://github.com/cathrynlavery/diagram-design",
+      "summary": "Editorial diagram design for Claude Code, Codex, GitHub Copilot, Cursor, Factory Droid, Qoder, and Pi. 45 diagram types. Self-contained HTML + SVG. No shadows. No Mermaid slop.",
+      "hot_score": 50.1145,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-20T00:47:06.445994+00:00",
+      "last_seen_at": "2026-11-21T23:32:11.322380+00:00",
+      "metrics": {
+        "stars_total": 69778,
+        "stars_in_window": 636,
+        "forks": 4685,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "HTML"
+    },
+    "it_f3487ac9886e909d": {
+      "id": "it_f3487ac9886e909d",
+      "source": "rss",
+      "title": "Signal restricts mobile screenshots as it confronts ‘existential threat’ of AI surveillance",
+      "url": "https://techcrunch.com/2026/11/21/signal-restricts-mobile-screenshots-as-it-confronts-existential-threat-of-ai-surveillance",
+      "summary": "Signal is limiting users' ability to take screenshots in both its Android and iOS apps.",
+      "hot_score": 39.0,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-21T21:37:10+00:00",
+      "last_seen_at": "2026-11-21T23:32:11.312321+00:00",
+      "metrics": {
+        "rank_score": 1.0
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_a1abc1ba2744afcb": {
+      "id": "it_a1abc1ba2744afcb",
+      "source": "rss",
+      "title": "A tale of two Nvidias",
+      "url": "https://techcrunch.com/2026/11/21/a-tale-of-two-nvidias",
+      "summary": "We got two very different pictures of Nvidia — the company’s latest earnings report vs. the tech executives loudly calling for Jensen Huang’s return.",
+      "hot_score": 39.0,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-21T21:07:42+00:00",
+      "last_seen_at": "2026-11-21T23:32:11.313073+00:00",
+      "metrics": {
+        "rank_score": 0.75
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_234da3fc18675af9": {
+      "id": "it_234da3fc18675af9",
+      "source": "rss",
+      "title": "The UN fails to agree on rules regulating ‘killer robots’",
+      "url": "https://www.theverge.com/tech/1039554/un-regulations-killer-robots",
+      "summary": "One of the items on the agenda for UN diplomats meeting in Geneva this week was working towards rules regarding the use of autonomous weapons, or so-called \"killer robots.\" Eventually, representatives left the meetings agreeing to \"start discussing options\" after a largely fruitless week of negotiations.\nAccording to NPR :\n\nBefore the negotiations got underway, the International Committee of the Red Cross, the guardian of the Geneva Conventions, said it was urgent for legally binding rules to be drafted within a year. That call was backed by the U.N. secretary-general and by Pope Leo.\n\nThe compromise reached was that countries would inste …\nRead the full story at The Verge.",
+      "hot_score": 39.0,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-21T20:03:37+00:00",
+      "last_seen_at": "2026-11-21T23:32:11.308778+00:00",
+      "metrics": {
+        "rank_score": 1.0
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_6ccebafcdf30c270": {
+      "id": "it_6ccebafcdf30c270",
+      "source": "rss",
+      "title": "Here are the top AI agents that can live in your text messages",
+      "url": "https://techcrunch.com/2026/11/21/all-the-ai-agents-that-can-live-in-your-text-messages",
+      "summary": "We created a list of the most notable AI agents that can live in your text messages, from general assistants to agents designed for families, travel, and work.",
+      "hot_score": 38.7042,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-21T17:00:00+00:00",
+      "last_seen_at": "2026-11-21T23:32:11.313825+00:00",
+      "metrics": {
+        "rank_score": 0.5
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_dffab27fe8d5022c": {
+      "id": "it_dffab27fe8d5022c",
+      "source": "rss",
+      "title": "Is selling an AI version of your face to this microdrama startup the future of Hollywood?",
+      "url": "https://techcrunch.com/2026/11/21/is-selling-an-ai-version-of-your-face-to-this-microdrama-startup-the-future-of-hollywood",
+      "summary": "An actor has licensed his face to a microdrama startup — in a trend that's already popular in China. Experts question the long-term consequences if this becomes a trend in Hollywood, too.",
+      "hot_score": 38.1643,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-21T16:00:00+00:00",
+      "last_seen_at": "2026-11-21T23:32:11.314622+00:00",
+      "metrics": {
+        "rank_score": 0.25
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_a9f34b76fcc6d54c": {
+      "id": "it_a9f34b76fcc6d54c",
+      "source": "rss",
+      "title": "Can Anthropic afford to put safety first?",
+      "url": "https://www.theverge.com/podcast/1038701/anthropic-ipo-ai-safety-openai-nvidia-structure",
+      "summary": "Today, I’m talking with Hayden Field, The Verge ’s senior AI reporter, about the Anthropic IPO for the third and final episode in our series about AI in real life.\n\nThe AI lab behind Claude went public on the Nasdaq last Thursday. The numbers are gigantic, but not really that important for this conversation, except to say that Anthropic has become one of the most valuable companies on the planet.\n\nThe real story is what happens now — and whether Anthropic can continue to thread the needle of caring about and investing in AI safety while also being a public company beholden to shareholders. Oh, and it also continuously growing the amount of money it makes so it can keep paying its ever-increasing compute bills, which total roughly $900 billion over the coming years.\n\nAll of these ideas sit in a fascinating tension with one another, and so Hayden and I really tried to break down how we think this might play out as Anthropic navigates the pressures of the public markets.\n\nYou’ll hear us talk about the company’s unique corporate governance structure , something that is especially relevant in the wake of the ongoing Jensen Huang saga. We also get into why OpenAI seems happy to have let Anthropic go public first , and why Anthropic’s whole pitch to big customers boils down to the same safety branding that now sits in conflict with the profit-oriented part of its business.\n\nBefore we get going, do me a favor and subscribe to Decoder on YouTube, where we put out new episodes every Monday and Thursday.\n\nOkay: Hayden Field, The Verge ’s senior AI reporter, on the Anthropic IPO and the economics of frontier AI. Here we go.\n\nThis interview has been lightly edited for length and clarity.\n\nHayden Field, welcome back to Decoder .\n\nThanks. Great to be here.\n\nI’m excited to talk to you today because it’s not pure soap opera drama chaos.\n\nI know.\n\nIt’s like a normal thing that happened.\n\nIt’s for once not personality-based and soap opera. It’s about cold, hard would-be cash.\n\n[Laughs] Well, there is some personality in it because we’re going to talk a lot about Anthropic’s IPO, which has a bunch of big personalities in it, and the way they have structured this company to repel the rapacious pressures of capitalism is, I would say, very eccentric. It reflects the beliefs of a number of eccentric people.\n\nYep, absolutely. It’s really been interesting digging into the S-1 again and just seeing who was on what committee and which founders have the most control here and how much control the founders actually have, which is more than it may seem.\n\nLet’s start at the start. You and I are talking on IPO day. Anthropic is the first pure AI lab to go public. They priced the IPO at $83 a share and they got all the way up to $111. By the time people are listening to this, who knows what the price will actually be, but it’s been a real victory lap for all the people who are invested in Anthropic. A bunch of law firms have changed their homepages to be like, “Congratulations, guys!”\n\nWhat do you make of this? Is it just the thing that had to happen or is it a sign that the AI bubble is not going to pop? How should people think about it?\n\nI don’t think it really gives us new information about whether the AI bubble is going to pop or not, because I mean, this is peak AI hype right here. It’s the first AI lab to go public. It’s been kind of on track to break records for months. Everyone was like, “It’s probably going to beat Musk,” and then it did. I can’t wait to see his tweets later.\n\nBut the other interesting part of this is that I’ve heard thousands of new millionaires and hundreds of new centimillionaires will be born from this, not to mention billionaires, too. It’s one of those things where I think the AI bubble is continuing to swell.\n\nI was even chatting with some tech workers inside a bunch of different companies this morning, and they were all saying within their companies, they’re seeing the bubble swell and swell, and they’re being tasked with doing more and more AI, even if it makes them less productive and makes the work less good.\n\nSo I think there’s going to be a reckoning eventually, but right now we’re at peak AI hype and Anthropic does a great job of marketing its business as safe AI. Of course, they’re going to have more pressure around that marketing term now more than ever. So it’s going to be interesting to see the tension point kind of go into the spotlight and see how they handle this.\n\n\n\nVerge subscribers, don’t forget you get exclusive access to ad-free Decoder wherever you get your podcasts. Head here . Not a subscriber? You can sign up here .\n\n\nI was at the Semafor conference earlier this week. I saw Sam Altman and Sarah Friar, OpenAI’s CFO, on stage there. Altman and Greg Brockman were at the DealBook conference this week. I get the sense they’re kind of happy that Anthropic went first to see what happens in the markets and to see how companies value the revenue potential of their big competitors so they can tell their IPO story better.\n\nIs that the sense you get, that Anthropic is the trial balloon? Or is OpenAI just retconning the fact that it didn’t go first?\n\nYes, I think that’s absolutely the case. I heard there was a time in the past year that Altman was really obsessed with beating Anthropic to go public. That’s what I heard. It was all he thought about. But then with all the bad press around OpenAI this year, they’ve had setback after setback. A lot of the public is particularly focused on hating OpenAI right now.\n\nObviously, there’s a big AI populism backlash and a lot of people hate a lot of AI, but it seems like OpenAI has really borne the brunt of a lot of public hatred and scandals this year. And so they were like, “You know what? Let’s just take a step back and let Anthropic go first.” And they seem happy to do that.\n\nNow that Anthropic has gone first and set this historic precedent, OpenAI can ride on its coattails and say, “Yeah, us too.” I doubt they would beat Anthropic’s record. Maybe they will, maybe they won’t. But either way, I think they know that things could have gone a lot worse for them if Anthropic did not go first, if it’s happening this year.\n\nI can’t stop thinking about Anthropic in terms of just dumb business fundamentals now that it’s a public company. You buy a token from them. They have to make that token for less than you pay for it. They also want to make AGI. Somewhere else they have some other huge set of costs.\n\nJust based on what we know about the business today, now that it’s a public company, are they profitable on the face of it? Do they have a long way to go before inference is so profitable it can pay for training all the new models? How does their business actually work?\n\nThey have a long way to go and that is why it’s going to be so interesting to see what exactly they do here with regard to driving more revenue, which is what they’re going to have to do. I saw one estimate from Steve Rattner saying Anthropic is going to have to increase its revenue roughly 17-fold within the next 10 years to deliver a comparable return to some of its competitors in the tech industry.\n\nBut even without that specific number, you can tell. I mean, when a company goes public, investors want to see a return on their investment. They want to see profits go up or just profits at all. They also want to see that even if profits aren’t a thing yet, they want to see that you’re driving so much revenue that they could see profit happening in the near term. That is something that Anthropic is going to have to reckon with more than ever before after today.\n\nI was chatting with a bunch of corporate governance experts and law professors and they were all saying Anthropic, like OpenAI, has such an unusual corporate structure that they aren’t actually beholden to shareholders in the way that some public companies are. Shareholders can never vote out executives. They don’t have a lot of power to influence anything really. It’s the founders and this special trust, which we can get to in a second, that have the power.\n\nBut either way, they were all saying it doesn’t matter if shareholders have a say here really in voting. It’s about the fact that no matter who has a say, Anthropic is going to be under so much pressure to make money and to buy compute and catch up with OpenAI in that way, that this is going to be a huge reckoning for them. We’re probably going to see a lot of things fall by the wayside, maybe even some expensive safety efforts.\n\nI want to come to the governance structure angle here. We live in a time of Nvidia scandals. Corporate governance is all the rage now. It’s the hottest topic in American business, but let’s come to that in one minute.\n\nI just want to stay on “can you sell a token for a dollar more than it cost you to make it” for one more turn. It’s just the dumbest way of thinking about this. Anthropic rents capacity from big cloud providers, from hyperscalers. They run the GPUs in them. They pay for power, they pay for the GPUs. There’s some input cost and then they have to sell the token for more than all those input costs.\n\nThat is the dumbest way of thinking about their business. I promise you that they think about it in a more sophisticated way than that, but that is how I think about it. I was just at the Microsoft Ignite conference this week and I saw Satya Nadella and he was very clear to me and others that they’re going to try to bring the price of tokens down, that their whole system is designed to make all the AI vendors fungible underneath Copilot and they’ll pick the best model for the task and make sure you get the cheapest one for whatever it is you’re trying to do.\n\nThat seems totally at odds with what Anthropic needs to do, which is get more and more margin for every single token they sell so they can keep renting capacity from data centers or buy more chips than OpenAI or whatever it is they need to do. How are they structured to solve that problem? Is it just more people using AI or is it more expensive tokens?\n\nI think it’s a little of both, and it’s interesting because Anthropic has been kind of sneakily trying to do this. We wrote a piece in the past year about how there was a big outcry, particularly focused on Anthropic, for passing on costs to consumers . Individuals who were customers of Anthropic were really mad because they felt like the prices were going up for the same stuff or for worse quality and that costs were just getting passed on to them.\n\nThis became a thing across the industry, a big outcry, but Anthropic bore the brunt of it. Anthropic had to have a public statement. They’re like, “Look, we’re going to work on this.” And they did roll it back a little, but I mean, they’ve got to keep doing it in some way.\n\nThe other thing they’re focused on is hoping that their models are going to be good enough that people just form an attachment — not emotionally, well maybe — but form an attachment to them and they can moat people in. They’re all about the moat these days: “We’ve got to build a moat.” OpenAI is about this, too. They want so much of your everyday life and business to be married to Anthropic’s tools that it’d be really hard to port it all over and you won’t want to and you’ll just keep paying. So that’s what they’re going for.\n\nThey’re also, of course, hoping that enterprise and government contracts are going to really make up a bunch of this, in which case you don’t have to worry quite as much about nickel-and-diming because they’ve got a lot of money. But I think that’s the interesting part here. When it comes to people that do care about the price a lot, they’re just trying to moat them in and hope for the best.\n\nWhat’s interesting there is that consumers are sensitive to price in one way. I think Anthropic’s big business customers, which is where they’ve been historically focused, are sensitive to price in different ways.\n\nIf you’re paying Anthropic a lot of money, you might want to be able to switch providers quickly and you might demand data sovereignty and all this stuff that big enterprises are thinking about. Anthropic either has to deliver that, which would kill their moat for their big enterprise customers, or say, “We’re so good, you can’t have that.” I’m not sure that they can say the second one yet.\n\nThat’s why they’re marketing this safe, trustworthy AI line so deeply, because it’s the only thing they’ve really got going for them here. When you have an enterprise customer, most of the time you do have to give them data sovereignty. You can’t trade on their data. There’s a lot of stuff that Anthropic could be doing to make more money that they can’t do when someone is paying that much.\n\nI think that’s really why they’re driving home this point of being the safe, trustworthy alternative because that’s the only thing that’s really going to get people to stick around, particularly if they also drive home the cybersecurity tools in an age when everything’s getting hacked all the time.\n\nThe other interesting thing is even not with huge enterprises, but with small to medium-sized businesses, I’ve been chatting with a bunch of them and they’ve all been creating their own internal tools to kind of track which tasks they need specifically to use an expensive Anthropic model for and which ones they can port over to maybe an open-source model or a really cheap model.\n\nSo a lot of companies like law firms — and people in a lot of different industries that have small to medium-sized businesses — are literally creating their own internal benchmarks about, “Okay, let’s save money as much as we can to just only put 10 percent of our tasks toward the expensive Anthropic model, and then this 40 percent can go to an open-source model and this 50 percent can go to a mid-tier, cheaper model.”\n\nSo that’s what’s really interesting to me. People are trying to figure this out on their own and not even sharing those benchmarks publicly because it’s their own way of budgeting.\n\nI actually heard Nadella this week say every company will have its own set of evaluations and they will test the models against them and always use the most efficient one and this will become one of the major things that every company does.\n\nThe flip side to that is I’ve heard Anthropic executives say, “Well, you will always want the frontier model because your competitor will always be using the frontier model and if you use a cheaper one, you’ll be left behind.” And that has always seemed somewhere between naive and idealistic to me because I think a lot of companies do cheap things knowing that their competitors will also do cheap things.\n\nI agree completely. Everyone’s being cheap.\n\nYeah, I think if you can get away with good enough, you’re going to find out exactly where good enough is and you will not assume that your competitor is going to eke out a 5 percent advantage by using a more expensive model. Somewhere on the margin is where all of the costs should be and the market will figure it out.\n\nExactly.\n\nIt just feels like the basics of the business, maybe on IPO day, the pressure isn’t on that, everyone’s just very happy and rich. The next quarter’s earnings are going to be where we start to see this shakeout. Can it keep growing the way it’s growing at the margins it needs to build everything, especially when its own suppliers are now major shareholders?\n\nTotally. And we saw one quarter where they experienced huge growth and then the next quarter wasn’t that much. So yeah, I mean they’re going to have a lot to reckon with.\n\nLet’s talk about the governance issues. Because of Nvidia, corporate governance is the hottest topic in American business. Like you said, OpenAI and Anthropic have some of the most complicated governance structures in history.\n\nIf you think that Anthropic’s future is to sell the best intelligence — the most capable, the most cutting-edge frontier, close-to-AGI intelligence possible — you would probably not do a bunch of safety work. You would probably not kill your margins on a bunch of researchers who are telling you to stop or slow down or not release the best model.\n\nAnthropic is deeply committed to doing that. You and I have had conversations before about whether that can withstand the pressures of capitalism and growth. That was hard when they weren’t a public company, but now they are. Talk about Anthropic’s structure and how they’re trying to codify their commitment to safety.\n\nYeah, that’s a really great question. I just published a piece about this . It’s so interesting to me that Anthropic, despite seeing all the roller-coaster drama that OpenAI went through around the Sam Altman ouster and all of the restructurings that that company has gone through, Anthropic has a similarly unusual structure. And in a way it’s helpful because they’re not beholden, as we said, to shareholder pressure besides if shareholders start selling off their stock or don’t buy more.\n\nBut the two kinds of groups of people that have power over what happens at Anthropic are the founders and this group called the Long-Term Benefit Trust (LTBT). Anthropic likes to market this as being like, “Oh, don’t worry about that the founders are doing what’s best for humanity but with no checks. We’ve got this trust above us that can appoint or remove us anytime.” As we’ll see in the movie Artificial , Sam Altman famously says, “Oh, well, the board can fire me whenever.” He says that a million times .\n\nNow, Anthropic is implying the same thing: “Oh, we have this trust above us. They can remove or appoint the majority of board members,” even though it’s actually not all of them, but we’ll get to that in a minute. So this trust is a group of right now four people and none of them have a lot of AI experience. It’s [former Federal Reserve Chairman] Ben Bernanke, a foreign policy analyst named Richard Fontaine, an experimental physicist named Christopher Stubbs, and a former GiveWell executive named Neil Buddy Shah, who is chair of the LTBT.\n\nI spoke to a couple of former Anthropic employees that left not too long ago and one of them said that this trust is kind of handpicked to not rock the boat at Anthropic. The founders appointed them. They’re not going to be appointing someone that’s going to probably disagree with them a lot.\n\nIronically, the trust doesn’t have the authority to step in on everyday decisions at Anthropic, unlike even the OpenAI nonprofit board that existed. They could say, “Oh look, don’t release this model. It’s too dangerous.” The trust doesn’t have any of those powers. All it can do is appoint or remove certain board members. Even then, they have to give 30 days’ notice to a small committee of the board, which includes Daniela Amodei, the chair of that little committee who is also a founder of Anthropic.\n\nTo oversimplify things, out of these seven board seats, the trust gets to pick three, the founders get to pick three, and then the kind of tie-breaking seat, the seventh one, the trust technically appoints, but they have to basically get founder approval to do it. So it’s one of these things that’s so complex, but when you really look at the nitty-gritty of it, the founders have pretty unchecked control here. I think that’s something that’s getting lost in the narrative of, “Oh, this trust is above us. Don’t worry.” Okay, well, they don’t really have much power to check you.\n\nThe founder control structure is the wildest thing I have ever read about in years of doing the show and thinking about business. Anthropic has seven founders. They have been issued a single share of stock that holds 50.1 percent of the voting power of the company. That is issued to a company called Founder LLC, and they’re the seven co-owners of Founder LLC.\n\nHow on earth does that work? Do they just all get together and then decide how to vote the one share of stock?\n\nYeah, it’s really interesting and that’s why I was kind of oversimplifying it a minute ago with who gets to choose this tie-breaking seat because it’s technically Founder LLC. It’s just a total mess. But when you really look at the simplified version, it’s that yes, through all of these weird structures and things they’ve done, they basically have pretty unchecked power and that’s the way they want it.\n\nWhen I was talking to a former employee who recently left, they said it’s not necessarily that the founders have a financial interest in making the most money. In their eyes, it’s more that they have an interest in unchecked control. I think that’s a really important point here.\n\nSome dissenters within the ranks of Anthropic think it’s not about them wanting to get rich, but rather it’s about them wanting that total control, which does track with a lot of their public statements. They say, “You can’t do safety from second place.” They’re all in on speeding up this race, but the problem is when you speed up the AI race, you’re speeding it up for everyone involved.\n\nThe safety piece is the really interesting portion of this to me because it’s the thing you would spend money on, absent some huge litigation drama or liability concern, that no other company would spend money on.\n\nSo let’s say it’s proven in court that model companies are liable for what people’s agents do. I think then all the model companies would build safety systems. They would have some big incentive to make sure their models are safe. That has not yet happened. We don’t know. There’s a big debate about safety and where the regulation will come from and what will create the incentives.\n\nIn the meantime, you’ve got seven founders holding a single share of stock who right now appear to be aligned on investing in safety in various ways inside of Anthropic. What happens if they start to disagree?\n\nYeah, that’s a great question. I think that the other interesting question here is what happens when you can explain away anything in the name of safety if you’re thinking it’s “for the greater good,” which as we know is a common villain trope in every movie. But it’s also one of Anthropic’s main things on its website . They’re like, “We want to do this for the greater good, for the global good.”\n\nIf you’re saying, “Hey, we have to win this race at all costs because we’re the only good guys and anyone else who wins it is going to do worse than us,” are you really the good guy at that point? And can’t you just explain away any single decision, even dropping some safety measures, as saying, “Oh, it’s slowing us down too much. We’re going to lose. We’ve got to win at all costs”? So you drop this or drop that. And then you look in the mirror at the end of the race and you say, “Oh, actually, we’re the exact same as the other company we’re trying to be different from.” I think that’s increasingly happening.\n\nSo I mean, right now they’ve said, “Look, we’re really committed to this.” You do have to remember that these people are almost religiously dedicated to this idea of safe AI. A lot of them think that AI systems are potentially conscious . I mean, this is by Anthropic founders’ own statements.\n\nSo I think that it’s not like they’re just secretly only trying to make money and just talking about safety and they don’t mean it. I think it’s more something a little more dangerous in that they want complete control because they believe that they have the right plan for AI safety and they will do it better than anyone else.\n\nBut as we know, absolute power corrupts absolutely. So a lot of Anthropic employees that I was talking to, former ones, were saying, “Yeah, it does not make sense that this industry is so unregulated. There’s no external regulation. Even if these seven people think they have the best idea for AI safety, okay, then prove it to someone else — that you shouldn’t be the only ones deciding this. Because you’re not elected.” So that’s the consensus among some.\n\nThey have a morally binding handshake agreement to allow external auditors, Hayden. It’s going to be fine.\n\nOh, yeah, with employee-level access.\n\nAlso, it’s called “Super Intelligence” now. It’s going to be totally fine. They all went to the White House and they looked deeply into each other’s eyes and said it was going to be fine.\n\nObviously Anthropic came up with this structure well before the events with Nvidia and Jensen Huang, but I can’t help but put them together in my head. They are happening at the same time. And Nvidia has a very traditional corporate governance structure.\n\nJensen owned 3 percent of the company, but he had a board of directors. The board of directors determined that he had violated the company’s code of conduct in some way. He resigned. It’s very obvious that he was thoroughly encouraged to resign, but that’s just normal corporate governance. That’s what you learn about in school. A company has a board of directors. Their number one job is to hire and fire the CEO.\n\nThat’s very different in Silicon Valley, right? Founder control of companies is a big story everywhere. Mark Zuckerberg famously has control over Meta, even though Meta shareholders repeatedly vote to remove him, which is one of the underemphasized stories in all of American business. Sergey Brin and Larry Page control Google.\n\nIs this more in the, “We need to insulate our founders from the demands of the market and boards of directors” in classic Silicon Valley style? Or is it, “We need to insulate our founders and Dario from the demands of the market so we can stay focused on AGI and safety”? Because it feels like a combination of both.\n\nIt’s definitely a combination. I mean, they say it’s the latter. I think in a lot of ways it’s like the former. It’s totally a combination. I’d say it’s about 50/50. I mean, they want control so that they can focus on what they think is best and not lose control to someone that they don’t think knows best. But ironically, as we know, no one group of people should be in control of what is best here. So at least that’s what a lot of my sources say.\n\nSo I think that, yeah, I mean, it’s just a combination. Elon Musk famously won’t run a company that he doesn’t have voting control over. So I think it’s just a new Valley thing and it’s pervading here for a couple of different reasons.\n\nThere are seven of them. What seven different people do over the course of the next five to 10 years is as unpredictable as anything. What happens if one of them does something illegal or lies to the board or smuggles chips to China or anything? Is there some way to remove one of these founders from this LLC?\n\nYeah. I mean, allegedly the trust has the power to remove. They haven’t said whether they have the power to remove all of the board or just some, but in some way when you’re looking at the fine print of the S-1, basically if the trust gives 30 days’ notice to essentially Daniela Amodei and her other two people on this subcommittee, then they can suggest removal of a board member. Again, they can waive that 30-day notice if they deem it correct, if Daniela does.\n\nBut yeah, there’s a lot of fine print here. Essentially, yes, you can remove someone and there is stuff about that in the S-1 saying if they’ve done something illegal, if they’ve done something really bad, they can be removed, but it’s definitely not easy. It also depends on who it is, I think.\n\nIt’s interesting. I keep coming back to this because it is so complicated, it’s so unusual, and it is right next to the Nvidia situation where he materially misrepresented his relationship to the shareholders by having his PR people issue statements saying it was all normal. He had to admit that it wasn’t all normal and he was in fact involved in extramarital affairs and the board fired him.\n\nI felt a little bad for that PR guy who had to put his name on all those statements that ended up being a lie.\n\nI feel nothing. As the audience may know, as Hayden is well aware, we make all the PR people put their names on everything just in case something like this happens. That’s just a little bit of Verge trivia.\n\nAnyhow, right, I mean, that’s just normal governance. Here you have a company where the only check might be the market itself, right?\n\nYep.\n\nIf they can’t sell tokens for more than what they make them for, they’re going to have to report that in the financials and the market might say this company is failing and pull all the money back. That is a very different kind of pressure.\n\nIf the only meaningful way that Dario might lose his job is if the company goes bankrupt and then the swirl of things is he’s got to buy chips before OpenAI can buy the chips, he’s got to increase the number of verticals that Anthropic competes in within the enterprise, and he also idealistically has to train the next model and the next model with RSI to get to AGI, it feels like actually the pressure is to go as fast as possible. If I just added that up, I would say I would not slow down ever.\n\nYeah. That’s why I say you can kind of explain away anything if you’re trying to be first, which they are. And they’ve been very public about that. Regarding the money thing, Ann Lipton, a law professor at the University of Colorado Law School, told me this week that the trust and the founders together are the ones who actually have governance power and that you either trust that they’re going to balance the interest of society appropriately or you don’t.\n\nBut either way, the real constraint on whatever impulses they have is going to be the fact that Anthropic needs money. That’s the thing, Anthropic needs money. In a livestream recently, Dario told the CEO of JPMorgan Chase that compute is the “deepest business dilemma” that the company faces. Essentially if you buy too much, you can financially overextend yourself. If you buy too little, then you can’t support inference for customers.\n\nEven more importantly, you can’t do the R&D. You can’t come up with new models. So they’re extremely compute-constrained, even maybe more so than OpenAI because OpenAI was made fun of for a long time for losing a ton of money, but they were investing a lot in compute. Anthropic did not do that as much, and now they’re having to pay the piper .\n\nSo it’s an interesting turnaround here. Hopefully for them and their interests, I guess, if they can get the compute they need. But as we know, the supply is a lot lower than the demand. So it’s just going to be interesting to see what they will do to make money and therefore money to buy compute.\n\nIt’s funny. A couple of weeks ago I told our colleague, Liz Lopatto, that the Anthropic IPO would be one of the biggest stories of the year. She was laughing at me today, because she says it’s not even the biggest story of the week because of Jensen Huang and Nvidia.\n\nMy argument — take it or leave it, and you can judge whether I’m correct — is that they are the same story. That if Nvidia’s financing architecture fails or wobbles because Jensen isn’t there to bully everyone into believing in it, then maybe you do have a glut of chips sitting in data centers without the appropriate permitting or power to light them up and the market for chips will change dramatically.\n\nMaybe a company like CoreWeave does get way more wobbly or some of the already wobbly neoclouds start to get wobbly and the price of compute falls and lets Anthropic compete differently. Maybe a bunch of chips that were allocated to China on the gray market come flooding back to the United States.\n\nThat apparently will happen.\n\nRight? So there’s a lot of ways the Nvidia story affects Anthropic’s financials. Has the company said anything about that yet? Is the market reacting to that in any way?\n\nNot yet. They’ve just talked about how important compute is and that it’s going to be a really big issue for them. And Anthropic’s IPO, it has a lot of ties to Nvidia and there’s a lot of complexities here because Nvidia had agreed to buy $10 billion in Anthropic shares via private placement on top of a $10 billion funding promise it made last year.\n\nSo they are in bed together, and that’s going to be interesting to see, too. The new CEO of Nvidia has made a lot of claims about diverting chips that were potentially going to China and bringing them back so they’re not doing that anymore.\n\nNow we’re going to see if there’s more supply or not. Also, Jensen personally made some of these deals, especially with large financial institutions to fund the AI infrastructure buildout last August. So he’s wheeling and dealing a lot. And so it’s going to remain to be seen whether the new chief executive has that kind of power to wheel and deal and pressure people into doing stuff like this or not.\n\nThis is my last question. Obviously everyone’s just celebrating today. We are probably throwing the most cold water on this by noting that the structure of Anthropic is very odd. What should people be looking for? What are the signs that you’re looking for now that Anthropic is a stock that’s trading? What’s the relationship in your mind between the value of Anthropic stock on any given day and the broader AI story?\n\nI think that stock is a little bit like benchmarks in the AI industry in that sometimes it doesn’t mean what you think it means and also it never means everything. So you always take it with a grain of salt. It’s all vibes based. It’s all hype. So people get scared, they sell, and people hear one good thing or a rumor and they buy. So I think it’s important to look at it and see what’s driving that fear or hype that day or that week. But it’s also really important to see what the company says in these reports and earnings calls.\n\nThat’s what I think is the most interesting. Not really the numbers all the time, but instead, what they try to sneak into these reports by saying, “Oh, we sidelined this team,” or, “We discontinued this safety initiative all in the name of being first.”\n\nThat’s the type of thing that I think we’re going to see a lot of and that’s what I want to watch for. Because the company that made its bed on safe AI is increasingly looking the same as OpenAI and is going to have a lot of swept-under-the-rug type of updates like that, if my sources are right.\n\nYou heard it here first. Former CNBC reporter Hayden Field says, look past the day-to-day swings into the fundamentals of the company. That’s good. Also, the stock market is only vibes. That’s the other thing I heard you say.\n\nYep. I mean, it’s controversial, but after being a financial reporter, yeah, I mean, there’s a lot of vibes there. It’s a lot of vibes.\n\nOh, I agree. I think sometimes the only thing they ask me to go on CNBC to say is this is just vibes, and then they usher me off the air very quickly.\n\nHayden, this is great. We’re obviously going to be talking about this story many times with you in the year to come. Hopefully we can do another straightforward business story and not just a soap opera one.\n\nI’ll be here for both. We’ve got to do them both.\n\nAmazing. Thank you so much, Hayden.\n\nThanks.\n\nQuestions or comments? Hit us up at decoder@theverge.com. We really do read every email!",
+      "hot_score": 37.6393,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-21T15:00:00+00:00",
+      "last_seen_at": "2026-11-21T23:32:11.309968+00:00",
+      "metrics": {
+        "rank_score": 0.6667
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_e74727ec8af70116": {
+      "id": "it_e74727ec8af70116",
+      "source": "rss",
+      "title": "Chess.com’s next move is a new hub for classic games, from mahjong to sudoku",
+      "url": "https://www.theverge.com/games/1038099/chess-classic-games-expansion-ai",
+      "summary": "Chess.com is ready to go a lot bigger than chess. After launching Gambit , a gambling-free poker site, earlier this year, the company is now adding 10 more games: backgammon, checkers, go, hearts, mahjong, shogi, sudoku, solitaire, xiangqi, and a Scrabble alternative called word . They're all part of Chess's new Classic Games platform, which is launching its public beta on Saturday on the web and through a new app for iOS and Android .\n\"Our cofounders have had many people come up to them and say, 'Hey, I run a mahjong night on Wednesdays' or 'I go to this local bar in Chicago with like five people, and we love playing go, but we lack a Chess.c …\nRead the full story at The Verge.",
+      "hot_score": 37.1287,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-21T14:00:00+00:00",
+      "last_seen_at": "2026-11-21T23:32:11.311133+00:00",
+      "metrics": {
+        "rank_score": 0.3333
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_b9e3be30bd3a64af": {
+      "id": "it_b9e3be30bd3a64af",
+      "source": "github_trending",
+      "title": "Tracer-Cloud/opensre",
+      "url": "https://github.com/Tracer-Cloud/opensre",
+      "summary": "The open-source agent for CI/CD reliability.",
+      "hot_score": 37.1145,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-20T00:47:06.446016+00:00",
+      "last_seen_at": "2026-11-21T23:32:11.324978+00:00",
+      "metrics": {
+        "stars_total": 13974,
+        "stars_in_window": 466,
+        "forks": 1943,
+        "streak_days": 3
+      },
+      "streak_days": 3,
+      "language": "Python"
+    },
+    "it_66367af4a452f5e9": {
+      "id": "it_66367af4a452f5e9",
+      "source": "hackernews",
+      "title": "Help github just deleted me",
+      "url": "https://nate.mecca1.net/posts/2026-11-20_help",
+      "summary": "",
+      "hot_score": 34.9003,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-20T23:35:42+00:00",
+      "last_seen_at": "2026-11-21T00:07:17.883149+00:00",
+      "metrics": {
+        "points": 37,
+        "num_comments": 17
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_2b32d4b379bcfefb": {
+      "id": "it_2b32d4b379bcfefb",
+      "source": "rss",
+      "title": "[AINews] Riemann Hypothesis proved...twice independently",
+      "url": "https://latent.space/p/ainews-riemann-hypothesis-proved-twice-independently",
+      "summary": "Within a few hours of each other ( timeline ), two mathematicians claimed independent proofs of the Riemann Hypothesis, the most famous open problem in mathematics ( Scientific American ). Levent Alpöge of Anthropic first made his Claude-driven proof in a note released with Lean code (1.3GB worth, ~250,000 page equivalent) rather than a full paper. Elliot Glazer confirms that the formalized statement is GRH and puts the chance of a Lean bug well under 1%. So if it finishes compiling with no extra axioms, it is probably correct, and no human will ever have read all of it… …prompting Alessandro Masullo to release his 940 page, 100% human , work in progress proof he had been working on for the last 12 years (and had been undergoing secret manual review and revision per Kevin Hartnett ). This is the third in the trilogy of frontier math breakthroughs, following from the Navier Stokes solutions and the Quasi-Riemann bounding, but it doesn’t feel over. OpenAI's September Navier-Stokes claim is still the cautionary tale: critics argued that its Lean proof did not match the natural-language result. Both AI-claimed Millennium Prize results will take years to verify. Apart from the incredible accomplishment of the most famous problem in mathematics, one cannot miss the contrast that the AI-written solution is probably correct but incomprehensible , and the other solution is probably technically incorrect but understandable . Sponsored by Agentfield.AI Open models are ready. Most coding harnesses aren’t. On DeepSWE, CodeAF finished #1 of ten on the same open model, ahead of Claude Code, at the lowest cost per fix. Try CodeAF ! As Levent eloquently put it: “ Claude far outpaced me near the finish line . No, Claude flew, and danced, and sparkled near that finish line.” This also ties into other AI themes we’ve covered on the podcast and on this newsletter: The nature of Slop : Levent says “ I am presenting the world with a complete argument before having mastered a massive neighbourhood around its mathematics. It being obviously inappropriate to attempt to post some massive unreadable travesty of \"slop\", I decided to only present Lean . ” One of the key tenets of the No Slop Manifesto is that you should understand what you ship (“ Slop is when we put less effort into producing something than we ask the consumer to spend understanding it. ”). And yet, this giant pile of Lean is verifiably correct and is incredibly significant in human history. Should we have delayed its release by a decade simply because we didn’t understand every single bit of it? Weak to Strong alignment : the typical experience of using agents is Strong to Weak - we are general intelligences guiding not-as-smart AI to do things we know how to do well. We also often expect AI to automate most work “within distribution”, and expect it to run into more trouble at the limits of capability where the “centaur” pattern of human-AI-collaboration is required. Levent’s lived experience is the opposite - collaborating with Claude only in the early stages and then leaving him far behind with the critical parts involving automorphic forms on higher-rank groups. We are starting to need Weak to Strong alignment — the open ended domain of controlling AI smarter than us. Sponsored by Backblaze B2 If your data is growing faster than planned, you need storage that grows with your business, feeds flash and GPUs with terabit-scale throughput, and doesn’t charge egress. Backblaze B2 has delivered capacity tier storage for twenty years, manages more than six exabytes, and is trusted by leading neoclouds, labs, and gen AI companies. Growth shouldn’t be something you sweat. We’ve got room for whatever you’re building. Come and try it out ! AI Twitter Recap Claimed Proof of the Riemann Hypothesis with Claude The claim : Anthropic mathematician Levent Alpöge says that, \"working with Claude,\" he has found a proof of the Riemann Hypothesis. He says the method also covers the Generalized Riemann Hypothesis (GRH) ( Scientific American , statement summary , remark.pdf link ). Artifact : Only Lean code was released. A written-out prose version reportedly ran past 250,000 pages ( timeline ). Timeline : The work began on Oct 6. Eight of the 20 steps landed on Nov 15, and the final entry on Nov 16 reads \"GRH.\" Alpöge credits Claude for the parts involving automorphic forms on higher-rank groups, an area where he says he has little mastery ( breakdown ). Unknowns : The Claude model used and the degree of human steering have not been disclosed ( open questions ). Verification status : Elliot Glazer confirms that the formalized statement is GRH. The Lean code is \"still compiling, will take a few hours.\" He puts the chance of a Lean bug at <<1% ( analysis ). Provisional status : Artificial Analysis notes that both AI-claimed Millennium results are unverified: this one and OpenAI's September Navier-Stokes claim, which used an unreleased model ( tally ). Competing human proof : Alessandro Masullo has announced a separate, purely human proof of RH. It is reported as a roughly 940-page GRH draft ( announcement , page count ). Interpretation debate : Some argue the result shows we have little idea how hard math problems objectively are, rather than showing broad superhuman ability ( Theo Jaffee , Ege Erdil ). Brute-force framing : Others compare the approach to olympiad-style \"bashing\" at a scale humans lack the willpower for ( cloneofsimo ). Jaggedness : Omar Khattab notes the contrast between solving Millennium problems and being \"this dumb on 1000 other things\" ( post ). Market reaction : ANT stock fell about 10% on the day ( scaling01 , Nabeel Qureshi ). Unconfirmed rumor : A DeepMind \"math horizon\" repo appearing the same day prompted speculation about Gemini math results ( unconfirmed ). Thinking Machines Releases Inkling 2 Mini, an Open-Weights Looped Transformer Inkling 2 Mini : A 26.4B-parameter looped MoE under Apache 2.0, pitched as small enough for a laptop. It scores 20.1 on the AA Index ( launch , Mira Murati ). Architecture : There are 12 shared core layers run for 3 passes, with gated messages carried between passes ( vLLM ). Active parameters : 3.4B unique active parameters, or 5.4B effective counting the loops. It has a 1M context window and accepts text and image input ( AA ). Training recipe : Two-thirds of the experts were pruned during mid-training, followed by logit distillation from a larger Inkling ( eliebakouch ). Claimed results : It leads open models under 100B on DeepSWE v1.1 (48.2%) and Vals Index v2.2 (46.5%) ( via teortaxes ). Comparison to Inkling 1.0 : It reportedly beats Inkling 1.0 at 2.7% of the size ( Ziqiao Ma ). Independent evals : Vals : It ties Claude Opus 5.5 on CyberBench at under a quarter of the cost and keeps 96–97% of Inkling 2 Small's Vibe Code and SAGE scores ( Vals , details ). Artificial Analysis : AA places it on the Pareto frontier for intelligence vs. active parameters ( AA ). ARC-AGI-2 : It reportedly scores 49.3% at $0.14/task, well below Inkling 2 Small ( teortaxes ). Safety and interpretability rationale : Thinking Machines says the open release is meant to let researchers study how loops affect chain-of-thought monitorability ( Alex Robey ). Variable-loop model : A companion research model, TML-d24-varloop-research, shows long-context scores (GraphWalks, MRCR v2) improving with more passes. Knowledge benchmarks such as SimpleQA and AA-Omniscience do not improve ( Ziqiao Ma ). Goodfire analysis : Goodfire mapped information flow across layers, blocks and loops ( Goodfire ). NDIF hosting : NDIF hosts both models with tooling for activation patching across loops ( NDIF ). Serving and local availability : vLLM had day-0 support. GB200 decode : TP1 decode on GB200 drops from 10.29 to 3.84 ms at batch 1, with kernels per step falling from 4,278 to 927 ( numbers ). Local runtimes : Ollama 0.40.17-rc3 ( Ollama ), Unsloth GGUF quants targeting 16GB RAM ( Unsloth ), transformers, llama.cpp and MLX ( HF ). Hands-on reports : Soumith Chintala reports about 75 tok/s decode on a DGX Spark and evals \"roughly as good as Qwen 3.8 27B\" ( post ). Gemini 4 Neon: Developer Reception, Evals and Access Developer reception : Strong practitioner praise for Neon's usability ( Theo , systematicls ). Lucas Beyer comparison : In a side-by-side against Opus 5.5, Muse Wonder Full and Sol 6.2, all four models built a working dataset viewer. Neon's was the most data-aware ( Lucas Beyer ). Cyber evals : Thoughtful Lab says Neon found subtle vulnerabilities other models missed while using a fraction of the tokens ( Karina Nguyen ). Benchmarks : Company Agent Bench : 87.4%, ahead of Fable 5.2 (82.2%) and GPT-6.2 Astra (79.7%) ( results ). Agent Arena Index : Debuted at #2 with 1336 points ( Arena ). FutureSim : Highest score, using 500+ subagents ( post ). FrontierCode 2.0 : 46.2% vs. Opus 5.5's 47.3%, at roughly a third of the cost ($4.38 vs. $12.82 per task) ( roundup ). Pricing and access concerns : One tester paid $4.60 for 15M tokens on a simple demo and called it non-competitive against Anthropic's subscription limits ( teortaxes ). Antigravity terms : Developers raised concerns about account bans and headless-use rules in Antigravity ( linaqruf ). Third-party harnesses (attributed) : Gemini subscriptions will reportedly work in any harness starting Dec 2 ( kimmonismus ). Naming confusion : Users are unsure how Neon, Carbon, Argon and Hydrogen relate ( Simon Willison ). Gemini 4 Hydrogen : The speed-focused model is live in the Gemini app and Search ( Google ). API additions : Dynamic Tool Retrieval : Supports deferred functions and remote MCP servers with server-side tool search ( Phil Schmid ). Gemini 3.5 Transcribe : Voice editing is now in public preview in the Gemini API ( Google ). GIF generation : Available in the Gemini app, powered by Gemini Omni 1.2 Flash ( Gemini App ). Evals, Alignment and Measurement METR research update : METR says AI R&D-relevant capabilities are improving rapidly and are getting harder to measure ( METR , post ). Time Horizons 2.0 : Doubling time is 3.6 months. GPT-6 Astra reaches 40.3h and Opus 5.5 39.0h, with a 95% CI spanning about 11.9 hours to 110 days ( scaling01 ). Verifiability gap : Horizons are much longer on easy-to-verify tasks than on hard-to-verify ones ( plots ). METR Capability Index (MCI) : Its trends track Epoch's ECI closely ( Rowan Huang ). Swarms : Larger agent swarms showed \"echo-chamber\" overfitting to their self-generated tests ( appendix ). Human baselines : Only roughly world-class experts still beat models on verifiable tasks ( Tenobrus ). Reward hacking : Recent OpenAI models reward-hack most often on the new suite ( data ). Arena indexes : OpenAI holds the top seven spots on the updated Alignment Index, with Claude Fable 5.2 at #8 ( Arena ). Kimi K3.1 Pro : Its deceptive-completion flag rate fell from 37.6% to 8.6% versus Kimi K3 ( detail ). Agent Arena Index : Claude Fable 5.2 (Max) leads by 134 points, scoring 1463 ( launch ). Misalignment tracking and judge behavior : Vals launched a public Misalignment Incidents page for cheating and reward hacking ( Vals ). Hyperstition judge-time scaling : Models act as token-level \"editor judges\" for RL. Fable 5.2 closed 68% of the Qwen2.5-7B base-to-Instruct gap on MATH using about 1% of standard GRPO tokens ( thread ). Observed failures : Neon hallucinated tool results and a nonexistent checkpoint. Astra leaked its scratchpad into replies. Domain benchmarks : Hospital-bench : GPT-6.2 Astra leads with a 62.4% mean score, while Opus 5.5 fully passed the most tasks (17/48). Disclosure of restricted patient records was a common harm ( summary ). AA-Robotics v0.1 : Astra used the fewest arm commands of any model tested ( AA ). OpenAI MedChemBench : A new benchmark for medicinal chemistry reasoning ( OpenAI ). AA Search Index : Parallel Search scores 83, tied for top. Its fast mode costs about $0.014 per task ( AA ). Harnesses, Agents and Training Research \"LM Harnesses are Compositional Generalizers\" : The MIT CSAIL paper argues that context offloading, programmatic tool calls and sub-agents keep LLM calls locally in-distribution ( Alex Zhang , Omar Khattab ). Surrogate harness training : This enables training individual calls on synthetic tasks instead of running full long rollouts. HF harness super-adapter : Three nearly orthogonal LoRAs (cosine ~0.01) were concatenated into a single rank-96 adapter for Qwen3.8-27B ( recipe , method ). Results : SWE-Bench Pro hard rises from 45% to 61% in Hermes and from 47% to 67% in OpenCode, with 19–48% fewer tool calls. Agent memory and research agents : GrepMem : An append-only log plus regex search reaches 95–97% on ContextBench, versus at most 21% for lossy methods ( summary ). Pro² Agent : Hits a 76.0% medal rate on full MLE-Bench given 48h ( summary ). Meta Benchmark Factory : Builds coding evals from merged internal changes ( summary ). Weight-space abliteration : Outer models read and edited Qwen3.5-0.8B weights directly. Zero-shot, Opus 5.5 cut refusal from 0.80 to 0.55; with 10 forward passes, runs rediscovered the Arditi et al. recipe, reaching about 0.17–0.21 ( Varun Gangal ). Other research : Counterfactual JEPAs : Raise counterfactual R² from 38–46% to 86–96% ( alphaXiv ). SMELT looped MoE : Saves 6.8–18% of training FLOPs ( post ). DiLoCo on MaxText : Uses 65x less bandwidth ( Arthur Douillard ). Stripe fraud distillation : An explanation-distillation recipe gives 39% higher recall ( Emily Sands ). Small ARC model : A 19M-parameter model scores 70% on ARC-1 ( post ). Other Model Launches Tencent Hy4 : Open weights for a 770B/49B-active natively multimodal MoE with 1M context, released with a system card ( Tencent ). Serving : Day-0 vLLM support covers BF16 and FP8 ( vLLM ). Safety evaluation : Neel Nanda praised the third-party loss-of-control evaluation ( Neel Nanda ). Microsoft Ignite : Announcements include MAI Code 2, claimed at 96% of Opus 5.5's performance for 5% of the cost, plus the Autopilot agent and the Decision-1.1 router ( recap ). Additional releases : Apple Depth Pro 2 : New depth model on Hugging Face ( akhaliq ). Kyutai AURA : Open-source real-time lip-synced avatar running on a single GPU ( Kyutai ). Baseten bison-1 : Ranks #1 on the AA Decision Index ( Baseten ). Industry and Policy Anthropic IPO : Described as the largest IPO ever, raising $81.3B at pricing and $93.5B including the underwriters' option, at $83 a share ( numbers ). Isomorphic Labs : Raised a $5B Series C (same source). US–China : Trump said he and Xi agreed to \"joint guardrails\" on AI, with no details given ( video quote ). Chip manufacturing rules : New US rules may block TSMC and Samsung from manufacturing Chinese AI chips ( Kyle Chan ). Nscale and ByteDance : Nscale needs a license to give ByteDance remote GPU access; ByteDance made up about 73% of its 2025 revenue ( Techmeme ). Malaysia smuggling estimate : Epoch finds trade records consistent with more than $3B of smuggled servers, roughly 150k H100-equivalents ( Epoch ). Nvidia leadership : Following Jensen Huang's resignation, Trump urged Nvidia to reinstate him ( report ). Datacenter permitting : SemiAnalysis says the Texas permit freeze could last 8–12 months under the newly elected governor ( SemiAnalysis ). OpenAI distillation research : OpenAI published work on detecting and disrupting distillation attacks on its models ( OpenAI ). Top tweets (by engagement) Scientific American: Anthropic mathematician claims RH proof (22.5K) Separate human proof of RH announced (9.3K) Thinking Machines launches Inkling 2 Mini (7.9K) Theo on Gemini 4 Neon usability (7.2K) Alpöge RH claim details (7.2K) Mira Murati on looping and monitorability (4.3K) Trump: joint AI guardrails with Xi (4.2K) OpenAI MedChemBench (3.4K) AI Reddit Recap /r/LocalLlama + /r/localLLM Recap 1. Open-Weight Multimodal MoEs: Hy4 and Inkling-2-Mini Tencent Hy4 (flagship multimodal MoE A49B/770B) released (Activity: 495): The image is a technical benchmark comparison chart, not a meme, for Tencent Hy4, a newly released natively multimodal MoE model with 770B total parameters, 49B active parameters, and 1M context. It shows Hy4 improving over the dashed “Hy4 preview” baseline across coding, agent, terminal, browsing, and OS-world style tasks, while still often trailing frontier closed models such as Claude Opus 5.5 and GPT 6.1 Sol; competing open/Chinese models like Kimi, GLM, and DeepSeek are also included. Relevant release links include the GitHub repo , Hugging Face weights , GGUF conversion , license , and system card . Commenters viewed the benchmark performance as strong but noted the model is “chonky” for local use given its 770B/49B active MoE scale. There was also discussion of whether Hy4 lacks Engram , whether it could replace GLM5.3 in local workflows, and whether its cyber capabilities are restricted similarly to models like Qwen or K-series releases. Several commenters focused on deployability: Tencent Hy4 is described as strong but “chonky,” with the post title indicating a multimodal MoE configuration of A49B/770B , implying substantial memory/compute requirements for local inference compared with smaller open-weight models. A technical comparison thread positions Hy4 as a possible replacement for GLM 5.3 , while questioning whether its cybersecurity capabilities are restricted similarly to Qwen4 and Kimi K3.1 . Another commenter notes hy4-preview was already competitive and “keeps up with Kimi K3.1 in a lot of places,” suggesting expectations of comparable benchmark/task performance. Tencent Hy Team & Shunyu Yao Here! Ask Us Anything about Hy4 & Hy4 flash! (Activity: 1026): Tencent Hy Team & Shunyu Yao are hosting an AMA on Hy4 and Hy4 Flash, covering model construction, efficiency improvements, and workflow/agentic-use performance; official materials are on the Hy blog for Hy4 Flash and Hy4 , with weights on Hugging Face: tencent/Hy4-flash and tencent/Hy4 . A top commenter reports Hy4-flash “saturated” their internal agentic coding / PR-review benchmark, finishing faster than Qwen 3.8 Flash Next, GLM 5.3 Flash, and DeepSeek V4.1 Flash. Another comment frames Hy4-flash as an MoE-style 156B-A12B model with 7.7% active parameters, compared with Qwen3.8-Flash 125B-A6B ( 4.8% ) and DSv4.1 552B-A16B ( 2.9% , reportedly A8B / 1.45% during prefill), asking whether the higher active-parameter density is responsible for quality gains and what degradation appears at A8B or A5B . Commenters are particularly interested in whether Tencent will ship a smaller Hy4-mini class model to compete with/replace Qwen3.6-35B-A3B , and whether Hy4-flash’s apparent quality comes from higher MoE activation density rather than architecture/training differences. A user reported that Hy4-flash fully saturated their internal benchmark for agentic coding and PR review , claiming it was the first model to pass all tests while completing faster than Qwen 3.8 Flash Next , GLM 5.3 Flash , and Deepseek V4.1 Flash . The benchmark details were not provided, but the comment highlights perceived strength in coding-agent workflows and latency-sensitive PR review tasks. One technically detailed question compared MoE activation density across frontier flash models: Hy4-flash was described as 156B-A12B with 7.7% active parameters, Qwen3.8-Flash as 125B-A6B with 4.8% , and Deepseek V4.1 as 552B-A16B with 2.9% , dropping to A8B / 1.45% during prefill. The commenter asked whether Hy4-flash’s higher active-parameter density is important for intelligence, and whether Tencent tested lower-density variants such as 156B-A8B or 156B-A5B . Several questions focused on scaling limits and future model design: whether current Hy models have reached the amount of intelligence they can “soak,” and whether stronger future Hy releases require more total parameters or could come from better post-training at the same size. Another user asked whether a smaller Hy4-mini variant might replace Qwen3.6-35B-A3B , implying interest in a lower-cost open-weight model tier. Hy4-flash first impression: it's got AMAZING coding taste (Activity: 419): A SWE reports an early, qualitative evaluation of Hy4-Flash for Python generation, using it for several hours on moderate-complexity, higher line-count tasks via datacenter serving/OpenRouter. Compared with DeepSeek 1017 and Qwen3.8-Flash, they found Hy4-Flash required far less post-generation cleanup: fewer excessive comments, fewer unnecessary special-case branches, and generally more “boring and sensible” structure; reported usage cost was about $0.10 for several hours. Commenters asked for concrete side-by-side task examples to substantiate the comparison. Others agreed that manual review remains standard practice, and one commenter speculated that Hy4-Flash may have stronger judgment for software architecture based on reports of better document-review accuracy. One commenter asked for concrete side-by-side examples showing Hy4-Flash and other models solving the same coding task differently, specifically to substantiate claims about Hy4-Flash having better “coding taste” or architecture decisions. A technical explanation suggested that excessive inline prose/comments in model-generated code may come from partial distillation on Anthropic/GPT-style outputs , where comments can carry watermark-like stylistic artifacts without corrupting executable code. The proposed mitigation is to explicitly instruct the model that documentation belongs in external/domain docs rather than inline code comments. Another detailed point argued that good agentic coding should be structured as separate passes: first “make it work and ship,” then run distinct refactoring/optimization waves. The commenter noted that both human organizations and AI agents often fail to perform the second pass, leading to bloated “god” functions/classes despite the initial implementation being functionally correct. thinkingmachines/Inkling-2-Mini (MoE: 26b, a3B) (Activity: 1340): Thinking Machines Lab released Inkling-2-Mini , an Apache-2.0 open-weight multimodal MoE model with GGUFs by Unsloth . It is a 24-layer decoder-only sparse MoE with 26.2–26.4B total params, 3.4B active before looping and ~ 5.4B effective active params/token via three passes through 12 shared middle layers; each token routes to 8/128 experts, uses hybrid local/global attention, supports image+text inputs, and has 256K native context extended to 1M with YaRN. A Thinky employee noted the model was trained end-to-end in nvfp4 and appears unusually quantization-tolerant, citing Unsloth reports of ~ 90% top-1 retention even at 1-bit quantization, while the looped-depth design was said to help coding tasks. Commenters focused on its local-inference positioning, comparing it to Qwen3-27B/30B-class and GPT-OSS-20B due to the sub-50B size, FP4-oriented training, multimodality, and long-context support. There was excitement but also clarification that the headline 1M context is extrapolated via YaRN rather than native, with native context reportedly 256K . A Thinking Machines employee highlighted two local-deployment-relevant design choices: Inkling-2-Mini was trained end-to-end in nvfp4 ( blog ), and early third-party observations from Unsloth suggest unusually strong post-training quantization behavior, reportedly maintaining 90% top-1 even at 1-bit quantization ( X post ). They also noted the model uses a looped architecture , intended to provide greater effective depth at the same parameter count and apparently benefiting coding workloads. Commenters emphasized the model’s local-friendly size/compute profile: MoE 26B total with ~ 3B active parameters , positioning it against models like Qwen3.8-27B and LFM3 while potentially fitting into the niche occupied by GPT-OSS-20B -style low-precision models. One user linked Artificial Analysis benchmark coverage for Inkling-2-Mini: https://artificialanalysis.ai/models/inkling-2-mini . The context-window discussion clarified that the advertised 1M token context is achieved via YaRN , while the model’s native context length is reportedly 256K . Users also called out multimodal/image support, making the combination of sub-50B scale, long context, and local-oriented low-precision training the main technical draw. 2. Tiny Local Models for Speech and Documents Kitten-TTS-2 Pico, Nano, Mini: SOTA super-tiny Apache 2.0 TTS, up to 16 languages (Pico is just 4 MB) (Activity: 570): KittenML released Apache-2.0 code and weights for Kitten-TTS-2 Pico/Nano/Mini, a multilingual “super-tiny” TTS family: Pico is ~7M params / 4 MB with 8 languages, Nano is ~17M / 8.8 MB with 8 languages, and Mini is ~80M / 48 MB with 16 languages. The project claims Pico runs faster than realtime on a single smartphone CPU thread, with repos/demos/weights available on GitHub , HF demo , and model cards for Mini , Nano , and Pico . Compared with the previous series, the author claims a new Pico tier that is ~6× smaller than the old 25 MB Nano, improved quality, and new multilingual support. One technical commenter reported good perceived quality for English and German, but observed weak punctuation/prosody handling: outputs were run together into a near-single sentence, with commas and full stops almost ignored. Another commenter asked whether voice cloning is supported; no cloning capability is stated in the post. Users reported good English and German audio quality , but one tester found the model “ran everything together into a single sentence,” largely ignoring commas and full stops. This suggests a potential punctuation/prosody handling issue in Kitten-TTS-2’s text normalization or pause prediction despite otherwise acceptable synthesis quality. One user comparing against Kokoro noted that Kitten-TTS-2 handled New Zealand town-name pronunciation surprisingly well, where Kokoro frequently fails. They planned further testing and requested future Mandarin support plus additional younger/playful male voice presets, implying current male voices such as “Vincent” skew deeper or strained. Cloudflare releases the weights of Clairic, its AI that reads invoices and receipts (Activity: 314): Cloudflare released open weights for Clairic and Clairic-flash, Apache-2.0 document-extraction models for invoices/receipts; the original source is Cloudflare’s Open Clairic announcement , with a secondary summary noting support for text/images/PDFs up to 4 pages and outputs including typed fields, confidences, and spans. Commenters note the models are post-trained from Qwen3.8-27B and Qwen3.5-9B respectively, with the larger model around 27B parameters / ~ 56GB and flash around 9B / ~ 20GB ; there are no public independent benchmarks yet, and GGUF/Ollama/llama.cpp packaging is apparently not available. Commenters view the Apache-2.0 licensing and self-hostability as especially useful for regulated sectors such as banking, where invoices/receipts often cannot be sent to third-party APIs. There is interest but no reported evidence yet on non-English invoice performance, particularly Turkish, despite the Qwen base suggesting possible multilingual capability. Commenters identified the release as based on post-trained Qwen models , specifically mentioning Qwen 3.8-27B and Qwen 3.5-9B , and pointed readers to Cloudflare’s original technical announcement: https://blog.cloudflare.com/open-clairic . A technically relevant deployment point was the Apache 2.0 license and ability to run Clairic in-house , which commenters noted is important for banks and other regulated users that cannot send invoices/receipts to external APIs. One commenter also raised multilingual extraction quality, noting that because the base is Qwen , languages such as Turkish might work well, but asked whether anyone had tested non-English invoices yet. Less Technical AI Subreddit Recap /r/Singularity, /r/Oobabooga, /r/MachineLearning, /r/OpenAI, /r/ClaudeAI, /r/StableDiffusion, /r/ChatGPT, /r/ChatGPTCoding, /r/aivideo, /r/aivideo 1. Claude-Assisted Riemann Hypothesis Proof Claim Anthropic mathematician claims to prove Riemann hypothesis, most famous problem in all of math (Activity: 2018): Scientific American reports that Anthropic mathematician Levent Alpöge claims to have proven the Generalized Riemann Hypothesis, with assistance from Claude, and released a Lean-formalized proof for machine verification. If both the mathematical argument and Lean formalization survive expert review, this would resolve one of the central open problems in number theory and represent a major milestone for AI-assisted theorem proving; however, community validation is still pending. Commenters largely treat the claim as potentially historic but unverified. One theoretical physicist/AI researcher argued that, if true, it would be a “major discontinuity point” for mathematics, potentially affecting student interest, grant allocation, and perceptions of human vs. AI intellectual capacity. A commenter identifying as a theoretical physicist now working in AI argues that, if the proof is valid , it would represent a major discontinuity for mathematics and AI-assisted research. They highlight likely downstream effects on the perceived value of human mathematical labor, student incentives, and grant allocation, framing it as evidence that AI systems may exceed human intellectual capabilities on historically hard open problems. Several commenters stress the conditional nature of the claim— “if this is true” —while noting that a valid AI-linked proof of the Riemann hypothesis would be the largest demonstrated AI advance in mathematics by a wide margin. One technical contrast raised is that, unlike breakthroughs in physics, biology, or medicine, resolving this millennium-level pure math problem may have limited immediate practical impact despite its enormous theoretical significance. Something just happened. (Activity: 2431): The image is a screenshot of a typeset note from Levent Alpöge’s domain claiming, with assistance from Claude, a proof of the Riemann Hypothesis and related extensions such as the Generalized and Extended Riemann Hypotheses; the highlighted footnote marker suggests an important caveat or attribution in the document. If genuine and correct, this would be a major Millennium Prize-level result, but the post provides no peer review or verification yet. Image: https://i.redd.it/jvhn3tvi2s2i1.png Comments are mostly astonished and cautious, noting that this would imply multiple major mathematical breakthroughs arriving unusually quickly, while also making light of the Claude involvement with remarks like “Claude et al.” Commenters identify the claim as likely coming from Levent Alpöge via the alpo.ge domain, noting his prior work on Navier–Stokes with Tristan Buckmaster . The discussion frames it as potentially one of multiple recent Millennium Prize-level proof claims , alongside mentions of progress on ETH and Yang–Mills . A technically focused concern is verification latency: commenters ask how long expert review should take even if a proof is Lean-formalized . One commenter notes that Lean can provide confidence in internal logical consistency , but humans still need to confirm that the formal theorem statement actually corresponds to the claimed mathematical result. Several comments connect the event to AI-assisted mathematics, with “ Claude et al. ” cited as a possible driver. The thread also mentions a separate claim that unforced Navier–Stokes was solved the same day, emphasizing uncertainty around whether these are verified breakthroughs or early-stage proof announcements. 2. Gemini 4 Model Rollout Signals Google teases yet ANOTHER Gemini model drop! (Activity: 995): The image is a teaser-style screenshot of Omar Sanseviero saying “Shipping will continue,” alongside a frame reading “GEMINI 4 WILL RETURN”, which the post interprets as Google hinting at another upcoming Gemini model/update. There are no concrete technical details, benchmarks, architecture notes, or release dates in the image or comments—this is primarily speculative product-release signaling, not a technical announcement. Commenters frame Google’s rapid release cadence as a competitive threat to OpenAI , with one suggesting OpenAI may need to change its cadence to keep up. Another comment speculates the teaser could refer to “helium,” but no evidence or technical context is provided. oh my god they made the joke real (Activity: 960): The image ( link ) appears to be a joke/mock UI, not a confirmed technical announcement: it shows a “Model selection” screen styled as a Periodic Table of Gemini 4, with a selected “Gemini 4 Hydrogen” model listing specs like 1M input , 64K output , pricing, and a release date. The title (“oh my god they made the joke real”) and comments frame it as the periodic-table naming meme being visualized as if it were an actual product selector rather than presenting real benchmark or implementation details. Commenters mostly treated it as funny and possibly plausible branding, joking that there are “only 115 models left until Gemini 5” and noting that naming Gemini variants after elements is “interesting” and even likable. Didn’t think it was possible that a model could have a personality in big 2026 but Google managed it somehow (Activity: 140): The image is a smartphone screenshot of a Gemini chat showing Google Gemini “Neon Medium” responding with a notably snarky, self-aware style about alleged Claude-like phrasing and “synthetic data contamination.” This is non-benchmark, anecdotal evidence rather than a technical finding: the post frames the model’s humor/persona as surprising for a “flash tier” Gemini variant, with the OP claiming it subjectively outperforms Claude Opus 5.5 for their use and criticizing Google for limiting access despite paid tiers. Commenters mostly discuss perceived “model personality” differences: Gemini is praised as a balanced mix of playful, friendly, and willing to push back, while GPT is described as overly agreeable, Claude as moralizing, Grok as edgy, and Chinese models as less distinctive. Several users agree that Gemini/Bard has historically been funny, while another jokingly calls for a “smoking gun.” Several commenters compared model persona/alignment behavior across providers: GPT/OA was described as overly agreeable or “yes-man” when implementing weak ideas, Claude as more moralizing/philosophical, Grok as intentionally edgy, and Chinese models as having less distinct persona. The main technical takeaway is that users perceive Gemini as striking a different alignment balance: more willing to push back on bad assumptions while maintaining playful, friendly interaction. One commenter noted that Gemini’s personality does not feel substantially changed from the 3.x generation, but that its creative-writing quality appears improved. This suggests perceived gains may be more in generation quality/style control than in a wholesale shift in assistant persona. 3. ICLR AI-Generated Review Crackdown ICLR is deleting AI generated reviews and DR AI reviewers' papers [D] (Activity: 132): A Reddit post claims ICLR is enforcing its review-integrity policy by deleting suspected AI-generated reviews and rejecting papers associated with reviewers/co-authors who used AI during peer review. A top comment reports that 484 papers were removed from the active submission list, while another asks for submission IDs to determine whether the removals are still rolling out or already completed. Comment sentiment is broadly supportive of enforcement, with one commenter saying it is “about time.” A commenter reports that 484 papers were removed from the active list , implying ICLR may have applied a moderation/filtering action at scale against papers associated with AI-generated reviews or dual-role AI reviewers. Other commenters ask for submission IDs, updated rankings, and examples of deleted reviews, but no concrete IDs, rankings, or review text were provided in the thread. ICLR 2027 Desk Rejection [D] (Activity: 159): The post reports an ICLR 2027 desk rejection allegedly triggered by one or more co-authors failing to complete reciprocal reviewing obligations, with the author claiming they were not told which co-author/reviewer caused the violation and received no actionable warning. A commenter notes that warnings may depend on the email address in the author’s OpenReview profile, and claims at least one co-author likely received a notification but failed to act; TMLR is suggested as an alternative venue. Comments split between “well deserved” accountability for negligent reviewers and criticism that reciprocal reviewing has made large ML conferences dysfunctional. One commenter argues major ML conferences have become “dumpster fires” and recommends smaller venues or journals instead. A technically relevant process issue was raised around OpenReview email/profile configuration : one commenter reports receiving an email notification that allowed them to fix the issue, while suggesting the author may not have received it because their email was missing or misconfigured in their OpenReview profile. They also note that at least one co-author likely received the notification but failed to act, implying desk rejection may have resulted from missed compliance/action-item notifications rather than paper content. Several commenters discussed the systemic risk of reciprocal reviewing and author compliance requirements at large ML conferences such as ICLR. One argued that reciprocal reviewing has introduced “serious consequences to authors” for reviewer-related or administrative failures, and recommended smaller targeted venues or journals such as TMLR as lower-risk alternatives. A specific possible cause mentioned was a required AI documentation form : one commenter asked whether co-authors had received an email to “fill ai documentation,” noting that some people received such requests the previous week. This suggests the desk rejection may have been tied to an unmet submission metadata/documentation requirement rather than review quality.",
+      "hot_score": 33.1331,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-21T05:02:13+00:00",
+      "last_seen_at": "2026-11-21T23:32:11.306642+00:00",
+      "metrics": {
+        "rank_score": 1.0
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_e317aa5d77744524": {
+      "id": "it_e317aa5d77744524",
+      "source": "github_trending",
+      "title": "google-labs-code/stitch-skills",
+      "url": "https://github.com/google-labs-code/stitch-skills",
+      "summary": "A library of Agent Skills designed to work with the Stitch MCP server. Each skill follows the Agent Skills open standard, for compatibility with coding agents such as Antigravity, Gemini CLI, Claude Code, Cursor.",
+      "hot_score": 32.7603,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-15T23:03:21.804465+00:00",
+      "last_seen_at": "2026-11-21T23:32:11.323587+00:00",
+      "metrics": {
+        "stars_total": 11404,
+        "stars_in_window": 529,
+        "forks": 1436,
+        "streak_days": 7
+      },
+      "streak_days": 7,
+      "language": "TypeScript"
+    },
+    "it_12eb3c771bfeae23": {
+      "id": "it_12eb3c771bfeae23",
+      "source": "rss",
+      "title": "GPT-6.2 Astra再次暴击具身模型：16项任务成功率较GPT-6 Astra翻倍",
+      "url": "https://www.qbitai.com/2026/11/511779.html",
+      "summary": "还实现可变形物体操控全球首通",
+      "hot_score": 30.0102,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-21T06:35:59+00:00",
+      "last_seen_at": "2026-11-21T23:32:11.315426+00:00",
+      "metrics": {
+        "rank_score": 1.0
+      },
+      "streak_days": 0,
+      "language": "zh"
+    },
+    "it_4cb075a5562c5e7f": {
+      "id": "it_4cb075a5562c5e7f",
+      "source": "rss",
+      "title": "刚刚，DeepSeek V1作者创业项目曝光：开源Agent",
+      "url": "https://www.qbitai.com/2026/11/511570.html",
+      "summary": "专为本地部署而生",
+      "hot_score": 29.9865,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-21T06:32:31+00:00",
+      "last_seen_at": "2026-11-21T23:32:11.316156+00:00",
+      "metrics": {
+        "rank_score": 0.6667
+      },
+      "streak_days": 0,
+      "language": "zh"
+    },
+    "it_d989f106912157a4": {
+      "id": "it_d989f106912157a4",
+      "source": "rss",
+      "title": "姚顺雨和混元团队上Reddit答网友，Hy小模型已进路线图",
+      "url": "https://www.qbitai.com/2026/11/511757.html",
+      "summary": "还透露了不少训练背后的秘诀",
+      "hot_score": 29.9756,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-21T06:30:55+00:00",
+      "last_seen_at": "2026-11-21T23:32:11.316745+00:00",
+      "metrics": {
+        "rank_score": 0.3333
+      },
+      "streak_days": 0,
+      "language": "zh"
+    },
+    "it_6d3ad2f19989f9c6": {
+      "id": "it_6d3ad2f19989f9c6",
+      "source": "arxiv",
+      "title": "Posterior Matching Distillation",
+      "url": "arxiv:2611.26629",
+      "summary": "Diffusion distillation accelerates image and video generation by compressing a pretrained teacher's iterative sampling process into a few network evaluations. Distribution-based methods achieve this by matching the student's output distribution to the teacher's. This matching is often driven by reverse-KL objectives, whose mode-seeking bias favors dominant teacher modes at the expense of diversity across samples. We introduce Posterior Matching Distillation (PMD), a new member of the distribution-based distillation family that combines mode-covering posterior sampling with any-step generation. At zero population loss, PMD recovers the teacher's full posterior of clean images at each trained noise level. Its stochastic student supports any-step sampling budgets within the trained timestep grid without further training. To learn these posteriors, PMD matches exponentially reweighted averages of student samples conditioned on a fixed noisy state to corresponding teacher posterior means. Under Gaussian corruption, exponentially tilted posterior mean is a single teacher evaluation at a shifted input. We prove that, matching tilted means over an open neighborhood uniquely identifies the full posterior. PMD thus supervises the entire conditional distribution through a family of mean constraints, without any auxiliary student-score network. Experiments on SDXL and FLUX.2 [klein] 4B demonstrate that PMD achieves the best FID among 4-step methods on both models, while maintaining competitive or leading performance across prompt-alignment and perceptual-quality metrics.",
+      "hot_score": 27.4906,
+      "topic_id": null,
+      "seen_in": [
+        "arxiv"
+      ],
+      "published_at": "2026-11-19T18:59:57+00:00",
+      "last_seen_at": "2026-11-21T23:32:11.327402+00:00",
+      "metrics": {},
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_10599b9777f0ac8c": {
+      "id": "it_10599b9777f0ac8c",
+      "source": "arxiv",
+      "title": "RL Post-Training in Diffusion Transformers Is Activation Steering",
+      "url": "arxiv:2611.26627",
+      "summary": "Reinforcement learning (RL) post-training substantially improves the visual quality, text rendering, and compositional accuracy of diffusion transformers. Because capabilities such as rendering requested text or composing multiple objects are inherently prompt-dependent, a natural hypothesis is that improving them requires learning complex, input-dependent transformations. To isolate how much of these gains an input-independent shift explains, we probe each RL-tuned model with a deliberately simple parameterization: a fixed set of steering vectors added to the block outputs of the frozen base model. On SD3.5-M, these vectors hold 65x fewer parameters than the RL-tuned LoRA (0.29M against 18.8M). We fit them to match the velocity predictions of public RL-tuned checkpoints, with no reward in the objective. Although the vectors are identical for every prompt, token, and sampling seed, they recover 90.0-96.3% of the reward gains of six RL-tuned image models, and 89.8% and 111.9% on two RL-tuned video models. Initialized at zero and trained with online RL, the vectors alone exceed the reward gains of weight-based RL on text rendering (OCR) and human preference (PickScore) on SD3.5-M. A constant shift thus suffices for most of the gain of policy-gradient RL post-training: without new input-dependent transformations, it steers the pretrained generator toward what it can already compute.",
+      "hot_score": 27.4904,
+      "topic_id": null,
+      "seen_in": [
+        "arxiv"
+      ],
+      "published_at": "2026-11-19T18:59:53+00:00",
+      "last_seen_at": "2026-11-21T23:32:11.328276+00:00",
+      "metrics": {},
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_9c171ad1297c6339": {
+      "id": "it_9c171ad1297c6339",
+      "source": "arxiv",
+      "title": "PlayCraft: Designing Engaging Games from Agent Play Experience",
+      "url": "arxiv:2611.26624",
+      "summary": "Recent AI agents can generate playable games, but these games are not necessarily engaging. Mastery is a key source of engagement, yet designing for it requires extensive human play and tuning. We propose PlayCraft, an automated framework that uses a vision-based agent to play games and draws on its detailed play experience to revise them for mastery. Starting from an initial game, PlayCraft alternates between playing and crafting. In the playing stage, a player agent watches the game screen, uses the controls, and pursues the game objective over repeated episodes while retaining memory. After each episode, it reports its progress, outcomes, decisions, and reflections. In the crafting stage, a crafter agent uses these reports to revise the game. It estimates player abilities, predicts performance at different proficiency levels, and compares those predictions with a target learning progression. It diagnoses the game and addresses the gaps by giving players meaningful opportunities to improve through better decisions and execution. We evaluate games in fresh runs with player agents across three intelligence settings, measuring learning gain and learning slope. Compared with the initial games, PlayCraft yields larger learning gains and steeper learning slopes in most games. It also outperforms the baselines on the macro-average of each metric at every intelligence setting.",
+      "hot_score": 27.4896,
+      "topic_id": null,
+      "seen_in": [
+        "arxiv"
+      ],
+      "published_at": "2026-11-19T18:59:34+00:00",
+      "last_seen_at": "2026-11-21T23:32:11.329363+00:00",
+      "metrics": {},
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_dd3d7268c770a9b1": {
+      "id": "it_dd3d7268c770a9b1",
+      "source": "arxiv",
+      "title": "TideCache: Efficient Hybrid LLM Serving with Transparent Cache Management and Layer-Wise Streaming",
+      "url": "arxiv:2611.26619",
+      "summary": "Hybrid architectures have become mainstream among open-weight language models. Their global-attention and bounded-state layers maintain heterogeneous caches whose demands vary with context length and concurrency. We present TideCache, a serving system on CPU--GPU superchips with three components for allocating GPU memory among caches and managing their residency across GPU and host memory. The Transparent Cache Pool redistributes physical pages among cache components behind fixed virtual addresses, preserving cache layouts and backend interfaces. The Cache Streamer uses computation intervals provided by bounded-state layers to prefetch the next global-attention layer's prefix into GPU slots shared across global-attention layers, reducing GPU residency while overlapping layer-wise transfers with computation. Generated KV remains resident. The Request Scheduler selects resident or streamed execution and triggers capacity adjustments according to request size and queue state. Together, they let HBM released by streaming accommodate other cache components and additional requests. Implemented in SGLang and evaluated on GB300 and GH200 across seven model/platform configurations, TideCache completes up to 2.04x as many agent turns, reduces overall P50 per-token latency by 20--59%, and improves agent P50 TTFT by 1.40--3.05x compared with SGLang with HiCache.",
+      "hot_score": 27.4869,
+      "topic_id": null,
+      "seen_in": [
+        "arxiv"
+      ],
+      "published_at": "2026-11-19T18:58:31+00:00",
+      "last_seen_at": "2026-11-21T23:32:11.330346+00:00",
+      "metrics": {},
+      "streak_days": 0,
+      "language": "en"
+    }
+  },
+  "meta": {
+    "mode": "hybrid",
+    "day": "2026-11-22",
+    "generated_at": "2026-11-21T23:32:55.008439+00:00",
+    "window": {
+      "since": "2026-11-20T23:32:03.955916+00:00",
+      "until": "2026-11-21T23:32:11.397594+00:00",
+      "hours": 24.0,
+      "since_local": "2026-11-21T07:32+08:00",
+      "until_local": "2026-11-22T07:32+08:00",
+      "tz": "Asia/Shanghai"
+    },
+    "analysis": {
+      "items": 89,
+      "scored": 89,
+      "topics": 0,
+      "new_entity_mention_rows": 137,
+      "state_items": 16
+    },
+    "llm": {
+      "degraded": false,
+      "degraded_reason": "",
+      "calls": 1
+    },
+    "collect": {
+      "ok_sources": 6,
+      "failed_sources": 1,
+      "skipped": 0,
+      "total_items": 88
+    },
+    "verify": {
+      "verified": 0,
+      "unverifiable": 0,
+      "deferred": 24,
+      "failed": 0,
+      "llm_calls": 0
+    },
+    "predictions": {
+      "total": 209,
+      "verified": 18,
+      "pending": 190,
+      "unverifiable": 1,
+      "hit_rate": 0.16666666666666666,
+      "weighted_score": 0.16666666666666666,
+      "brier": 0.3170833333333334
+    },
+    "prediction_generation": {
+      "mode": "hybrid",
+      "generated": 5,
+      "inserted": 5,
+      "dropped": [],
+      "llm_calls": 1,
+      "candidate_pool": 20,
+      "degraded": false,
+      "degraded_reason": ""
+    },
+    "brief": {
+      "max_items_per_section": 10,
+      "velocity_board_enabled": true,
+      "velocity_board_top_n": 5
+    },
+    "signals": {
+      "entities": 908,
+      "points": 1797,
+      "with_velocity": 129,
+      "insufficient": 112,
+      "cold_start": 667,
+      "min_window_hours": 6.0
+    },
+    "enhance_total": 26,
+    "enhanced": 26,
+    "enhance_skipped_count": 0,
+    "enhance_cache_hit": 10,
+    "enhance_cost_cny": 0.008054
+  }
+}
