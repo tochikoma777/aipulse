@@ -1,0 +1,957 @@
+{
+  "date": "2026-11-23",
+  "headline": "今日真正的信号不是又一个模型，而是「技能包」正在成为智能体的分发单位：Claude 生态的 bug-hunting、开发方法论、选题研究、图表设计纷纷被打包成可安装技能，智能体的竞争从模型能力转向技能供给。",
+  "headline_item_id": "it_27d1d8a4f04e089d",
+  "overview_bullets": [
+    {
+      "icon": "🤖",
+      "topic": "技能即产品",
+      "text": "GitHub 热榜被 Claude/Codex 技能包刷屏——BugHunter 的 82 个技能、superpowers 的方法论、last30days 的跨平台调研，说明智能体生态的竞争焦点已从模型本身转向可复用的技能资产。"
+    },
+    {
+      "icon": "🛠️",
+      "topic": "数据接入层",
+      "text": "firecrawl 以 550+ 数据源统一 API 冲上热榜，与 last30days、CLI-Anything 同向，说明「让智能体拿到真实世界数据」比「让智能体更聪明」更稀缺。"
+    },
+    {
+      "icon": "📉",
+      "topic": "故障常态化",
+      "text": "AWS 静默故障、FAA 停飞、Outlook 多日中断、摩根大通宕机被并列讨论，行业共识是大型技术中断还会再来，基础设施可靠性正成为被公开定价的风险。"
+    },
+    {
+      "icon": "💬",
+      "topic": "反 AI 情绪",
+      "text": "《以撒的结合》因 AI 音乐被差评轰炸后移除素材、数据中心成为大科技反弹的靶心，社区对 AI 的容忍度正在从「讨论」转向「用脚投票」。"
+    },
+    {
+      "icon": "📄",
+      "topic": "评测缺口",
+      "text": "LLM 在冲突情境下的性别不对称道德框架研究热度仅 59，与智能体工程化的喧嚣形成落差——能力在狂奔，对齐评测仍停留在小样本学术讨论。"
+    }
+  ],
+  "executive_summary": "今天的热榜几乎全是「给智能体装零件」的工程活，而真正决定这些零件能否被信任的可靠性、对齐与合规问题，全部排在热度榜后半段。",
+  "editor_note": {
+    "core": "今天最该记住的是智能体的分发形态变了：不再是「你用什么模型」，而是「你装了哪些技能」。BugHunter 把 681 份已披露报告模式固化成 82 个技能，意味着安全攻防经验第一次被批量产品化——这比任何单点模型升级都更能改变实际生产力。",
+    "cross_signal": "GitHub 侧 firecrawl、last30days、CLI-Anything 都在解决「智能体如何触达真实数据与真实软件」，而 HN 侧同时出现推理服务数据处理事故与 AWS 静默宕机——供给端在加速接入，可靠性端在持续失血，两条线指向同一个结论：智能体的瓶颈已从智力转移到管道。",
+    "counterintuitive": "热度最高的条目里有一半与 AI 无关（GTA6 鸟类指南、加拿大新闻资助、欧洲化学品监管），而真正定义今年智能体格局的技能框架只排在 70 分档。注意力正在从「AI 本身」稀释到「AI 周边的生活话题」，这恰恰是技术进入基础设施期的典型特征。",
+    "risk": "最值得警惕的盲点是合规与评测的滞后：App Store 合规工具已经追踪到 112 个含 EU AI Act 的截止日期，而 LLM 道德框架评测还停留在 59 分热度的学术讨论；同时《以撒的结合》因 AI 音乐被差评轰炸说明，一旦素材来源不透明，社区反噬会先于监管到来。"
+  },
+  "contradictions": [
+    "一边是智能体技能包与数据接入工具在 GitHub 热榜狂飙，一边是推理服务数据处理事故与 AWS 静默宕机无人深究——生态在加速扩张，可靠性叙事却在降温。",
+    "OpenAI 首席科学家讨论给 AI 开发设「限速」，而同日的开源热榜几乎全是降低智能体开发门槛的工具，监管收紧与工程扩散方向相反。",
+    "社区一边用「扮演 LLM 子智能体」的游戏调侃智能体，一边对游戏里的 AI 音乐发起差评轰炸——对 AI 的戏谑与敌意同时存在。"
+  ],
+  "underrated": [
+    "Harsher on Male? Evaluating LLMs on Gender-Asymmetric Moral Framing in Conflicts：LLM 道德框架的性别不对称评测，热度仅 59，却是对齐落地的关键缺口。",
+    "Data Processing Incidents on Inference Providers：推理服务商的数据处理事故，直接关系智能体管道可信度，却淹没在工具热榜里。",
+    "mjmirza/app-store-compliance：把 EU AI Act、DSA、COPPA 等 112 个截止日期做成智能体技能，是合规工程化的早期样本。",
+    "Progress map for the Lean formalization of Alessandro Masullo's manuscript：形式化数学的进度地图，是「AI 做数学」热潮下真正可验证的基础工作。",
+    "Tracer-Cloud/opensre：面向 CI/CD 可靠性的开源智能体，恰好补上今日故障频发暴露的缺口，热度仅 34。"
+  ],
+  "sections": [
+    {
+      "name": "开源项目",
+      "summary": "技能包与数据接入层占据 GitHub 热榜，开源智能体基础设施从「框架」细化到「可安装技能」。",
+      "item_ids": [
+        "it_8d57cc2cadedeb4f",
+        "it_27d1d8a4f04e089d",
+        "it_f859b2d15e1457f4",
+        "it_f09a3afb4ff397a9",
+        "it_4fa2765666515d8e",
+        "it_d41f86253f9f730f",
+        "it_ed75bf498e47451e",
+        "it_1f28a16c9fe19cbe",
+        "it_f70d6b968bbde640",
+        "it_c75fda64510b4a09",
+        "it_833333ed0f4723f5",
+        "it_b9e3be30bd3a64af",
+        "it_e317aa5d77744524"
+      ]
+    },
+    {
+      "name": "论文与研究",
+      "summary": "从 P vs NP 的智能体集群尝试到 Lean 形式化与 LLM 道德框架评测，研究侧在「机器能否做数学」与「机器是否公平」两端同时推进。",
+      "item_ids": []
+    },
+    {
+      "name": "社区舆论",
+      "summary": "HN 在调侃（GTA6 鸟类指南、扮演 LLM 子智能体的游戏）与警惕（拒收条款、AI 音乐被移除）之间摇摆，情绪比技术更早转向。",
+      "item_ids": [
+        "it_ce223767ccc95af8",
+        "it_1005bc8b78aac075",
+        "it_ae6e6a35191d1707",
+        "it_4f0ed76760ef2783",
+        "it_e02a3f3a918fb26c",
+        "it_ca50047ad3dd8b6d",
+        "it_5a80222bbbe1e362",
+        "it_99c02c36be61ab68",
+        "it_381628060ea95e20",
+        "it_3482c58c624c53d1",
+        "it_ef741366627ecebf",
+        "it_fd5ab31a0b486fa8"
+      ]
+    },
+    {
+      "name": "产业与新闻",
+      "summary": "基础设施故障、数据中心反弹、AI 开发限速与监管合规期限交织，产业侧的议题从「能做多大」变成「能撑多久、谁来管」。",
+      "item_ids": [
+        "it_265c68ec3a4cc76b",
+        "it_0f50037c76f25ff3",
+        "it_e7090200216ed533",
+        "it_05744626c0d61baf",
+        "it_bed82431ae1f061b"
+      ]
+    }
+  ],
+  "comments": [
+    {
+      "item_id": "it_8d57cc2cadedeb4f",
+      "one_liner": "firecrawl 是一个面向 AI agent 的知识基础设施，通过单一 API 提供搜索、抓取以及接入 550 多家数据源的能力",
+      "why": "把抓取、搜索和 550+ 数据源统一到一个 API，意味着 agent 的数据接入层从各家自建爬虫转向标准化采购，中小团队的数据工程成本被压到接近零。",
+      "stance": "数据获取正变成水电煤，护城河从『能抓到』转移到『抓得干净且合规』。"
+    },
+    {
+      "item_id": "it_27d1d8a4f04e089d",
+      "one_liner": "一个 Claude Code 漏洞挖掘技能包，含 82 个 skills、15 个 slash 命令和 681 条已披露报告模式",
+      "why": "把 681 条已披露报告模式固化成技能包，让外部红队工作从个人经验变成可复制的检索库，攻击面知识扩散速度加快。",
+      "stance": "攻防知识的技能化不可避免，防守方必须假设对手已拥有同等清单。"
+    },
+    {
+      "item_id": "it_f859b2d15e1457f4",
+      "one_liner": "obra/superpowers 是一套面向 AI agent 的技能框架与软件开发方法论",
+      "why": "把 agent 技能封装成可复用的方法论框架，等于给『提示词工程』补上工程规范，团队协作时技能可以像依赖包一样被版本化和审查。",
+      "stance": "技能框架会像当年的 lint 规则一样成为标配，不采用的一方会在多人协作中先乱。"
+    },
+    {
+      "item_id": "it_f09a3afb4ff397a9",
+      "one_liner": "一个 AI agent skill，可跨 Reddit、X、YouTube、HN、Polymarket 和网页检索任意话题并汇总成有据可依的摘要",
+      "why": "把跨平台检索与摘要合成打包成一个可复用技能，意味着 agent 的信息搜集从单站抓取转向多源交叉验证，直接压缩人工调研的时间成本。",
+      "stance": "多源聚合是 agent 技能里最实用的一类，但摘要的可靠性取决于源质量，别把它当事实核查工具。"
+    },
+    {
+      "item_id": "it_4fa2765666515d8e",
+      "one_liner": "Ghost-Downloader-3 是一款开源的多功能下载器桌面应用",
+      "why": "下载器把多协议、多源聚合进单一客户端，用户不再为不同站点装不同工具，边缘工具类软件的整合窗口正在关闭。",
+      "stance": "集大成者往往也是最后一款——这类工具的价值在于终结选择困难，而非创新。"
+    },
+    {
+      "item_id": "it_d41f86253f9f730f",
+      "one_liner": "开源 AI 视频剪辑桌面工具，可将播客、访谈、课程等长视频自动剪成适配抖音、小红书、TikTok、Reels 与 YouTube Shorts 的短视频，并生成字幕、封面和发布文案",
+      "why": "把长视频切条、字幕、封面、发布文案打包成本地桌面工具，内容团队的分发成本从人力工时压到一次点击，且素材不出本机。",
+      "stance": "开源本地化剪辑工具会先吃掉中小创作者的外包剪辑预算，平台侧的搬运内容将更泛滥。"
+    },
+    {
+      "item_id": "it_ed75bf498e47451e",
+      "one_liner": "minimind 是一个教学项目，演示如何在两小时内从零训练出一个 64M 参数的小型大语言模型。",
+      "why": "两小时、单卡、64M 参数就能跑通从零预训练全流程，把大模型的门槛从实验室预算降到个人周末项目，教学与复现的价值远大于模型本身。",
+      "stance": "这是目前最有效的 LLM 祛魅工具，比任何科普文章都管用。"
+    },
+    {
+      "item_id": "it_1f28a16c9fe19cbe",
+      "one_liner": "HKUDS 开源项目 CLI-Anything，旨在让所有软件都具备 Agent 原生能力，并提供 CLI-Hub 入口。",
+      "why": "把任意软件包装成 agent 可直接调用的 CLI 接口，等于给智能体生态补上统一的执行层，工具厂商的接入成本从定制 SDK 降为一条命令行。",
+      "stance": "方向对，但 CLI 作为 agent 接口的稳定性与权限边界远未解决，先别急着把生产环境交出去。"
+    },
+    {
+      "item_id": "it_f70d6b968bbde640",
+      "one_liner": "开源、隐私优先的新一代知识库工具 AFFiNE，将规划、整理与创作整合在一起，定位为 Notion 与 Miro 之外的选择",
+      "why": "把文档、白板、数据库塞进同一份本地优先的协作底座，团队不必在 Notion 与 Miro 之间做数据割裂的取舍，隐私与自托管成为可选项。",
+      "stance": "开源替代品真正的门槛不在功能而在协作网络效应，AFFiNE 要赢只能靠自托管刚需用户切入。"
+    },
+    {
+      "item_id": "it_c75fda64510b4a09",
+      "one_liner": "面向 Claude Code、Codex、GitHub Copilot、Cursor 等编程代理的编辑级图表设计资源，涵盖 45 种图表类型，输出自包含的 HTML + SVG",
+      "why": "把图表规范固化成 45 种自包含 HTML+SVG 模板喂给编码代理，输出从 Mermaid 的默认丑图变成可控的编辑级排版，设计一致性从人审前移到生成端。",
+      "stance": "这是给 AI 生成内容补上审美下限的正确做法，模板约束比让模型自由发挥更可靠。"
+    },
+    {
+      "item_id": "it_ce223767ccc95af8",
+      "one_liner": "一个尝试用多智能体集群攻克 P vs. NP 问题的项目",
+      "why": "用多智能体集群冲击一个公认的开放难题，结果无论成败都在检验代理协作能否产出可验证的数学推理，而非只是并行刷 token。",
+      "stance": "把 swarm 对准 P vs NP 更像表演性科研，真正的产出是暴露当前代理在长程推理上的天花板。"
+    },
+    {
+      "item_id": "it_1005bc8b78aac075",
+      "one_liner": "一项评估 LLM 在冲突情境中性别不对称道德框架表现的研究",
+      "why": "把冲突情境下的道德措辞按性别拆开测，模型若对同一行为给出不同严厉度，就会把偏见带进内容审核与调解类产品。",
+      "stance": "这类审计必须成为模型上线前的常规项，性别不对称的道德措辞是不可接受的默认值。"
+    },
+    {
+      "item_id": "it_ae6e6a35191d1707",
+      "one_liner": "Alessandro Masullo 手稿的 Lean 形式化工作进度图",
+      "why": "把一份数学手稿逐节形式化并公开进度，使证明的正确性从同行信任转为机器可核验，也把形式化工作的真实成本摊在阳光下。",
+      "stance": "形式化进度图比成品更有价值，它让人看清 Lean 化数学是人力密集型工程而非魔法。"
+    },
+    {
+      "item_id": "it_4f0ed76760ef2783",
+      "one_liner": "一份面向初学者的本地 AI 入门指南，涉及 Inkling、Qwen 与 Unsloth",
+      "why": "把本地模型选型、量化与微调串成一条新手可走的路径，硬件门槛与云端依赖同时下降，个人开发者能在离线环境跑通完整流程。",
+      "stance": "本地 AI 的瓶颈早已不是模型质量而是教程碎片化，这类整合指南的边际价值高于又一个新模型。"
+    },
+    {
+      "item_id": "it_e02a3f3a918fb26c",
+      "one_liner": "一份以野外图鉴形式介绍 GTA 6 中 Vice City 与 Leonida 野生动物的趣味指南",
+      "why": "玩家用博物学田野指南的体例整理游戏内物种，说明大型作品的生态细节已复杂到需要外部知识体系来承载，社区产出的资料密度反超官方文档。",
+      "stance": "这是玩家社区把游戏内容当研究对象对待的信号，官方手册的权威正在被众包图鉴取代。"
+    },
+    {
+      "item_id": "it_ca50047ad3dd8b6d",
+      "one_liner": "一个让玩家扮演 LLM 子代理的 Show HN 游戏",
+      "why": "让玩家扮演被调用的子代理，把工具调用、指令服从与上下文截断变成可体感的机制，公众对代理系统的直觉从抽象概念转为亲身经验。",
+      "stance": "用游戏做 AI 素养教育比科普文章有效得多，这类作品该被纳入代理产品设计的参考案例。"
+    },
+    {
+      "item_id": "it_5a80222bbbe1e362",
+      "one_liner": "一篇题为 Do Not Accept 的 Hacker News 讨论帖",
+      "why": "围绕拒绝授权条款的讨论直指平台服务协议里的单方面权利让渡，用户签字与否决定其内容与数据被如何二次使用。",
+      "stance": "默认勾选的授权条款就是不对等谈判，拒绝是唯一有效的议价手段。"
+    },
+    {
+      "item_id": "it_99c02c36be61ab68",
+      "one_liner": "一篇探讨为何少数行为古怪的权势人物能左右世界的评论文章",
+      "why": "把科技权力集中问题从产品体验拉到人格层面：少数男性掌控全球信息与算力基础设施，其个人偏好直接塑造数十亿人的默认环境。",
+      "stance": "与其嘲讽怪人，不如追问为什么治理结构允许个人怪癖成为公共基础设施的配置参数。"
+    },
+    {
+      "item_id": "it_381628060ea95e20",
+      "one_liner": "关于各家 inference provider 上发生的数据处理事故的讨论",
+      "why": "推理服务商的数据处理事故把模型调用从「API 抽象层」打回「真实数据管道」，企业把敏感输入交给第三方推理端点时，合规责任并未随之转移。",
+      "stance": "把推理外包当作无状态函数调用是自欺，事故清单应成为采购前的必读项。"
+    },
+    {
+      "item_id": "it_3482c58c624c53d1",
+      "one_liner": "欧洲在科学研究将部分化学品与「生活方式疾病」关联之际放松相关化学监管",
+      "why": "监管放松与科学证据方向相反，代价被推迟到公共医疗账单上：化学品暴露的成本从企业资产负债表转移到医保体系。",
+      "stance": "在证据指向慢性病时削弱规则，是把不确定性风险社会化、把利润私有化的典型操作。"
+    },
+    {
+      "item_id": "it_265c68ec3a4cc76b",
+      "one_liner": "《The Binding of Isaac》开发者为 Repentance Plus 移除游戏中的 AI 生成音乐",
+      "why": "玩家用差评逼开发者撤下 AI 生成音乐，说明生成内容的成本优势在核心玩家群体中被声誉成本抵消，资产替换成为可执行的问责手段。",
+      "stance": "这次撤退证明玩家审查比平台政策更有效，但撤歌不撤流程只是公关止损。"
+    },
+    {
+      "item_id": "it_0f50037c76f25ff3",
+      "one_liner": "The Stepback 通讯讨论 vibe-coding 正扩散到各类消费电子设备",
+      "why": "自然语言生成固件把硬件功能迭代从工程团队转移到用户手里，设备厂商的差异化卖点被压缩成提示词质量，售后与安全边界随之模糊。",
+      "stance": "让用户用一句话改设备行为，等于把每台小工具变成无人审计的代码执行环境。"
+    },
+    {
+      "item_id": "it_e7090200216ed533",
+      "one_liner": "报道称 FAA 停飞、Outlook 与 JPMorgan 故障之后，大型技术宕机还将继续出现",
+      "why": "航空、邮件、银行在短期内接连中断，暴露的是共享云与老旧系统的相关性风险：单点故障不再局部，而是跨行业同步放大。",
+      "stance": "把宕机归为偶发事故是逃避，集中度不降，下一次停摆只是时间问题。"
+    },
+    {
+      "item_id": "it_05744626c0d61baf",
+      "one_liner": "OpenAI 首席科学家谈如何为 AI 开发设定速度上限，前提是先就衡量方式达成一致",
+      "why": "限速的前提是可测量的算力指标，谁定义度量口径谁就掌握刹车踏板，这使测量标准本身成为治理谈判的核心筹码。",
+      "stance": "没有独立可验证的算力计量，所谓限速只是实验室与监管者之间的君子协定。"
+    },
+    {
+      "item_id": "it_bed82431ae1f061b",
+      "one_liner": "记者 Paris Marx 借新书《Hyperscale》谈数据中心为何成为针对 Big Tech 反弹的焦点",
+      "why": "数据中心把土地、电力、水资源的地方成本与全球算力收益分离，反对声浪因此从环保议题升级为地方财政与社区议价问题。",
+      "stance": "地方承担电水与噪音、股东拿走算力租金，这种账本结构注定引发抵制。"
+    }
+  ],
+  "stats": {},
+  "items": {
+    "it_e02a3f3a918fb26c": {
+      "id": "it_e02a3f3a918fb26c",
+      "source": "hackernews",
+      "title": "The Birds of GTA 6: A Field Guide to Vice City and Leonida's Wildlife",
+      "url": "https://www.audubon.org/magazine/birds-of-gta-6-field-guide-vice-city-wildlife",
+      "summary": "",
+      "hot_score": 87.75,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-22T19:10:34+00:00",
+      "last_seen_at": "2026-11-22T23:44:24.505524+00:00",
+      "metrics": {
+        "points": 290,
+        "num_comments": 117
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_8d57cc2cadedeb4f": {
+      "id": "it_8d57cc2cadedeb4f",
+      "source": "github_trending",
+      "title": "firecrawl/firecrawl",
+      "url": "https://github.com/firecrawl/firecrawl",
+      "summary": "Knowledge infrastructure to make your agents smarter. Search, scrape and access 550+ data providers through one API.",
+      "hot_score": 78.9584,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-20T00:47:06.445974+00:00",
+      "last_seen_at": "2026-11-22T23:44:24.533255+00:00",
+      "metrics": {
+        "stars_total": 207008,
+        "stars_in_window": 1241,
+        "forks": 10815,
+        "streak_days": 4
+      },
+      "streak_days": 4,
+      "language": "TypeScript"
+    },
+    "it_ca50047ad3dd8b6d": {
+      "id": "it_ca50047ad3dd8b6d",
+      "source": "hackernews",
+      "title": "Show HN: I built a game where you are an LLM's subagent",
+      "url": "https://github.com/gulivan/worker755",
+      "summary": "",
+      "hot_score": 77.5693,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-22T13:56:58+00:00",
+      "last_seen_at": "2026-11-22T23:44:24.617077+00:00",
+      "metrics": {
+        "points": 256,
+        "num_comments": 59
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_381628060ea95e20": {
+      "id": "it_381628060ea95e20",
+      "source": "hackernews",
+      "title": "Data Processing Incidents on Inference Providers",
+      "url": "https://openrouter.ai/blog/announcements/data-processing-incidents-on-inference-providers",
+      "summary": "",
+      "hot_score": 76.661,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-22T02:14:14+00:00",
+      "last_seen_at": "2026-11-22T23:44:24.509768+00:00",
+      "metrics": {
+        "points": 277,
+        "num_comments": 95
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_3482c58c624c53d1": {
+      "id": "it_3482c58c624c53d1",
+      "source": "hackernews",
+      "title": "Europe weakens chemical rules as science links them to 'lifestyle diseases'",
+      "url": "https://www.lemonde.fr/en/opinion/article/2026/11/22/as-science-increasingly-shows-the-role-chemical-substances-play-in-lifestyle-diseases-europe-weakens-its-regulations_6786595_23.html",
+      "summary": "",
+      "hot_score": 74.3812,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-22T15:42:40+00:00",
+      "last_seen_at": "2026-11-22T23:44:24.512393+00:00",
+      "metrics": {
+        "points": 147,
+        "num_comments": 128
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_27d1d8a4f04e089d": {
+      "id": "it_27d1d8a4f04e089d",
+      "source": "github_trending",
+      "title": "elementalsouls/Claude-BugHunter",
+      "url": "https://github.com/elementalsouls/Claude-BugHunter",
+      "summary": "A Claude Code skill bundle for bug hunting and external red-team work - 82 skills, 15 slash commands, 681 disclosed-report patterns curated across 24 core vulnerability classes, plus enterprise identity + infrastructure attack matrices.",
+      "hot_score": 74.218,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-15T23:03:21.804510+00:00",
+      "last_seen_at": "2026-11-22T23:44:24.528597+00:00",
+      "metrics": {
+        "stars_total": 17734,
+        "stars_in_window": 1794,
+        "forks": 1964,
+        "streak_days": 4
+      },
+      "streak_days": 4,
+      "language": "Python"
+    },
+    "it_f859b2d15e1457f4": {
+      "id": "it_f859b2d15e1457f4",
+      "source": "github_trending",
+      "title": "obra/superpowers",
+      "url": "https://github.com/obra/superpowers",
+      "summary": "An agentic skills framework & software development methodology that works.",
+      "hot_score": 72.0,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-15T14:47:23.502377+00:00",
+      "last_seen_at": "2026-11-22T23:44:24.529628+00:00",
+      "metrics": {
+        "stars_total": 324141,
+        "stars_in_window": 2028,
+        "forks": 28758,
+        "streak_days": 6
+      },
+      "streak_days": 6,
+      "language": "Shell"
+    },
+    "it_ef741366627ecebf": {
+      "id": "it_ef741366627ecebf",
+      "source": "hackernews",
+      "title": "Canada recommits to federal funding for news",
+      "url": "https://www.niemanlab.org/2026/11/a-government-that-gets-it-canada-recommits-to-federal-funding-for-news",
+      "summary": "",
+      "hot_score": 71.3864,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-22T19:10:38+00:00",
+      "last_seen_at": "2026-11-22T23:44:24.514253+00:00",
+      "metrics": {
+        "points": 107,
+        "num_comments": 105
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_f09a3afb4ff397a9": {
+      "id": "it_f09a3afb4ff397a9",
+      "source": "github_trending",
+      "title": "mvanhorn/last30days-skill",
+      "url": "https://github.com/mvanhorn/last30days-skill",
+      "summary": "AI agent skill that researches any topic across Reddit, X, YouTube, HN, Polymarket, and the web - then synthesizes a grounded summary",
+      "hot_score": 67.4602,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-17T01:57:21.277064+00:00",
+      "last_seen_at": "2026-11-22T23:44:24.536366+00:00",
+      "metrics": {
+        "stars_total": 72688,
+        "stars_in_window": 1059,
+        "forks": 6422,
+        "streak_days": 7
+      },
+      "streak_days": 7,
+      "language": "Python"
+    },
+    "it_4f0ed76760ef2783": {
+      "id": "it_4f0ed76760ef2783",
+      "source": "hackernews",
+      "title": "A Beginner's Guide to Local AI with Inkling, Qwen, and Unsloth",
+      "url": "https://www.gpupartner.com/blog/beginners-guide-local-ai-inkling-qwen-unsloth",
+      "summary": "",
+      "hot_score": 67.2955,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-22T21:01:16+00:00",
+      "last_seen_at": "2026-11-22T23:44:24.513385+00:00",
+      "metrics": {
+        "points": 125,
+        "num_comments": 40
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_4fa2765666515d8e": {
+      "id": "it_4fa2765666515d8e",
+      "source": "github_trending",
+      "title": "XiaoYouChR/Ghost-Downloader-3",
+      "url": "https://github.com/XiaoYouChR/Ghost-Downloader-3",
+      "summary": "The only downloader you need. 下载器的集大成者。",
+      "hot_score": 62.6251,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-20T00:47:06.446027+00:00",
+      "last_seen_at": "2026-11-22T23:44:24.541238+00:00",
+      "metrics": {
+        "stars_total": 15100,
+        "stars_in_window": 1082,
+        "forks": 907,
+        "streak_days": 4
+      },
+      "streak_days": 4,
+      "language": "Python"
+    },
+    "it_ce223767ccc95af8": {
+      "id": "it_ce223767ccc95af8",
+      "source": "hackernews",
+      "title": "Agent swarm trying to solve P vs. NP",
+      "url": "https://pequalnp.com/",
+      "summary": "",
+      "hot_score": 59.1136,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-22T21:53:45+00:00",
+      "last_seen_at": "2026-11-22T23:44:24.515844+00:00",
+      "metrics": {
+        "points": 53,
+        "num_comments": 56
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_1005bc8b78aac075": {
+      "id": "it_1005bc8b78aac075",
+      "source": "hackernews",
+      "title": "Harsher on Male? Evaluating LLMs on Gender-Asymmetric Moral Framing in Conflicts",
+      "url": "arxiv:2606.14068",
+      "summary": "",
+      "hot_score": 59.0291,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-22T09:18:36+00:00",
+      "last_seen_at": "2026-11-22T23:44:24.617782+00:00",
+      "metrics": {
+        "points": 89,
+        "num_comments": 77
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_d41f86253f9f730f": {
+      "id": "it_d41f86253f9f730f",
+      "source": "github_trending",
+      "title": "zhouxiaoka/autoclip",
+      "url": "https://github.com/zhouxiaoka/autoclip",
+      "summary": "AutoClip｜一个链接，一键出片。开源 AI 视频剪辑桌面工具，将播客、访谈、课程等长视频自动剪成短视频，生成字幕、封面和发布文案，适配抖音、小红书、TikTok、Reels 与 YouTube Shorts。Open-source AI video clipping & content repurposing.",
+      "hot_score": 56.9584,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-20T00:47:06.446033+00:00",
+      "last_seen_at": "2026-11-22T23:44:24.541990+00:00",
+      "metrics": {
+        "stars_total": 13408,
+        "stars_in_window": 979,
+        "forks": 2124,
+        "streak_days": 4
+      },
+      "streak_days": 4,
+      "language": "Python"
+    },
+    "it_5a80222bbbe1e362": {
+      "id": "it_5a80222bbbe1e362",
+      "source": "hackernews",
+      "title": "Do Not Accept",
+      "url": "https://donotaccept.ai/",
+      "summary": "",
+      "hot_score": 55.0227,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-22T23:02:20+00:00",
+      "last_seen_at": "2026-11-22T23:44:24.517410+00:00",
+      "metrics": {
+        "points": 35,
+        "num_comments": 36
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_ed75bf498e47451e": {
+      "id": "it_ed75bf498e47451e",
+      "source": "github_trending",
+      "title": "jingyaogong/minimind",
+      "url": "https://github.com/jingyaogong/minimind",
+      "summary": "🧠 两小时从 0 训出你的 64M 大模型。Train your own 64M LLM from scratch in 2 hours.",
+      "hot_score": 53.8764,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-18T01:08:38.998254+00:00",
+      "last_seen_at": "2026-11-22T23:44:24.531734+00:00",
+      "metrics": {
+        "stars_total": 68629,
+        "stars_in_window": 847,
+        "forks": 8974,
+        "streak_days": 4
+      },
+      "streak_days": 4,
+      "language": "Python"
+    },
+    "it_1f28a16c9fe19cbe": {
+      "id": "it_1f28a16c9fe19cbe",
+      "source": "github_trending",
+      "title": "HKUDS/CLI-Anything",
+      "url": "https://github.com/HKUDS/CLI-Anything",
+      "summary": "\"CLI-Anything: Making ALL Software Agent-Native\" -- CLI-Hub: https://clianything.cc/",
+      "hot_score": 52.0,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-16T15:44:39.424204+00:00",
+      "last_seen_at": "2026-11-22T23:44:24.530934+00:00",
+      "metrics": {
+        "stars_total": 62758,
+        "stars_in_window": 898,
+        "forks": 5694,
+        "streak_days": 5
+      },
+      "streak_days": 5,
+      "language": "Python"
+    },
+    "it_ae6e6a35191d1707": {
+      "id": "it_ae6e6a35191d1707",
+      "source": "hackernews",
+      "title": "Progress map for the Lean formalization of Alessandro Masullo's manuscript",
+      "url": "https://claude.ai/artifact/CtQyX8qfYAF822bgHJHHE3",
+      "summary": "",
+      "hot_score": 50.9318,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-22T23:12:10+00:00",
+      "last_seen_at": "2026-11-22T23:44:24.515067+00:00",
+      "metrics": {
+        "points": 54,
+        "num_comments": 9
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_f70d6b968bbde640": {
+      "id": "it_f70d6b968bbde640",
+      "source": "github_trending",
+      "title": "toeverything/AFFiNE",
+      "url": "https://github.com/toeverything/AFFiNE",
+      "summary": "There can be more than Notion and Miro. AFFiNE(pronounced [ə‘fain]) is a next-gen knowledge base that brings planning, sorting and creating all together. Privacy first, open-source, customizable and ready to use.",
+      "hot_score": 48.6251,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-20T00:47:06.446022+00:00",
+      "last_seen_at": "2026-11-22T23:44:24.540325+00:00",
+      "metrics": {
+        "stars_total": 76803,
+        "stars_in_window": 676,
+        "forks": 5621,
+        "streak_days": 4
+      },
+      "streak_days": 4,
+      "language": "TypeScript"
+    },
+    "it_c75fda64510b4a09": {
+      "id": "it_c75fda64510b4a09",
+      "source": "github_trending",
+      "title": "cathrynlavery/diagram-design",
+      "url": "https://github.com/cathrynlavery/diagram-design",
+      "summary": "Editorial diagram design for Claude Code, Codex, GitHub Copilot, Cursor, Factory Droid, Qoder, and Pi. 45 diagram types. Self-contained HTML + SVG. No shadows. No Mermaid slop.",
+      "hot_score": 46.9584,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-20T00:47:06.445994+00:00",
+      "last_seen_at": "2026-11-22T23:44:24.535475+00:00",
+      "metrics": {
+        "stars_total": 70279,
+        "stars_in_window": 636,
+        "forks": 4715,
+        "streak_days": 4
+      },
+      "streak_days": 4,
+      "language": "HTML"
+    },
+    "it_99c02c36be61ab68": {
+      "id": "it_99c02c36be61ab68",
+      "source": "hackernews",
+      "title": "Why Are We at the Mercy of the World's Weirdest Men?",
+      "url": "https://www.nytimes.com/2026/11/22/opinion/jensen-huang-ai-ethics-cold-war.html",
+      "summary": "",
+      "hot_score": 46.8409,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-22T20:04:56+00:00",
+      "last_seen_at": "2026-11-22T23:44:24.518072+00:00",
+      "metrics": {
+        "points": 34,
+        "num_comments": 7
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_833333ed0f4723f5": {
+      "id": "it_833333ed0f4723f5",
+      "source": "github_trending",
+      "title": "mjmirza/app-store-compliance",
+      "url": "https://github.com/mjmirza/app-store-compliance",
+      "summary": "Avoid common App Store and Google Play rejections. Open playbook and pre-submission guard with 124 documented rejection patterns and fixes, privacy manifest and Data safety checks, 112 tracked deadlines (EU AI Act, DSA, COPPA, age laws), and a skill for AI coding agents.",
+      "hot_score": 46.6251,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-20T00:47:06.446011+00:00",
+      "last_seen_at": "2026-11-22T23:44:24.538166+00:00",
+      "metrics": {
+        "stars_total": 3957,
+        "stars_in_window": 869,
+        "forks": 236,
+        "streak_days": 4
+      },
+      "streak_days": 4,
+      "language": "Shell"
+    },
+    "it_fd5ab31a0b486fa8": {
+      "id": "it_fd5ab31a0b486fa8",
+      "source": "hackernews",
+      "title": "AWS got hit by an outage too. You didn't hear about it",
+      "url": "https://www.theregister.com/columnists/2026/11/21/aws-got-hit-by-an-outage-too-heres-why-you-didnt-hear-about-it/5311511",
+      "summary": "",
+      "hot_score": 42.75,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-22T20:50:18+00:00",
+      "last_seen_at": "2026-11-22T23:44:24.516620+00:00",
+      "metrics": {
+        "points": 39,
+        "num_comments": 3
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_e7090200216ed533": {
+      "id": "it_e7090200216ed533",
+      "source": "rss",
+      "title": "We haven’t seen the last of the major tech outages",
+      "url": "https://www.theverge.com/tech/1039851/major-tech-outages",
+      "summary": "Over the last week or so, we have seen a nationwide FAA ground stop, a multi-day Outlook outage that brought entire companies to a standstill, and a banking outage at JPMorgan Chase . But the consensus is that there are more to come . Director of National Intelligence Jay Clayton told CNN :\n\n\"The American people should be prepared for a great deal of investment in upgrading our systems; they should be prepared for investment in cybersecurity, and they should be prepared that any time there is a step change in technology, a step change in both compute and applications, there will be bumps in the road.\"\n\nMicrosoft President Brad Smith issued a …\nRead the full story at The Verge.",
+      "hot_score": 39.0,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-22T22:48:02+00:00",
+      "last_seen_at": "2026-11-22T23:44:24.520957+00:00",
+      "metrics": {
+        "rank_score": 1.0
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_05744626c0d61baf": {
+      "id": "it_05744626c0d61baf",
+      "source": "rss",
+      "title": "OpenAI’s chief scientist has thoughts on how to limit AI development",
+      "url": "https://techcrunch.com/2026/11/22/openais-chief-scientist-has-thoughts-on-how-to-limit-ai-development",
+      "summary": "To establish a speed limit on AI development, you need to agree on how to measure speed.",
+      "hot_score": 39.0,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-22T21:14:07+00:00",
+      "last_seen_at": "2026-11-22T23:44:24.525179+00:00",
+      "metrics": {
+        "rank_score": 1.0
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_bed82431ae1f061b": {
+      "id": "it_bed82431ae1f061b",
+      "source": "rss",
+      "title": "Why data centers are at the center of the Big Tech backlash",
+      "url": "https://techcrunch.com/2026/11/22/why-data-centers-are-at-the-center-of-the-big-tech-backlash",
+      "summary": "Journalist Paris Marx unpacks his new book \"Hyperscale.\"",
+      "hot_score": 39.0,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-22T18:08:43+00:00",
+      "last_seen_at": "2026-11-22T23:44:24.526071+00:00",
+      "metrics": {
+        "rank_score": 0.5
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_265c68ec3a4cc76b": {
+      "id": "it_265c68ec3a4cc76b",
+      "source": "rss",
+      "title": "Binding of Isaac developer removes AI music from Repentance Plus",
+      "url": "https://www.theverge.com/games/1039770/binding-of-isaac-ai-music",
+      "summary": "The Binding of Isaac: Repentance Plus has spent the last few days getting review-bombed on Steam after it was discovered that a particular segment of the game used AI music . Reddit user ShweetsStuff discovered the songs used during a Grand Theft Auto -themed section. They found several audio files with Suno metadata that pointed back to the tracks on Suno's site.\nCreator Edmund McMillen took to X to apologize and claimed he \"had no idea\" the in-game GTA parody used generative AI music. Adding to the drama, Valve requires developers to disclose how and when they use generative AI in the development process, and Nicalis, Inc., the studio behin …\nRead the full story at The Verge.",
+      "hot_score": 38.8241,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-22T17:25:20+00:00",
+      "last_seen_at": "2026-11-22T23:44:24.522343+00:00",
+      "metrics": {
+        "rank_score": 0.6667
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_0f50037c76f25ff3": {
+      "id": "it_0f50037c76f25ff3",
+      "source": "rss",
+      "title": "The vibe-coding revolution is coming to all the gadgets",
+      "url": "https://www.theverge.com/column/1039139/vibe-coding-gadgets-tv-camera",
+      "summary": "This is The Stepback , a weekly newsletter breaking down one essential story from the tech world. For more on the vibe-hacking of everything, follow David Pierce . The Stepback arrives in our subscribers' inboxes on Sunday at 8AM ET. Opt in for The Stepback here .\nHow it started\nLike so many things with AI, it's not that large language models opened up some wholly new capability. For as long as there have been gadgets, a few users have been hacking, modding, jailbreaking, and tweaking them to their liking. What is new is that it's easy now. People all over the world are discovering that they can use large language models to hack their hardwar …\nRead the full story at The Verge.",
+      "hot_score": 36.5326,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-22T13:00:00+00:00",
+      "last_seen_at": "2026-11-22T23:44:24.523753+00:00",
+      "metrics": {
+        "rank_score": 0.3333
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_b9e3be30bd3a64af": {
+      "id": "it_b9e3be30bd3a64af",
+      "source": "github_trending",
+      "title": "Tracer-Cloud/opensre",
+      "url": "https://github.com/Tracer-Cloud/opensre",
+      "summary": "The open-source agent for CI/CD reliability.",
+      "hot_score": 33.9584,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-20T00:47:06.446016+00:00",
+      "last_seen_at": "2026-11-22T23:44:24.539169+00:00",
+      "metrics": {
+        "stars_total": 14394,
+        "stars_in_window": 466,
+        "forks": 1965,
+        "streak_days": 4
+      },
+      "streak_days": 4,
+      "language": "Python"
+    },
+    "it_e317aa5d77744524": {
+      "id": "it_e317aa5d77744524",
+      "source": "github_trending",
+      "title": "google-labs-code/stitch-skills",
+      "url": "https://github.com/google-labs-code/stitch-skills",
+      "summary": "A library of Agent Skills designed to work with the Stitch MCP server. Each skill follows the Agent Skills open standard, for compatibility with coding agents such as Antigravity, Gemini CLI, Claude Code, Cursor.",
+      "hot_score": 32.5513,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-15T23:03:21.804465+00:00",
+      "last_seen_at": "2026-11-22T23:44:24.537212+00:00",
+      "metrics": {
+        "stars_total": 11902,
+        "stars_in_window": 529,
+        "forks": 1473,
+        "streak_days": 8
+      },
+      "streak_days": 8,
+      "language": "TypeScript"
+    }
+  },
+  "meta": {
+    "mode": "hybrid",
+    "day": "2026-11-23",
+    "generated_at": "2026-11-22T23:45:09.158860+00:00",
+    "window": {
+      "since": "2026-11-21T23:44:16.493020+00:00",
+      "until": "2026-11-22T23:44:24.646205+00:00",
+      "hours": 24.0,
+      "since_local": "2026-11-22T07:44+08:00",
+      "until_local": "2026-11-23T07:44+08:00",
+      "tz": "Asia/Shanghai"
+    },
+    "analysis": {
+      "items": 37,
+      "scored": 37,
+      "topics": 0,
+      "new_entity_mention_rows": 18,
+      "state_items": 16
+    },
+    "llm": {
+      "degraded": false,
+      "degraded_reason": "",
+      "calls": 1
+    },
+    "collect": {
+      "ok_sources": 6,
+      "failed_sources": 1,
+      "skipped": 0,
+      "total_items": 97
+    },
+    "verify": {
+      "verified": 1,
+      "unverifiable": 0,
+      "deferred": 26,
+      "failed": 0,
+      "llm_calls": 1
+    },
+    "predictions": {
+      "total": 214,
+      "verified": 19,
+      "pending": 194,
+      "unverifiable": 1,
+      "hit_rate": 0.15789473684210525,
+      "weighted_score": 0.15789473684210525,
+      "brier": 0.31934210526315787
+    },
+    "prediction_generation": {
+      "mode": "hybrid",
+      "generated": 5,
+      "inserted": 5,
+      "dropped": [],
+      "llm_calls": 1,
+      "candidate_pool": 20,
+      "degraded": false,
+      "degraded_reason": ""
+    },
+    "brief": {
+      "max_items_per_section": 10,
+      "velocity_board_enabled": true,
+      "velocity_board_top_n": 5
+    },
+    "signals": {
+      "entities": 920,
+      "points": 1825,
+      "with_velocity": 129,
+      "insufficient": 112,
+      "cold_start": 679,
+      "min_window_hours": 6.0
+    },
+    "enhance_total": 25,
+    "enhanced": 25,
+    "enhance_skipped_count": 0,
+    "enhance_cache_hit": 7,
+    "enhance_cost_cny": 0.007798
+  }
+}
