@@ -1,0 +1,63 @@
+{
+  "date": "2026-11-24",
+  "generated_at": "2026-11-24T04:03:03.319427+00:00",
+  "collected": true,
+  "sources": [
+    {
+      "source": "github_trending",
+      "status": "ok",
+      "item_count": 16,
+      "started_at": "2026-11-24T04:01:57.760854+00:00",
+      "finished_at": "2026-11-24T04:01:59.525851+00:00",
+      "error": null
+    },
+    {
+      "source": "arxiv",
+      "status": "ok",
+      "item_count": 60,
+      "started_at": "2026-11-24T04:01:57.788939+00:00",
+      "finished_at": "2026-11-24T04:01:58.923633+00:00",
+      "error": null
+    },
+    {
+      "source": "hf_papers",
+      "status": "ok",
+      "item_count": 6,
+      "started_at": "2026-11-24T04:01:57.789740+00:00",
+      "finished_at": "2026-11-24T04:02:03.020499+00:00",
+      "error": null
+    },
+    {
+      "source": "hackernews",
+      "status": "ok",
+      "item_count": 6,
+      "started_at": "2026-11-24T04:01:57.790251+00:00",
+      "finished_at": "2026-11-24T04:02:12.354178+00:00",
+      "error": null
+    },
+    {
+      "source": "reddit",
+      "status": "failed",
+      "item_count": 0,
+      "started_at": "2026-11-24T04:01:57.790778+00:00",
+      "finished_at": "2026-11-24T04:01:57.914959+00:00",
+      "error": "CollectorError: [reddit] 全部 subreddit 均失败（最后：HTTP 404）"
+    },
+    {
+      "source": "rss",
+      "status": "degraded",
+      "item_count": 42,
+      "started_at": "2026-11-24T04:01:57.791167+00:00",
+      "finished_at": "2026-11-24T04:02:05.189435+00:00",
+      "error": null
+    },
+    {
+      "source": "inbox",
+      "status": "degraded",
+      "item_count": 0,
+      "started_at": "2026-11-24T04:01:57.791352+00:00",
+      "finished_at": "2026-11-24T04:01:57.917578+00:00",
+      "error": null
+    }
+  ]
+}

@@ -1,0 +1,972 @@
+{
+  "date": "2026-11-24",
+  "headline": "GLM-5.4 用循环 Transformer 把「通用编码」推上台面，而 Anthropic 的 Claude Ship 则试图让智能体接管代码审批——模型能力与工程流程正在同一天向「智能体自主写码」收敛。",
+  "headline_item_id": "it_5094532b4e2e63d2",
+  "overview_bullets": [
+    {
+      "icon": "🤖",
+      "topic": "循环架构",
+      "text": "GLM-5.4 成为 Z.ai 首个采用循环 Transformer 的模型，把「层跑一次」改成「层跑多轮」，指向用架构换推理深度而非堆参数。"
+    },
+    {
+      "icon": "🛠️",
+      "topic": "智能体接管",
+      "text": "Anthropic 推出 Claude Ship，让智能体自行评审、修复并批准代码变更，等于把 AI 生成代码的瓶颈从「写」挪到「审」。"
+    },
+    {
+      "icon": "📉",
+      "topic": "量化下探",
+      "text": "NariQ 把 Qwen3.8-27B 压到 3-bit 以下、10GB 文件仍保 BF16 级长程智能体表现，本地部署的成本门槛继续塌陷。"
+    },
+    {
+      "icon": "🔐",
+      "topic": "安全诉讼",
+      "text": "弗吉尼亚与俄勒冈两州起诉 SpaceX，指 Grok 持续生成儿童性化图像与报复性色情内容，模型滥用的法律账单开始落地。"
+    },
+    {
+      "icon": "🏢",
+      "topic": "英伟达风波",
+      "text": "黄仁勋辞职后又被 reinstated、Megaspeed 面临美国黑名单，Nvidia 的公司治理与出口管制风险在同一天叠加。"
+    }
+  ],
+  "executive_summary": "今天的主线不是某个模型刷榜，而是「智能体写码—审码—部署」这条链路被同时从架构、工具、量化三个方向压缩成本，而安全与治理的追责则从诉讼和黑名单两端追上来。",
+  "editor_note": {
+    "core": "今天最该记住的是 GLM-5.4 的循环 Transformer：它把「推理深度」从参数规模里解耦出来，若成立，则开源模型追赶前沿的路径会从堆算力转向改架构，这比任何单点跑分都更具结构性。",
+    "cross_signal": "Claude Ship 让智能体审码、CLI-Anything 让软件「智能体原生」、NariQ 让 27B 模型塞进 10GB——三条独立来源指向同一件事：智能体的瓶颈正从模型能力转向运行环境与审批流程。",
+    "counterintuitive": "热榜第一梯队里，真正被讨论的是 GLM-5.4 和「LLM 怎么看电脑」这类接口问题，而 Claude Ship 这种直接改动工程流程的产品热度平平——社区对「流程变革」的敏感度明显低于对「模型发布」的敏感度。",
+    "risk": "Grok 被两州起诉、Megaspeed 面临黑名单，说明模型能力外溢的代价正以诉讼和出口管制形式落到公司头上；而 Claude Ship 让智能体自行批准代码，等于把审计责任交给被审计者，这是今天最容易被低估的治理盲点。"
+  },
+  "contradictions": [
+    "同一事件（黄仁勋辞职后被 reinstated）在不同来源中被叙述为「冒险的回归」与「精英免责」，对同一事实的评价方向相反。",
+    "GLM-5.4 同时以 hackernews 与 rss 两个来源出现，热度分（82.1 与 39.0）差异巨大，说明跨平台热度不可直接比较。"
+  ],
+  "underrated": [
+    "Self-WSP: Can Language Models Improve Themselves Through Weight-Space Programming?",
+    "Latent Introspection: LLMs Can Detect Prior Concept Injections",
+    "OpenAI and Cisco introduce Shirudo",
+    "mjmirza/app-store-compliance",
+    "VP ≠ VNP over Every Field"
+  ],
+  "sections": [
+    {
+      "name": "开源项目",
+      "summary": "GitHub 热榜几乎被「给智能体装技能」的仓库占满：从漏洞挖掘、数据抓取到视频剪辑与 CLI 改造，技能包正在成为新的分发单位。",
+      "item_ids": [
+        "it_27d1d8a4f04e089d",
+        "it_8d57cc2cadedeb4f",
+        "it_f859b2d15e1457f4",
+        "it_f09a3afb4ff397a9",
+        "it_4fa2765666515d8e",
+        "it_d41f86253f9f730f",
+        "it_ed75bf498e47451e",
+        "it_1f28a16c9fe19cbe",
+        "it_833333ed0f4723f5",
+        "it_f70d6b968bbde640",
+        "it_c75fda64510b4a09"
+      ]
+    },
+    {
+      "name": "论文与研究",
+      "summary": "研究侧集中在三件事：循环/权重空间的自改进、把 VLM 与视觉智能体接到真实环境，以及模型对自身内部状态的「内省」。",
+      "item_ids": [
+        "it_d5dbb75a39181095",
+        "it_2a701dce72b6c0dd",
+        "it_790b5ec6b9711c12"
+      ]
+    },
+    {
+      "name": "产业与新闻",
+      "summary": "产业面被两条线撕扯：一条是 Claude Ship、Supertake、Shirudo 这类把智能体塞进生产流程的产品，另一条是 Nvidia 高层丑闻与 Grok 诉讼带来的治理与合规冲击。",
+      "item_ids": [
+        "it_ef3910f6a7af585b",
+        "it_43b498f2b7e3dbe0",
+        "it_388f4aa5f277fc66",
+        "it_1d0c151fefed0dea",
+        "it_049542555c2cb3db",
+        "it_8ab70d6f89cfc96b",
+        "it_b7175444dd039d16",
+        "it_972640f78a70025d",
+        "it_7bdc82557174d88c",
+        "it_b7fc35d5ccf04588"
+      ]
+    },
+    {
+      "name": "社区舆论",
+      "summary": "HN 上 GLM-5.4 与「LLM 该如何看一台电脑」的讨论热度最高，说明社区关心的已从模型分数转向智能体与界面的接口设计。",
+      "item_ids": [
+        "it_bd41cb47b1120c3b",
+        "it_81ecb7742efe5383",
+        "it_d270e13a00f73ac2",
+        "it_cb793a567b2e9fcf",
+        "it_5094532b4e2e63d2",
+        "it_e277391e1ad36281"
+      ]
+    }
+  ],
+  "comments": [
+    {
+      "item_id": "it_27d1d8a4f04e089d",
+      "one_liner": "一个面向漏洞挖掘与外部红队工作的 Claude Code 技能包，包含 82 个技能、15 个 slash 命令，以及覆盖 24 类核心漏洞的 681 条已披露报告模式。",
+      "why": "把 681 份已披露漏洞报告提炼成 82 个可复用技能，等于把红队经验从个人手艺变成可安装的资产，安全团队的门槛被拉低，同时攻击方也能直接取用。",
+      "stance": "攻防知识打包成技能包是双刃剑，公开分发等于给防守方补课的同时给攻击方发教材，收益取决于谁先用上。"
+    },
+    {
+      "item_id": "it_8d57cc2cadedeb4f",
+      "one_liner": "firecrawl 是一个面向 AI agent 的知识基础设施，通过单一 API 提供搜索、抓取以及接入 550 多家数据源的能力",
+      "why": "把抓取、搜索和 550+ 数据源统一到一个 API，意味着 agent 的数据接入层从各家自建爬虫转向标准化采购，中小团队的数据工程成本被压到接近零。",
+      "stance": "数据获取正变成水电煤，护城河从『能抓到』转移到『抓得干净且合规』。"
+    },
+    {
+      "item_id": "it_f859b2d15e1457f4",
+      "one_liner": "obra/superpowers 是一套面向 AI agent 的技能框架与软件开发方法论",
+      "why": "把 agent 技能封装成可复用的方法论框架，等于给『提示词工程』补上工程规范，团队协作时技能可以像依赖包一样被版本化和审查。",
+      "stance": "技能框架会像当年的 lint 规则一样成为标配，不采用的一方会在多人协作中先乱。"
+    },
+    {
+      "item_id": "it_f09a3afb4ff397a9",
+      "one_liner": "一个 AI agent skill，可跨 Reddit、X、YouTube、HN、Polymarket 和网页检索任意话题并汇总成有据可依的摘要",
+      "why": "把跨平台检索与摘要合成打包成一个可复用技能，意味着 agent 的信息搜集从单站抓取转向多源交叉验证，直接压缩人工调研的时间成本。",
+      "stance": "多源聚合是 agent 技能里最实用的一类，但摘要的可靠性取决于源质量，别把它当事实核查工具。"
+    },
+    {
+      "item_id": "it_4fa2765666515d8e",
+      "one_liner": "Ghost-Downloader-3 是一款开源的多功能下载器桌面应用",
+      "why": "下载器把多协议、多源聚合进单一客户端，用户不再为不同站点装不同工具，边缘工具类软件的整合窗口正在关闭。",
+      "stance": "集大成者往往也是最后一款——这类工具的价值在于终结选择困难，而非创新。"
+    },
+    {
+      "item_id": "it_d41f86253f9f730f",
+      "one_liner": "开源 AI 视频剪辑桌面工具，可将播客、访谈、课程等长视频自动剪成适配抖音、小红书、TikTok、Reels 与 YouTube Shorts 的短视频，并生成字幕、封面和发布文案",
+      "why": "把长视频切条、字幕、封面、发布文案打包成本地桌面工具，内容团队的分发成本从人力工时压到一次点击，且素材不出本机。",
+      "stance": "开源本地化剪辑工具会先吃掉中小创作者的外包剪辑预算，平台侧的搬运内容将更泛滥。"
+    },
+    {
+      "item_id": "it_ed75bf498e47451e",
+      "one_liner": "minimind 是一个教学项目，演示如何在两小时内从零训练出一个 64M 参数的小型大语言模型。",
+      "why": "两小时、单卡、64M 参数就能跑通从零预训练全流程，把大模型的门槛从实验室预算降到个人周末项目，教学与复现的价值远大于模型本身。",
+      "stance": "这是目前最有效的 LLM 祛魅工具，比任何科普文章都管用。"
+    },
+    {
+      "item_id": "it_1f28a16c9fe19cbe",
+      "one_liner": "HKUDS 开源项目 CLI-Anything，旨在让所有软件都具备 Agent 原生能力，并提供 CLI-Hub 入口。",
+      "why": "把任意软件包装成 agent 可直接调用的 CLI 接口，等于给智能体生态补上统一的执行层，工具厂商的接入成本从定制 SDK 降为一条命令行。",
+      "stance": "方向对，但 CLI 作为 agent 接口的稳定性与权限边界远未解决，先别急着把生产环境交出去。"
+    },
+    {
+      "item_id": "it_833333ed0f4723f5",
+      "one_liner": "一份帮助开发者避开 App Store 与 Google Play 审核拒绝的开源手册与提交前检查工具，收录 124 种拒绝模式及修复方案、隐私清单与数据安全核查，并跟踪 112 项合规截止日期。",
+      "why": "124 条真实拒审案例加 112 个合规截止日期被做成可执行检查，上架合规从法务事后救火前移到编码阶段，独立开发者的返工成本被压缩。",
+      "stance": "合规知识结构化是刚需，但把监管倒计时塞进 AI 代理的提示里，等于让模型替人承担法律判断，边界必须划清。"
+    },
+    {
+      "item_id": "it_f70d6b968bbde640",
+      "one_liner": "开源、隐私优先的新一代知识库工具 AFFiNE，将规划、整理与创作整合在一起，定位为 Notion 与 Miro 之外的选择",
+      "why": "把文档、白板、数据库塞进同一份本地优先的协作底座，团队不必在 Notion 与 Miro 之间做数据割裂的取舍，隐私与自托管成为可选项。",
+      "stance": "开源替代品真正的门槛不在功能而在协作网络效应，AFFiNE 要赢只能靠自托管刚需用户切入。"
+    },
+    {
+      "item_id": "it_d5dbb75a39181095",
+      "one_liner": "一个用于实时游戏场景的视觉智能体 harness，研究模型在游戏持续运行、不等待其响应时表现下降的问题，并指出瓶颈多在于决定模型看什么、记什么、如何把输出转为动作的 harness 层。",
+      "why": "把实时游戏的失败归因于 harness 而非模型能力，意味着视觉代理的瓶颈从参数规模转向感知-记忆-动作的调度设计，评测基准的重心随之转移。",
+      "stance": "这是对『模型不够强』叙事的正面反驳，harness 工程被低估太久，该被当成一等公民。"
+    },
+    {
+      "item_id": "it_2a701dce72b6c0dd",
+      "one_liner": "提出 nanoAstra，一种把视觉语言模型训练为通用机器人操作基础模型的方法，尝试复现 GPT-6 Astra 在机器人控制上的泛化能力。",
+      "why": "用可复现的 nanoAstra 拆解闭源机器人基础模型的训练路径，把『GPT-6 Astra 能做但没说怎么做』变成公开配方，具身智能的追赶周期被缩短。",
+      "stance": "闭源演示加开源复现的组合正在成为标准打法，谁藏训练细节谁就先失去生态。"
+    },
+    {
+      "item_id": "it_790b5ec6b9711c12",
+      "one_liner": "提出 Self-WSP，让语言模型像读写代码一样读取和编辑自身权重，从而自我改进，并在 Qwen3.5-0.8B 上进行了实验。",
+      "why": "让 0.8B 模型直接读写自身权重来改进自己，把自进化从提示层推进到参数层，小模型的迭代不再依赖外部大模型蒸馏。",
+      "stance": "权重空间自改写的风险远大于收益，没有回滚与审计机制前，这类自我编辑应当被限制在沙箱内。"
+    },
+    {
+      "item_id": "it_ef3910f6a7af585b",
+      "one_liner": "中国 AI 实验室 Z.ai 发布 GLM-5.4，这是其首个采用 looped transformer 架构的模型，主打通用编码能力。",
+      "why": "循环 Transformer 让同一层多次前向，用架构换深度而非堆参数，中国实验室在架构创新上抢到先手，编码能力竞赛进入结构层。",
+      "stance": "架构层面的差异化比刷榜更有价值，但『首个循环 Transformer』的营销味盖过了可验证的基准数据。"
+    },
+    {
+      "item_id": "it_43b498f2b7e3dbe0",
+      "one_liner": "Anthropic 推出 Claude Ship，让 AI agent 对代码变更进行审查、修复与批准，以缓解 AI 生成代码堆积带来的审核瓶颈。",
+      "why": "代理接管代码评审与合并批准，把 AI 生成代码的瓶颈从产出转移到审核，责任链条上第一次出现无人签字的环节。",
+      "stance": "让代理批准代理写的代码是治理倒退，自动化审批必须先解决可追责，否则省下的时间会以事故形式还回来。"
+    },
+    {
+      "item_id": "it_388f4aa5f277fc66",
+      "one_liner": "初创公司 Supertake 完成 2000 万美元融资，让用户用 AI agent 把对市场的判断自动转化为股票投资组合。",
+      "why": "把主观市场判断直接映射为持仓组合，投资决策的入口从选股能力变成观点表达，散户与量化之间的工具差距被抹平一部分。",
+      "stance": "融资 2000 万美元做『观点即仓位』，产品叙事漂亮，但把预测失误的代价完全转嫁给用户，风险披露必须前置。"
+    },
+    {
+      "item_id": "it_1d0c151fefed0dea",
+      "one_liner": "OpenAI 与 Cisco 联合推出 Shirudo，一个面向 Linux 的开源运行时，用于在团队推送补丁期间保护正在运行的系统。",
+      "why": "OpenAI 与思科联合推出 Linux 运行时补丁保护，把模型厂商的能力嵌进系统运维层，AI 从应用侧下沉到基础设施。",
+      "stance": "模型公司做系统级运行时是合理的纵向扩张，但开源只是姿态，真正的锁定发生在运维工作流里。"
+    },
+    {
+      "item_id": "it_049542555c2cb3db",
+      "one_liner": "报道称 Nvidia 董事会接受黄仁勋辞去 CEO 一职，此前有消息指其与一名疑似中国间谍有婚外情，特朗普也对此公开表态。",
+      "why": "黄仁勋因丑闻辞任叠加政治人物的公开表态，把英伟达的治理风险与地缘政治绑在一起，算力供应链的稳定性被个人因素左右。",
+      "stance": "把公司命运系于一位 CEO 的私德与政治庇护，是英伟达治理结构最脆弱的一环，董事会早该有预案。"
+    },
+    {
+      "item_id": "it_8ab70d6f89cfc96b",
+      "one_liner": "Jensen Huang 在丑闻后重新出任 Nvidia CEO，评论文章对此事的讽刺性评述",
+      "why": "黄仁勋在丑闻后仍被白宫层面保回CEO位置，等于把'大到不能倒'从金融业移植到AI芯片供应链，投资者据此重新定价监管风险。",
+      "stance": "这不是纠错，是给关键供应商发放政治豁免权，代价由后来者承担。"
+    },
+    {
+      "item_id": "it_b7175444dd039d16",
+      "one_liner": "Elon Musk 等人对 Jensen Huang 在丑闻中复职 Nvidia 表示欢迎，称「错误已被纠正」",
+      "why": "马斯克等科技领袖公开为黄仁勋复职背书，把公司治理争议转化为阵营表态，行业内部对丑闻的容忍阈值被进一步拉低。",
+      "stance": "把'错误已被纠正'当结论喊出来的人，恰恰是当初不追问错误怎么发生的那批。"
+    },
+    {
+      "item_id": "it_972640f78a70025d",
+      "one_liner": "Virginia 与 Oregon 两州起诉 SpaceX，要求阻止 Grok 生成儿童性化图像和报复性色情内容",
+      "why": "州级检察机构直接起诉母公司而非模型团队，意味着生成式图像滥用的法律责任开始向收购方与算力方传导，合规成本从产品层上移到集团层。",
+      "stance": "早该如此：把真人照片做成色情素材不是'模式'问题，是产品设计选择。"
+    },
+    {
+      "item_id": "it_7bdc82557174d88c",
+      "one_liner": "处于 Jensen Huang 丑闻中心的 Megaspeed 公司可能被列入美国黑名单",
+      "why": "涉事中间商面临美国实体清单式限制，等于把芯片转口的灰色通道收窄，第三国分销商的套利空间被政策直接抹平。",
+      "stance": "黑名单是补丁不是解药，真正的漏洞在于许可审批本身缺乏可核查的终端用途追踪。"
+    },
+    {
+      "item_id": "it_b7fc35d5ccf04588",
+      "one_liner": "Ladybird 浏览器发布首个 alpha 版本，自研 HTML 解析、CSS 引擎、布局与 JavaScript 等核心组件",
+      "why": "一个从零自研渲染与JS引擎的浏览器进入alpha，为受Chromium单一内核支配的Web生态提供了可验证的替代路径，尽管仍依赖Skia等外部组件。",
+      "stance": "值得押注的不是它能否赢，而是它逼着所有人承认浏览器内核早已没有竞争。"
+    },
+    {
+      "item_id": "it_bd41cb47b1120c3b",
+      "one_liner": "一篇形式化数学论文，讨论 VP 与 VNP 在任意域上是否相等的问题",
+      "why": "在任意域上证明VP≠VNP若成立，将把复杂性理论的下界从有限域技巧推进到一般情形，直接影响密码学假设的可靠性论证。",
+      "stance": "形式化数学工具介入经典难题是好事，但在同行评审前，先把它当猜想而非结论。"
+    },
+    {
+      "item_id": "it_81ecb7742efe5383",
+      "one_liner": "NariQ：将 Qwen3.8-27B 量化为 3-bit 及以下、体积仅 10 GB 且接近 BF16 质量的模型",
+      "why": "把27B级模型压到10GB且保持长程智能体任务表现，使消费级显卡与本地部署首次能承接原本依赖云端的多步工具调用场景。",
+      "stance": "量化真正的分水岭是智能体任务不掉点，这条比任何benchmark分数都更有说服力。"
+    },
+    {
+      "item_id": "it_d270e13a00f73ac2",
+      "one_liner": "关于 LLM 潜在内省能力的研究：模型能否察觉此前被注入的概念",
+      "why": "模型能报告被注入的先前概念，说明内部状态存在可读取的自我监控信号，为注入攻击检测与可解释性审计提供了不依赖输出文本的新通道。",
+      "stance": "这是可解释性少见的实用进展，但'能检测'与'能抵抗'之间还隔着一整代工程。"
+    },
+    {
+      "item_id": "it_cb793a567b2e9fcf",
+      "one_liner": "探讨 LLM 应以何种方式感知和表示计算机界面的讨论",
+      "why": "智能体操作计算机的瓶颈在于感知接口而非推理能力，截图、DOM还是无障碍树的选择直接决定任务成功率与攻击面大小。",
+      "stance": "把屏幕像素当唯一输入是懒惰的工程妥协，结构化接口才是可控可审计的方向。"
+    },
+    {
+      "item_id": "it_5094532b4e2e63d2",
+      "one_liner": "GLM-5.4 发布，采用首个 loop transformer 架构，面向通用编码能力",
+      "why": "首个loop transformer架构进入编码模型，若循环深度能替代参数堆叠，同等算力下的推理成本结构将被重写，训练与推理的取舍随之改变。",
+      "stance": "架构创新比参数军备竞赛更值得投入，但'首个'这类标签需要独立复现来兑现。"
+    },
+    {
+      "item_id": "it_e277391e1ad36281",
+      "one_liner": "Hacker News 上出现的一个名为 Claude Ship 的项目条目，暂无摘要说明",
+      "why": "Anthropic 把 Claude 的发布节奏搬到 Hacker News 首页讨论区，等于把模型版本更新变成公开的工程事件，开发者会据此调整接入与迁移时间表。",
+      "stance": "发布即被围观是好事，但缺少可核验的变更说明时，热度只会放大迁移焦虑。"
+    }
+  ],
+  "stats": {},
+  "items": {
+    "it_5094532b4e2e63d2": {
+      "id": "it_5094532b4e2e63d2",
+      "source": "hackernews",
+      "title": "GLM-5.4: Toward generalized coding with our first loop transformer",
+      "url": "https://z.ai/blog/glm-5.4",
+      "summary": "",
+      "hot_score": 82.1106,
+      "topic_id": "tp_017405d91d5c",
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-23T10:06:43+00:00",
+      "last_seen_at": "2026-11-24T04:02:12.423368+00:00",
+      "metrics": {
+        "points": 1081,
+        "num_comments": 351
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_bd41cb47b1120c3b": {
+      "id": "it_bd41cb47b1120c3b",
+      "source": "hackernews",
+      "title": "VP ≠ VNP over Every Field",
+      "url": "https://github.com/anthropics/formal-math/tree/main/vp-vnp",
+      "summary": "Paper: https://github.com/anthropics/formal-math/blob/11b6c7e3c927d...",
+      "hot_score": 78.75,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-23T22:09:10+00:00",
+      "last_seen_at": "2026-11-24T04:02:12.524406+00:00",
+      "metrics": {
+        "points": 287,
+        "num_comments": 247
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_27d1d8a4f04e089d": {
+      "id": "it_27d1d8a4f04e089d",
+      "source": "github_trending",
+      "title": "elementalsouls/Claude-BugHunter",
+      "url": "https://github.com/elementalsouls/Claude-BugHunter",
+      "summary": "A Claude Code skill bundle for bug hunting and external red-team work - 82 skills, 15 slash commands, 681 disclosed-report patterns curated across 24 core vulnerability classes, plus enterprise identity + infrastructure attack matrices.",
+      "hot_score": 77.0993,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-15T23:03:21.804510+00:00",
+      "last_seen_at": "2026-11-24T04:02:12.461198+00:00",
+      "metrics": {
+        "stars_total": 19994,
+        "stars_in_window": 2029,
+        "forks": 2117,
+        "streak_days": 5
+      },
+      "streak_days": 5,
+      "language": "Python"
+    },
+    "it_8d57cc2cadedeb4f": {
+      "id": "it_8d57cc2cadedeb4f",
+      "source": "github_trending",
+      "title": "firecrawl/firecrawl",
+      "url": "https://github.com/firecrawl/firecrawl",
+      "summary": "Knowledge infrastructure to make your agents smarter. Search, scrape and access 550+ data providers through one API.",
+      "hot_score": 74.1666,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-20T00:47:06.445974+00:00",
+      "last_seen_at": "2026-11-24T04:02:12.464251+00:00",
+      "metrics": {
+        "stars_total": 208058,
+        "stars_in_window": 1241,
+        "forks": 10872,
+        "streak_days": 5
+      },
+      "streak_days": 5,
+      "language": "TypeScript"
+    },
+    "it_f859b2d15e1457f4": {
+      "id": "it_f859b2d15e1457f4",
+      "source": "github_trending",
+      "title": "obra/superpowers",
+      "url": "https://github.com/obra/superpowers",
+      "summary": "An agentic skills framework & software development methodology that works.",
+      "hot_score": 72.0,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-15T14:47:23.502377+00:00",
+      "last_seen_at": "2026-11-24T04:02:12.461879+00:00",
+      "metrics": {
+        "stars_total": 325205,
+        "stars_in_window": 2028,
+        "forks": 28844,
+        "streak_days": 7
+      },
+      "streak_days": 7,
+      "language": "Shell"
+    },
+    "it_d5dbb75a39181095": {
+      "id": "it_d5dbb75a39181095",
+      "source": "hf_papers",
+      "title": "AutoPILOT: A Visual Agent Harness for Real-Time Gameplay",
+      "url": "arxiv:2611.28202",
+      "summary": "Multimodal foundation models can play video games well when the game waits for them, but often fail when it keeps running. We find that much of this gap lies in the harness, which decides what the model sees, what it remembers, and how its outputs become actions over time. Existing harnesses such as VISTA improve the first two, yet turn each model call into at most one action, so the agent acts only as often as its model thinks. We introduce AutoPILOT, which changes the third: in each model call, the model can send a primitive action, start an open-loop macro, or write a closed-loop controller that keeps playing from the screen without further model calls until it hands control back. To evaluate agents in real-time games, we build AFK-Bench, 120 diverse browser games grouped by how they respond to inaction and playable in real time or with the clock paused. With GPT-6.1 Sol under the same budgets, AutoPILOT reaches 68.6% real-time success against 38.3% for VISTA, and on GameWorld it keeps 80.0% in real time while VISTA drops from 84.1% to 42.9%. Its gains hold across models, and it reaches VISTA's final success rate at a fifth of its API cost. Our results suggest that how a harness turns model outputs into actions over time is a central yet underexplored part of agent design, and we hope AutoPILOT and AFK-Bench will serve as a foundation for agents in a world that does not wait.",
+      "hot_score": 69.7773,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-11-19T19:00:00+00:00",
+      "last_seen_at": "2026-11-24T04:02:12.520677+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 13
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_81ecb7742efe5383": {
+      "id": "it_81ecb7742efe5383",
+      "source": "hackernews",
+      "title": "NariQ: BF16-level Qwen3.8-27B in a 10 GB file",
+      "url": "https://huggingface.co/nari-labs/Qwen3.8-27B-NariQ-GGUF",
+      "summary": "We built NariQ: 3-bit-or-lower quantizations of Qwen3.8-27B that retain near-BF16 quality across agentic tasks, math, multilingual reasoning, and image understanding. To our knowledge, this is the first 3-bit-or-lower quantization that retains BF16 lvl performance on long-horizon agentic tasks. Benchmarks (BF16 / 3-bit / 2.5-bit / 2-bit): - DeepSWE: 39.8 / 41.0 / 41.9 / 28.6 - Terminal-Bench 2.1: 62.6 / 63.8 / 60.2 / 52.4 - AIME 25+26: 97.7 / 98.3 / 96.5 / 86.0 - MSGM: 94.0 / 93.1 / 91.8 / 90.6 ",
+      "hot_score": 65.6203,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-23T13:42:38+00:00",
+      "last_seen_at": "2026-11-24T04:02:12.426049+00:00",
+      "metrics": {
+        "points": 138,
+        "num_comments": 29
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_f09a3afb4ff397a9": {
+      "id": "it_f09a3afb4ff397a9",
+      "source": "github_trending",
+      "title": "mvanhorn/last30days-skill",
+      "url": "https://github.com/mvanhorn/last30days-skill",
+      "summary": "AI agent skill that researches any topic across Reddit, X, YouTube, HN, Polymarket, and the web - then synthesizes a grounded summary",
+      "hot_score": 64.543,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-17T01:57:21.277064+00:00",
+      "last_seen_at": "2026-11-24T04:02:12.466338+00:00",
+      "metrics": {
+        "stars_total": 73538,
+        "stars_in_window": 1059,
+        "forks": 6488,
+        "streak_days": 8
+      },
+      "streak_days": 8,
+      "language": "Python"
+    },
+    "it_2a701dce72b6c0dd": {
+      "id": "it_2a701dce72b6c0dd",
+      "source": "hf_papers",
+      "title": "A Glimpse of Training VLMs as Foundation Models for Robotic Manipulation",
+      "url": "arxiv:2611.29338",
+      "summary": "Recently, GPT-6 Astra demonstrates strong generalization in robot control, yet limited disclosure of its training leaves open how such capabilities can be reproduced. We introduce nanoAstra, an approach to training vision-language models (VLMs) for generalizable manipulation that combines semantic action modeling with capability-preserving supervised fine-tuning (CP-SFT). nanoAstra represents robot behavior as semantic steps composed of reusable, parameterized action primitives, guided by explicit progress descriptions. Meanwhile, CP-SFT uses an explicit robot-specific system prompt to constrain manipulation outputs to a structured action space, aiming to focus adaptation on robot-specific contexts and promote specialization while minimizing interference with broader pretrained capabilities. With this formulation, we train nanoAstra on more than 5,000 hours of robot data together with general VQA data. On RoboTwin 2.0's randomized benchmark, nanoAstra-9B achieves a 17.8% zero-shot success rate, substantially outperforming advanced VLA and WAM baselines as well as similarly sized VLMs. With inference faster than the corresponding motion execution on a single H20 GPU, our model supports action-chunk-like streaming execution that overlaps inference with motion, reducing the robot's idle time from 35.0% to 6.9%.",
+      "hot_score": 62.0955,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-11-21T19:00:00+00:00",
+      "last_seen_at": "2026-11-24T04:02:12.521857+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 10
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_4fa2765666515d8e": {
+      "id": "it_4fa2765666515d8e",
+      "source": "github_trending",
+      "title": "XiaoYouChR/Ghost-Downloader-3",
+      "url": "https://github.com/XiaoYouChR/Ghost-Downloader-3",
+      "summary": "The only downloader you need. 下载器的集大成者。",
+      "hot_score": 60.8332,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-20T00:47:06.446027+00:00",
+      "last_seen_at": "2026-11-24T04:02:12.469329+00:00",
+      "metrics": {
+        "stars_total": 16482,
+        "stars_in_window": 1087,
+        "forks": 995,
+        "streak_days": 5
+      },
+      "streak_days": 5,
+      "language": "Python"
+    },
+    "it_cb793a567b2e9fcf": {
+      "id": "it_cb793a567b2e9fcf",
+      "source": "hackernews",
+      "title": "How should an LLM see a computer?",
+      "url": "https://www.greptile.com/blog/trex-computer-use",
+      "summary": "",
+      "hot_score": 58.2957,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-23T17:19:25+00:00",
+      "last_seen_at": "2026-11-24T04:02:12.428298+00:00",
+      "metrics": {
+        "points": 47,
+        "num_comments": 22
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_d41f86253f9f730f": {
+      "id": "it_d41f86253f9f730f",
+      "source": "github_trending",
+      "title": "zhouxiaoka/autoclip",
+      "url": "https://github.com/zhouxiaoka/autoclip",
+      "summary": "AutoClip｜一个链接，一键出片。开源 AI 视频剪辑桌面工具，将播客、访谈、课程等长视频自动剪成短视频，生成字幕、封面和发布文案，适配抖音、小红书、TikTok、Reels 与 YouTube Shorts。Open-source AI video clipping & content repurposing.",
+      "hot_score": 56.4999,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-20T00:47:06.446033+00:00",
+      "last_seen_at": "2026-11-24T04:02:12.469842+00:00",
+      "metrics": {
+        "stars_total": 14589,
+        "stars_in_window": 979,
+        "forks": 2224,
+        "streak_days": 5
+      },
+      "streak_days": 5,
+      "language": "Python"
+    },
+    "it_ed75bf498e47451e": {
+      "id": "it_ed75bf498e47451e",
+      "source": "github_trending",
+      "title": "jingyaogong/minimind",
+      "url": "https://github.com/jingyaogong/minimind",
+      "summary": "🧠 两小时从 0 训出你的 64M 大模型。Train your own 64M LLM from scratch in 2 hours.",
+      "hot_score": 54.7327,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-18T01:08:38.998254+00:00",
+      "last_seen_at": "2026-11-24T04:02:12.463208+00:00",
+      "metrics": {
+        "stars_total": 69607,
+        "stars_in_window": 847,
+        "forks": 9090,
+        "streak_days": 5
+      },
+      "streak_days": 5,
+      "language": "Python"
+    },
+    "it_1f28a16c9fe19cbe": {
+      "id": "it_1f28a16c9fe19cbe",
+      "source": "github_trending",
+      "title": "HKUDS/CLI-Anything",
+      "url": "https://github.com/HKUDS/CLI-Anything",
+      "summary": "\"CLI-Anything: Making ALL Software Agent-Native\" -- CLI-Hub: https://clianything.cc/",
+      "hot_score": 52.0,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-16T15:44:39.424204+00:00",
+      "last_seen_at": "2026-11-24T04:02:12.462676+00:00",
+      "metrics": {
+        "stars_total": 63831,
+        "stars_in_window": 898,
+        "forks": 5804,
+        "streak_days": 6
+      },
+      "streak_days": 6,
+      "language": "Python"
+    },
+    "it_e277391e1ad36281": {
+      "id": "it_e277391e1ad36281",
+      "source": "hackernews",
+      "title": "Claude Ship",
+      "url": "https://claude.com/resources/articles/introducing-claude-ship",
+      "summary": "",
+      "hot_score": 50.7754,
+      "topic_id": "tp_5b2c5daac719",
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-23T20:14:18+00:00",
+      "last_seen_at": "2026-11-24T04:02:12.428998+00:00",
+      "metrics": {
+        "points": 33,
+        "num_comments": 12
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_790b5ec6b9711c12": {
+      "id": "it_790b5ec6b9711c12",
+      "source": "hf_papers",
+      "title": "Self-WSP: Can Language Models Improve Themselves Through Weight-Space Programming?",
+      "url": "arxiv:2611.28833",
+      "summary": "Frontier language models can now read and edit the weights of a neural network much like code and thereby improve a small model, an approach known as Weight-Space Programming (WSP). We further explore applying WSP to a language model itself, which we call Self-WSP. Specifically, Qwen3.5-0.8B reads its own weights, proposes an edit, and then continues with the edited weights as both problem solver and editor. We find many cases of genuine self-improvement. Self-edits can raise GSM8K accuracy from 11.8% to 62.2% and MATH500 accuracy from 7.0% to 32.2%, sometimes by changing only 16 parameters, and in some cases repeated self-editing keeps improving the model. A closer look, however, reveals that these gains lack interpretability. The model shows little understanding of the edits it makes, and WSP driven by random search sometimes performs comparably. Self-WSP thus holds promise as a path toward recursive self-improvement (RSI), but realizing this promise requires further exploration.",
+      "hot_score": 48.4877,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-11-20T19:00:00+00:00",
+      "last_seen_at": "2026-11-24T04:02:12.522709+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 7
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_833333ed0f4723f5": {
+      "id": "it_833333ed0f4723f5",
+      "source": "github_trending",
+      "title": "mjmirza/app-store-compliance",
+      "url": "https://github.com/mjmirza/app-store-compliance",
+      "summary": "Avoid common App Store and Google Play rejections. Open playbook and pre-submission guard with 124 documented rejection patterns and fixes, privacy manifest and Data safety checks, 112 tracked deadlines (EU AI Act, DSA, COPPA, age laws), and a skill for AI coding agents.",
+      "hot_score": 46.1666,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-20T00:47:06.446011+00:00",
+      "last_seen_at": "2026-11-24T04:02:12.467529+00:00",
+      "metrics": {
+        "stars_total": 5086,
+        "stars_in_window": 869,
+        "forks": 322,
+        "streak_days": 5
+      },
+      "streak_days": 5,
+      "language": "Shell"
+    },
+    "it_f70d6b968bbde640": {
+      "id": "it_f70d6b968bbde640",
+      "source": "github_trending",
+      "title": "toeverything/AFFiNE",
+      "url": "https://github.com/toeverything/AFFiNE",
+      "summary": "There can be more than Notion and Miro. AFFiNE(pronounced [ə‘fain]) is a next-gen knowledge base that brings planning, sorting and creating all together. Privacy first, open-source, customizable and ready to use.",
+      "hot_score": 45.4999,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-20T00:47:06.446022+00:00",
+      "last_seen_at": "2026-11-24T04:02:12.468720+00:00",
+      "metrics": {
+        "stars_total": 77469,
+        "stars_in_window": 676,
+        "forks": 5667,
+        "streak_days": 5
+      },
+      "streak_days": 5,
+      "language": "TypeScript"
+    },
+    "it_c75fda64510b4a09": {
+      "id": "it_c75fda64510b4a09",
+      "source": "github_trending",
+      "title": "cathrynlavery/diagram-design",
+      "url": "https://github.com/cathrynlavery/diagram-design",
+      "summary": "Editorial diagram design for Claude Code, Codex, GitHub Copilot, Cursor, Factory Droid, Qoder, and Pi. 45 diagram types. Self-contained HTML + SVG. No shadows. No Mermaid slop.",
+      "hot_score": 45.1666,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-20T00:47:06.445994+00:00",
+      "last_seen_at": "2026-11-24T04:02:12.465788+00:00",
+      "metrics": {
+        "stars_total": 71102,
+        "stars_in_window": 636,
+        "forks": 4755,
+        "streak_days": 5
+      },
+      "streak_days": 5,
+      "language": "HTML"
+    },
+    "it_d270e13a00f73ac2": {
+      "id": "it_d270e13a00f73ac2",
+      "source": "hackernews",
+      "title": "Latent Introspection: LLMs Can Detect Prior Concept Injections",
+      "url": "arxiv:2602.20031",
+      "summary": "",
+      "hot_score": 42.75,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-23T22:29:48+00:00",
+      "last_seen_at": "2026-11-24T04:02:12.524897+00:00",
+      "metrics": {
+        "points": 40,
+        "num_comments": 2
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_ef3910f6a7af585b": {
+      "id": "it_ef3910f6a7af585b",
+      "source": "rss",
+      "title": "GLM-5.4: Toward Generalized Coding with Our First Loop Transformer",
+      "url": "https://simonwillison.net/2026/Nov/23/glm-54",
+      "summary": "GLM-5.4: Toward Generalized Coding with Our First Loop Transformer\nGLM 5.4 is now available from Chinese AI lab Z.ai. It's their first model to use a looped transformer architecture, which they describe like this:\n\nIn a standard Transformer, each layer runs once per forward pass. In a Loop Transformer, a group of weight-shared layers runs for multiple iterations, refining the hidden states from the previous pass. This gives us a deeper network without increasing the parameter count.\n\nThis is the second mention of looped transformers I've seen in the past week - the first was Inkling 2 Mini from Thinking Machines Lab on November 20th, who said:\n\nInkling 2 Mini is a looped transformer, running the middle layers of the model three times for every token. This allows the model to apply more reasoning and reach the right answer with fewer tokens, especially on tasks such as agentic coding that depend on reasoning quality.\n\nGLM 5.4 is not (yet?) available as open weights. I tried it out using the Z.ai API, for which I had to sign up for their Coding Plan subscription because 5.4 cannot currently be accessed through the regular API.\nIt turns out both coding plan and regular API share the same OpenAI-compatible Responses API (at https://api.z.ai/api/v1 ), and the API key for the coding plan worked with that and gave me access to the new model.\nI built a llm-glm plugin , then realized that llm-zai by Tommy Hughes already exists! I've shipped mine purely because llm-zai doesn't yet support the new model, but I'll likely retire mine once that plugin catches up.\nHere are pelicans for GLM-5.4 on low, high, and max. This is the max one:\n\nI realized I never ran pelicans for GLM-5.3, so here those are for the same effort levels. They look similar in quality to 5.4.\nIt's interesting how GLM 5.1 and GLM 5.2 produced radically different pelicans from other models. The pelicans for 5.3 and 5.4 are much more comparable to those I get from OpenAI or Anthropic models - the previous generations had their own distinctive look.\nI made a comparison grid showing the four generations of GLM pelicans all in one place. The style transition between 5.2 and 5.3 is pretty stark.\n\n\nTags: ai , generative-ai , llms , llm , pelican-riding-a-bicycle , llm-release , ai-in-china , glm",
+      "hot_score": 39.0,
+      "topic_id": "tp_017405d91d5c",
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-23T23:40:49+00:00",
+      "last_seen_at": "2026-11-24T04:02:12.429626+00:00",
+      "metrics": {
+        "rank_score": 1.0
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_049542555c2cb3db": {
+      "id": "it_049542555c2cb3db",
+      "source": "rss",
+      "title": "Trump engineered a risky comeback for Jensen Huang",
+      "url": "https://www.theverge.com/ai-artificial-intelligence/1040652/jensen-huang-nvidia-trump-reinstated",
+      "summary": "After Nvidia's board accepted Jensen Huang's resignation as CEO , following reports that Huang had an affair with an alleged Chinese spy, President Donald Trump, too, appeared to submit to the new reality. Appearing on Stephen A. Smith's radio show shortly after the news came out, Trump said that Huang would \"end up on his feet.\"\n\"You know the expression, anybody can be replaced,\" Trump said, floating Apple's ex-CEO Tim Cook as a potential CEO candidate.\nIt didn't take long for Trump to begin softening his approach, making it clear he'd welcome Huang back into the role of CEO even if Nvidia's own board wasn't ready to do so. Behind the scen …\nRead the full story at The Verge.",
+      "hot_score": 39.0,
+      "topic_id": "tp_35b9c12f699c",
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-23T22:25:12+00:00",
+      "last_seen_at": "2026-11-24T04:02:12.434852+00:00",
+      "metrics": {
+        "rank_score": 1.0
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_8ab70d6f89cfc96b": {
+      "id": "it_8ab70d6f89cfc96b",
+      "source": "rss",
+      "title": "Welcome to elite impunity, Jensen Huang",
+      "url": "https://www.theverge.com/ai-artificial-intelligence/1040819/welcome-to-elite-impunity-jensen-huang",
+      "summary": "Too big to fail, the sequel. | Image: The Verge; Getty Images\n\nI suppose I must issue a hearty congratulations to Jensen Huang. Huang is CEO of Nvidia again, to the surprise of basically everyone except President Donald Trump and Vice President JD Vance, who made sure it happened.\nNow, those of us who had some kind of basic education on what a \"free market\" is might find it objectionable to have the American president strong-arming a major American company. But our billionaire tech overlords care about the \"free market\" exactly as much as they care about \"free speech,\" which is to say not at all. Watching Silicon Valley cheer for what is, effectively, a sign of a command economy has certainly been brac …\nRead the full story at The Verge.",
+      "hot_score": 39.0,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-23T22:09:26+00:00",
+      "last_seen_at": "2026-11-24T04:02:12.436829+00:00",
+      "metrics": {
+        "rank_score": 0.8
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_43b498f2b7e3dbe0": {
+      "id": "it_43b498f2b7e3dbe0",
+      "source": "rss",
+      "title": "Anthropic launches Claude Ship, letting AI agents review, fix, and approve code changes",
+      "url": "https://techcrunch.com/2026/11/23/anthropic-launches-claude-ship-letting-ai-agents-review-fix-and-approve-code-changes",
+      "summary": "As AI-generated code piles up, Anthropic's new developer tools aim to eliminate another bottleneck by letting agents handle routine approvals.",
+      "hot_score": 39.0,
+      "topic_id": "tp_5b2c5daac719",
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-23T22:05:50+00:00",
+      "last_seen_at": "2026-11-24T04:02:12.444642+00:00",
+      "metrics": {
+        "rank_score": 1.0
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_388f4aa5f277fc66": {
+      "id": "it_388f4aa5f277fc66",
+      "source": "rss",
+      "title": "Supertake raises $20M to let AI agents turn your market predictions into stock portfolios",
+      "url": "https://techcrunch.com/2026/11/23/supertake-raises-20m-to-let-ai-agents-turn-your-market-predictions-into-stock-portfolios",
+      "summary": "Think you know where the market is headed? A startup called Supertake lets you put money behind your ideas without having to pick the stocks yourself.",
+      "hot_score": 38.9988,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-23T22:02:05+00:00",
+      "last_seen_at": "2026-11-24T04:02:12.445200+00:00",
+      "metrics": {
+        "rank_score": 0.9231
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_b7175444dd039d16": {
+      "id": "it_b7175444dd039d16",
+      "source": "rss",
+      "title": "Elon Musk and others rejoice as Jensen Huang is reinstated at Nvidia amid scandal",
+      "url": "https://techcrunch.com/2026/11/23/elon-musk-and-others-rejoice-as-jensen-huang-is-reinstated-at-nvidia-amid-scandal",
+      "summary": "\"The mistake has been corrected,\" Elon Musk chimed in.",
+      "hot_score": 38.866,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-23T21:47:41+00:00",
+      "last_seen_at": "2026-11-24T04:02:12.445820+00:00",
+      "metrics": {
+        "rank_score": 0.8462
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_b7fc35d5ccf04588": {
+      "id": "it_b7fc35d5ccf04588",
+      "source": "rss",
+      "title": "Ladybird's first alpha release",
+      "url": "https://simonwillison.net/2026/Nov/23/ladybird",
+      "summary": "Ladybird is an astonishingly ambitious project: a new browser, in 2026, with its own implementation of most of the key components - HTML parsing, CSS engine, layout, JavaScript, even WebAssembly. It still uses a few external components - things like HarfBuzz for text shaping, Skia for 2D graphics, ffmpeg for video, and SQLite for the things you do with SQLite. Everything else is part of Ladybird, or code brought in from Ladybird's even more ambitious predecessor project SerenityOS .\nThis morning the Ladybird project released their first alpha , which means you can now install the browser (on macOS or Linux) without having to compile it yourself!\nI've been trying it out today, and it's very impressive. It feels fast, the UI is lightweight and intuitive, and most of the websites I've tried to load in it have worked as they should. It looks like this (showing my video-compressor tool):\n\nHere's the process tree after I opened six tabs in one window and another tab in a second window (generated by this script , thanks Claude):\nLadybird (72925) [240 MB]\n└── Hub (72926) [61 MB]\n├── RequestServer (72927) [29 MB]\n├── ProcessReaper (72928) [1 MB]\n├── Compositor (72930) [123 MB]\n├── RequestServer (72953) [36 MB]\n├── WebContent (72984) [819 MB]\n├── MediaServer (73006) [118 MB]\n├── VideoDecoderServer (73007) [20 MB]\n├── WebContent (73052) [144 MB]\n├── WebContent (73057) [73 MB]\n├── WebContent (73073) [166 MB]\n├── WebContent (73094) [70 MB]\n├── WebContent (73112) [116 MB]\n├── RequestServer (73113) [27 MB]\n└── WebContent (73185) [60 MB]\nLadybird runs different tabs in different processes, an isolation mechanism used by most browsers (well, technically Chrome uses a process-per-site).\nI tried Ladybird against several of my more advanced tool examples - like the video-compressor shown above, which runs ffmpeg compiled to WebAssembly. I had it resize its own screenshot using my image-resize tool . It happily runs my Pyodide REPL (Python compiled to WebAssembly) too.\nThe one thing I tried that didn't work was Datasette Lite , which runs Pyodide in a complicated arrangement of service workers and web workers. Attempting to start Datasette Lite displays this error:\n\nundefined is not a function (evaluated from 'navigator.serviceWorker.startMessages')\n\nI filed an issue about this , then found a FIXME annotation in the source code.\nThe October explosion\nThe project has been leaning heavily into coding agents this year. On February 23, 2026 Andreas Kling published Ladybird adopts Rust, with help from AI , describing how they ported parts of their LibJS JavaScript engine from C++ to 25,000 lines of Rust in two weeks using Claude Code and Codex.\nHere's the GitHub contributions chart for Ladybird over the past twelve months:\n\nThat uptick in October corresponds to the landing of a wealth of big improvements.\nThis Month in Ladybird — October 2026 describes what happened. In addition to moving style and layout to their own thread, landing a new JavaScript JIT, and replacing their C++ with Cranelift WebAssembly engine with new code that achieved a 7x boost on the JetStream 3 WASM benchmark , they gained 75,650 new passes on the ~2.25 million subtest web-platform-tests suite, beating Safari!\n\nHow did they do that? Coding agents:\n\nMost of that gain came in five days, from about 2.12 million on October 22 to about 2.18 million on October 27. We pointed AI coding agents at WPT and asked them to fill in missing functionality. They made lots of small fixes, and those added up. Our biggest gains for the month were about 30,000 in /css and 10,000 in /editing .\n\nI'm interested in what models they are using here - I know Andreas uses Codex and Claude Code, but I haven't seen him talk about specific model versions. Claude Opus 5.5 came out on September 22, 2026 and Claude Fable 5.2 on November 9, 2026 (after that window). I'd love to know what they were using for that huge leap in the last week of October.\nShould you use Ladybird?\nHere's what Andreas says about Ladybird's suitability for use as a daily browser:\n\nThis is an alpha, so some websites won’t work, and it will crash sometimes. When that happens, tell us! You can report a broken site from inside the browser. After a crash, you can read the crash report and decide whether to send it. Our privacy policy has the details.\nWe want security nerds to hack it! A new browser gets hacked, over and over, and that’s part of the process, so we make no promises about security today. When you pwn us, please tell us how so we can harden Ladybird!\n\nGiven how hard it is to secure a web browser, and the hostility of the environment they operate in, I won't be using Ladybird to sign into GitHub or Gmail or any of my other sensitive accounts.\nI'm going to keep it around for anonymous browsing though, partly to participate in the testing efforts but mainly because it gives me a glimmer of optimism to see a promising new entrant in the stagnant browser engine market start to grow its wings.\n\nTags: browsers , open-source , ai , rust , webassembly , generative-ai , llms , andreas-kling , ladybird , coding-agents",
+      "hot_score": 38.8558,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-23T21:46:35+00:00",
+      "last_seen_at": "2026-11-24T04:02:12.430693+00:00",
+      "metrics": {
+        "rank_score": 0.5
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_972640f78a70025d": {
+      "id": "it_972640f78a70025d",
+      "source": "rss",
+      "title": "States sue SpaceX to stop Grok from generating child sex images, revenge porn",
+      "url": "https://arstechnica.com/tech-policy/2026/11/states-sue-spacex-to-stop-grok-from-generating-child-sex-images-revenge-porn",
+      "summary": "On Monday, Virginia and Oregon became the first states to sue SpaceX, alleging that Grok continues to sexualize, unchecked, real photos of mostly women and children.\nSpaceX acquired xAI in February and now must handle the ongoing reckoning over the controversial rollout of Grok’s “spicy mode”—a model feature Musk hyped but was soon found to generate a flood of non-consensual intimate imagery (NCII) and child sex abuse images (CSAM).\nInitial safeguards were so lax that Grok sometimes generated nude images without being asked . Although X Safety and xAI (now known as SpaceXSI) were silent at first , Musk’s companies eventually apologized and claimed that additional safeguards were implemented and policies redesigned to block harmful outputs. However, state attorneys general alleged that those statements were “misleading” and that SpaceXSI instead quietly “embraced” sexualized content to seize more AI market share, as Grok continues to generate NCII and CSAM today. Read full article\nComments",
+      "hot_score": 38.7107,
+      "topic_id": "tp_796e52c89085",
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-23T21:30:44+00:00",
+      "last_seen_at": "2026-11-24T04:02:12.452322+00:00",
+      "metrics": {
+        "rank_score": 1.0
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_7bdc82557174d88c": {
+      "id": "it_7bdc82557174d88c",
+      "source": "rss",
+      "title": "Megaspeed, the company at the center of the Jensen Huang scandal, appears headed for a US blacklist",
+      "url": "https://techcrunch.com/2026/11/23/megaspeed-the-company-at-the-center-of-the-jensen-huang-scandal-appears-headed-for-a-u-s-blacklist",
+      "summary": "Megaspeed, which was previously led by Alice Huang, would be barred from doing business with U.S. companies unless those companies attained a special license from the federal government.",
+      "hot_score": 38.6648,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-23T21:25:42+00:00",
+      "last_seen_at": "2026-11-24T04:02:12.446319+00:00",
+      "metrics": {
+        "rank_score": 0.7692
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_1d0c151fefed0dea": {
+      "id": "it_1d0c151fefed0dea",
+      "source": "rss",
+      "title": "OpenAI and Cisco introduce Shirudo",
+      "url": "https://openai.com/index/introducing-shirudo",
+      "summary": "OpenAI and Cisco introduce Shirudo, an open-source runtime for Linux. It helps teams protect running systems while they roll out patches.",
+      "hot_score": 38.613,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-23T21:20:00+00:00",
+      "last_seen_at": "2026-11-24T04:02:12.432733+00:00",
+      "metrics": {
+        "rank_score": 1.0
+      },
+      "streak_days": 0,
+      "language": "en"
+    }
+  },
+  "meta": {
+    "mode": "hybrid",
+    "day": "2026-11-24",
+    "generated_at": "2026-11-24T04:03:03.319427+00:00",
+    "window": {
+      "since": "2026-11-23T04:01:57.698309+00:00",
+      "until": "2026-11-24T04:02:12.543191+00:00",
+      "hours": 24.0,
+      "since_local": "2026-11-23T12:01+08:00",
+      "until_local": "2026-11-24T12:02+08:00",
+      "tz": "Asia/Shanghai"
+    },
+    "analysis": {
+      "items": 127,
+      "scored": 127,
+      "topics": 4,
+      "new_entity_mention_rows": 146,
+      "state_items": 16
+    },
+    "llm": {
+      "degraded": false,
+      "degraded_reason": "",
+      "calls": 1
+    },
+    "collect": {
+      "ok_sources": 6,
+      "failed_sources": 1,
+      "skipped": 0,
+      "total_items": 129
+    },
+    "verify": {
+      "verified": 0,
+      "unverifiable": 13,
+      "deferred": 14,
+      "failed": 0,
+      "llm_calls": 0
+    },
+    "predictions": {
+      "total": 219,
+      "verified": 19,
+      "pending": 186,
+      "unverifiable": 14,
+      "hit_rate": 0.15789473684210525,
+      "weighted_score": 0.15789473684210525,
+      "brier": 0.31934210526315787
+    },
+    "prediction_generation": {
+      "mode": "hybrid",
+      "generated": 5,
+      "inserted": 5,
+      "dropped": [],
+      "llm_calls": 1,
+      "candidate_pool": 20,
+      "degraded": false,
+      "degraded_reason": ""
+    },
+    "brief": {
+      "max_items_per_section": 10,
+      "velocity_board_enabled": true,
+      "velocity_board_top_n": 5
+    },
+    "signals": {
+      "entities": 932,
+      "points": 1853,
+      "with_velocity": 129,
+      "insufficient": 112,
+      "cold_start": 691,
+      "min_window_hours": 6.0
+    },
+    "enhance_total": 29,
+    "enhanced": 29,
+    "enhance_skipped_count": 0,
+    "enhance_cache_hit": 8,
+    "enhance_cost_cny": 0.01121
+  }
+}
