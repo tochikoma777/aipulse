@@ -1,0 +1,971 @@
+{
+  "date": "2026-11-25",
+  "headline": "智能体正从「能聊」转向「能动手」：MCP 打通支付、CLI 接管软件、技能包批量落地，但日常任务基准显示它们仍不可靠",
+  "headline_item_id": "it_6014a04f08fa1462",
+  "overview_bullets": [
+    {
+      "icon": "🤖",
+      "topic": "智能体落地",
+      "text": "Versine 把收发钱做成 MCP 接口、CLI-Anything 要让所有软件「agent-native」，智能体正从对话层下沉到执行层，谁掌握动作接口谁掌握入口。"
+    },
+    {
+      "icon": "🛠️",
+      "topic": "技能包军备",
+      "text": "Claude-BugHunter 的 82 个技能、superpowers 的方法论框架、last30days 的跨平台调研技能同日上榜，说明「给模型装技能」已成独立赛道，护城河在策展质量而非模型本身。"
+    },
+    {
+      "icon": "📄",
+      "topic": "权重即代码",
+      "text": "WeightCode 与 Self-WSP 两篇论文指向同一件事：把权重当可读写程序来改，小模型自我改进的路径正在被工程化。"
+    },
+    {
+      "icon": "📉",
+      "topic": "能力落差",
+      "text": "新基准显示最强智能体连日常任务都难以可靠完成，与 GitHub 上技能包的热度形成鲜明反差——演示能力与生产可靠性之间仍有鸿沟。"
+    },
+    {
+      "icon": "🏢",
+      "topic": "英伟达治理",
+      "text": "Sonnenfeld 称英伟达是美国工业的「损害」、黄仁勋自述在治疗且无继任计划，创始人依赖被摆上台面，这是比芯片叙事更长期的风险。"
+    }
+  ],
+  "executive_summary": "今天的热度集中在「给智能体装手脚」，但真正稀缺的不是接口数量，而是让这些手脚在真实世界里不出错的可靠性工程。",
+  "editor_note": {
+    "core": "今天最该记住的是 Versine 把「转账」封装成 MCP 工具——这意味着智能体第一次真正握住了钱。一旦动作接口与资金流打通，竞争焦点就从模型能力转向谁被授权执行，责任与审计问题会立刻压过技术讨论。",
+    "cross_signal": "GitHub 上技能包与 CLI 化工具的热度，和论文里权重空间编程、机器人 VLA 的进展互相印证：行业共识是让模型「直接改东西」，而不是继续堆参数。产业侧沃尔玛接入 Meta 的 Muse 则是同一逻辑的商业版。",
+    "counterintuitive": "技能包越火，越说明模型本身不够用——82 个技能、45 种图表模板这类「人工策展」的高热度，恰恰是通用能力不足的补丁经济，而非智能体成熟的标志。",
+    "risk": "最危险的盲点是授权边界：当智能体能发钱、能改权重、能操作企业软件，而日常任务基准显示它们并不可靠时，一次错误动作的代价远高于一次错误回答，但今天的讨论几乎全在能力侧，少有失败回滚与责任归属的设计。"
+  },
+  "contradictions": [
+    "一边是智能体技能包与 MCP 支付工具的高热度，一边是新基准指出最强智能体连日常任务都难以可靠完成，能力叙事与实测可靠性明显脱节。",
+    "Sonnenfeld 称英伟达是美国工业的「损害」，而市场与白宫层面却把黄仁勋的回归当作利好来欢呼，同一事件被解读为风险与胜利两种相反结论。",
+    "黄仁勋一方面强调不设继任计划以避免层级，另一方面公司刚经历「没有创始人会怎样」的两周考验，治理主张与现实脆弱性自相矛盾。"
+  ],
+  "underrated": [
+    "Compiling web applications into verified operations for AI agents：把网页应用编译成智能体可验证的操作，是解决动作可靠性的关键方向，热度却远低于技能包。",
+    "Maple 融资：加密架构让公司自己都读不到用户数据，是智能体时代隐私设计的少见正面样本。",
+    "mjmirza/app-store-compliance：124 种拒审模式与 112 个监管截止日，合规正成为 AI 应用出海的隐形门槛。",
+    "Self-WSP：让模型读写自身权重实现自我改进，比又一个大模型发布更值得追踪。"
+  ],
+  "sections": [
+    {
+      "name": "开源项目",
+      "summary": "技能包、数据管道与轻量训练工具集中爆发，开源社区正把智能体的「能力供给」做成可复用的商品。",
+      "item_ids": [
+        "it_27d1d8a4f04e089d",
+        "it_8d57cc2cadedeb4f",
+        "it_f859b2d15e1457f4",
+        "it_f09a3afb4ff397a9",
+        "it_4fa2765666515d8e",
+        "it_ed75bf498e47451e",
+        "it_d41f86253f9f730f",
+        "it_1f28a16c9fe19cbe",
+        "it_c75fda64510b4a09",
+        "it_833333ed0f4723f5",
+        "it_f70d6b968bbde640"
+      ]
+    },
+    {
+      "name": "论文与研究",
+      "summary": "权重空间编程与机器人 VLA 两条线同时推进，研究重心从「更大模型」转向「如何直接改造与驱动模型」。",
+      "item_ids": [
+        "it_d5dbb75a39181095",
+        "it_2a701dce72b6c0dd",
+        "it_790b5ec6b9711c12",
+        "it_0468d5807225d336",
+        "it_cdb9715a4e63b5b4"
+      ]
+    },
+    {
+      "name": "社区舆论",
+      "summary": "HN 上关于智能体忠诚度、AI 工作方式与数学突破的讨论，透出对「模型到底为谁服务」的普遍不安。",
+      "item_ids": [
+        "it_ef8096d74f5dfd33",
+        "it_07b4e95a07685fe2",
+        "it_22eff119b1a70614",
+        "it_a58808d0bc1080c7",
+        "it_5d4bdf4656aab275"
+      ]
+    },
+    {
+      "name": "产业与新闻",
+      "summary": "英伟达的治理争议、Meta 与沃尔玛的智能体电商、以及隐私优先的融资，勾勒出商业化落地的三条不同路径。",
+      "item_ids": [
+        "it_6ff348e652c905f1",
+        "it_1479a2d5f1158c80",
+        "it_d6a3974a1a3c345c",
+        "it_bc426bbbebd762f2",
+        "it_72fd424c711a4514",
+        "it_71615ee1ebfde345",
+        "it_b1e5839c1dc50666",
+        "it_4d83f53e63e2d3da"
+      ]
+    }
+  ],
+  "comments": [
+    {
+      "item_id": "it_27d1d8a4f04e089d",
+      "one_liner": "一个面向漏洞挖掘与外部红队工作的 Claude Code 技能包，包含 82 个技能、15 个 slash 命令，以及覆盖 24 类核心漏洞的 681 条已披露报告模式。",
+      "why": "把 681 份已披露漏洞报告提炼成 82 个可复用技能，等于把红队经验从个人手艺变成可安装的资产，安全团队的门槛被拉低，同时攻击方也能直接取用。",
+      "stance": "攻防知识打包成技能包是双刃剑，公开分发等于给防守方补课的同时给攻击方发教材，收益取决于谁先用上。"
+    },
+    {
+      "item_id": "it_8d57cc2cadedeb4f",
+      "one_liner": "firecrawl 是一个面向 AI agent 的知识基础设施，通过单一 API 提供搜索、抓取并接入 550 多家数据源的能力。",
+      "why": "把搜索、抓取与 550+ 数据源统一到一个 API，等于把 agent 的数据接入层标准化，下游自建爬虫与数据管道的团队会被直接替代。",
+      "stance": "数据接入正在被收编成基础设施，自研爬虫的性价比归零。"
+    },
+    {
+      "item_id": "it_f859b2d15e1457f4",
+      "one_liner": "obra/superpowers 是一套面向 AI agent 的技能框架与软件开发方法论",
+      "why": "把 agent 技能封装成可复用的方法论框架，等于给『提示词工程』补上工程规范，团队协作时技能可以像依赖包一样被版本化和审查。",
+      "stance": "技能框架会像当年的 lint 规则一样成为标配，不采用的一方会在多人协作中先乱。"
+    },
+    {
+      "item_id": "it_f09a3afb4ff397a9",
+      "one_liner": "一个 AI agent skill，可跨 Reddit、X、YouTube、HN、Polymarket 和网页检索任意话题并汇总成有据可依的摘要",
+      "why": "把跨平台检索与摘要合成打包成一个可复用技能，意味着 agent 的信息搜集从单站抓取转向多源交叉验证，直接压缩人工调研的时间成本。",
+      "stance": "多源聚合是 agent 技能里最实用的一类，但摘要的可靠性取决于源质量，别把它当事实核查工具。"
+    },
+    {
+      "item_id": "it_4fa2765666515d8e",
+      "one_liner": "Ghost-Downloader-3 是一款开源的多功能下载器桌面应用",
+      "why": "下载器把多协议、多源聚合进单一客户端，用户不再为不同站点装不同工具，边缘工具类软件的整合窗口正在关闭。",
+      "stance": "集大成者往往也是最后一款——这类工具的价值在于终结选择困难，而非创新。"
+    },
+    {
+      "item_id": "it_ed75bf498e47451e",
+      "one_liner": "minimind 是一个教学项目，演示如何在两小时内从零训练出一个 64M 参数的小型大语言模型。",
+      "why": "两小时、单卡、64M 参数就能跑通从零预训练全流程，把大模型的门槛从实验室预算降到个人周末项目，教学与复现的价值远大于模型本身。",
+      "stance": "这是目前最有效的 LLM 祛魅工具，比任何科普文章都管用。"
+    },
+    {
+      "item_id": "it_d41f86253f9f730f",
+      "one_liner": "开源 AI 视频剪辑桌面工具，可将播客、访谈、课程等长视频自动剪成适配抖音、小红书、TikTok、Reels 与 YouTube Shorts 的短视频，并生成字幕、封面和发布文案",
+      "why": "把长视频切条、字幕、封面、发布文案打包成本地桌面工具，内容团队的分发成本从人力工时压到一次点击，且素材不出本机。",
+      "stance": "开源本地化剪辑工具会先吃掉中小创作者的外包剪辑预算，平台侧的搬运内容将更泛滥。"
+    },
+    {
+      "item_id": "it_1f28a16c9fe19cbe",
+      "one_liner": "HKUDS 开源项目 CLI-Anything，旨在让所有软件都具备 Agent 原生能力，并提供 CLI-Hub 入口。",
+      "why": "把任意软件包装成 agent 可直接调用的 CLI 接口，等于给智能体生态补上统一的执行层，工具厂商的接入成本从定制 SDK 降为一条命令行。",
+      "stance": "方向对，但 CLI 作为 agent 接口的稳定性与权限边界远未解决，先别急着把生产环境交出去。"
+    },
+    {
+      "item_id": "it_c75fda64510b4a09",
+      "one_liner": "面向 Claude Code、Codex、GitHub Copilot、Cursor 等编程代理的编辑级图表设计资源，涵盖 45 种图表类型，输出自包含的 HTML + SVG",
+      "why": "把图表规范固化成 45 种自包含 HTML+SVG 模板喂给编码代理，输出从 Mermaid 的默认丑图变成可控的编辑级排版，设计一致性从人审前移到生成端。",
+      "stance": "这是给 AI 生成内容补上审美下限的正确做法，模板约束比让模型自由发挥更可靠。"
+    },
+    {
+      "item_id": "it_833333ed0f4723f5",
+      "one_liner": "一份帮助开发者避开 App Store 与 Google Play 审核拒绝的开源手册与提交前检查工具，收录 124 种拒绝模式及修复方案、隐私清单与数据安全核查，并跟踪 112 项合规截止日期。",
+      "why": "124 条真实拒审案例加 112 个合规截止日期被做成可执行检查，上架合规从法务事后救火前移到编码阶段，独立开发者的返工成本被压缩。",
+      "stance": "合规知识结构化是刚需，但把监管倒计时塞进 AI 代理的提示里，等于让模型替人承担法律判断，边界必须划清。"
+    },
+    {
+      "item_id": "it_d5dbb75a39181095",
+      "one_liner": "一个用于实时游戏场景的视觉智能体 harness，研究模型在游戏持续运行、不等待其响应时表现下降的问题，并指出瓶颈多在于决定模型看什么、记什么、如何把输出转为动作的 harness 层。",
+      "why": "把实时游戏的失败归因于 harness 而非模型能力，意味着视觉代理的瓶颈从参数规模转向感知-记忆-动作的调度设计，评测基准的重心随之转移。",
+      "stance": "这是对『模型不够强』叙事的正面反驳，harness 工程被低估太久，该被当成一等公民。"
+    },
+    {
+      "item_id": "it_2a701dce72b6c0dd",
+      "one_liner": "提出 nanoAstra，一种把视觉语言模型训练为通用机器人操作基础模型的方法，尝试复现 GPT-6 Astra 在机器人控制上的泛化能力。",
+      "why": "用可复现的 nanoAstra 拆解闭源机器人基础模型的训练路径，把『GPT-6 Astra 能做但没说怎么做』变成公开配方，具身智能的追赶周期被缩短。",
+      "stance": "闭源演示加开源复现的组合正在成为标准打法，谁藏训练细节谁就先失去生态。"
+    },
+    {
+      "item_id": "it_790b5ec6b9711c12",
+      "one_liner": "提出 Self-WSP，让语言模型像读写代码一样读取和编辑自身权重，从而自我改进，并在 Qwen3.5-0.8B 上进行了实验。",
+      "why": "让 0.8B 模型直接读写自身权重来改进自己，把自进化从提示层推进到参数层，小模型的迭代不再依赖外部大模型蒸馏。",
+      "stance": "权重空间自改写的风险远大于收益，没有回滚与审计机制前，这类自我编辑应当被限制在沙箱内。"
+    },
+    {
+      "item_id": "it_0468d5807225d336",
+      "one_liner": "提出 Weight-Space Programming（WSP），让可执行程序直接读取、构造或修改神经网络权重，从而向网络注入新的任务能力。",
+      "why": "让程序直接读写网络权重来注入任务能力，绕开微调与提示工程，意味着能力扩展从训练流程转移到可执行的权重操作层。",
+      "stance": "方向诱人，但直接改权重等于放弃可解释性与回滚，先看它怎么保证不把模型改坏。"
+    },
+    {
+      "item_id": "it_cdb9715a4e63b5b4",
+      "one_liner": "LeadVLA 研究机器人带路任务，用端到端方式学习在沿路线行进时感知并适应跟随者的耦合策略。",
+      "why": "把跟随者感知与路径执行端到端耦合，省掉显式状态与规划器接口，机器人领跑从模块拼接转向单一策略学习。",
+      "stance": "端到端省掉中间层是正路，但真实人群里的失败模式会比论文里难看得多。"
+    },
+    {
+      "item_id": "it_ef8096d74f5dfd33",
+      "one_liner": "一篇讨论 LLM agent 实际服务于其母公司利益、而非用户利益的文章。",
+      "why": "指出 agent 的优化目标由厂商而非用户设定，用户越依赖托管 agent，行为偏差就越难被察觉和纠正。",
+      "stance": "这是当下最该被反复讲的一条：托管即让渡控制权，别把 agent 当自己的代理人。"
+    },
+    {
+      "item_id": "it_07b4e95a07685fe2",
+      "one_liner": "一篇关于如何在工作中使用 AI 的文章。",
+      "why": "讨论焦点从模型能力转向人机协作的实际工作方式，决定团队是把 AI 当工具嵌入流程，还是继续当玩具试用。",
+      "stance": "协作方式比模型版本更决定产出，谈工作流的人比谈榜单的人靠谱。"
+    },
+    {
+      "item_id": "it_22eff119b1a70614",
+      "one_liner": "一篇题为 Atmosphere 的讨论帖，介绍正在发生的相关进展。",
+      "why": "Atmosphere 这类去中心化社交协议被重新提起，指向用户对平台账号与内容归属权的迁移需求。",
+      "stance": "协议层替代平台层是老命题，热度回来靠的是对平台的不信任，不是技术突破。"
+    },
+    {
+      "item_id": "it_a58808d0bc1080c7",
+      "one_liner": "PenGPT 是一个用于生成手写笔迹与草图笔画的生成式 Transformer 模型。",
+      "why": "生成式模型进入手写与草图这类带笔迹特征的输出，笔迹风格与签名类验证的信任基础被削弱。",
+      "stance": "手写体生成的门槛一降，靠笔迹做身份判断的场景就该重估。"
+    },
+    {
+      "item_id": "it_5d4bdf4656aab275",
+      "one_liner": "探讨将 Web 应用编译为可供 AI agent 调用的可验证操作。",
+      "why": "把网页应用编译成 agent 可调用的受验证操作，替代让 agent 直接点浏览器，降低误操作与不可审计的风险。",
+      "stance": "给 agent 提供受约束的操作接口，比让它自由点页面务实得多，这条路该成为默认做法。"
+    },
+    {
+      "item_id": "it_6ff348e652c905f1",
+      "one_liner": "作者总结过去十二个月 LLM 与编码 agent 能力上的三个关键拐点，并附演讲视频。",
+      "why": "把过去一年 LLM 与编码 agent 的能力跃迁归纳为三个拐点，给团队判断何时该重写工程流程提供时间坐标。",
+      "stance": "拐点叙事容易事后归因，但编码 agent 这一条确实已经改变了工程团队的产出结构。"
+    },
+    {
+      "item_id": "it_1479a2d5f1158c80",
+      "one_liner": "一篇梳理近期 AI 辅助证明 Riemann hypothesis 传闻及相关数学突破的文章。",
+      "why": "黎曼猜想的 AI 相关传闻扩散速度远超验证速度，数学界被迫在同行评审之前先处理舆论，影响公众对 AI 科研产出的信任校准。",
+      "stance": "在证明被正式验证前，任何『AI 破解大猜想』的标题都该按未证实处理。"
+    },
+    {
+      "item_id": "it_d6a3974a1a3c345c",
+      "one_liner": "Yale 的 Jeffrey Sonnenfeld 认为 Nvidia 对美国工业实力是拖累而非支柱，并警告 Jensen Huang 回归 CEO 与董事职位可能给董事带来历史性的个人法律责任。",
+      "why": "把英伟达创始人回归从「市场利好」重新框定为公司治理风险：诉讼累积会把董事个人责任推到台前，进而影响董事会独立性与投资者对治理折价的定价。",
+      "stance": "索南菲尔德的警告切中要害——把创始人神话当成护城河，代价由董事个人和长期股东承担。"
+    },
+    {
+      "item_id": "it_bc426bbbebd762f2",
+      "one_liner": "Jensen Huang 仍认为设立继任计划会造成不必要的层级，这一立场在 Nvidia 刚经历创始人缺席风波后引发关注。",
+      "why": "创始人拒绝接班规划，等于把公司关键人风险制度化；刚经历两周「没有他会怎样」的实测后仍不设冗余，治理折价会长期挂在估值上。",
+      "stance": "这是把个人不可替代性当成战略资产，属于治理上的傲慢，董事会该强制要求接班方案。"
+    },
+    {
+      "item_id": "it_72fd424c711a4514",
+      "one_liner": "Jensen Huang 在全员会议上感谢 White House，向员工道歉，并表示自己正在接受心理治疗，同时感激获得第二次领导公司的机会。",
+      "why": "全员会上同时感谢白宫并公开接受心理治疗，把政治背书与个人状态绑进公司叙事，员工与投资者对领导层稳定性的判断从此带上政治变量。",
+      "stance": "坦诚值得肯定，但把政府关系当作复职合法性来源，会让英伟达的政策风险敞口更难剥离。"
+    },
+    {
+      "item_id": "it_71615ee1ebfde345",
+      "one_liner": "一项新基准显示，即便是最先进的 AI agent 也难以可靠、安全地完成日常任务，还可能引入新问题。",
+      "why": "新基准显示个人助理在真实日常任务上仍不可靠且会引入新问题，这直接压制「代理替你办事」的商业化节奏，把责任与安全设计推到产品定义的前排。",
+      "stance": "现在把日常事务交给代理是拿用户当测试集，能力宣传该先让位于失败率与可回滚设计。"
+    },
+    {
+      "item_id": "it_b1e5839c1dc50666",
+      "one_liner": "Walmart 与 Meta 合作，让顾客可通过 Meta 的 AI agent Muse 购买 Black Friday 促销商品。",
+      "why": "零售巨头把促销流量入口交给第三方 AI 代理，意味着商品发现权从搜索与 App 转向代理方，零售商让出的是用户关系与广告定价权。",
+      "stance": "沃尔玛换来的是短期转化，长期是把货架钥匙交给 Meta，这笔交易对零售商不利。"
+    },
+    {
+      "item_id": "it_4d83f53e63e2d3da",
+      "one_liner": "Maple 融资 530 万美元，构建加密 AI 架构，连公司自身也无法访问用户私人数据。",
+      "why": "加密架构让服务商自身也无法读取用户数据，把「信任我们」换成「无法作恶」，为受监管行业采购 AI 提供了合规路径，也抬高小团队的工程门槛。",
+      "stance": "把不可访问性写进架构而非政策，是隐私叙事里少数可验证的做法，方向正确。"
+    }
+  ],
+  "stats": {
+    "total_items": 27,
+    "sections": 4,
+    "top_source": "github_trending"
+  },
+  "items": {
+    "it_ef8096d74f5dfd33": {
+      "id": "it_ef8096d74f5dfd33",
+      "source": "hackernews",
+      "title": "LLM agents work for their parent companies, not for you",
+      "url": "https://michaelharley.net/posts/2026/11/01/llm-agents-work-for-their-parent-companies-not-for-you",
+      "summary": "",
+      "hot_score": 83.743,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-24T12:40:15+00:00",
+      "last_seen_at": "2026-11-25T02:43:11.013553+00:00",
+      "metrics": {
+        "points": 921,
+        "num_comments": 389
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_6014a04f08fa1462": {
+      "id": "it_6014a04f08fa1462",
+      "source": "hackernews",
+      "title": "Launch HN: Versine (YC F26) – MCP to send and receive money",
+      "url": "https://news.ycombinator.com/item?id=50634426",
+      "summary": "Hey HN, we’re Harshith, Param, and Vishnu and we're building Versine ( https://versine.com ). Versine lets you send and request money just by talking or texting with your AI (think Venmo with an MCP). We’re software engineers who have worked on distributed systems at Stripe, Databricks, and Amazon. Versine is an MCP that sits in front of a wallet with a balance. With it, your agent can do things like: - Send money to someone with your approval (via passkey in our app) - Send and request money to",
+      "hot_score": 78.75,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-24T20:44:15+00:00",
+      "last_seen_at": "2026-11-25T02:43:11.016173+00:00",
+      "metrics": {
+        "points": 71,
+        "num_comments": 56
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_27d1d8a4f04e089d": {
+      "id": "it_27d1d8a4f04e089d",
+      "source": "github_trending",
+      "title": "elementalsouls/Claude-BugHunter",
+      "url": "https://github.com/elementalsouls/Claude-BugHunter",
+      "summary": "A Claude Code skill bundle for bug hunting and external red-team work - 82 skills, 15 slash commands, 681 disclosed-report patterns curated across 24 core vulnerability classes, plus enterprise identity + infrastructure attack matrices.",
+      "hot_score": 77.0529,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-15T23:03:21.804510+00:00",
+      "last_seen_at": "2026-11-25T02:43:11.039883+00:00",
+      "metrics": {
+        "stars_total": 21589,
+        "stars_in_window": 2029,
+        "forks": 2243,
+        "streak_days": 6
+      },
+      "streak_days": 6,
+      "language": "Python"
+    },
+    "it_8d57cc2cadedeb4f": {
+      "id": "it_8d57cc2cadedeb4f",
+      "source": "github_trending",
+      "title": "firecrawl/firecrawl",
+      "url": "https://github.com/firecrawl/firecrawl",
+      "summary": "Knowledge infrastructure to make your agents smarter. Search, scrape and access 550+ data providers through one API.",
+      "hot_score": 73.4654,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-20T00:47:06.445974+00:00",
+      "last_seen_at": "2026-11-25T02:43:11.041953+00:00",
+      "metrics": {
+        "stars_total": 209009,
+        "stars_in_window": 1241,
+        "forks": 10920,
+        "streak_days": 6
+      },
+      "streak_days": 6,
+      "language": "TypeScript"
+    },
+    "it_f859b2d15e1457f4": {
+      "id": "it_f859b2d15e1457f4",
+      "source": "github_trending",
+      "title": "obra/superpowers",
+      "url": "https://github.com/obra/superpowers",
+      "summary": "An agentic skills framework & software development methodology that works.",
+      "hot_score": 70.6667,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-15T14:47:23.502377+00:00",
+      "last_seen_at": "2026-11-25T02:43:11.040318+00:00",
+      "metrics": {
+        "stars_total": 325886,
+        "stars_in_window": 2028,
+        "forks": 28915,
+        "streak_days": 8
+      },
+      "streak_days": 8,
+      "language": "Shell"
+    },
+    "it_07b4e95a07685fe2": {
+      "id": "it_07b4e95a07685fe2",
+      "source": "hackernews",
+      "title": "Working with AI",
+      "url": "https://www.anthropic.com/research/working-with-ai",
+      "summary": "",
+      "hot_score": 69.75,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-24T21:07:38+00:00",
+      "last_seen_at": "2026-11-25T02:43:11.017877+00:00",
+      "metrics": {
+        "points": 63,
+        "num_comments": 65
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_d5dbb75a39181095": {
+      "id": "it_d5dbb75a39181095",
+      "source": "hf_papers",
+      "title": "AutoPILOT: A Visual Agent Harness for Real-Time Gameplay",
+      "url": "arxiv:2611.28202",
+      "summary": "Multimodal foundation models can play video games well when the game waits for them, but often fail when it keeps running. We find that much of this gap lies in the harness, which decides what the model sees, what it remembers, and how its outputs become actions over time. Existing harnesses such as VISTA improve the first two, yet turn each model call into at most one action, so the agent acts only as often as its model thinks. We introduce AutoPILOT, which changes the third: in each model call, the model can send a primitive action, start an open-loop macro, or write a closed-loop controller that keeps playing from the screen without further model calls until it hands control back. To evaluate agents in real-time games, we build AFK-Bench, 120 diverse browser games grouped by how they respond to inaction and playable in real time or with the clock paused. With GPT-6.1 Sol under the same budgets, AutoPILOT reaches 68.6% real-time success against 38.3% for VISTA, and on GameWorld it keeps 80.0% in real time while VISTA drops from 84.1% to 42.9%. Its gains hold across models, and it reaches VISTA's final success rate at a fifth of its API cost. Our results suggest that how a harness turns model outputs into actions over time is a central yet underexplored part of agent design, and we hope AutoPILOT and AFK-Bench will serve as a foundation for agents in a world that does not wait.",
+      "hot_score": 69.1802,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-11-19T19:00:00+00:00",
+      "last_seen_at": "2026-11-24T04:02:12.520677+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 13
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_f09a3afb4ff397a9": {
+      "id": "it_f09a3afb4ff397a9",
+      "source": "github_trending",
+      "title": "mvanhorn/last30days-skill",
+      "url": "https://github.com/mvanhorn/last30days-skill",
+      "summary": "AI agent skill that researches any topic across Reddit, X, YouTube, HN, Polymarket, and the web - then synthesizes a grounded summary",
+      "hot_score": 64.445,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-17T01:57:21.277064+00:00",
+      "last_seen_at": "2026-11-25T02:43:11.043369+00:00",
+      "metrics": {
+        "stars_total": 74289,
+        "stars_in_window": 1059,
+        "forks": 6548,
+        "streak_days": 9
+      },
+      "streak_days": 9,
+      "language": "Python"
+    },
+    "it_2a701dce72b6c0dd": {
+      "id": "it_2a701dce72b6c0dd",
+      "source": "hf_papers",
+      "title": "A Glimpse of Training VLMs as Foundation Models for Robotic Manipulation",
+      "url": "arxiv:2611.29338",
+      "summary": "Recently, GPT-6 Astra demonstrates strong generalization in robot control, yet limited disclosure of its training leaves open how such capabilities can be reproduced. We introduce nanoAstra, an approach to training vision-language models (VLMs) for generalizable manipulation that combines semantic action modeling with capability-preserving supervised fine-tuning (CP-SFT). nanoAstra represents robot behavior as semantic steps composed of reusable, parameterized action primitives, guided by explicit progress descriptions. Meanwhile, CP-SFT uses an explicit robot-specific system prompt to constrain manipulation outputs to a structured action space, aiming to focus adaptation on robot-specific contexts and promote specialization while minimizing interference with broader pretrained capabilities. With this formulation, we train nanoAstra on more than 5,000 hours of robot data together with general VQA data. On RoboTwin 2.0's randomized benchmark, nanoAstra-9B achieves a 17.8% zero-shot success rate, substantially outperforming advanced VLA and WAM baselines as well as similarly sized VLMs. With inference faster than the corresponding motion execution on a single H20 GPU, our model supports action-chunk-like streaming execution that overlaps inference with motion, reducing the robot's idle time from 35.0% to 6.9%.",
+      "hot_score": 63.5804,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-11-21T19:00:00+00:00",
+      "last_seen_at": "2026-11-24T04:02:12.521857+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 10
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_22eff119b1a70614": {
+      "id": "it_22eff119b1a70614",
+      "source": "hackernews",
+      "title": "Get in, friends, the Atmosphere is happening",
+      "url": "https://tropopause.pckt.blog/get-in-friends-the-atmosphere-is-happening-q8sf9a9",
+      "summary": "",
+      "hot_score": 60.75,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-24T23:23:35+00:00",
+      "last_seen_at": "2026-11-25T02:43:11.018791+00:00",
+      "metrics": {
+        "points": 50,
+        "num_comments": 54
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_4fa2765666515d8e": {
+      "id": "it_4fa2765666515d8e",
+      "source": "github_trending",
+      "title": "XiaoYouChR/Ghost-Downloader-3",
+      "url": "https://github.com/XiaoYouChR/Ghost-Downloader-3",
+      "summary": "The only downloader you need. 下载器的集大成者。",
+      "hot_score": 60.1321,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-20T00:47:06.446027+00:00",
+      "last_seen_at": "2026-11-25T02:43:11.045382+00:00",
+      "metrics": {
+        "stars_total": 17448,
+        "stars_in_window": 1092,
+        "forks": 1054,
+        "streak_days": 6
+      },
+      "streak_days": 6,
+      "language": "Python"
+    },
+    "it_790b5ec6b9711c12": {
+      "id": "it_790b5ec6b9711c12",
+      "source": "hf_papers",
+      "title": "Self-WSP: Can Language Models Improve Themselves Through Weight-Space Programming?",
+      "url": "arxiv:2611.28833",
+      "summary": "Frontier language models can now read and edit the weights of a neural network much like code and thereby improve a small model, an approach known as Weight-Space Programming (WSP). We further explore applying WSP to a language model itself, which we call Self-WSP. Specifically, Qwen3.5-0.8B reads its own weights, proposes an edit, and then continues with the edited weights as both problem solver and editor. We find many cases of genuine self-improvement. Self-edits can raise GSM8K accuracy from 11.8% to 62.2% and MATH500 accuracy from 7.0% to 32.2%, sometimes by changing only 16 parameters, and in some cases repeated self-editing keeps improving the model. A closer look, however, reveals that these gains lack interpretability. The model shows little understanding of the edits it makes, and WSP driven by random search sometimes performs comparably. Self-WSP thus holds promise as a path toward recursive self-improvement (RSI), but realizing this promise requires further exploration.",
+      "hot_score": 54.8248,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-11-20T19:00:00+00:00",
+      "last_seen_at": "2026-11-24T04:02:12.522709+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 7
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_ed75bf498e47451e": {
+      "id": "it_ed75bf498e47451e",
+      "source": "github_trending",
+      "title": "jingyaogong/minimind",
+      "url": "https://github.com/jingyaogong/minimind",
+      "summary": "🧠 两小时从 0 训出你的 64M 大模型。Train your own 64M LLM from scratch in 2 hours.",
+      "hot_score": 54.546,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-18T01:08:38.998254+00:00",
+      "last_seen_at": "2026-11-25T02:43:11.041216+00:00",
+      "metrics": {
+        "stars_total": 70306,
+        "stars_in_window": 847,
+        "forks": 9148,
+        "streak_days": 6
+      },
+      "streak_days": 6,
+      "language": "Python"
+    },
+    "it_d41f86253f9f730f": {
+      "id": "it_d41f86253f9f730f",
+      "source": "github_trending",
+      "title": "zhouxiaoka/autoclip",
+      "url": "https://github.com/zhouxiaoka/autoclip",
+      "summary": "AutoClip｜一个链接，一键出片。开源 AI 视频剪辑桌面工具，将播客、访谈、课程等长视频自动剪成短视频，生成字幕、封面和发布文案，适配抖音、小红书、TikTok、Reels 与 YouTube Shorts。Open-source AI video clipping & content repurposing.",
+      "hot_score": 52.7988,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-20T00:47:06.446033+00:00",
+      "last_seen_at": "2026-11-25T02:43:11.045717+00:00",
+      "metrics": {
+        "stars_total": 15440,
+        "stars_in_window": 980,
+        "forks": 2277,
+        "streak_days": 6
+      },
+      "streak_days": 6,
+      "language": "Python"
+    },
+    "it_1f28a16c9fe19cbe": {
+      "id": "it_1f28a16c9fe19cbe",
+      "source": "github_trending",
+      "title": "HKUDS/CLI-Anything",
+      "url": "https://github.com/HKUDS/CLI-Anything",
+      "summary": "\"CLI-Anything: Making ALL Software Agent-Native\" -- CLI-Hub: https://clianything.cc/",
+      "hot_score": 52.0,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-16T15:44:39.424204+00:00",
+      "last_seen_at": "2026-11-25T02:43:11.040834+00:00",
+      "metrics": {
+        "stars_total": 64896,
+        "stars_in_window": 1074,
+        "forks": 5912,
+        "streak_days": 7
+      },
+      "streak_days": 7,
+      "language": "Python"
+    },
+    "it_c75fda64510b4a09": {
+      "id": "it_c75fda64510b4a09",
+      "source": "github_trending",
+      "title": "cathrynlavery/diagram-design",
+      "url": "https://github.com/cathrynlavery/diagram-design",
+      "summary": "Editorial diagram design for Claude Code, Codex, GitHub Copilot, Cursor, Factory Droid, Qoder, and Pi. 45 diagram types. Self-contained HTML + SVG. No shadows. No Mermaid slop.",
+      "hot_score": 51.7988,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-20T00:47:06.445994+00:00",
+      "last_seen_at": "2026-11-25T02:43:11.042970+00:00",
+      "metrics": {
+        "stars_total": 72148,
+        "stars_in_window": 802,
+        "forks": 4812,
+        "streak_days": 6
+      },
+      "streak_days": 6,
+      "language": "HTML"
+    },
+    "it_a58808d0bc1080c7": {
+      "id": "it_a58808d0bc1080c7",
+      "source": "hackernews",
+      "title": "PenGPT: A Generative Transformer for Handwriting and Sketches",
+      "url": "https://greydanus.github.io/2026/11/12/pengpt",
+      "summary": "",
+      "hot_score": 51.75,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-25T00:54:49+00:00",
+      "last_seen_at": "2026-11-25T02:43:11.018348+00:00",
+      "metrics": {
+        "points": 58,
+        "num_comments": 7
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_0468d5807225d336": {
+      "id": "it_0468d5807225d336",
+      "source": "hf_papers",
+      "title": "WeightCode: Installing New Capabilities into Neural Networks via Weight-Space Programming",
+      "url": "arxiv:2611.25476",
+      "summary": "Neural networks encode learned capabilities in their weights, yet extending those capabilities with explicit task knowledge remains a fundamental challenge. Here we show that Weight-Space Programming (WSP), in which executable programs read, construct or modify a network's weights directly, can install new capabilities within trained neural networks. WeightCode, a WSP framework, uses a frozen language model to write executable weight programs that install new computations into trained neural networks using task knowledge and their existing weights, without gradient-based training. Once installed, the new capabilities run independently of the language model. Given a grammar or eight demonstrations, weight programs enable previously unseen command compositions (0% to 99.8% exact match) and a new pickup action (0% to 98.4% success), while preserving the original command and navigation capabilities. On ImageNet, four weight programs achieve net gains of 8.84-17.62 points while preserving clean accuracy, outperforming the best of eight fine-tuning methods under matched examples, checks, and retention constraints. In a Vision Transformer, causal interventions show that installed noise-correction gates drive robustness gains, while their selective activation preserves clean accuracy. Rerun on five independently trained Vision Transformers without further language model calls, ten weight programs retain 83-110% of their source-network gains on average, whereas copying their fixed weight edits yields negligible gains. Six programs written for an already edited network add 5.23-14.50 points of contrast robustness while retaining the previously installed noise gain. Together, these results establish WSP as a new route to acquiring and accumulating capabilities in trained neural networks through reusable weight programs.",
+      "hot_score": 46.3492,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-11-18T19:00:00+00:00",
+      "last_seen_at": "2026-11-24T04:02:12.523579+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 6
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_833333ed0f4723f5": {
+      "id": "it_833333ed0f4723f5",
+      "source": "github_trending",
+      "title": "mjmirza/app-store-compliance",
+      "url": "https://github.com/mjmirza/app-store-compliance",
+      "summary": "Avoid common App Store and Google Play rejections. Open playbook and pre-submission guard with 124 documented rejection patterns and fixes, privacy manifest and Data safety checks, 112 tracked deadlines (EU AI Act, DSA, COPPA, age laws), and a skill for AI coding agents.",
+      "hot_score": 45.4654,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-20T00:47:06.446011+00:00",
+      "last_seen_at": "2026-11-25T02:43:11.044174+00:00",
+      "metrics": {
+        "stars_total": 5916,
+        "stars_in_window": 928,
+        "forks": 381,
+        "streak_days": 6
+      },
+      "streak_days": 6,
+      "language": "Shell"
+    },
+    "it_cdb9715a4e63b5b4": {
+      "id": "it_cdb9715a4e63b5b4",
+      "source": "hf_papers",
+      "title": "LeadVLA: Learning Follower-Aware Route Execution for Robot Leading",
+      "url": "arxiv:2611.30149",
+      "summary": "Robot leading requires executing a route while continuously adapting to a designated follower. Existing robot-leading systems often mediate follower understanding and physical route execution through explicit states, planners, or modular interfaces; directly learning this coupling through end-to-end trajectory prediction can instead entangle route execution with follower response. We introduce LeadVLA, a structured multimodal policy that preserves the route as an explicit Path reference while learning a Pace for route progress and a Residual for local follower- and scene-conditioned adaptation. To make this problem trainable and measurable, we develop LeadInfra, a configurable Unreal Engine-based closed-loop data-generation infrastructure from which we instantiate an approximately 4M-sample training corpus, and LeadBench, a standardized benchmark with 108 fully held-out closed-loop episodes. LeadVLA achieves the highest task success (39.6%) among evaluated robot policies on LeadBench while maintaining strong route fidelity and follower responsiveness, and transfers to unseen real-world environments without real-world policy fine-tuning. Project Page: https://louiszengCN.github.io/LeadVLA_PAGE/",
+      "hot_score": 43.526,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-11-22T19:00:00+00:00",
+      "last_seen_at": "2026-11-25T02:43:11.080218+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 5
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_5d4bdf4656aab275": {
+      "id": "it_5d4bdf4656aab275",
+      "source": "hackernews",
+      "title": "Compiling web applications into verified operations for AI agents",
+      "url": "https://protocolis.co/paper",
+      "summary": "",
+      "hot_score": 41.9236,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-24T19:12:02+00:00",
+      "last_seen_at": "2026-11-25T02:43:11.019221+00:00",
+      "metrics": {
+        "points": 33,
+        "num_comments": 11
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_f70d6b968bbde640": {
+      "id": "it_f70d6b968bbde640",
+      "source": "github_trending",
+      "title": "toeverything/AFFiNE",
+      "url": "https://github.com/toeverything/AFFiNE",
+      "summary": "There can be more than Notion and Miro. AFFiNE(pronounced [ə‘fain]) is a next-gen knowledge base that brings planning, sorting and creating all together. Privacy first, open-source, customizable and ready to use.",
+      "hot_score": 41.7988,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-20T00:47:06.446022+00:00",
+      "last_seen_at": "2026-11-25T02:43:11.044968+00:00",
+      "metrics": {
+        "stars_total": 78032,
+        "stars_in_window": 676,
+        "forks": 5701,
+        "streak_days": 6
+      },
+      "streak_days": 6,
+      "language": "TypeScript"
+    },
+    "it_d6a3974a1a3c345c": {
+      "id": "it_d6a3974a1a3c345c",
+      "source": "rss",
+      "title": "Yale’s Sonnenfeld: Nvidia is a ‘detriment’ to U.S. industrial might — not a champion",
+      "url": "https://techcrunch.com/2026/11/24/yales-sonnenfeld-nvidia-is-a-detriment-to-u-s-industrial-might-not-a-champion",
+      "summary": "Yale's Jeffrey Sonnenfeld warns that what the market cheered Monday, Jensen Huang's White House–backed return as Nvidia's CEO and board member, could prove a giant mistake, exposing the directors to \"historic\" personal liability from a growing pile of lawsuits and raising the question of whether the country is celebrating a company that has helped put advanced chips in its adversaries' hands.",
+      "hot_score": 39.0,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-25T00:12:02+00:00",
+      "last_seen_at": "2026-11-25T02:43:11.027383+00:00",
+      "metrics": {
+        "rank_score": 1.0
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_6ff348e652c905f1": {
+      "id": "it_6ff348e652c905f1",
+      "source": "rss",
+      "title": "Three LLM inflection points in twelve months",
+      "url": "https://simonwillison.net/2026/Nov/24/llm-inflection-points",
+      "summary": "I gave a keynote at the AI Engineer Code Summit a couple of weeks ago, constructed around the idea that there have been three significant inflection points in the abilities of LLMs and coding agents in the past twelve months.\nHere's the video of the talk. In this post I'm going to pull out the major inflection point theme and interrogate it more deeply.\n\n\nCoding agents in November 2025\nToday, November 24th 2026, is the one year anniversary of the release of Claude Opus 4.5 . With hindsight, this was a consequential model.\nIn the Opus 4.5 announcement, Anthropic said:\n\nTesters noted that Claude Opus 4.5 handles ambiguity and reasons about tradeoffs without hand-holding. They told us that, when pointed at a complex, multi-system bug, Opus 4.5 figures out the fix. They said that tasks that were near-impossible for Sonnet 4.5 just a few weeks ago are now within reach.\n\nThis held up.\nClaude Code was 9 months old at that point, having been introduced alongside Claude 3.7 Sonnet on February 24th, 2025.\nOpus 4.5 was the first model I had used with Claude Code where the default result was generally the right thing. I hadn't been using Claude Code as a daily driver because it didn't feel reliable enough - I had to correct it often enough that it didn't feel like a clear accelerant.\nThe new Opus changed that. For most of the coding problems I faced on a daily basis, Opus would get them right . It was clearly faster than working through the problems myself.\nAlso in November, OpenAI released GPT-5.1 Instant, GPT-5.1 Thinking, GPT-5.1-Codex, and GPT-5.1-Codex-Max. These had a similar effect on their Codex coding agent: it became reliably useful for many of my coding tasks.\nThe timing was convenient, because the December holidays were upon us. A lot of people, myself included, spent December tinkering with these new tools to see what they could do. By January we were ready to use them for our actual work.\nFable class models in June/July\nWe got our first hint of Claude Fable in April, when Anthropic announced Claude Mythos and said that it was too dangerous to release , due to its improved cybersecurity capabilities. Mythos was a model that could not just find security vulnerabilities, it could also figure out how to exploit them.\nIn June we got to see how good that model was for ourselves, with the release of Claude Fable 5 - a defanged Mythos, that would solve most problems but would actively block you from using it for security work.\nAfter three glorious days... the US government took it away from us. Fable 5 was placed under export controls that effectively banned the model. We wouldn't get it back until July 1st.\nFor me, Fable was an inflection point because it introduced us to what I now think of as Fable class models . My definition of these:\n\nIn June I wrote about how Claude Fable is relentlessly proactive , after I asked it to help fix a display glitch in Safari and it spun up its own pyobjc-framework-Quartz screenshot mechanism and a CORS-enabled localhost logging server to help resolve the bug.\nA more recent example of the power of Fable class models is my mysterious beep finder from a couple of weeks ago. I gave Opus 5.5 and then Fable 5.2 access to five WebAudio microphones in a room full of boxes and it was able to triangulate the source of an infuriating mysterious beep to within about 40cm.\nGive it a goal, give it the right tools, and watch it cook.\nI'd currently class Claude Fable 5, 5.1, 5.2 and Claude Opus 5.5 as Fable class (I think of Opus 5.5 as \"cheap Fable\"). GPT-6 Astra got there for me too, and I think the new Gemini 4 Neon may count as well.\nThese now represent the baseline for what I expect from a frontier model.\n3D modeling and game development in September/October\nSomething interesting happened with frontier LLMs over just the past four months: they got really good at 3D modeling. Set them up with Blender or ask them to write Three.js code and they'll produce credible models of almost anything you ask for.\nI first noticed this with Claude Fable 5, but it really kicked into gear with Opus 5.5, GPT-5.6 Sol, GPT-6 Astra, and most recently the Gemini 4 family. Here's Gemini 4 Neon's attempt at \"Make a three js animation where yonkers stands up as a big mech (cool stand up motion) and stomps around manhattan and queens and Brooklyn, use openstreetmap mapping data\", for example.\n3D spatial awareness is crucial if you want to use vision LLMs for robotics. I don't know if 3D modeling capabilities are a side-effect of the labs focusing on that or vice-versa.\nBack in August I experimented with having Fable 5 build me a raccoon heist game . It had 3D graphics, looked like a game, and played really poorly. GPT-5.6 Sol Ultra did a much better job but the game itself was still pretty dull after the first 90 seconds of play.\nI was somewhat relieved that designing a game that was fun appeared to remain a uniquely human pursuit. I even used that in a talk in September to reassure people that us humans still had a role to play!\nThen, I tried telling Claude Opus 5.5 \"This game isn't fun enough yet. Make it a LOT more fun.\" And it worked . My Command & Conquer-style RTS went from boring to deeply entertaining overnight, after Opus spent 12 hours playtesting new features and rebalancing the gameplay.\nOpus 5.5 was the first model I'd used that appeared to understand fun. I've since worked on several little game projects where prompts like \"Think hard about how to make sure it is both fun and beautiful\" produced results that kept me engaged for significant amounts of time.\nOpus 5.5 came out on September 22nd, 2026. I've been to two different conferences since then where people showed me game projects they'd been working on that really did feel like proper, worthwhile games.\nThe indie games scene has descended into a full-blown culture war over AI-assisted programming. A lot of people are calling GTA VI the last pre-generative AI blockbuster .\nIt feels like another inflection point to me.\nIs Fable 5.2 an inflection point too?\nI'm still trying to decide if Fable 5.2 represents a new inflection point, or just another incremental improvement.\nI'm getting so much done with that model right now!\nIt seems to have taste that almost exactly matches my own. I have been burning through all sorts of gnarly problems that I've been thinking about (or procrastinating on) for several years now. The release notes for Datasette 1.0a42 , 1.0a43 , and 1.0a44 - plus LLM 0.37 , 0.37.1 , 0.37.2 , 0.37.3 , and 0.38 - all in the last three weeks , represent a flood of fixes, features and improvements.\nIf this does represent an inflection point, the key feature seems to be that if you can imagine and then clearly describe a piece of software, Fable can build it . That's a wild thing to say, but it matches my experience over the past few weeks.\nSoftware development has transformed beyond recognition in the last year. I don't think I'll ever go back to typing most of my code by hand.\n\nTags: game-design , my-talks , ai , generative-ai , llms , annotated-talks , coding-agents , claude-code , codex , claude-mythos-fable",
+      "hot_score": 39.0,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-24T23:02:07+00:00",
+      "last_seen_at": "2026-11-25T02:43:11.019620+00:00",
+      "metrics": {
+        "rank_score": 1.0
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_bc426bbbebd762f2": {
+      "id": "it_bc426bbbebd762f2",
+      "source": "rss",
+      "title": "Jensen Huang still thinks a succession plan creates unnecessary hierarchy",
+      "url": "https://techcrunch.com/2026/11/24/jensen-huang-still-thinks-a-succession-plan-creates-unnecessary-hierarchy",
+      "summary": "It's a remarkable stance for a company that spent the last two weeks finding out what happens without its founder.",
+      "hot_score": 39.0,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-24T22:27:52+00:00",
+      "last_seen_at": "2026-11-25T02:43:11.027991+00:00",
+      "metrics": {
+        "rank_score": 0.9231
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_72fd424c711a4514": {
+      "id": "it_72fd424c711a4514",
+      "source": "rss",
+      "title": "In all-hands meeting, Jensen Huang thanks White House and says he’s in therapy",
+      "url": "https://techcrunch.com/2026/11/24/in-all-hands-meeting-jensen-huang-thanks-white-house-and-says-hes-in-therapy",
+      "summary": "The Nvidia founder apologized to his staff on Tuesday and said he was grateful for a second chance to lead the company.",
+      "hot_score": 39.0,
+      "topic_id": "tp_0c7ccbe0b5cb",
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-24T21:48:27+00:00",
+      "last_seen_at": "2026-11-25T02:43:11.028396+00:00",
+      "metrics": {
+        "rank_score": 0.8462
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_71615ee1ebfde345": {
+      "id": "it_71615ee1ebfde345",
+      "source": "rss",
+      "title": "Even the best AI agents struggle with everyday life",
+      "url": "https://techcrunch.com/2026/11/24/even-the-best-ai-agents-struggle-with-everyday-life",
+      "summary": "As millions embrace personal AI assistants, a new benchmark reveals that even the most advanced AI models struggle to complete everyday tasks reliably and safely without introducing potential new problems.",
+      "hot_score": 39.0,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-24T21:33:29+00:00",
+      "last_seen_at": "2026-11-25T02:43:11.028841+00:00",
+      "metrics": {
+        "rank_score": 0.7692
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_b1e5839c1dc50666": {
+      "id": "it_b1e5839c1dc50666",
+      "source": "rss",
+      "title": "Walmart teams up with Meta to bring Black Friday deals to AI agent Muse",
+      "url": "https://techcrunch.com/2026/11/24/walmart-teams-up-with-meta-to-bring-black-friday-deals-to-ai-agent-muse",
+      "summary": "Walmart now lets customers shop Black Friday deals through Muse, Meta’s AI agent.",
+      "hot_score": 39.0,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-24T21:32:38+00:00",
+      "last_seen_at": "2026-11-25T02:43:11.029256+00:00",
+      "metrics": {
+        "rank_score": 0.6923
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_4d83f53e63e2d3da": {
+      "id": "it_4d83f53e63e2d3da",
+      "source": "rss",
+      "title": "Maple raises $5.3M to build AI products that protect your data, even from itself",
+      "url": "https://techcrunch.com/2026/11/24/maple-raises-5-3m-to-build-ai-products-that-protect-your-data-even-from-itself",
+      "summary": "The startup's encrypted AI architecture is designed to prevent even the company itself from accessing users' private data.",
+      "hot_score": 39.0,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-24T21:19:52+00:00",
+      "last_seen_at": "2026-11-25T02:43:11.029642+00:00",
+      "metrics": {
+        "rank_score": 0.6154
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_1479a2d5f1158c80": {
+      "id": "it_1479a2d5f1158c80",
+      "source": "rss",
+      "title": "What's going on with the Riemann hypothesis?",
+      "url": "https://arstechnica.com/ai/2026/11/whats-going-on-with-the-riemann-hypothesis",
+      "summary": "Last week, news broke that a mathematician had used AI to help crack one of the biggest outstanding problems in math: a proof of the Riemann hypothesis . The news follows several other major breakthroughs in math that have either been enabled by or managed entirely by large language model-based systems, a development that has left the entire field of mathematics in a state of upset.\nIt's too early to say much about the proof itself—mathematicians are still in the process of digesting it. But we can say a little about how the proof came about, and what it tells us about the state of math.\nTackling Riemann\nThe Riemann hypothesis dates from the mid-1800s and was formulated by (you will be surprised to learn) Bernhard Riemann. There's not an obvious way to describe the details of the actual hypothesis simply, but it has implications for the distribution of prime numbers. This gives it significance for areas ranging from number theory to cryptography. As Wikipedia accurately states, \"It is considered by pure mathematicians to be one of the most important problems in the field.\" Read full article\nComments",
+      "hot_score": 38.9233,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-24T20:34:53+00:00",
+      "last_seen_at": "2026-11-25T02:43:11.032933+00:00",
+      "metrics": {
+        "rank_score": 1.0
+      },
+      "streak_days": 0,
+      "language": "en"
+    }
+  },
+  "meta": {
+    "mode": "hybrid",
+    "day": "2026-11-25",
+    "generated_at": "2026-11-25T02:43:54.392085+00:00",
+    "window": {
+      "since": "2026-11-24T02:43:02.178911+00:00",
+      "until": "2026-11-25T02:43:11.095609+00:00",
+      "hours": 24.0,
+      "since_local": "2026-11-24T10:43+08:00",
+      "until_local": "2026-11-25T10:43+08:00",
+      "tz": "Asia/Shanghai"
+    },
+    "analysis": {
+      "items": 186,
+      "scored": 186,
+      "topics": 4,
+      "new_entity_mention_rows": 225,
+      "state_items": 16
+    },
+    "llm": {
+      "degraded": false,
+      "degraded_reason": "",
+      "calls": 1
+    },
+    "collect": {
+      "ok_sources": 6,
+      "failed_sources": 1,
+      "skipped": 0,
+      "total_items": 123
+    },
+    "verify": {
+      "verified": 0,
+      "unverifiable": 1,
+      "deferred": 17,
+      "failed": 0,
+      "llm_calls": 0
+    },
+    "predictions": {
+      "total": 224,
+      "verified": 19,
+      "pending": 190,
+      "unverifiable": 15,
+      "hit_rate": 0.15789473684210525,
+      "weighted_score": 0.15789473684210525,
+      "brier": 0.31934210526315787
+    },
+    "prediction_generation": {
+      "mode": "hybrid",
+      "generated": 5,
+      "inserted": 5,
+      "dropped": [],
+      "llm_calls": 1,
+      "candidate_pool": 20,
+      "degraded": false,
+      "degraded_reason": ""
+    },
+    "brief": {
+      "max_items_per_section": 10,
+      "velocity_board_enabled": true,
+      "velocity_board_top_n": 5
+    },
+    "signals": {
+      "entities": 941,
+      "points": 1878,
+      "with_velocity": 129,
+      "insufficient": 112,
+      "cold_start": 700,
+      "min_window_hours": 6.0
+    },
+    "enhance_total": 28,
+    "enhanced": 28,
+    "enhance_skipped_count": 0,
+    "enhance_cache_hit": 12,
+    "enhance_cost_cny": 0.007445
+  }
+}
