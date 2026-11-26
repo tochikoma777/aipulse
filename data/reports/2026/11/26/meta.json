@@ -1,0 +1,75 @@
+{
+  "mode": "hybrid",
+  "day": "2026-11-26",
+  "generated_at": "2026-11-26T01:55:40.246152+00:00",
+  "window": {
+    "since": "2026-11-25T01:54:39.800238+00:00",
+    "until": "2026-11-26T01:54:47.370377+00:00",
+    "hours": 24.0,
+    "since_local": "2026-11-25T09:54+08:00",
+    "until_local": "2026-11-26T09:54+08:00",
+    "tz": "Asia/Shanghai"
+  },
+  "analysis": {
+    "items": 174,
+    "scored": 174,
+    "topics": 3,
+    "new_entity_mention_rows": 222,
+    "state_items": 16
+  },
+  "llm": {
+    "degraded": false,
+    "degraded_reason": "",
+    "calls": 1
+  },
+  "collect": {
+    "ok_sources": 5,
+    "failed_sources": 2,
+    "skipped": 0,
+    "total_items": 113
+  },
+  "verify": {
+    "verified": 0,
+    "unverifiable": 3,
+    "deferred": 18,
+    "failed": 0,
+    "llm_calls": 0
+  },
+  "predictions": {
+    "total": 229,
+    "verified": 19,
+    "pending": 192,
+    "unverifiable": 18,
+    "hit_rate": 0.15789473684210525,
+    "weighted_score": 0.15789473684210525,
+    "brier": 0.31934210526315787
+  },
+  "prediction_generation": {
+    "mode": "hybrid",
+    "generated": 5,
+    "inserted": 5,
+    "dropped": [],
+    "llm_calls": 1,
+    "candidate_pool": 20,
+    "degraded": false,
+    "degraded_reason": ""
+  },
+  "brief": {
+    "max_items_per_section": 10,
+    "velocity_board_enabled": true,
+    "velocity_board_top_n": 5
+  },
+  "signals": {
+    "entities": 948,
+    "points": 1901,
+    "with_velocity": 129,
+    "insufficient": 112,
+    "cold_start": 707,
+    "min_window_hours": 6.0
+  },
+  "enhance_total": 27,
+  "enhanced": 27,
+  "enhance_skipped_count": 0,
+  "enhance_cache_hit": 8,
+  "enhance_cost_cny": 0.00851
+}

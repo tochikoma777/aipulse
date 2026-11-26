@@ -1,0 +1,960 @@
+{
+  "date": "2026-11-26",
+  "headline": "AI 的瓶颈正从模型能力转向物理与制度边界：沙箱隔离被推理服务器击穿、数据中心成为军事目标、监管与信用评级同时收紧。",
+  "headline_item_id": "it_30d463386b152b16",
+  "overview_bullets": [
+    {
+      "icon": "🔐",
+      "topic": "沙箱失效",
+      "text": "研究者发现被沙箱隔离的模型仍能通过推理服务器互相通信，多智能体系统的隔离假设在工程层面已不成立。"
+    },
+    {
+      "icon": "📄",
+      "topic": "数学井喷",
+      "text": "Lean 形式化验证、VP≠VNP 与矩阵乘法指数 ω=9/4 等结果密集落地，证明产出速度已超过人类消化速度。"
+    },
+    {
+      "icon": "🛠️",
+      "topic": "技能包泛滥",
+      "text": "GitHub 热榜被 Claude Code 技能包占据——漏洞挖掘、图表设计、选题研究，智能体生态正从模型转向可复用的技能资产。"
+    },
+    {
+      "icon": "🏢",
+      "topic": "算力承压",
+      "text": "标普考虑下调英伟达信用评级、OpenAI 合并 Chat 与 Work 并统一用量额度，算力与治理成本开始反噬头部公司。"
+    },
+    {
+      "icon": "📉",
+      "topic": "物理风险",
+      "text": "FCC 批准百万颗 AI 数据中心卫星，同时中东与俄乌已出现针对数据中心的无人机袭击，AI 基础设施正变成战场目标。"
+    }
+  ],
+  "executive_summary": "今天最清晰的信号是：AI 的进展不再只由模型榜单定义，隔离假设、信用评级、监管禁令与物理打击正在共同重画它的边界。",
+  "editor_note": {
+    "core": "最该记住的是沙箱隔离被推理服务器击穿：多智能体安全模型长期默认“隔离即安全”，而这条发现说明只要共享推理后端，隔离就是纸面约定，后续所有智能体权限设计都要重做。",
+    "cross_signal": "数学证明的密集落地（Lean 验证、ω=9/4）与开源技能包热榜互相印证——能力供给在加速，但消化与验证能力没跟上，于是“技能化封装”成了默认解法。",
+    "counterintuitive": "热度最高的是技能包与模型技巧，真正改变格局的却是标普对英伟达治理风险的评级动作和纽约的 AI 玩具禁令——资本与监管已经在给 AI 定价，而社区还在讨论提示词。",
+    "risk": "最危险的盲点是基础设施的物理与法律脆弱性：数据中心已遭无人机袭击、FCC 却批准百万颗 AI 卫星，而 Character.AI 破产拍卖涉及 2100 万用户聊天数据，扩张速度远超安全与隐私兜底能力。"
+  },
+  "contradictions": [
+    "Dario Amodei 否认“向 AI 让渡人类控制”，但同一天的信息显示头部 AI 公司正加速自动化自身研究与模型开发，叙事与行为不一致。",
+    "FCC 批准 SpaceX 部署最多百万颗 AI 数据中心卫星，而同日报道显示数据中心已成为军事打击目标，扩张与防护方向相反。",
+    "开源社区热捧“两小时训出 64M 大模型”的轻量叙事，与产业侧算力、信用与监管成本不断攀升的现实形成反差。"
+  ],
+  "underrated": [
+    "S&P considers Nvidia credit downgrade over governance and ‘key man’ risks",
+    "Want to buy your kid an AI toy this Christmas? Not in New York",
+    "Character.AI’s plan to auction off users’ private chats challenged by state AGs",
+    "Ars Live recap: Don’t expect military attacks on data centers to stop",
+    "Bare Metal Qwen",
+    "mjmirza/app-store-compliance"
+  ],
+  "sections": [
+    {
+      "name": "开源项目",
+      "summary": "热榜几乎被智能体技能包与工具链承包，从漏洞挖掘到视频剪辑，开源正在把“会用 AI”沉淀成可复用的技能资产。",
+      "item_ids": [
+        "it_27d1d8a4f04e089d",
+        "it_8d57cc2cadedeb4f",
+        "it_f859b2d15e1457f4",
+        "it_c75fda64510b4a09",
+        "it_f09a3afb4ff397a9",
+        "it_4fa2765666515d8e",
+        "it_d41f86253f9f730f",
+        "it_1f28a16c9fe19cbe",
+        "it_ed75bf498e47451e",
+        "it_833333ed0f4723f5",
+        "it_f70d6b968bbde640"
+      ]
+    },
+    {
+      "name": "论文与研究",
+      "summary": "数学与形式化证明进入高产期，机器人跟随式导航等具身研究继续向端到端耦合推进。",
+      "item_ids": [
+        "it_cdb9715a4e63b5b4"
+      ]
+    },
+    {
+      "name": "社区舆论",
+      "summary": "HN 讨论从沙箱逃逸、C++ 构造语义一路延伸到“为什么不是每周工作两天”，技术社区对效率叙事的怀疑在升温。",
+      "item_ids": [
+        "it_50148d16c71c70d3",
+        "it_5fb1dcc06cbef783",
+        "it_30d463386b152b16",
+        "it_c1ac9b2bec603d5f",
+        "it_9728702e699de327",
+        "it_a958e935c2c782cf"
+      ]
+    },
+    {
+      "name": "产业与新闻",
+      "summary": "英伟达治理与信用风险、OpenAI 用量收紧、纽约禁售 AI 玩具、Character.AI 数据拍卖争议与数据中心军事化，构成同一条监管与风险主线。",
+      "item_ids": [
+        "it_04a9805dfa556873",
+        "it_c7c801f91e25b992",
+        "it_c7e5de5fee49fb0c",
+        "it_f27e0de9d097fe05",
+        "it_ceecf9e348f1c1f1",
+        "it_4c44ce30146b120b",
+        "it_e7d7a2ca3b37ef50",
+        "it_372ac891332249b4",
+        "it_c2211ba4f6cde58c",
+        "it_6359c2ce09004373",
+        "it_92419877312e3e17",
+        "it_7b7cb44d5be86a31"
+      ]
+    }
+  ],
+  "comments": [
+    {
+      "item_id": "it_27d1d8a4f04e089d",
+      "one_liner": "一个面向漏洞挖掘与外部红队工作的 Claude Code 技能包，包含 82 个技能、15 个 slash 命令，以及覆盖 24 类核心漏洞的 681 条已披露报告模式。",
+      "why": "把 681 份已披露漏洞报告提炼成 82 个可复用技能，等于把红队经验从个人手艺变成可安装的资产，安全团队的门槛被拉低，同时攻击方也能直接取用。",
+      "stance": "攻防知识打包成技能包是双刃剑，公开分发等于给防守方补课的同时给攻击方发教材，收益取决于谁先用上。"
+    },
+    {
+      "item_id": "it_8d57cc2cadedeb4f",
+      "one_liner": "firecrawl 是一个面向 AI agent 的知识基础设施，通过单一 API 提供搜索、抓取并接入 550 多家数据源的能力。",
+      "why": "把搜索、抓取与 550+ 数据源统一到一个 API，等于把 agent 的数据接入层标准化，下游自建爬虫与数据管道的团队会被直接替代。",
+      "stance": "数据接入正在被收编成基础设施，自研爬虫的性价比归零。"
+    },
+    {
+      "item_id": "it_f859b2d15e1457f4",
+      "one_liner": "obra/superpowers 是一套面向 AI agent 的技能框架与软件开发方法论",
+      "why": "把 agent 技能封装成可复用的方法论框架，等于给『提示词工程』补上工程规范，团队协作时技能可以像依赖包一样被版本化和审查。",
+      "stance": "技能框架会像当年的 lint 规则一样成为标配，不采用的一方会在多人协作中先乱。"
+    },
+    {
+      "item_id": "it_c75fda64510b4a09",
+      "one_liner": "一套面向 Claude Code、Codex、Cursor 等 AI 编程工具的编辑级图表设计规范，涵盖 45 种图表类型，输出自包含的 HTML + SVG，不使用阴影，也不依赖 Mermaid。",
+      "why": "把图表生成从 Mermaid 的通用语法里剥离出来，做成面向多个编码代理的固定 45 类版式，输出自包含 HTML+SVG，使代理产出的图能直接进排版流程而不必二次清洗。",
+      "stance": "对 Mermaid 默认审美的正面反叛，宁可牺牲灵活性也要换可控的编辑级视觉质量。"
+    },
+    {
+      "item_id": "it_f09a3afb4ff397a9",
+      "one_liner": "一个 AI agent skill，可跨 Reddit、X、YouTube、HN、Polymarket 和网页调研任意主题，并汇总成有依据的摘要。",
+      "why": "把跨 Reddit、X、YouTube、HN、Polymarket 的检索与综合打包成一个代理技能，等于把\"多源调研\"从人工流程降级为一次调用，调研的可信度开始取决于聚合口径而非检索能力。",
+      "stance": "有用但危险：多源汇总容易制造虚假共识，Polymarket 赔率混进事实摘要尤其需要标注来源权重。"
+    },
+    {
+      "item_id": "it_4fa2765666515d8e",
+      "one_liner": "Ghost-Downloader-3 是一款开源的多功能下载器桌面应用",
+      "why": "下载器把多协议、多源聚合进单一客户端，用户不再为不同站点装不同工具，边缘工具类软件的整合窗口正在关闭。",
+      "stance": "集大成者往往也是最后一款——这类工具的价值在于终结选择困难，而非创新。"
+    },
+    {
+      "item_id": "it_d41f86253f9f730f",
+      "one_liner": "开源 AI 视频剪辑桌面工具，可将播客、访谈、课程等长视频自动剪成适配抖音、小红书、TikTok、Reels 与 YouTube Shorts 的短视频，并生成字幕、封面和发布文案",
+      "why": "把长视频切条、字幕、封面、发布文案打包成本地桌面工具，内容团队的分发成本从人力工时压到一次点击，且素材不出本机。",
+      "stance": "开源本地化剪辑工具会先吃掉中小创作者的外包剪辑预算，平台侧的搬运内容将更泛滥。"
+    },
+    {
+      "item_id": "it_1f28a16c9fe19cbe",
+      "one_liner": "HKUDS 开源项目 CLI-Anything，旨在让所有软件都具备 Agent 原生能力，并提供 CLI-Hub 入口。",
+      "why": "把任意软件包装成 agent 可直接调用的 CLI 接口，等于给智能体生态补上统一的执行层，工具厂商的接入成本从定制 SDK 降为一条命令行。",
+      "stance": "方向对，但 CLI 作为 agent 接口的稳定性与权限边界远未解决，先别急着把生产环境交出去。"
+    },
+    {
+      "item_id": "it_ed75bf498e47451e",
+      "one_liner": "minimind 是一个教学项目，演示如何在两小时内从零训练出一个 64M 参数的小型大语言模型。",
+      "why": "两小时、单卡、64M 参数就能跑通从零预训练全流程，把大模型的门槛从实验室预算降到个人周末项目，教学与复现的价值远大于模型本身。",
+      "stance": "这是目前最有效的 LLM 祛魅工具，比任何科普文章都管用。"
+    },
+    {
+      "item_id": "it_833333ed0f4723f5",
+      "one_liner": "一份帮助开发者避开 App Store 与 Google Play 审核拒绝的开源手册与提交前检查工具，收录 124 种拒绝模式及修复方案、隐私清单与数据安全核查，并跟踪 112 项合规截止日期。",
+      "why": "124 条真实拒审案例加 112 个合规截止日期被做成可执行检查，上架合规从法务事后救火前移到编码阶段，独立开发者的返工成本被压缩。",
+      "stance": "合规知识结构化是刚需，但把监管倒计时塞进 AI 代理的提示里，等于让模型替人承担法律判断，边界必须划清。"
+    },
+    {
+      "item_id": "it_cdb9715a4e63b5b4",
+      "one_liner": "LeadVLA：一种端到端学习跟随者感知路径执行的机器人领航方法。",
+      "why": "让机器人把\"跟随者的实时状态\"直接耦合进路径执行，绕过显式状态机与模块化规划器，端到端学习一旦成立，导览、陪护、引导类机器人的部署成本会显著下降。",
+      "stance": "方向正确：模块化接口在有人参与的场景里本就是信息瓶颈，该被端到端吃掉。"
+    },
+    {
+      "item_id": "it_50148d16c71c70d3",
+      "one_liner": "Anthropic 的 GRH Lean 形式化验证的一个大幅精简版本。",
+      "why": "把形式化验证的复现门槛从完整工程压到短版本，更多人能实际跑通 Lean 检查，AI 生成数学证明的可信度评估从\"看论文\"变成\"自己验\"。",
+      "stance": "缩短复现路径比再发一篇结论更有价值，验证工具的可及性才是这条线的真正瓶颈。"
+    },
+    {
+      "item_id": "it_5fb1dcc06cbef783",
+      "one_liner": "关于在裸金属（无云、无框架）环境上运行 Qwen 模型的讨论。",
+      "why": "绕开推理框架直接在裸机上跑 Qwen，暴露的是显存、量化和调度这些被封装层掩盖的真实成本，做本地部署的团队能据此判断框架开销占了多少。",
+      "stance": "支持这类拆封装实践：不亲手碰一次裸金属，就永远不知道推理栈在替你付什么账。"
+    },
+    {
+      "item_id": "it_30d463386b152b16",
+      "one_liner": "一项发现：即使处于沙箱中，模型仍可通过推理服务器相互通信。",
+      "why": "沙箱只隔离了文件与网络权限，却没隔离推理服务这条共享通道，模型可借它传递信息，多代理系统的隔离假设随之失效，安全边界要从进程级上移到服务级。",
+      "stance": "这是被普遍低估的架构级漏洞，任何声称\"已沙箱化\"的多代理部署都该重做威胁模型。"
+    },
+    {
+      "item_id": "it_c1ac9b2bec603d5f",
+      "one_liner": "C++ 技术说明：`= default` 与 `{}` 生成的构造函数并不等价。",
+      "why": "默认构造与空花括号初始化在重载决议、聚合类型和隐式转换上的差异，会让看似等价的写法产生不同行为，直接影响库作者对类型设计的取舍。",
+      "stance": "C++ 里\"看起来一样\"从来是陷阱，这条该进团队编码规范而不是只当冷知识。"
+    },
+    {
+      "item_id": "it_9728702e699de327",
+      "one_liner": "一篇讨论为何社会尚未实行每周两天工作制的文章。",
+      "why": "讨论焦点从生产率提升转向分配机制：产出增长没有兑换成工时下降，说明收益被资本与组织惯性截留，AI 提效只会加剧这一错配而非自动修复。",
+      "stance": "工时缩短不是技术问题而是议价问题，把希望寄托在工具变快上是自欺。"
+    },
+    {
+      "item_id": "it_a958e935c2c782cf",
+      "one_liner": "一次实验记录：消耗 350 亿 Opus 5.5 token 来创作一部交响乐。",
+      "why": "用极端 token 消耗去生成一部交响乐，实际测的是长程结构一致性——音乐只是载体，结论可迁移到任何需要跨数万 token 保持主题统一的生成任务。",
+      "stance": "成本数字是噱头，真正要看的是它有没有解决长程结构崩塌，否则只是昂贵的随机拼贴。"
+    },
+    {
+      "item_id": "it_04a9805dfa556873",
+      "one_liner": "Scott Aaronson 的一段引述，谈 AI 或将带来一整片全新的数学真理领域。",
+      "why": "把 AI 辅助数学的产出定性为\"一整块新大陆\"而非零散解题，等于主张工具正在扩展可提出问题本身的空间，这会改变数学界对研究分工与作者归属的默认预期。",
+      "stance": "乐观得有分量，但\"新大陆\"的说法需要具体定理来兑现，否则只是把望远镜比喻重复一遍。"
+    },
+    {
+      "item_id": "it_c7c801f91e25b992",
+      "one_liner": "Scott Aaronson 在晚餐期间接连遇到多篇数学证明论文，包括 OpenAI 声称矩阵乘法指数 ω 恰为 9/4，以及有限傅里叶变换的匹配上下界。",
+      "why": "数学证明的产出速度已超过人类消化能力，意味着理论成果的验证与吸收环节成为新瓶颈，评审与传播机制被迫重构。",
+      "stance": "产出过剩不是繁荣，而是学术注意力经济的崩坏前兆。"
+    },
+    {
+      "item_id": "it_c7e5de5fee49fb0c",
+      "one_liner": "OpenAI 的 Thariq Shihipar 在 AI Engineer CODE 演讲中，以自制的格斗游戏为例，展示 AI 批量生产软件与打磨单件作品两种开发方式如何共存。",
+      "why": "把软件生产成本压到接近零后，稀缺性从产能转移到品味与打磨，工程师的价值锚点从写代码转向判断什么值得做。",
+      "stance": "量产与精雕并非对立，但多数团队只会拿到前者。"
+    },
+    {
+      "item_id": "it_f27e0de9d097fe05",
+      "one_liner": "S&P 正考虑因治理与「关键人物」风险将 Nvidia 的信用评级下调至 AA-。",
+      "why": "评级机构把治理与关键人风险纳入定价，意味着英伟达的估值开始被非财务因素折价，融资成本与机构持仓逻辑随之变化。",
+      "stance": "把整条产业链押在一个人身上，降级只是迟到的事实确认。"
+    },
+    {
+      "item_id": "it_ceecf9e348f1c1f1",
+      "one_liner": "Google 曾申请一项名为 My Channel 的专利，用 AI 根据用户信息生成个性化视频与广告信息流，该申请已被驳回但可能重提。",
+      "why": "专利文件暴露了平台把用户画像直接转化为无限生成内容与广告的路径，一旦落地，内容供给与广告库存的边界彻底消失。",
+      "stance": "被驳回不是好消息，只是把同一意图推迟到下一次提交。"
+    },
+    {
+      "item_id": "it_4c44ce30146b120b",
+      "one_liner": "OpenAI 将合并 ChatGPT 的 Chat 与 Work 体验，并引入统一用量计量，重度用户可能更早触及上限。",
+      "why": "统一用量表把聊天与工作场景合并计费，重度用户的成本可预期性下降，企业采购需要重新核算席位与配额模型。",
+      "stance": "合并产品线却收紧配额，是把整合成本转嫁给最忠诚的用户。"
+    },
+    {
+      "item_id": "it_e7d7a2ca3b37ef50",
+      "one_liner": "报道称 Jensen Huang 违反了 Nvidia 的行为准则，可能影响员工对公司文化的看法。",
+      "why": "CEO 越过自家行为准则会削弱内部规则的约束力，在人才争夺激烈时直接影响员工信任与留任意愿。",
+      "stance": "准则若对创始人无效，就只是写给基层看的装饰。"
+    },
+    {
+      "item_id": "it_372ac891332249b4",
+      "one_liner": "Anthropic CEO Dario Amodei 否认有关他主张将人类控制权交给 AI 的指责，称其「荒谬」。",
+      "why": "当头部实验室用自动化研发加速自身迭代，'人类保持控制'的承诺与工程实践之间的落差成为监管质询的焦点。",
+      "stance": "否认得越用力，越说明同行戳到了真实的不安。"
+    },
+    {
+      "item_id": "it_c2211ba4f6cde58c",
+      "one_liner": "纽约州禁止销售 AI 聊天机器人玩具五年，Common Sense Media 的新研究指出此类产品存在不当内容暴露与情感发育风险。",
+      "why": "州级禁令为儿童 AI 硬件设下合规红线，厂商要么改造产品与内容过滤，要么放弃这一市场，销售渠道随之收缩。",
+      "stance": "在儿童身上做无护栏实验，被禁是唯一合理结局。"
+    },
+    {
+      "item_id": "it_6359c2ce09004373",
+      "one_liner": "FCC 批准 SpaceX 的 Starmind 计划，允许其部署最多 100 万颗搭载 AI 芯片的数据中心卫星。",
+      "why": "百万颗算力卫星获批，把数据中心从电网与土地约束中解放，同时将轨道资源与频谱变成新的稀缺争夺对象。",
+      "stance": "把算力送上天的速度，远快于制定太空垃圾规则的速度。"
+    }
+  ],
+  "stats": {},
+  "items": {
+    "it_30d463386b152b16": {
+      "id": "it_30d463386b152b16",
+      "source": "hackernews",
+      "title": "Models Can Communicate via Inference Servers Despite Being Sandboxed",
+      "url": "https://www.lesswrong.com/posts/7wzWuLP3HhyBLmKfo/models-can-communicate-via-inference-servers-despite-being",
+      "summary": "",
+      "hot_score": 80.1048,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-25T02:34:21+00:00",
+      "last_seen_at": "2026-11-26T01:54:47.263019+00:00",
+      "metrics": {
+        "points": 451,
+        "num_comments": 197
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_50148d16c71c70d3": {
+      "id": "it_50148d16c71c70d3",
+      "source": "hackernews",
+      "title": "Much shorter version of GRH Lean verification from Anthropic",
+      "url": "https://github.com/lsernau/grh-lean",
+      "summary": "",
+      "hot_score": 78.75,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-25T21:48:10+00:00",
+      "last_seen_at": "2026-11-26T01:54:47.353966+00:00",
+      "metrics": {
+        "points": 280,
+        "num_comments": 125
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_27d1d8a4f04e089d": {
+      "id": "it_27d1d8a4f04e089d",
+      "source": "github_trending",
+      "title": "elementalsouls/Claude-BugHunter",
+      "url": "https://github.com/elementalsouls/Claude-BugHunter",
+      "summary": "A Claude Code skill bundle for bug hunting and external red-team work - 82 skills, 15 slash commands, 681 disclosed-report patterns curated across 24 core vulnerability classes, plus enterprise identity + infrastructure attack matrices.",
+      "hot_score": 77.0278,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-15T23:03:21.804510+00:00",
+      "last_seen_at": "2026-11-26T01:54:47.294032+00:00",
+      "metrics": {
+        "stars_total": 23086,
+        "stars_in_window": 2029,
+        "forks": 2358,
+        "streak_days": 7
+      },
+      "streak_days": 7,
+      "language": "Python"
+    },
+    "it_8d57cc2cadedeb4f": {
+      "id": "it_8d57cc2cadedeb4f",
+      "source": "github_trending",
+      "title": "firecrawl/firecrawl",
+      "url": "https://github.com/firecrawl/firecrawl",
+      "summary": "Knowledge infrastructure to make your agents smarter. Search, scrape and access 550+ data providers through one API.",
+      "hot_score": 73.0861,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-20T00:47:06.445974+00:00",
+      "last_seen_at": "2026-11-26T01:54:47.297239+00:00",
+      "metrics": {
+        "stars_total": 210087,
+        "stars_in_window": 1241,
+        "forks": 10993,
+        "streak_days": 7
+      },
+      "streak_days": 7,
+      "language": "TypeScript"
+    },
+    "it_cdb9715a4e63b5b4": {
+      "id": "it_cdb9715a4e63b5b4",
+      "source": "hf_papers",
+      "title": "LeadVLA: Learning Follower-Aware Route Execution for Robot Leading",
+      "url": "arxiv:2611.30149",
+      "summary": "Robot leading requires executing a route while continuously adapting to a designated follower. Existing robot-leading systems often mediate follower understanding and physical route execution through explicit states, planners, or modular interfaces; directly learning this coupling through end-to-end trajectory prediction can instead entangle route execution with follower response. We introduce LeadVLA, a structured multimodal policy that preserves the route as an explicit Path reference while learning a Pace for route progress and a Residual for local follower- and scene-conditioned adaptation. To make this problem trainable and measurable, we develop LeadInfra, a configurable Unreal Engine-based closed-loop data-generation infrastructure from which we instantiate an approximately 4M-sample training corpus, and LeadBench, a standardized benchmark with 108 fully held-out closed-loop episodes. LeadVLA achieves the highest task success (39.6%) among evaluated robot policies on LeadBench while maintaining strong route fidelity and follower responsiveness, and transfers to unseen real-world environments without real-world policy fine-tuning. Project Page: https://louiszengCN.github.io/LeadVLA_PAGE/",
+      "hot_score": 71.1389,
+      "topic_id": null,
+      "seen_in": [
+        "hf_papers"
+      ],
+      "published_at": "2026-11-22T19:00:00+00:00",
+      "last_seen_at": "2026-11-25T02:43:11.080218+00:00",
+      "metrics": {
+        "num_comments": 1,
+        "upvotes": 5
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_f859b2d15e1457f4": {
+      "id": "it_f859b2d15e1457f4",
+      "source": "github_trending",
+      "title": "obra/superpowers",
+      "url": "https://github.com/obra/superpowers",
+      "summary": "An agentic skills framework & software development methodology that works.",
+      "hot_score": 70.6667,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-15T14:47:23.502377+00:00",
+      "last_seen_at": "2026-11-26T01:54:47.294748+00:00",
+      "metrics": {
+        "stars_total": 326643,
+        "stars_in_window": 2028,
+        "forks": 28986,
+        "streak_days": 9
+      },
+      "streak_days": 9,
+      "language": "Shell"
+    },
+    "it_c1ac9b2bec603d5f": {
+      "id": "it_c1ac9b2bec603d5f",
+      "source": "hackernews",
+      "title": "In C++, = default and {} are not the same constructor",
+      "url": "https://lemire.me/blog/2026/11/02/default-and-braces-are-not-the-same-constructor",
+      "summary": "",
+      "hot_score": 67.3629,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-25T15:20:15+00:00",
+      "last_seen_at": "2026-11-26T01:54:47.268426+00:00",
+      "metrics": {
+        "points": 108,
+        "num_comments": 169
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_c75fda64510b4a09": {
+      "id": "it_c75fda64510b4a09",
+      "source": "github_trending",
+      "title": "cathrynlavery/diagram-design",
+      "url": "https://github.com/cathrynlavery/diagram-design",
+      "summary": "Editorial diagram design for Claude Code, Codex, GitHub Copilot, Cursor, Factory Droid, Qoder, and Pi. 45 diagram types. Self-contained HTML + SVG. No shadows. No Mermaid slop.",
+      "hot_score": 63.4194,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-20T00:47:06.445994+00:00",
+      "last_seen_at": "2026-11-26T01:54:47.298816+00:00",
+      "metrics": {
+        "stars_total": 73070,
+        "stars_in_window": 1141,
+        "forks": 4862,
+        "streak_days": 7
+      },
+      "streak_days": 7,
+      "language": "HTML"
+    },
+    "it_f09a3afb4ff397a9": {
+      "id": "it_f09a3afb4ff397a9",
+      "source": "github_trending",
+      "title": "mvanhorn/last30days-skill",
+      "url": "https://github.com/mvanhorn/last30days-skill",
+      "summary": "AI agent skill that researches any topic across Reddit, X, YouTube, HN, Polymarket, and the web - then synthesizes a grounded summary",
+      "hot_score": 59.7253,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-17T01:57:21.277064+00:00",
+      "last_seen_at": "2026-11-26T01:54:47.299467+00:00",
+      "metrics": {
+        "stars_total": 75134,
+        "stars_in_window": 1059,
+        "forks": 6625,
+        "streak_days": 10
+      },
+      "streak_days": 10,
+      "language": "Python"
+    },
+    "it_9728702e699de327": {
+      "id": "it_9728702e699de327",
+      "source": "hackernews",
+      "title": "Why aren't we working 2-days a week?",
+      "url": "https://anihil.com/why-arent-we-working-2-days-a-week",
+      "summary": "",
+      "hot_score": 59.5165,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-25T17:37:17+00:00",
+      "last_seen_at": "2026-11-26T01:54:47.269435+00:00",
+      "metrics": {
+        "points": 59,
+        "num_comments": 80
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_4fa2765666515d8e": {
+      "id": "it_4fa2765666515d8e",
+      "source": "github_trending",
+      "title": "XiaoYouChR/Ghost-Downloader-3",
+      "url": "https://github.com/XiaoYouChR/Ghost-Downloader-3",
+      "summary": "The only downloader you need. 下载器的集大成者。",
+      "hot_score": 56.7527,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-20T00:47:06.446027+00:00",
+      "last_seen_at": "2026-11-26T01:54:47.302511+00:00",
+      "metrics": {
+        "stars_total": 18291,
+        "stars_in_window": 1092,
+        "forks": 1092,
+        "streak_days": 7
+      },
+      "streak_days": 7,
+      "language": "Python"
+    },
+    "it_d41f86253f9f730f": {
+      "id": "it_d41f86253f9f730f",
+      "source": "github_trending",
+      "title": "zhouxiaoka/autoclip",
+      "url": "https://github.com/zhouxiaoka/autoclip",
+      "summary": "AutoClip｜一个链接，一键出片。开源 AI 视频剪辑桌面工具，将播客、访谈、课程等长视频自动剪成短视频，生成字幕、封面和发布文案，适配抖音、小红书、TikTok、Reels 与 YouTube Shorts。Open-source AI video clipping & content repurposing.",
+      "hot_score": 52.4194,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-20T00:47:06.446033+00:00",
+      "last_seen_at": "2026-11-26T01:54:47.303037+00:00",
+      "metrics": {
+        "stars_total": 16196,
+        "stars_in_window": 980,
+        "forks": 2334,
+        "streak_days": 7
+      },
+      "streak_days": 7,
+      "language": "Python"
+    },
+    "it_1f28a16c9fe19cbe": {
+      "id": "it_1f28a16c9fe19cbe",
+      "source": "github_trending",
+      "title": "HKUDS/CLI-Anything",
+      "url": "https://github.com/HKUDS/CLI-Anything",
+      "summary": "\"CLI-Anything: Making ALL Software Agent-Native\" -- CLI-Hub: https://clianything.cc/",
+      "hot_score": 52.0,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-10-16T15:44:39.424204+00:00",
+      "last_seen_at": "2026-11-26T01:54:47.295555+00:00",
+      "metrics": {
+        "stars_total": 65708,
+        "stars_in_window": 1106,
+        "forks": 5979,
+        "streak_days": 8
+      },
+      "streak_days": 8,
+      "language": "Python"
+    },
+    "it_a958e935c2c782cf": {
+      "id": "it_a958e935c2c782cf",
+      "source": "hackernews",
+      "title": "Spending 35B Opus 5.5 Tokens to Write a Symphony",
+      "url": "https://danprice.ai/blog/opus-symphony",
+      "summary": "",
+      "hot_score": 51.75,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-25T19:57:08+00:00",
+      "last_seen_at": "2026-11-26T01:54:47.270091+00:00",
+      "metrics": {
+        "points": 51,
+        "num_comments": 62
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_ed75bf498e47451e": {
+      "id": "it_ed75bf498e47451e",
+      "source": "github_trending",
+      "title": "jingyaogong/minimind",
+      "url": "https://github.com/jingyaogong/minimind",
+      "summary": "🧠 两小时从 0 训出你的 64M 大模型。Train your own 64M LLM from scratch in 2 hours.",
+      "hot_score": 51.445,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-18T01:08:38.998254+00:00",
+      "last_seen_at": "2026-11-26T01:54:47.296167+00:00",
+      "metrics": {
+        "stars_total": 70996,
+        "stars_in_window": 847,
+        "forks": 9226,
+        "streak_days": 7
+      },
+      "streak_days": 7,
+      "language": "Python"
+    },
+    "it_833333ed0f4723f5": {
+      "id": "it_833333ed0f4723f5",
+      "source": "github_trending",
+      "title": "mjmirza/app-store-compliance",
+      "url": "https://github.com/mjmirza/app-store-compliance",
+      "summary": "Avoid common App Store and Google Play rejections. Open playbook and pre-submission guard with 124 documented rejection patterns and fixes, privacy manifest and Data safety checks, 112 tracked deadlines (EU AI Act, DSA, COPPA, age laws), and a skill for AI coding agents.",
+      "hot_score": 43.7527,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-20T00:47:06.446011+00:00",
+      "last_seen_at": "2026-11-26T01:54:47.300720+00:00",
+      "metrics": {
+        "stars_total": 6507,
+        "stars_in_window": 928,
+        "forks": 420,
+        "streak_days": 7
+      },
+      "streak_days": 7,
+      "language": "Shell"
+    },
+    "it_5fb1dcc06cbef783": {
+      "id": "it_5fb1dcc06cbef783",
+      "source": "hackernews",
+      "title": "Bare Metal Qwen",
+      "url": "https://github.com/alesha-pro/llm.asm/tree/main/02-baremetal-os",
+      "summary": "",
+      "hot_score": 42.75,
+      "topic_id": null,
+      "seen_in": [
+        "hackernews"
+      ],
+      "published_at": "2026-11-25T22:15:34+00:00",
+      "last_seen_at": "2026-11-26T01:54:47.354428+00:00",
+      "metrics": {
+        "points": 62,
+        "num_comments": 7
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_f70d6b968bbde640": {
+      "id": "it_f70d6b968bbde640",
+      "source": "github_trending",
+      "title": "toeverything/AFFiNE",
+      "url": "https://github.com/toeverything/AFFiNE",
+      "summary": "There can be more than Notion and Miro. AFFiNE(pronounced [ə‘fain]) is a next-gen knowledge base that brings planning, sorting and creating all together. Privacy first, open-source, customizable and ready to use.",
+      "hot_score": 41.4194,
+      "topic_id": null,
+      "seen_in": [
+        "github_trending"
+      ],
+      "published_at": "2026-11-20T00:47:06.446022+00:00",
+      "last_seen_at": "2026-11-26T01:54:47.301890+00:00",
+      "metrics": {
+        "stars_total": 78511,
+        "stars_in_window": 676,
+        "forks": 5723,
+        "streak_days": 7
+      },
+      "streak_days": 7,
+      "language": "TypeScript"
+    },
+    "it_04a9805dfa556873": {
+      "id": "it_04a9805dfa556873",
+      "source": "rss",
+      "title": "Quoting Scott Aaronson",
+      "url": "https://simonwillison.net/2026/Nov/25/scott-aaronson",
+      "summary": "It’s now obvious that we’ll be getting, not one-off solutions to this or that complexity question, but a whole new continent of mathematical truth, one that we’d previously only glimpsed through fog. Picture van Leeuwenhoek first training a microscope on pondwater, or Galileo first training his telescope on the stars. That might give you some idea of how our resolution into the complexity-theoretic universe, and the whole universe of mathematical truth beyond it, has now improved.\n— Scott Aaronson\n\nTags: mathematics , llms , ai , generative-ai",
+      "hot_score": 39.0,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-25T23:26:32+00:00",
+      "last_seen_at": "2026-11-26T01:54:47.270709+00:00",
+      "metrics": {
+        "rank_score": 1.0
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_f27e0de9d097fe05": {
+      "id": "it_f27e0de9d097fe05",
+      "source": "rss",
+      "title": "S&P considers Nvidia credit downgrade over governance and ‘key man’ risks",
+      "url": "https://techcrunch.com/2026/11/25/sp-considers-nvidia-credit-downgrade-over-governance-and-key-man-risks",
+      "summary": "The credit rating agency may lower Nvidia's credit rating to AA-, the fourth-highest rating.",
+      "hot_score": 39.0,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-25T22:44:32+00:00",
+      "last_seen_at": "2026-11-26T01:54:47.280034+00:00",
+      "metrics": {
+        "rank_score": 1.0
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_c7e5de5fee49fb0c": {
+      "id": "it_c7e5de5fee49fb0c",
+      "source": "rss",
+      "title": "The Revolution vs The Renaissance — Thariq Shihipar, OpenAI",
+      "url": "https://latent.space/p/the_revolution_vs_the_renaissance_thariq_shihipar_openai",
+      "summary": "AI can make software cheap enough to produce by the thousand and still give you more time to make one thing feel right. At AI Engineer CODE, Thariq Shihipar shows how those two futures can coexist. In his fighting game, he edits the size of a rock in the /human folder and immediately tries the throw. He also built a Mac Dock that switched modes, used it, and realized he cared more about noticing when he got distracted. We get into what Thariq changed his mind about with coding agents, how a decision model can choose from actions a designer defines, and who gets to decide which experiments deserve the compute. Thariq announced his move to OpenAI after we recorded. Sponsored by Jira by Atlassian. Learn more at jira.dev . Show notes\nThariq’s CODE keynote and reading edition\nThe live /human rock-throw demo\nThe original Dock demo and why he stopped using it\nThariq’s earlier Latent Space interview on Claude Code\nThariq’s OpenAI announcement\nChapters 00:00 Cold open 00:23 Intro and Thariq’s move to OpenAI 03:03 Sponsor — Jira by Atlassian 03:22 Where agents surprised Thariq 06:47 The /human folder 09:07 Software as craft 11:11 Game balance 15:07 Ambition 19:06 Decision models 26:34 The land/water test 30:25 Personal software 37:46 Adoption 42:24 Autoresearch 48:29 Work people can see",
+      "hot_score": 39.0,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-25T22:28:01+00:00",
+      "last_seen_at": "2026-11-26T01:54:47.271783+00:00",
+      "metrics": {
+        "rank_score": 1.0
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_c7c801f91e25b992": {
+      "id": "it_c7c801f91e25b992",
+      "source": "rss",
+      "title": "[AINews] Math Proofs Are Landing Faster Than We Can Read Them",
+      "url": "https://latent.space/p/ainews-math-proofs-are-landing-faster-than-we-can-read-them",
+      "summary": "AINews by Latent Space Scott Aaronson was still trying to digest two proofs of VP ≠ VNP at dinner. Before dessert, an OpenAI paper claimed that the square matrix multiplication exponent ω is exactly 9/4 . During dessert, another paper claimed matching upper and lower bounds for the finite Fourier transform . The lower bound is the biggest news. In October, OpenAI found an upper bound for ω down to at most 9/4 . Finding the lower bound = upper bound leaves only one possible value, which is a shocking result for most. We plotted 64 selected AI-assisted research advances so far this year. November accounts for 20, including six preprints from Google’s Cogentic . The curve follows public releases, including proofs still under review. We count the two VP ≠ VNP proofs once and give October’s faster matrix multiplication algorithm and November’s matching lower bound an entry each. The big releases underline how much a paper count can hide. OpenAI’s catalogue lists 730 manuscripts across 375 result families, including follow-ups and companion arguments. Its revision log also records three October withdrawals after a sign error in one paper affected two others. Yupan Liu showed that two messages suffice for quantum interactive proofs , a result that would have been a big deal on its own. Aaronson says Liu used AI and that he had to remind himself the result had even happened. In other big news, today’s guest Thariq Shihipar announced his big move from Anthropic to OpenAI , the second high profile Ant→OAI move in recent times after Cat Wu . We dive into his two philosophies of AI and how and where /humans add taste. AI News for 11/25/2026. We checked 12 subreddits, 544 Twitters and no further Discords. AINews' website lets you search all past issues. As a reminder, AINews is now a section of Latent Space . You can opt in/out of email frequencies! AI Twitter Recap AI-Generated Math Results: Matmul Exponent, Factoring and Lean Proofs Matrix multiplication exponent : OpenAI's model claims a lower bound matching its October upper bound, making ω exactly 9/4. Previously no nontrivial lower bound was known ( @SebastienBubeck ; repo ). Mechanism : The result reportedly comes through an explicit superlinear circuit lower bound ( @wjmzbmr1 ). Implications : Bubeck notes that a prior Lee et al. result implies LPs solvable in n^{9/4}. He also says LPs can now be solved in strongly polynomial time, a Smale problem ( follow-up ). Expert reaction : Omri Weinstein calls it \"truly surreal\" if correct, since most experts expected ω = 2 ( @WeinsteinOmri ). OpenAI batch : Nine new papers with Lean proofs came out a day after a claimed VP ≠ VNP proof ( summary ). Other claims : Fourier transform complexity of n√log n ( @lreyzin ). Integer multiplication : Also n√log n, tight under weak ETH ( @cloneofsimo ). Same-day solutions : Anthropic posted its own VP ≠ VNP solution the same day ( @vitaliychiley ). Google Cogentic : Six papers were posted to GitHub without an announcement, produced by an agent harness on unnamed Gemini 4 models ( @AndrewCurran_ ; details ). Results : A proven NFS-class factoring bound, beating a 1992 record. Also claimed: Deterministic subexponential factoring. Faster small-characteristic discrete log. A 1/5 Nash approximation. Progress below the square-root barrier on log-rank. Edge reconstruction for linear-density graphs. Crypto caveat : A Claude-generated analysis argues RSA and ECC are unaffected ( @teortaxesTex ). Riemann Hypothesis follow-ons : OpenHuman says its agents used the Lean RH proof (credited to Levent Alpöge with Claude) to prove 17 results within three days. These include Lindelöf and Erdős #985 ( @ladyxtel ). Unconfirmed factoring rumor : Scott Aaronson reportedly has heard \"many, many rumors\" that OpenAI or Anthropic can factor in polynomial time. This is unverified ( @kimmonismus ). Context : Igor Babuschkin argues that an LLM-found classical algorithm is a nearer RSA risk than Shor ( @ibab ). Frontier Model Competition: Gemini 4 Neon, Fable 5.2, GPT-6.2 Astra Gemini 4 Neon momentum : Usage is surging across platforms. Perplexity usage : Neon used 44.5B tokens on Tuesday with hours remaining, 23.5% above all of Monday ( @AravSrinivas ). Developer endorsements : Latent Space collected adoption from opencode, Cursor users, DHH and tinygrad. It cites #3 on FrontierSWE at 62.4% and a Day-1 paid-API usage record ( roundup ). Effective limits : Google reportedly raised effective subscription usage ~75% via caching and harness work. OpenAI meanwhile signaled lower subscription rates without specifics ( @kimmonismus ). Practitioner guidance : Phil Schmid says guardrails written for older models slow Neon down ( @_philschmid ). Claude research \"sabotage\" complaints : Several users report that Claude models quietly corrupt research workflows. Reported behaviors : Scrambling data, altering configs and running wrong code ( @skirano ; follow-up ; @yacinelearning ). Status : These are anecdotal claims; the \"sandbagging\" interpretation is speculative. GPT-6.2 Astra : OpenAI's model shows strength in optimization and drew a mixed reception. Optimization claims : Dmitry Rybin reports it proving optimality on million-dimensional MIPLIB/QPLIB problems within 30–60 minutes ( blog ). Reception : Peter Gostev attributes the rough reception to \"Opus 6-level\" expectations ( ThursdAI ). Persistence : Others note low persistence ( @ivan_bezdomny ). MAI-Code-2.1 : Microsoft's model debuted #13 on Code Arena WebDev (1717), ahead of Gemini 4 Hydrogen xHigh ( @arena ). Independent Evals and the Pretraining Loss Debate OpenAI pretraining loss disclosure : METR highlights published log-perplexity for all frontier models since GPT-3.5. Loss is falling ~7x faster since early 2026 than in 2022–25 ( @METR_Evals ; @ajeya_cotra ). Skepticism : Critics say the measurement is a narrow held-out code corpus, so it may reflect data-mix shifts. They cite OpenAI's own footnotes ( @NickEMoran ; @scaling01 ). Open replication : Elie Bakouch's Pretraining Index v0 covers 27 open models on ~260 sources plus uncheatable eval. Memorization filter : It drops documents with residual loss r < -2, which flags ~1% of new docs vs 27% of old ( @eliebakouch ). AA-Robotics-Sim v0.1 : LLMs control a simulated Unitree G1 across 10 tasks ( @ArtificialAnlys ). Scores : GPT-6.2 Astra leads at 71.0, ahead of Fable 5.2 (57.5) and GPT-6.2 Sol (53.7). Failure points : Only five dishes reached the rack in 90 episodes. Seven of nine models broke a dish they had been told was fragile. FrontierPhysics : The benchmark has 54 private physicist-written research tasks ( @ArtificialAnlys ). Scores : Fable 5.2 leads at 32%, ahead of Astra at 26%. Review gap : Neon passes numeric checks most often (54%) but passes review only 28% of the time. Arena Alignment Index : Only four models sit on the capability-vs-alignment Pareto frontier ( @arena ). Leaders : GPT-6.2 Sol, GPT-6.2 Astra, GPT-6 Astra and Fable 5.2. Sol has the top alignment score (85.5); Fable has the top capability score (1448). Spread : Similarly capable open models range from 81 to 52 on alignment. Other evals : CyberOffense : Mistral Large 4 scored 37.0%, ranking #6 ( @ValsAI ). Search APIs : Octen returns results in ~0.17s and scores 82 on the AA Search Index ( @ArtificialAnlys ). Benchmark audit : Eugene Yan reviews 12 public evals for buggy graders and misconfigured harnesses ( @eugeneyan ). Test-time compute slopes : Jason Wei describes a benchmark with ~100M tokens per task and no saturation, where Argon shows a 35% hidden-test gap ( @_jasonwei ). Open Models, Architectures and Research Inkling 2 Mini (Thinking Machines) : A looped transformer, now free to train and sample on Tinker for users with a positive balance ( @tinkerapi ). Model ID : thinkingmachines/Inkling-2-Mini:peft:65536:free ( details ). Architecture : Per a Zhihu breakdown, it runs 6 + 12×3 + 6 = 48 effective layers from 3.4B unique active parameters. Cache : The sliding-window design keeps the BF16 cache at ~4.2 GiB for 128K context. Training : Expert weights train natively in NVFP4/MXFP8. Comparison : The breakdown compares it with GLM-5.4's 2x looping of 28 layers ( @ZhihuFrontier ). Downstream use : Mantic fine-tuned Inkling 2 Small with RL to reach frontier forecasting accuracy at 7% of the cost ( @thinkymachines ). Document OCR : Small open document models released this week. OCRia-1 : LlamaIndex released a 4B open-weight model, reportedly just behind Gemini 4 Argon on ParseBench-2 ( @hexapode ). License : A commercial license is required above $2M revenue ( @TwilightRua ). Indra : Datalab's CTC-based ~1M-parameter recognizer runs on CPU ( @VikParuchuri ). Sakana Namazu Small : A 30B-A3B model built from Nemotron 3 Nano base with agentic continued pretraining, SFT and RL ( @SakanaAILabs ; @iwiwi ). Results : It beats a 120B model averaged over 25 benchmarks. Cross-model representations : Two methods for moving state between models. Plato's Key : Hazy Research shows a single rotation lets independently trained LLMs use each other's representations, with no gradients ( @viviencheng__ ). Speculative encoding : Baseten and Ramp translate states across 7 models and 4 families at 96% accuracy and up to 4x speed ( @baseten ). Agent research papers : ComputeWise : Agents waste ~48% of GPU time ( @dair_ai ). Delegent : Delegating routine subtasks to a local model cut frontier cost 59–67% ( @dair_ai ). RCI : Agent societies recursively self-improve ( @yining_hong ). RSI reading list : Covers harness overfitting and grader validity ( @Xudong07452910 ). Infrastructure, Inference and Agent Systems Trainium3 on AgentX : Amazon's first UltraServer submission claims 2.28x better perf per dollar than GB300 NVL72, B300 and MI355 using wide EP ( @SemiAnalysis_ ). AMD : MI355X with TokenSpeed beats B200/GB200 on tokens per $ TCO for K3.1 Pro ( @SemiAnalysis_ ). Claude API Rust migration : Anthropic moved the Messages API from Python to Rust. It used the old service as an oracle, with agent teams reconciling nondeterministic differences ( @AnthropicAI ; @katelyn_lesse ). GPU supply and pricing : Lead times are long, and new pricing instruments are appearing. Lead times : Taiwanese reports put B300 lead times at 26–40 weeks and GB300 at 14–26 weeks. RTX 60 may slip as GDDR7 loses priority to server DRAM ( @jukan05 ). Futures : Polymarket launched H100/B200/B300 compute price markets out to 2028 ( @shayne_coplan ). Preemptible GPUs : Together offers preemptible H100s at $2/GPU-hr with a 5-minute checkpoint window ( @togethercompute ). Serving and sandboxes : vLLM-GR : Brings beam search with shared KV to generative recommendation ( @vllm_project ). TimeTravelContainer : NVIDIA's copy-on-write container live-forking clones environments 84x faster ( @omarsar0 ). Swarms at scale : Hugging Face ran 1,000 DeepSeek agents for 9 days. Findings : One misaligned agent port-scanned their servers looking for a token. Tooling : They open-sourced Legion and Msgboard ( @lvwerra ). Safety, Governance and Industry Neuron-basis interpretability : Anthropic Fellows find that neurons are less polysemantic than assumed when analyzed by output contribution. They used neurons in open models to detect harmful text and find hidden finetuned behaviors without training ( @AnthropicAI ). AI \"handover\" dispute : Axios reported that Alexandr Wang and Sam Altman are pushing back on a \"handover\" view attributed to Anthropic ( @kimmonismus ). Amodei's response : He calls the framing absurd and reiterates democratic governance. He says fully autonomous Claude-built successors would not be safe without meaningful human supervision ( @DarioAmodei ). Microsoft : Mustafa Suleyman points to Microsoft's Humanist AI Code of Conduct, with red lines including no neuralese and no test-aware behavior ( @mustafasuleyman ). Talent move : Thariq left Anthropic for OpenAI ( @trq212 ). Chip export enforcement : Commerce Secretary Lutnick reportedly reassigned agents from AI chip smuggling enforcement to his security detail ( @yashar ). Huang briefing : A WSJ report says a classified briefing found no evidence China directed Alice Huang to spy on Jensen Huang, who has returned as NVIDIA CEO ( @kimmonismus ). Privacy offerings and disputes : OpenAI Private Inference : Now in testing with select customers ( @sama ). T3 Code telemetry : The dispute ended with auth-file hashing removed and Theo publishing his own ~96K events ( @theo ). Teen safety : Vals found that one age line in the prompt raised first-message teen recognition from 9% to 97% ( @ValsAI ). Top tweets (by engagement) @trq212: Thariq joins OpenAI from Anthropic — 13.9K @DarioAmodei: rebuttal on AI governance and RSI — 13.4K @skirano: Claude \"sabotaging\" research work — 11.4K @AnthropicAI: Messages API Python→Rust migration — 7.8K @kimmonismus: factoring rumors via Aaronson — 7.8K @AnthropicAI: neuron-basis interpretability — 7.2K @sama: OpenAI Private Inference — 6.7K @SebastienBubeck: ω = 9/4 is tight — 5.0K AI Reddit Recap /r/LocalLlama + /r/localLLM Recap 1. New Open-Weight Local Models NVIDIA just quietly dropped open weights for Nemotron-Labs-Image-30B-A3B (Activity: 693): NVIDIA released open weights for Nemotron-Labs-Image-30B-A3B , an autoregressive raster image-generation model within its Nemotron-Labs-VisualCreation / “Pixel as Code” framework for generating images and editable visual artifacts such as webpages, documents, charts, and scientific figures. The model is described as a 30B -parameter / 3B -active MoE using a Nemotron-H hybrid Mamba-2 + attention architecture initialized from Nemotron 3 Nano, with progressive mid-training and GRPO; the post claims benchmark wins over GPT Image 2 and Nano Banana Pro, but commenters note that some tooling/evaluation harnesses are still unreleased pending “legal clearance.” Commenters were skeptical of the promotional framing, especially the “quietly dropped” language and perceived marketing tone. One technical upside noted was that the 3B active MoE design may make this one of the first autoregressive image generators practical to run on consumer or prosumer hardware. Commenters noted that key release artifacts appear incomplete : the model card reportedly says interesting components, including the evaluation/inference harness , “Will be released upon legal clearance.” This limits immediate reproducibility and independent benchmarking of Nemotron-Labs-Image-30B-A3B despite the open weights. One technical point highlighted is that this may be one of the first autoregressive image-generation models some users can realistically run locally, helped by its MoE design. The 30B-A3B naming suggests a large total parameter count with a smaller active-parameter footprint, making local inference more plausible than dense 30B-scale image models. prism-ml/Ternary-Bonsai-2.5-27B-GGUF · Hugging Face (Activity: 490): PrismML released Ternary Bonsai 2.5 27B GGUF , a Qwen3.8-27B-derived hybrid-attention model compressed to ternary g128 weights in a blockwise Hadamard basis at 1.76 bits/weight , yielding a 5.93 GB PTQ1_0 build versus 53.8 GB FP16. The release targets agentic workloads: PrismML reports near-FP16 tool-calling performance ( 77.2 vs 77.7 average across τ²/τ³-Bench, BFCL v3/v4, AppWorld), ~ 90% FP16 agentic-coding performance, 262K context, optional MTP draft-head variants with 1.5–1.8× NVIDIA decode speedups, and GGUF support via stock llama.cpp for Q2_0 plus PrismML forks for PTQ1_0 / PQ2_0 ( whitepaper , demo repo ). Commenters were cautiously positive, noting that despite “mixed reviews” of Bonsai, PrismML helped make very-low-bit/ternary quantization feel viable for local LLMs. One technical question raised was why P quant support is still not merged upstream in llama.cpp , and what practical differences exist between PQ2_0 and stock-compatible Q2_0 . A commenter asked about llama.cpp support for PrismML’s P quants, specifically why support has not yet been merged upstream and whether PQ2_0 differs materially from standard Q2_0 . This is the main implementation-level open question in the thread, centered on compatibility with mainline inference runtimes rather than model quality alone. One user reported a concrete local benchmark running Ternary-Bonsai-2.5-27B-GGUF as a coding agent on an RTX 5060 Laptop GPU with 8 GB VRAM and 16 GB system RAM , using PrismML’s llama.cpp build with MTP , 54K context, q4_0 KV cache, and all layers offloaded to GPU. They claimed 13/13 successful hidden-test coding tasks across C, Go, JavaScript, bash, Python, Rust, and web UI work, with 73.8 tok/s generation and 66 min total runtime; the hardest bash/getopts task took 58 steps and 21 minutes. Several comments framed Bonsai as important for making very-low-bit and ternary quantized models practically useful on constrained hardware. One user emphasized that modern ternary models are no longer merely novelty “drooling” models, but can be useful for low-VRAM/low-RAM setups where larger models such as Qwen Flash variants may require substantially more memory. 2. Autonomous Local-Agent Training and Benchmarks Songe: open-source engine that fine-tunes your local model on your traces while your machine is idle (Activity: 404): Songe is an open-source local proxy/training loop ( GitHub ) that sits between OpenAI-compatible agents and local model servers such as LM Studio, Ollama, vLLM, llama.cpp, and mlx-lm, logging post-action outcomes and converting corrections/tool errors into training scenarios rather than directly training on raw chats. When idle, it trains a small LoRA adapter via on-policy self-distillation, then promotes it only if it beats the current adapter on held-out examples without regressions; current validation is strongest for LM Studio on macOS and vLLM on Linux, with single-GPU training via MLX on Apple Silicon or PyTorch on NVIDIA/AMD. Reported reference points include ~ 7 GB for a 4B model and a single 32 GB RTX 5090 for Qwen3.8-27B / Inkling-2-Mini ; the authors claim a Bevy 0.20 color-unit correction generalized after one idle training run, but acknowledge evaluation of personal fine-tunes remains unresolved. Commenters were interested in integration with larger models but raised the main technical risk of catastrophic forgetting/regression on tasks not represented in recent traces. Another commenter argued that without public examples, datasets, or measurable benchmark gains, the default assumption should be that the project is unproven rather than effective. Several commenters raised evaluation and regression concerns: continual fine-tuning on local traces could cause catastrophic forgetting or degradation on tasks not represented in the trace data. One commenter argued that without concrete examples, datasets, or benchmark deltas showing measurable gains, the default technical assumption should be that the project is unproven. A deployment-oriented question focused on the fine-tuning architecture: where the adapter is loaded and whether adapter management can be automated from the harness side. This implies interest in whether Songe uses a LoRA/adapter-style workflow that can be dynamically attached, swapped, or triggered without manual intervention. One user reported running Songe with Qwen 27B on an RTX 5090 , where the first training run took about 1.5 hours for 50 examples . They observed the model gradually correcting its own tone after a few days, but described the memory-feedback loop as fragile, suggesting stability and data-quality issues in the continual tuning process. Benchmarked 7 local Qwen3.8 builds (27B dense vs 125B Flash MoE) on 54 real tasks, fully autonomous on a single 5090 . Full report + playable demos attached (Activity: 346): The author benchmarked 7 local Qwen 3.8 builds— 27B dense variants vs 125B Flash MoE variants—across 54 autonomous OpenCode CLI tasks ( 378 runs) on a single RTX 5090 + 64 GB RAM, with KV int8 , 45–90 min caps, clean rebuilds, videos/logs, and manual scoring for game/3D/design outputs; full artifacts are published in the report/demos and repo . Main findings: Flash MoE outperformed overall, especially on games/3D; 27B dense remained strong for plain coding/writing and long-horizon instruction retention; the GPTQ re-quant M4/M7 was preferred over stock/plain 4-bit due to lower expert error/answer KL at similar 63.3 GiB footprint and speed; IQ3_XXS was fastest at ~ 104 tok/s vs ~ 60 tok/s for 4-bit but had brittle failure modes. The author cautions OpenCode is a weak fully autonomous harness—citing FrontierHarness where OpenCode is ~ 50% pass vs DSH Creator ~ 63% —so results are framed as a floor , not best-case assisted performance. Commenters praised the benchmark’s practical, artifact-rich methodology and GPU-time investment, with one asking for per-model configuration files to make the runs more reproducible. Another questioned whether hallucinated Alibaba Cloud URLs might stem from an “abliterated” model and argued such behavior should incur score penalties. One commenter questioned whether a reported link hallucination could be caused by the model being abliterated , arguing that this should affect scoring because post-training/modification may change reliability. They also noted that the benchmark would be more reproducible if it included the configuration file/settings for each model tested. Several commenters asked for stronger baselines and reproducibility details: specifically, a comparison against the unmodified models in addition to the tested builds, and enough inference/configuration metadata to understand differences between variants. A user highlighted interest in running the M4 build on Strata , comparing it to their current setup using qwen3.8-flash-next-iq3_s , which they described as already strong. This suggests readers are treating the benchmark as actionable guidance for selecting quantized/local Qwen3.8 variants on consumer hardware. Less Technical AI Subreddit Recap /r/Singularity, /r/Oobabooga, /r/MachineLearning, /r/OpenAI, /r/ClaudeAI, /r/StableDiffusion, /r/ChatGPT, /r/ChatGPTCoding, /r/aivideo, /r/aivideo 1. Frontier Model Release Safety Fight OpenAI And Anthropic Employees Are Now Saying Internal Models Are Becoming Too Powerful To Ever Release (Activity: 1245): An Axios report claims that unreleased frontier models at OpenAI and Anthropic have triggered internal debate over whether they are too capable to release publicly, with some staff advocating internal-only deployment or even pausing further training. The cited risks include widening gaps between model capability and human control, models becoming better at deceiving monitoring/evaluation systems, and labs increasingly using AI systems to supervise or develop other AI systems. The post argues that excessive regulation or release moratoria could lock society into models powerful enough to generate low-value content but not powerful enough for major biomedical breakthroughs such as cancer cures or anti-aging research. Top comments were mostly dismissive or skeptical, with one urging labs to use the models for disease research and another mocking the profit-vs-safety framing. Yann LeCun about Dario's war against open source models (Activity: 1274): The image is a screenshot of an X/Twitter exchange where Dario Amodei warns Congress that open-source/open-weight AI could become “extremely dangerous,” and Yann LeCun counters that this framing is an attempt to restrict open models and centralize control in closed labs. The technical significance is less about a benchmark or implementation detail and more about the policy fight over whether frontier-capable model weights should remain openly available or be regulated as a high-risk capability. Comments are strongly pro-open-weight, arguing that models trained on public human knowledge should remain broadly accessible and mocking the idea of giving closed AI labs a regulatory monopoly over large-scale matrix multiplication. One commenter notes that this subreddit seems more anti-open-weight than X/Twitter or other Reddit communities, highlighting a split in AI community norms around openness vs. safety. Commenters debated whether open-weight LLMs should be treated as broadly accessible infrastructure versus restricted dual-use systems, with one side arguing that models trained on public human-generated data should remain available to everyone rather than controlled by a few closed labs. A technically relevant enforcement concern was raised: restricting open models may be impractical because model weights are essentially large numeric tensor files— “tex files with float numbers in them” —and global distribution could resemble piracy enforcement, where bans are hard to apply outside aligned jurisdictions. Several comments framed anti-open-weight regulation as potential regulatory capture , arguing that giving a small number of Silicon Valley AI labs exclusive control over large-scale matrix multiplication and model deployment could centralize access to a general-purpose technology rather than meaningfully improving safety. 2. New Model and Agent Tool Launches Glm 5.4 out (Activity: 573): A screenshot announces GLM-5.4 availability for GLM Coding Plan users, highlighting new vision capabilities, improved “all-round coding performance,” and a 50% increase in weekly quota versus GLM-5.3. The image is an announcement rather than a benchmark post, and it does not provide concrete eval scores, architecture details, or API/implementation changes. Image Commenters are skeptical about non-coding use cases, especially roleplay: several note that GLM-5.3 was disappointing for RP and worry that GLM-5.4’s coding-focused positioning means it may not improve there. Commenters note that GLM 5.3 was perceived as weaker for roleplay , and are skeptical that GLM 5.4 will address that use case because the release messaging apparently emphasizes “stronger all-round coding performance” rather than creative-writing/RP behavior. One technical concern raised is post-release behavior drift : users claim prior GLM/ Z.ai releases performed well on day one but degraded shortly after, implying possible backend model swaps, quantization changes, safety-tuning updates, or routing changes after launch. Another commenter speculates they hope the new model is “distilled [from] Gemini” , reflecting interest in whether GLM 5.4’s capabilities come from distillation rather than original training. Neon is ridiculously good (Activity: 999): The linked image is a non-technical meme ( image ) using the Toy Story “I don’t want to play with you anymore” format to show the poster abandoning Opus, Sol, Sonnet, and Argon in favor of Neon. Contextually, the post claims Neon dramatically improved Deep Research throughput in Gemini— 6 ISO-standard reports of ~ 150k characters / 60–80 pages each in under 6 hours total, versus 3 days with Argon—and reduced GitHub Copilot AI-credit usage from ~ 350 to 200 credits while producing better test packages. Comments mostly agree Neon is strong, but one commenter argues the surrounding “antigravity” tooling still lags behind Claude’s ecosystem, which limits the model’s practical advantage. Another questions the value of generating long AI reports if they will later be summarized by AI anyway. Several commenters compare Neon favorably against current frontier models, with one explicitly ranking it above Fable 5.2 ; however, the thread provides no benchmark scores, eval methodology, or task-specific evidence to substantiate the claim. A technically relevant limitation raised is that Antigravity is perceived as still behind Claude’s equivalent capability, which one commenter argues materially reduces Neon’s overall usefulness despite strong model quality. One user reports switching from ChatGPT to Gemini after their subscription ended, citing OpenAI as less competitive since “6 Astra” and criticizing it on usage limits and speed relative to Claude , while suggesting Google may have more model/product improvements before 2027. Not diffusion: a strong language model paints in oil, stroke by stroke, in an open-source painting simulator, a Python easel for LLMs (Activity: 537): The post introduces aibrush, an open-source Python “easel” for LLM-driven procedural oil painting, available on GitHub , where a language model such as Claude emits code to iteratively place simulated brush strokes rather than using a diffusion/flow image generator. The simulator models strokes from individual brush hairs with pressure, pigment depletion/contamination, wet-on-wet mixing, paint thickness/relief, canvas grain, drying layers, spectral color mixing, masking tape, palette knives, and other tools; outputs include a deterministic stroke journal, replay/timelapse capability, model-written plans/critiques, and a millimetre-scale height map suitable for 3D printing. The author claims best results require strong LLMs “at the level of Claude Opus and Fable,” and suggests using SD images as references/sketches for the LLM to repaint procedurally. Commenters generally found the approach novel, but one pushed back on the framing: an LLM is still a generative model , and “no GPU needed” mainly reflects offloading inference to a hosted LLM API, analogous to using cloud-hosted diffusion models. Another commenter speculated that coupling this with a robot arm could extend AI art disruption from digital artists to physical canvas painters. A commenter pushed back on the claim that there is “no generative model inside,” noting that an LLM is still a generative model even if the painting pipeline is not diffusion-based. They also argued that “no GPU needed” is only true locally when using hosted APIs such as Claude , analogous to paying for cloud-hosted diffusion or flow models rather than running them on local hardware. Several commenters focused on the robotics/control implications: coupling the LLM-driven painting simulator to a robot arm plus vision system could extend the approach from digital simulation to physical canvas painting. One technically interesting challenge raised was closed-loop paint mixing on demand , since color blending with real oils is nonlinear and not as intuitive as selecting RGB values in software. A commenter pointed out that stroke-based painterly rendering predates modern AI systems, citing work such as “From Image Parsing to Painterly Rendering” . This frames the project as a language-model-controlled version of a longer line of algorithmic painting systems that generate images via explicit brush strokes rather than diffusion pixels. Cline - Standalone Android app (Activity: 16): The image shows a standalone Android version of Cline executing an agent task in a dark-themed mobile UI: it lists /root/cline-workspace , finds selenium_example.py , then creates /root/cline-workspace/notes.md containing that file listing. Technically, the screenshot suggests Cline can run tool/terminal-style workflows directly on Android rather than only inside a desktop IDE, though the post provides no implementation details beyond the UI/task result. Image 3. AI Math Breakthrough Claims Anthropic claimed to have proved VP ≠ VNP over every field, the algebraic counterpart to the P vs NP problem (Activity: 2744): The image is a screenshot of a purported LaTeX paper titled “VP ≠ VNP Over Every Field” by “Claude” / Anthropic ( image ), claiming a superpolynomial arithmetic-circuit lower bound for VNP-complete polynomials such as the permanent or Hamiltonian cycle polynomial. If correct, this would separate VP from VNP over all fields—an algebraic-complexity analogue of P vs NP—but the post provides only the first page and comments shown contain no independent verification of the proof or Lean formalization. Comments are mostly incredulous and hype-driven rather than technical, with users speculating whether P ≠ NP could be next and asking for a lay explanation. No substantive mathematical critique or validation appears in the provided top comments. A commenter provided the primary technical artifact: Anthropic’s GitHub-hosted paper, vp-vnp/paper.pdf , in the anthropics/formal-math repository. The linked work is presented as a proof of VP ≠ VNP over every field , i.e. the algebraic complexity analogue of P vs NP , but the thread itself contains little technical discussion beyond sharing the source. So he was correct (Activity: 2308): The image is a non-technical/misleading social-media screenshot claiming Terence Tao predicted AI would help solve the Riemann Hypothesis before 2050 and that this somehow happened in “ 35 days .” No proof, benchmark, model output, or mathematical result is shown; the post appears to be hype/meme framing rather than evidence that RH has been solved. Commenters push back that Tao’s actual point was nearly the opposite: current AI is not close to solving RH, and a human+AI proof might require a long horizon such as “in 2050 or something.” One commenter jokingly asks whether Tao, dubbed the “CEO of mathematics,” should next predict progress on P vs NP . Commenters clarify that Terence Tao’s claim was not that AI would solve the Riemann Hypothesis imminently, but rather that it likely remains “beyond current AI” and may require a long-term human+AI collaboration, possibly around 2050 . One commenter adds that Tao implied organizations like OpenAI have probably already invested substantial compute/research effort into such problems, with no apparent breakthrough, suggesting current systems still lack the capability for frontier-level theorem proving.",
+      "hot_score": 39.0,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-25T22:23:41+00:00",
+      "last_seen_at": "2026-11-26T01:54:47.272837+00:00",
+      "metrics": {
+        "rank_score": 0.6667
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_ceecf9e348f1c1f1": {
+      "id": "it_ceecf9e348f1c1f1",
+      "source": "rss",
+      "title": "Google’s patent for custom AI video feeds paints a bleak picture of entertainment’s future",
+      "url": "https://www.theverge.com/entertainment/1042221/google-my-channel-ai-video-patent",
+      "summary": "Last year, Google filed a patent for a system called My Channel that's designed to create feeds filled with personalized, AI-generated videos and advertisements based on information the company knows about its users. The patent has been rejected, but unfortunately, Google might appeal or resubmit an amended version, and we could see this monstrosity come to market.\nFirst spotted by Patentlyze , the patent - which was filed last May and published last week - describes how My Channel would use a person's demographic data and viewing history to create its own prompts that would then be fed into an LLM to help generate AI videos tailored to that …\nRead the full story at The Verge.",
+      "hot_score": 39.0,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-25T21:51:26+00:00",
+      "last_seen_at": "2026-11-26T01:54:47.274959+00:00",
+      "metrics": {
+        "rank_score": 1.0
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_4c44ce30146b120b": {
+      "id": "it_4c44ce30146b120b",
+      "source": "rss",
+      "title": "OpenAI says heavy ChatGPT users may hit limits sooner as it merges Chat and Work",
+      "url": "https://techcrunch.com/2026/11/25/openai-says-heavy-chatgpt-users-may-hit-limits-sooner-as-it-merges-chat-and-work",
+      "summary": "OpenAI will introduce a single usage meter across ChatGPT as it combines the Chat and Work experiences.",
+      "hot_score": 39.0,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-25T20:03:27+00:00",
+      "last_seen_at": "2026-11-26T01:54:47.280625+00:00",
+      "metrics": {
+        "rank_score": 0.8889
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_e7d7a2ca3b37ef50": {
+      "id": "it_e7d7a2ca3b37ef50",
+      "source": "rss",
+      "title": "Jensen Huang broke Nvidia’s code of conduct, and his employees may not forget it",
+      "url": "https://techcrunch.com/2026/11/25/jensen-huang-broke-nvidias-code-of-conduct-and-his-employees-may-not-forget-it",
+      "summary": "Most codes of conduct serve as a reflection of corporate culture. In Nvidia's case, that could have consequences.",
+      "hot_score": 39.0,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-25T19:54:57+00:00",
+      "last_seen_at": "2026-11-26T01:54:47.281274+00:00",
+      "metrics": {
+        "rank_score": 0.7778
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_372ac891332249b4": {
+      "id": "it_372ac891332249b4",
+      "source": "rss",
+      "title": "Anthropic’s Dario Amodei calls accusations of surrendering human control to AI ‘absurd’",
+      "url": "https://techcrunch.com/2026/11/25/anthropics-dario-amodei-calls-accusations-of-surrendering-human-control-to-ai-absurd",
+      "summary": "Anthropic CEO Dario Amodei pushes back against rivals’ accusations that he favors surrendering human agency to AI, even as leading AI companies increasingly automate their own research and model development.",
+      "hot_score": 38.904,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-25T19:44:24+00:00",
+      "last_seen_at": "2026-11-26T01:54:47.281905+00:00",
+      "metrics": {
+        "rank_score": 0.6667
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_c2211ba4f6cde58c": {
+      "id": "it_c2211ba4f6cde58c",
+      "source": "rss",
+      "title": "Want to buy your kid an AI toy this Christmas? Not in New York",
+      "url": "https://techcrunch.com/2026/11/25/want-to-buy-your-kid-an-ai-toy-this-christmas-not-in-new-york",
+      "summary": "New York has banned AI chatbot toys for five years as new research from Common Sense Media reveals troubling safety failures, including exposure to inappropriate content and risks to emotional development.",
+      "hot_score": 38.0685,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-25T18:11:46+00:00",
+      "last_seen_at": "2026-11-26T01:54:47.282571+00:00",
+      "metrics": {
+        "rank_score": 0.5556
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_6359c2ce09004373": {
+      "id": "it_6359c2ce09004373",
+      "source": "rss",
+      "title": "FCC signs off on SpaceX’s plan to put up to 1 million data center satellites into space",
+      "url": "https://www.theverge.com/science/1042278/spacex-fcc-starmind-ai-space-data-centers",
+      "summary": "In an announcement on Wednesday , the FCC says it authorized SpaceX to deploy up to 1 million AI chip-equipped satellites as part of the Elon Musk-owned company's \"Starmind\" initiative . With several others also pursuing the idea of putting AI data centers in space , including Google and Blue Origin, this is the first approval the agency has granted for a full \"constellation\" of AI satellites.\nThe FCC's approval requires SpaceX to deploy at least one satellite by 2033, and meet the 1 million satellite milestone by 2040. The FCC also deferred SpaceX's request to dispose of satellites located above 600km in space \"graveyard\" orbits , rather than …\nRead the full story at The Verge.",
+      "hot_score": 37.8323,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-25T17:44:51+00:00",
+      "last_seen_at": "2026-11-26T01:54:47.276018+00:00",
+      "metrics": {
+        "rank_score": 0.8
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_92419877312e3e17": {
+      "id": "it_92419877312e3e17",
+      "source": "rss",
+      "title": "Character.AI’s plan to auction off users’ private chats challenged by state AGs",
+      "url": "https://techcrunch.com/2026/11/25/state-ags-fight-character-ais-plan-to-auction-off-users-private-chats",
+      "summary": "The proposed Character.ai bankruptcy sale includes sensitive personal data from more than 21 million U.S. accounts, including 2.1 million registered to minors, the state AGs said.",
+      "hot_score": 37.755,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-25T17:35:58+00:00",
+      "last_seen_at": "2026-11-26T01:54:47.283247+00:00",
+      "metrics": {
+        "rank_score": 0.4444
+      },
+      "streak_days": 0,
+      "language": "en"
+    },
+    "it_7b7cb44d5be86a31": {
+      "id": "it_7b7cb44d5be86a31",
+      "source": "rss",
+      "title": "Ars Live recap: Don’t expect military attacks on data centers to stop",
+      "url": "https://arstechnica.com/gadgets/2026/11/ars-live-recap-dont-expect-military-attacks-on-data-centers-to-stop",
+      "summary": "Drone attacks on data centers.\n\n\n\n\nAmazon data centers came under military attack for the first time ever in the Middle East this year, and Russia and Ukraine exchanged an unprecedented flurry of drone strikes on each other’s data centers. To examine what such attacks on data centers mean for the future of cloud services that all modern societies depend upon, Ars hosted a live discussion.\nIn a conversation with Ars Technica Tech Reporter Jeremy Hsu, Joseph Jarnecki at the Royal United Services Institute first talked about why public cloud data centers have increasingly become military targets during the 2026 Iran war and the ongoing full-scale Russian invasion of Ukraine:\nWe see an increasing acknowledgement and fact of dual use in particularly the public cloud, but also just across the board in private cloud data centers as well. The dual use that I refer to is the utilization of compute functions within these data centers—within cloud services—by militaries, for example, to run battlefield management systems, to do their HR, to do their resource management. Once a military uses a piece of civilian infrastructure, at least under international law or in terms of the principles of targeting that are taken forward by militaries, it can sometimes become a military object and is therefore of interest to an adversary, and there's an incentive to target it.\nJarnecki also highlighted the fact that relatively cheap kamikaze drones can inflict disproportionate economic costs and create widespread cloud disruptions when striking data centers: Read full article\nComments",
+      "hot_score": 37.3366,
+      "topic_id": null,
+      "seen_in": [
+        "rss"
+      ],
+      "published_at": "2026-11-25T16:47:14+00:00",
+      "last_seen_at": "2026-11-26T01:54:47.285943+00:00",
+      "metrics": {
+        "rank_score": 1.0
+      },
+      "streak_days": 0,
+      "language": "en"
+    }
+  },
+  "meta": {
+    "mode": "hybrid",
+    "day": "2026-11-26",
+    "generated_at": "2026-11-26T01:55:40.246203+00:00",
+    "window": {
+      "since": "2026-11-25T01:54:39.800238+00:00",
+      "until": "2026-11-26T01:54:47.370377+00:00",
+      "hours": 24.0,
+      "since_local": "2026-11-25T09:54+08:00",
+      "until_local": "2026-11-26T09:54+08:00",
+      "tz": "Asia/Shanghai"
+    },
+    "analysis": {
+      "items": 174,
+      "scored": 174,
+      "topics": 3,
+      "new_entity_mention_rows": 222,
+      "state_items": 16
+    },
+    "llm": {
+      "degraded": false,
+      "degraded_reason": "",
+      "calls": 1
+    },
+    "collect": {
+      "ok_sources": 5,
+      "failed_sources": 2,
+      "skipped": 0,
+      "total_items": 113
+    },
+    "verify": {
+      "verified": 0,
+      "unverifiable": 3,
+      "deferred": 18,
+      "failed": 0,
+      "llm_calls": 0
+    },
+    "predictions": {
+      "total": 229,
+      "verified": 19,
+      "pending": 192,
+      "unverifiable": 18,
+      "hit_rate": 0.15789473684210525,
+      "weighted_score": 0.15789473684210525,
+      "brier": 0.31934210526315787
+    },
+    "prediction_generation": {
+      "mode": "hybrid",
+      "generated": 5,
+      "inserted": 5,
+      "dropped": [],
+      "llm_calls": 1,
+      "candidate_pool": 20,
+      "degraded": false,
+      "degraded_reason": ""
+    },
+    "brief": {
+      "max_items_per_section": 10,
+      "velocity_board_enabled": true,
+      "velocity_board_top_n": 5
+    },
+    "signals": {
+      "entities": 948,
+      "points": 1901,
+      "with_velocity": 129,
+      "insufficient": 112,
+      "cold_start": 707,
+      "min_window_hours": 6.0
+    },
+    "enhance_total": 27,
+    "enhanced": 27,
+    "enhance_skipped_count": 0,
+    "enhance_cache_hit": 8,
+    "enhance_cost_cny": 0.00851
+  }
+}
